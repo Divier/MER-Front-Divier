@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/errorTemplate.xhtml">
+    
+    <ui:define name="head">
+        <meta http-equiv="refresh" content="0;url=#{facesContext.externalContext.requestContextPath}/view/MGL/template/main.xhtml" />
+    </ui:define>
+    
+    <ui:define name="content">
+        <title>Sesi&oacute;n Expirada</title>
+        <div id="notfound">
+            <div class="notfound-bg">
+                <div class="notfound">
+                    <div class="notfound-404">
+                        <h1>401</h1>
+                    </div>
+                    <h2>Su sesi&oacute;n ha expirado</h2>
+                    <h3>Por favor ingrese nuevamente <a href="${facesContext.externalContext.requestContextPath}/view/MGL/template/main.xhtml">aqu&iacute;</a>.</h3>
+                    <div class="claro">
+                        <img src="${facesContext.externalContext.requestContextPath}/view/img/ErrorClaro.png"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/notasTemplate.xhtml"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes">
+
+    <ui:define name="title"><span class="TituloSeccion">Notas OT</span></ui:define>
+    <ui:define name="content">
+        <h2 id="myhMmData">Notas [#{notasMglBean.subEdificioMgl.nombreSubedificio}]</h2>
+        <br></br>
+        <fieldset>
+            <legend>Notas</legend>
+            <h:panelGrid columns="2" style="width: 100%">  
+                <h:outputText value="Código" id="codigoLabNota"/>
+                <h:outputText value="#{notasMglBean.notaMgl.notasId}" id="codigoValNota" />
+            </h:panelGrid>
+
+            <h:panelGrid columns="4" style="width: 100%">  
+                <h:outputText value="Descripción" id="descripcionOut"/>
+                <h:inputText label="Descripción" id="descripcionInp"
+                             maxlength="200" style="width: 75%"   disabled="#{notasMglBean.notaMgl.notasId != null and (!notasMglBean.rolEditar or !notasMglBean.rolCrear)}}"
+                             requiredMessage="Se debe diligenciar el campo Descripción de la nota"
+                             value="#{notasMglBean.notaMgl.descripcion}">
+
+                </h:inputText>
+                <h:outputText value="Tipo Nota" id="tipoNotaOut"/> 
+                <h:selectOneMenu id="tipoNotaInp"  value="#{notasMglBean.tipoNotaSelected.basicaId}"
+                                 styleClass="ListaConsulta"  disabled="#{notasMglBean.notaMgl.notasId != null and (!notasMglBean.rolEditar or !notasMglBean.rolCrear)}">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{notasMglBean.tipoNotaList}" var="ld"
+                                   itemValue="#{ld.basicaId}"
+                                   itemLabel="#{ld.nombreBasica}"/>
+                </h:selectOneMenu>
+
+                <h:outputText value="Nota(4000c)" id="notaOut"/>
+                <h:inputTextarea  id="notaInp"  value="#{notasMglBean.notaMgl.nota}" style="width: 199%"
+                                  disabled="#{notasMglBean.notaMgl.notasId != null and (!notasMglBean.rolEditar or !notasMglBean.rolCrear)}" rows="4"
+                                  requiredMessage="El campo justificación es Requerido para cualquier modificación o eliminación del registro" >
+                </h:inputTextarea> 
+                <h:commandLink value=""
+                               action="#{notasMglBean.agregarComentario()}"
+                               immediate="true" rendered="#{notasMglBean.notaMgl.notasId != null}">
+                    <h:graphicImage value="../../images/icon_plus_red.png" rendered="#{notasMglBean.notaMgl.notasId != null}"/>
+                </h:commandLink>
+
+            </h:panelGrid>
+        </fieldset>
+
+        <h:panelGrid id="panelBotonesActivar" columns="4" style="width: 100%; margin: 0 auto;">
+            <h:commandButton id="activartButton" styleClass="btn unblockClaro" 
+                             rendered="#{notasMglBean.notaMgl.notasId != null}"
+                             value="Volver"  action="#{notasMglBean.activarCampos()}" >
+            </h:commandButton> 
+            <h:commandButton id="CrearNotaOtButton" styleClass="btn unblockClaro" 
+                             rendered="#{notasMglBean.notaMgl.notasId == null}" 
+                             value="Guardar"  action="#{notasMglBean.guardarNota()}" disabled ="#{!notasMglBean.rolEditar or !notasMglBean.rolCrear}">
+            </h:commandButton> 
+
+        </h:panelGrid>
+             
+        <br></br>
+        <h:panelGroup rendered="#{notasMglBean.renderDetalle}">
+
+            <h:dataTable id="tablacomentariosLists" rendered="#{notasMglBean.notaMgl.comentarioList.size() > 0}"                           
+                         value="#{notasMglBean.notaMgl.comentarioList}"
+                         var="comentario"                         
+                         styleClass="constructGTable"
+                         headerClass="constructGTableHeader" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                <h:column>   
+                    <div align="left"   >
+                        <f:facet name="header">
+                            <h:outputText value="Lista Comentarios Nota"  /><BR/>
+                        </f:facet>
+                        <h:outputText value="#{comentario.nota}"/>
+
+                    </div>    
+
+                </h:column>
+                <h:column>   
+                    <div align="left"   >
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Creación"  /><BR/>
+                        </f:facet>
+                        <h:outputText value="#{comentario.fechaCreacion}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+                        </h:outputText>   
+
+                    </div>    
+
+                </h:column>
+
+            </h:dataTable>  
+
+        </h:panelGroup>
+        <h:panelGroup  rendered="#{notasMglBean.txtAreaComent}">
+            <fieldset>
+                <legend>Comentarios</legend>
+                <table  style="width: 100%">
+                    <tr><td></td>
+                        <td>
+                            <h:outputText  value="Agregar comentario"  style="width: 75%" />
+                        </td>
+                        <td>
+
+                            <h:inputTextarea  id="asc_campo_ComentaioTxt"   style="width: 100%" value="#{notasMglBean.notaOtComentarioStr}" rows="2"> </h:inputTextarea> 
+
+                        </td>
+                        <td>
+                            <h:commandButton value="Guardar Comentario" 
+                                             styleClass="btn" 
+                                             action="#{notasMglBean.guardarComentarioNota()}"/>
+
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </h:panelGroup>
+
+
+        <br></br>
+        <div class="tableContent" >
+            <h:dataTable id="tablasNotaList"                              
+                         value="#{notasMglBean.listNotasListar}"
+                         var="notas" rows="10"                         
+                         styleClass="constructGTable"
+                         headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                <h:column>   
+                    <div align="left"   >
+                        <f:facet name="header">
+                            <h:outputText value="Id"  /><BR/>
+                        </f:facet>
+
+                        <h:commandLink value="#{notas.notasId}" 
+                                       action="#{notasMglBean.goActualizar(notas)}" disabled = "#{!notasMglBean.rolEditar or !notasMglBean.rolCrear}" />
+                    </div>    
+
+                </h:column>
+                <h:column>   
+                    <div align="left"   >
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Nota"/><br/>
+                        </f:facet>
+                        <h:outputText value="#{notas.tipoNotaObj.nombreBasica}" class="labelnotastipo" />  
+                    </div>    
+                </h:column>
+
+                <h:column>  
+                    <div align="left"   >
+                        <f:facet name="header">
+                            <h:outputText value="Descripción"  /><BR/>
+                        </f:facet>
+                        <h:outputText value="#{notas.descripcion}" class="labelnotastipo" />  
+                    </div>  
+                </h:column>
+
+                <h:column>   
+                    <div align="left"   >
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Creación"  /><br/>
+                        </f:facet>
+                        <h:outputText value="#{notas.fechaCreacion}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+                        </h:outputText>       
+                    </div>  
+                </h:column>
+
+                <h:column>   
+                    <div align="left"   >
+                        <f:facet name="header">
+                            <h:outputText value="Usuario"  /><br/>
+                        </f:facet>
+                        <h:outputText value="#{notas.usuarioCreacion}" class="labelnotasuser"/>    
+                    </div>  
+                </h:column>
+
+                <f:facet name="footer" >
+                    <h:panelGroup >
+                        <div class="pagination2">
+                            <h:commandButton  value= "&#171;"   action="#{notasMglBean.pageFirst}"/>
+                            <h:commandButton action="#{notasMglBean.pagePrevious}" value= "&#60;" />
+                            <h:commandButton value="#{notasMglBean.pageActual}" styleClass="botonTPagInicio"    />
+                            <h:selectOneMenu id="listTabla" value="#{notasMglBean.numPagina}" >
+                                <f:selectItems value="#{notasMglBean.paginaList}" var="pag"
+                                               itemValue="#{pag}"
+                                               itemLabel="#{pag}"/>    
+                                <f:ajax render="@form"  event="change"  listener="#{notasMglBean.irPagina()}"  execute="@this" />                                         
+                            </h:selectOneMenu>  
+                            <h:commandButton value= "&#62;"  action="#{notasMglBean.pageNext}" />
+                            <h:commandButton value= "&#187;"  action="#{notasMglBean.pageLast}" />
+                        </div>
+                    </h:panelGroup>
+                </f:facet>  
+            </h:dataTable>  
+        </div> 
+        <h:panelGrid id="panelBotonesNotaInfo" columns="3" style="width: 100%; margin: 0 auto;">
+        </h:panelGrid>
+
+    </ui:define>
+
+</ui:composition>

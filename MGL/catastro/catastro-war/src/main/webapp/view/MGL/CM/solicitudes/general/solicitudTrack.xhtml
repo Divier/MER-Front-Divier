@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/solicitudTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Track Solicitud</span></ui:define>
+    <ui:define name="content">
+        <h2>Track Solicitud</h2>
+        <h:panelGrid id="panelGridBotones" columns="2" style="width: 30%;">
+            <h:commandButton  id="irTrackSolicitudCM" 
+                              class="#{encabezadoSolicitudModificacionCMBean.selectedTrack  == 'TRACKSOLICITUD' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Solicitud" 
+                              action="#{encabezadoSolicitudModificacionCMBean.cambiarTrack('TRACKSOLICITUD')}"
+                              disabled="#{encabezadoSolicitudModificacionCMBean.selectedTrack eq 'TRACKSOLICITUD'}"
+                              rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"
+                              immediate="true" />
+            <h:commandButton  id="irTrackGestionCM" 
+                              class="#{encabezadoSolicitudModificacionCMBean.selectedTrack  == 'TRACKGESTION' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Gestión"
+                              action="#{encabezadoSolicitudModificacionCMBean.cambiarTrack('TRACKGESTION')}"
+                              disabled="#{encabezadoSolicitudModificacionCMBean.selectedTrack eq 'TRACKGESTION'}"
+                              rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null 
+                                          and encabezadoSolicitudModificacionCMBean.modoGestion}"
+                              immediate="true" />            
+        </h:panelGrid>
+
+        <h:dataTable id="dataTableTrackSolicitudes"
+                     styleClass="constructGTable2" headerClass="constructGTableHeader" style="width: 100%;" 
+                     value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM}"
+                     var="solicitud"
+                     rowClasses="constructGTableEvenRow, constructGTableOddRow">
+            <h:column> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Solicitud" />
+                </f:facet>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tiempoCreacionSolicitud eq null ?
+                                       '00:00:00' : encabezadoSolicitudModificacionCMBean.solicitudModCM.tiempoCreacionSolicitud}" />                  
+            </h:column> 
+            <h:column> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Espera" />
+                </f:facet>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.ansSolicitud eq null ?
+                                       '00:00:00' : encabezadoSolicitudModificacionCMBean.solicitudModCM.ansSolicitud}" />                  
+            </h:column> 
+            <h:column rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCreacionHhpp}"> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Gestión HHPP" />
+                </f:facet>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tiempoGestionHHPPSolicitud eq null ?
+                                       '00:00:00' : encabezadoSolicitudModificacionCMBean.solicitudModCM.tiempoGestionHHPPSolicitud}" />                  
+            </h:column> 
+            <h:column rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCm}"> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Gestión Cobertura" />
+                </f:facet>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tiempoGestionCoberturaSolicitud eq null ?
+                                       '00:00:00' : encabezadoSolicitudModificacionCMBean.solicitudModCM.tiempoGestionCoberturaSolicitud}" />                  
+            </h:column> 
+            <h:column> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Gestión" />
+                </f:facet>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tiempoTotalGestionSolicitud eq null ? 
+                                       '00:00:00' : encabezadoSolicitudModificacionCMBean.solicitudModCM.tiempoTotalGestionSolicitud}" />                  
+            </h:column> 
+            <h:column> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Total" />
+                </f:facet>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tiempoTotalSolicitud eq null ?
+                                       '00:00:00' : encabezadoSolicitudModificacionCMBean.solicitudModCM.tiempoTotalSolicitud}"/> 
+                <h:graphicImage value="/view/img/verde.gif"  
+                                rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.colorAlerta eq 'green'}" 
+                                style="float: right" />
+                <h:graphicImage value="/view/img/amarillo.gif"
+                                rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.colorAlerta eq 'yellow'}" 
+                                style="float: right" />
+                <h:graphicImage value="/view/img/rojo.gif" 
+                                rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.colorAlerta eq 'red'}" 
+                                style="float: right" />
+            </h:column>
+            <h:column> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo ANS" />
+                </f:facet>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudObj.ans} Min" />                  
+            </h:column> 
+        </h:dataTable>
+
+        <h:panelGroup id="panelGroupTrackDetalleSolicitud" 
+                      rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null 
+                                  and encabezadoSolicitudModificacionCMBean.selectedTrack eq 'TRACKSOLICITUD'}">
+            <h2>Detalle Creación de la Solicitud</h2>
+            <h:panelGrid id="panelGridInfoTrackDetalleSolicitud" columns="2">
+                <h:outputText value="Fecha-Hora Inicio:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaInicioCreacion}" >
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+                <h:outputText value="Fecha-Hora Finalización:" style="min-width: 150px; max-width: 150px;"/>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaCreacion}" >
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+                <h:outputText value="Usuario Solicitante:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitud.nombre}" />                  
+                <h:outputText value="Area:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitud.descripcionArea}" />                  
+                <h:outputText value="Correo:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitud.email}" />                  
+
+
+            </h:panelGrid>
+
+        </h:panelGroup>
+        <h:panelGroup id="panelGroupTrackDetalleGestion"
+                      rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null 
+                                  and encabezadoSolicitudModificacionCMBean.selectedTrack eq 'TRACKGESTION'}">
+            <h2>Detalle Gestión de la Solicitud</h2>
+            <h:panelGrid id="panelGridInfoTrackDetalleGestionSolicitud" columns="2">
+                
+                
+                <h:outputText value="Fecha-Hora Inicio:" 
+                              style="min-width: 150px; max-width: 150px;"
+                              rendered="#{!encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCreacionHhpp}"/>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaInicioGestion}" 
+                              rendered="#{!encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCreacionHhpp}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>
+                
+                <h:outputText value="Fecha-Hora Inicio Gestión HHPP:"
+                              rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCreacionHhpp}"
+                              style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaInicioGestionHhpp}"
+                              rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCreacionHhpp}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>
+                <h:outputText value="Fecha-Hora Gestión HHPP:"
+                              rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCreacionHhpp}"
+                              style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionHhpp}" 
+                              rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCreacionHhpp}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>
+                <h:outputText value="Fecha-Hora Inicio Gestión Cobertura:"
+                              rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCm}"
+                              style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaInicioGestionCobertura}" 
+                              rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCm}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>
+                <h:outputText value="Fecha-Hora Gestión Cobertura:"
+                              rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCm}"
+                              style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionCobertura}" 
+                              rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCm}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>
+                
+                <h:outputText value="Fecha-Hora Finalización:" style="min-width: 150px; max-width: 150px;"
+                              rendered="#{!encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCreacionHhpp}"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestion}" 
+                              rendered="#{!encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudModificacionCreacionHhpp}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+                
+                <h:outputText value="Usuario Solicitante:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitud.nombre}" />                  
+                <h:outputText value="Área:" style="min-width: 150px; max-width: 150px;"/>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitud.descripcionArea}" />                  
+                <h:outputText value="Correo:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitud.email}" />                  
+
+                <h:outputText value="Usuario Gestión:" style="min-width: 150px; max-width: 150px;"/>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitud.nombre}" />                  
+                <h:outputText value="Correo:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitud.email}" />                  
+
+
+            </h:panelGrid>
+
+        </h:panelGroup>
+
+
+    </ui:define>
+
+</ui:composition>

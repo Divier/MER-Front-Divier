@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="/view/MGL/template/main.xhtml"> 
+
+    <ui:define name="title"><span class="TituloSeccion">Administrador Nodo</span></ui:define>
+    <ui:define name="message"><span class="error"> #{nodoMglBean.message}</span></ui:define>
+    <ui:define name="content">
+        <script type="text/javascript">
+            function submitByEnter(e) {
+            if (e.keyCode === 13) {
+            return false;
+            } else {
+            return true;
+            }
+            }
+            function controlDeGeneracionDeReporte() {
+            document.getElementById("formPrincipal:buttonExportXls").disabled = true;
+            document.getElementById("formPrincipal:btnhidden").click();
+            }
+        </script>
+
+
+        <h:panelGroup id="tblConsulta">
+            <div class="tableContent" >
+                <fieldset>
+                    <legend>ADMINISTRACIÓN NODOS</legend>
+                    <br/>
+                        <h:dataTable id="nodoMglTable"  binding="#{nodoMglBean.dataTable}" 
+                                    value="#{nodoMglBean.nodoMglList}" var="nodoMgl"
+                                    style="width: 100%;"  styleClass="constructGTable"
+                                    headerClass="constructGTableHeader" 
+                                    rowClasses="constructGTableEvenRow, constructGTableOddRow" >
+
+                           <h:column >   
+                               <f:facet name="header">
+                                   <h:outputText value="" />
+                               </f:facet>
+                               <h:commandLink value="Ver" action="#{nodoMglBean.goActualizar()}" disabled="#{!nodoMglBean.validarOpcionVerRol()}">
+                                   <f:setPropertyActionListener target="#{nodoMglBean.idSqlSelected}" 
+                                                                value="#{nodoMgl.nodId}" />                                    
+                               </h:commandLink>
+                           </h:column>
+
+                           <h:column>
+                               <div align="left"   >
+                                   <f:facet name="header">
+                                       <h:outputText value="Código"/><br/>
+                                       <h:inputText  maxlength="30" id="codigoId" 
+                                                     style="width: 50px"
+                                                     value="#{nodoMglBean.cmtFiltroConsultaNodosDto.codigoNodo}"
+                                                     onkeypress="return submitByEnter(event);">
+                                           <f:ajax listener="#{nodoMglBean.findByFiltro}"
+                                                   event="change" 
+                                                   execute="@this" 
+                                                   render="nodoMglTable"/>
+                                       </h:inputText>
+                                   </f:facet>
+                                   <h:outputText value="#{nodoMgl.nodCodigo}"/>
+                               </div>
+                           </h:column> 
+
+                           <h:column>
+                               <div align="left"   >
+                                   <f:facet name="header">
+                                       <h:outputText value="Nombre"/><br/>
+                                       <h:inputText maxlength="30" id="nombreId" 
+                                                    style="width: 50px" 
+                                                    value="#{nodoMglBean.cmtFiltroConsultaNodosDto.nombreNodo}"
+                                                    onkeypress="return submitByEnter(event);">
+                                           <f:ajax listener="#{nodoMglBean.findByFiltro}"
+                                                   event="change" 
+                                                   execute="@this" 
+                                                   render="nodoMglTable"/>
+                                       </h:inputText>
+                                   </f:facet>
+                                   <h:outputText value="#{nodoMgl.nodNombre}"/>
+                               </div>  
+                           </h:column>
+
+                           <h:column>
+                               <div align="left"   >
+                                   <f:facet name="header">
+                                       <h:outputText value="Tipo"/><br/>
+                                       <h:inputText maxlength="30" id="tipoId" 
+                                                    style="width: 50px"
+                                                    value="#{nodoMglBean.cmtFiltroConsultaNodosDto.tipoNodo}"
+                                                    onkeypress="return submitByEnter(event);">
+                                           <f:ajax listener="#{nodoMglBean.findByFiltro}"
+                                                   event="change" 
+                                                   execute="@this" 
+                                                   render="nodoMglTable"/>
+                                       </h:inputText>
+                                   </f:facet>
+                                   <h:outputText value="#{nodoMgl.nodTipo.nombreBasica}" />      
+                               </div>                                  
+                           </h:column>
+
+                           <h:column>
+                               <div align="left"   >
+                                   <f:facet name="header">
+                                       <h:outputText value="Estado"/><br/>
+                                       <h:inputText maxlength="30" id="estado" 
+                                                    style="width: 50px"
+                                                    value="#{nodoMglBean.cmtFiltroConsultaNodosDto.estado}"
+                                                    onkeypress="return submitByEnter(event);">
+                                           <f:ajax listener="#{nodoMglBean.findByFiltro}"
+                                                   event="change" 
+                                                   execute="@this" 
+                                                   render="nodoMglTable"/>
+                                       </h:inputText>
+                                   </f:facet>
+                                   <h:outputText value="#{nodoMgl.estado.nombreBasica}"/>
+                               </div>
+                           </h:column>
+
+                           <h:column>
+                               <div align="left"   >
+                                   <f:facet name="header">
+                                       <h:outputText value="Fecha activación"/><br/>
+                                       <h:inputText maxlength="30" id="fechaActId"
+                                                    style="width: 50px"
+                                                    value="#{nodoMglBean.cmtFiltroConsultaNodosDto.fechaActivacion}"
+                                                    onkeypress="return submitByEnter(event);">
+                                           <f:ajax listener="#{nodoMglBean.findByFiltro}"
+                                                   event="change" 
+                                                   execute="@this" 
+                                                   render="nodoMglTable"/>
+                                       </h:inputText>
+                                   </f:facet>
+                                   <h:outputText value="#{nodoMgl.nodFechaActivacion}"/>
+                               </div>
+                           </h:column>
+
+                           <h:column>
+                               <div align="left"   >
+                                   <f:facet name="header">
+                                       <h:outputText value="Departamento"/><br/>
+                                   </f:facet>
+                                   <h:outputText value="#{nodoMglBean.consultaNombreDepto(nodoMgl.gpoId)}"/>
+                               </div>
+                           </h:column>
+
+                           <h:column>
+                               <div align="left"   >
+                                   <f:facet name="header">
+                                       <h:outputText value="Ciudad"/><br/>
+                                   </f:facet>
+                                   <h:outputText value="#{nodoMglBean.consultaNombreCiudad(nodoMgl.gpoId)}"/>
+                               </div>
+                           </h:column>
+
+                           <h:column>
+                               <div align="left"   >
+                                   <f:facet name="header">
+                                       <h:outputText value="Centro Poblado"/><br/>
+                                   </f:facet>
+                                   <h:outputText value="#{nodoMglBean.consultaNombreCentro(nodoMgl.gpoId)}"/>
+                               </div>
+                           </h:column>
+
+
+                           <h:column>
+                               <div align="left"   >
+                                   <f:facet name="header">
+                                       <h:outputText value="Id Centro"/><br/>
+                                       <h:inputText maxlength="30" id="gpoId" style="width: 50px" 
+                                                    value="#{nodoMglBean.cmtFiltroConsultaNodosDto.geograficoPolitico}"
+                                                    onkeypress="return submitByEnter(event);">
+                                           <f:ajax listener="#{nodoMglBean.findByFiltro}"
+                                                   event="change" 
+                                                   execute="@this" 
+                                                   render="nodoMglTable"/>
+                                       </h:inputText>
+                                   </f:facet>
+                                   <h:outputText value="#{nodoMgl.gpoId}"/>
+                               </div>
+                           </h:column>
+
+
+
+                           <f:facet name="footer" >
+                               <div class="pagination2">
+                                   <h:panelGroup>
+                                       <h:commandButton value= ""  action="#{nodoMglBean.pageFirst}" class="botonTPagInicioCm botonBaselista"/>
+                                       <h:commandButton  value= "" action="#{nodoMglBean.pagePrevious}" class="botonTPagAnteriorCm botonBaselista"/>
+                                       <h:commandButton value="#{nodoMglBean.pageActual}" />
+                                       <h:selectOneMenu  value="#{nodoMglBean.numPagina}" 
+                                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                           <f:selectItems value="#{nodoMglBean.paginaList}" var="pag"
+                                                          itemValue="#{pag}"
+                                                          itemLabel="#{pag}"/>    
+                                           <f:ajax render="nodoMglTable"  event="change"  listener="#{nodoMglBean.irPagina()}"  execute="@this" />                                         
+                                       </h:selectOneMenu>  
+                                       <h:commandButton  value= "" action="#{nodoMglBean.pageNext}" class="botonTPagSiguienteCm botonBaselista"/>
+                                       <h:commandButton  value= "" action="#{nodoMglBean.pageLast}" class="botonTPagFinCm botonBaselista"/>
+                                   </h:panelGroup>
+                               </div>
+                           </f:facet>        
+                       </h:dataTable>
+                </fieldset>   
+            </div>
+            <div id="classNew">
+                <h:panelGroup id="panelButom">
+                    <h:panelGrid id="idBotones" columns="2">
+                        <h:commandButton value="Nuevo" action="#{nodoMglBean.nuevoNodoMgl()}" 
+                                         styleClass="btn"
+                                         disabled="#{!nodoMglBean.validarNuevoNodoRol()}">
+                        </h:commandButton>
+                        <h:commandButton  value="Exportar" id="buttonExportXls" 
+                                          styleClass="btn unblockClaro"
+                                           action="#{nodoMglBean.exportExcelC()}"
+                                           disabled="#{!nodoMglBean.validarExportarRol()}">
+                        </h:commandButton>
+                        <h:commandButton
+                            id="btnhidden"
+                            actionListener="#{nodoMglBean.exportExcelC()}">
+                        </h:commandButton>
+                    </h:panelGrid>    
+                </h:panelGroup>
+            </div>
+        </h:panelGroup>         
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,268 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/main.xhtml" >
+
+    <ui:define name="content">
+     #{actionManagedBean.setAction('SOLICITAR_CREACION_HHPP_EN_CUENTA_MATRIZ')}
+            <div  align="center">
+           
+             <h:panelGrid
+             
+              cellpadding = "10" cellspacing = "10">
+              <f:facet name = "header">
+                <h:outputText value = "SOLICITUD DE CREACION HHPP EN CUENTA MATRIZ."/>
+              </f:facet>
+              <h:panelGrid  columns = "2" border = "1"
+                            cellpadding = "10" cellspacing = "10">
+                <h:outputLabel
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "Id Solicitud"/>
+                <h:outputLabel
+                  id="Hhpp_CM_idSolicitud"
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "#{createsolicitud.solicitud.idSolicitud}" />
+                <h:outputLabel
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "Estado Solicitud"/>
+                <h:outputLabel
+                  id="Hhpp_CM_idestado"
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "#{createsolicitud.solicitud.estado}" />
+
+                <h:panelGrid>
+                  <h:outputLabel for="idcuentamatriz" value = "Cuenta Matriz"/>
+                  <h:inputText
+                    id="Hhpp_CM_idcuentamatriz"
+                    value="#{createsolicitud.solicitud.cuentaMatriz}"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    required="true"
+                    requiredMessage="Debe ingresar un valor en el campo Cuenta Matriz"
+                    validatorMessage="Debe ingresar valores numéricos en el campo Cuenta Matriz"
+                    styleClass="input"
+                    maxlength="12">
+                    <f:validateRegex pattern="[0-9]*"/>
+                    <f:ajax event="blur" render="Hhpp_CM_msg_cuentamatriz"/>
+                  </h:inputText>
+                  <h:message
+                    id="Hhpp_CM_msg_cuentamatriz"
+                    style="color:red;"
+                    for="Hhpp_CM_idcuentamatriz" />
+                </h:panelGrid>
+                <h:panelGrid  columns = "2" border = "1"
+                              cellpadding = "10" cellspacing = "10">
+                  <h:panelGrid>
+                    <h:outputLabel value = "Complemento" />
+                    <h:inputText
+                      id="Hhpp_CM_idcomplemento"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.dirComplemento}"
+                      styleClass="input_peq"/>
+                  </h:panelGrid>
+                  <h:panelGrid>
+                    <h:outputLabel value = "Apartamento" />
+                    <h:panelGrid>
+                      <h:inputText
+                        id="Hhpp_CM_idapartamento"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.numPuertaUno}"
+                        styleClass="input_peq"
+                        required="true"
+                        requiredMessage="Debe ingresar un valor en el campo Apartamento"
+                        >
+                        <f:ajax event="blur" render="Hhpp_CM_msg_apartamento"/>
+                      </h:inputText>
+                      <h:message id="Hhpp_CM_msg_apartamento"
+                                 style="color: red;"
+                                 for="Hhpp_CM_idapartamento" />
+                    </h:panelGrid>
+                  </h:panelGrid>
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value = "Regional" />
+                  <h:selectOneMenu
+                    id="Hhpp_CM_idregional"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.idRegional}"
+                    valueChangeListener="#{createsolicitud.regionalCodeChanged}"
+                    required="true"
+                    requiredMessage="Debe seleccionar un valor en el campo Regional"
+                    styleClass="input">
+                      <f:selectItems value="#{createsolicitud.regionales}" />
+                    <f:ajax  render="Hhpp_CM_idciudad Hhpp_CM_msg_regional"/>
+                  </h:selectOneMenu>
+                  <h:message
+                    id="Hhpp_CM_msg_regional"
+                    style="color: red;"
+                    for="Hhpp_CM_idregional" />
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value = "Ciudad" />
+                  <h:selectOneMenu
+                    id="Hhpp_CM_idciudad"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.ciudadRr}"
+                    title="Ciudad"
+                    required="true"
+                    requiredMessage="Debe seleccionar un valor en el campo Ciudad"
+                    styleClass="input">
+                    <f:ajax event="blur" render="Hhpp_CM_msg_ciudad"/>
+                    <f:selectItems value="#{createsolicitud.ciudades}"/>
+                  </h:selectOneMenu>
+                  <h:message id="Hhpp_CM_msg_ciudad" style="color: red;" for="Hhpp_CM_idciudad" />
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value = "Nodo" />
+                  <h:inputText
+                    id="Hhpp_CM_idNodo" value="#{createsolicitud.solicitud.nodo}"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    required="true"
+                    requiredMessage="Debe ingresar un valor en el campo Nodo"
+                    styleClass="input">
+                    <f:ajax event="blur" render="Hhpp_CM_msg_nodo"/>
+                  </h:inputText>
+                  <h:message id="Hhpp_CM_msg_nodo"
+                             style="color: red;"
+                             for="Hhpp_CM_idNodo" />
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value = "Tipo solicitud" />
+                  <h:selectOneMenu
+                    id="Hhpp_CM_idtipoSolicitud"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.tipoSol}"
+                    required="true"
+                    requiredMessage="Debe seleccionar un valor en el campo Tipo solicitud"
+                    styleClass="input">
+                    <f:ajax event="blur" render="Hhpp_CM_msg_idtiposolicitud"/>
+                    <f:selectItems
+                      value="#{createsolicitud.tipoSolicitudesTipoSolicitud}" />
+                  </h:selectOneMenu>
+                  <h:message id="Hhpp_CM_msg_idtiposolicitud"
+                             style="color: red;"
+                             for="Hhpp_CM_idtipoSolicitud" />
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value = "Contacto" />
+                  <h:inputText
+                    id="Hhpp_CM_idcontacto"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.contacto}"
+                    required="true"
+                    requiredMessage="Debe ingresar un valor en el campo Contacto"
+                    styleClass="input">
+                    <f:ajax event="blur" render="Hhpp_CM_msg_contacto"/>
+                  </h:inputText>
+                  <h:message id="Hhpp_CM_msg_contacto"
+                             style="color: red;"
+                             for="Hhpp_CM_idcontacto" />
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value = "Tel&eacute;fono Contacto" />
+                  <h:inputText
+                    id="Hhpp_CM_idtelefonocontacto"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.telContacto}"
+                    required="true"
+                    requiredMessage="Debe ingresar un valor en el campo Tel&eacute;fono Contacto"
+                    validatorMessage="Debe ingresar valores numéricos en el campo Tel&eacute;fono Contacto"
+                    styleClass="input">
+                    <f:validateRegex pattern="[0-9]*"/>
+                    <f:ajax event="blur" render="Hhpp_CM_msg_telefonoContacto"/>
+                  </h:inputText>
+                  <h:message id="Hhpp_CM_msg_telefonoContacto"
+                             style="color: red;"
+                             for="Hhpp_CM_idtelefonocontacto" />
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value = "Solicitante" />
+                  <h:inputText
+                    id="Hhpp_CM_idSolicitante"
+                    disabled="true"
+                    value="#{createsolicitud.solicitud.solicitante}"
+                    styleClass="input"/>
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel
+                    value = "Correo Solicitante"/>
+                  <h:inputText
+                    id="Hhpp_CM_idcorreosolicitante"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.correo}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    styleClass="input">
+                    <f:ajax event="blur" render="Hhpp_CM_msg_correosolicitante"/>
+                  </h:inputText>
+                  <h:message id="Hhpp_CM_msg_correosolicitante"
+                             style="color: red;"
+                             for="Hhpp_CM_idcorreosolicitante" />
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value = "Tel&eacute;fono Solicitante" />
+                  <h:inputText
+                    id="Hhpp_CM_id_telsolicitante"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.telSolicitante}"
+                    required="true"
+                    requiredMessage="Debe ingresar un valor en el campo Tel&eacute;fono Solicitante"
+                    validatorMessage="Debe ingresar valores numéricos en el campo Tel&eacute;fono Solicitante "
+                    styleClass="input">
+                    <f:ajax event="blur" render="Hhpp_CM_msg_telsolicitante"/>
+                    <f:validateRegex pattern="[0-9]*"/>
+                  </h:inputText>
+                  <h:message
+                    id="Hhpp_CM_msg_telsolicitante"
+                    style="color: red;"
+                    for="Hhpp_CM_id_telsolicitante" />
+                </h:panelGrid>
+              </h:panelGrid>
+              <h:panelGrid style="width:100%;">
+                <f:facet name = "header">
+                  <h:outputText value = "Motivos de Solicitud"/>
+                </f:facet>
+                <h:inputTextarea
+                  id="Hhpp_CM_idmotivo"
+                  style="border:1px; background:#DFEDDF; width:100%; height:120px "
+                  disabled="#{createsolicitud.canCreate eq false}"
+                  value="#{createsolicitud.solicitud.motivo}"
+                  required="true"
+                  requiredMessage="Debe ingresar un valor en el campo Motivos de Solicitud">
+                  <f:ajax event="blur" render="Hhpp_CM_msg_motivos"/>
+                </h:inputTextarea>
+                <h:message id="Hhpp_CM_msg_motivos"
+                           style="color: red;"
+                           for="Hhpp_CM_idmotivo" />
+              </h:panelGrid>
+            </h:panelGrid>
+      
+        
+              <h:panelGroup >
+                <h:commandButton
+                  id = "CM_submit"                  
+                  styleClass="btn"
+                  value = "Ingresar Datos"
+                  disabled="#{!createsolicitud.validarOpcionIngresarHHPPCuentaMatriz()}"
+                  actionListener="#{createsolicitud.prepareCreate(actionManagedBean.action)}">
+                 </h:commandButton>               
+              </h:panelGroup>
+                </div>
+       
+    </ui:define>
+
+</ui:composition>

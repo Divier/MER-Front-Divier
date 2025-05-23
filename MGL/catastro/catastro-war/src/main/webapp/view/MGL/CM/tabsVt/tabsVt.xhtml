@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ul id="tabs">
+        <li><h:commandLink class="#{visitaTecnicaBean.selectedTab == 'CUENTA_MATRIZ' ? 'current':'tabDefault'}"
+                           action="#{visitaTecnicaBean.cambiarTab('CUENTA_MATRIZ')}"
+                           title="Cuenta Matriz" value="Cuenta Matriz" immediate="true"
+                           rendered="#{visitaTecnicaBean.validarTabCM()}"/>
+        </li>
+
+        <li><h:commandLink class="#{visitaTecnicaBean.selectedTab == 'CONSTRUCTORA' ? 'current':'tabDefault'}"
+                           action="#{visitaTecnicaBean.cambiarTab('CONSTRUCTORA')}"
+                           disabled="#{visitaTecnicaBean.vt.idVt == null}"
+                           title="Constructora" value="Constructora" immediate="true"
+                           rendered="#{visitaTecnicaBean.validarTabConstructora()}"/>
+        </li>
+
+        <li><h:commandLink class="#{visitaTecnicaBean.selectedTab == 'ACOMETIDA' ? 'current':'tabDefault'}"
+                           action="#{visitaTecnicaBean.cambiarTab('ACOMETIDA')}"
+                           disabled="#{visitaTecnicaBean.vt.idVt == null}"
+                           title="Acometida" value="Acometida" immediate="true"
+                           rendered="#{visitaTecnicaBean.validarTabAcometida()}"/>
+        </li>
+
+        <li><h:commandLink class="#{visitaTecnicaBean.selectedTab == 'MULTIEDIFICIO' ? 'current':'tabDefault'}"
+                           action="#{visitaTecnicaBean.cambiarTab('MULTIEDIFICIO')}"
+                           disabled="#{visitaTecnicaBean.vt.idVt == null}"
+                           title="Multiedificio" value="Multiedificio" immediate="true"
+                           rendered="#{visitaTecnicaBean.validarTabMultiedificio()}"/>
+        </li>
+
+        <li><h:commandLink class="#{visitaTecnicaBean.selectedTab == 'HHPP' ? 'current':'tabDefault'}"
+                           action="#{visitaTecnicaBean.cambiarTab('HHPP')}"
+                           disabled="#{visitaTecnicaBean.vt.idVt == null}"
+                           title="hhpp" value="HHPP" immediate="true"
+                           rendered="#{visitaTecnicaBean.validarTabHHPP()}"/>
+        </li>
+
+        <li><h:commandLink class="#{visitaTecnicaBean.selectedTab == 'COSTOS' ? 'current':'tabDefault'}"
+                           action="#{visitaTecnicaBean.cambiarTab('COSTOS')}"
+                           disabled="#{visitaTecnicaBean.vt.idVt == null}"
+                           title="Costos" value="Costos" immediate="true"
+                           rendered="#{visitaTecnicaBean.validarTabCostos()}"/>
+        </li>
+       
+        <li><h:commandLink class="#{visitaTecnicaBean.selectedTab == 'AUTORIZACION' ? 'current':'tabDefault'}"
+                           action="#{visitaTecnicaBean.cambiarTab('AUTORIZACION')}"
+                           disabled="#{visitaTecnicaBean.vt.idVt == null}"
+                           title="Viabilidad Financiera" value="Viabilidad Financiera" immediate="true"
+                           rendered="#{visitaTecnicaBean.validarTabViabilidad()}"/>
+        </li>
+    </ul>
+</ui:composition>

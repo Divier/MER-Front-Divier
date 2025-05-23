@@ -1,0 +1,603 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:t="http://myfaces.apache.org/tomahawk"              
+                 template="/view/MGL/template/main.xhtml"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" >
+    <ui:define name="title"><span class="TituloSeccion">Modelo Direccion/HHPP</span></ui:define>        
+    <ui:define name="content" >
+    <title>Modelo Direccion/HHPP</title>
+    <table style="width: 100%" >
+        <td style="width:96%" ><h2 id="solModData" style="margin-top: 0px; margin-left: -12px;text-align: center;">Modelo Direccion/HHPP</h2>  </td>
+        <td style="width:5%">
+            <h:commandButton style="margin:0px 0 11px 0; " id="mostrarComponenteButtonDir" image="/view/img/ocultar.png" >
+                <f:ajax render="panelcontenidoBusqueda buttonClean" 
+                        event="click" listener="#{consultaHhppBean.showHideDireccion()}" />
+            </h:commandButton>
+        </td>
+    </table>
+      <h:panelGroup id="panelcontenidoBusqueda">
+    <h:panelGroup id="contenidoBusqueda" rendered="#{consultaHhppBean.showPanelBusquedaDireccion}">
+        <h:panelGrid columns="9" id="modeloHhppMgl" class="formulario3"  style="width:100%;"  >        
+         
+            <h:panelGrid>
+                <h:outputText style="font-weight:bold"  id="tipoDireccion" value="Tipo Dirección:" />  
+      
+            </h:panelGrid>
+            
+            <h:panelGrid>
+            <h:selectOneMenu style="width: 140px;"  id="tipoDireccionComboBox" 
+                             value="#{consultaHhppBean.tipoDireccion}">                            
+                <f:selectItem itemLabel="CALLE - CARRERA" itemValue="CK"/>
+                <f:selectItem itemLabel="BARRIO - MANZANA" itemValue="BM"/>
+                <f:selectItem itemLabel="INTRADUCIBLE" itemValue="IT"/>
+                <f:ajax  event="change" execute="tipoDireccionComboBox" 
+                         listener="#{consultaHhppBean.validarTipoDireccion()}" 
+                         render="panelWrapper direccionStrLabel" />
+            </h:selectOneMenu>  
+                     
+            </h:panelGrid>
+            <h:panelGrid>
+                <h:outputText style="font-weight:bold" value="Departamento" /> 
+            </h:panelGrid>            
+                    
+            <h:panelGrid>                
+         <h:selectOneMenu style="width: 140px;" value="#{consultaHhppBean.departamento}"                                           
+                             id="departamento" >                            
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                <f:selectItems value="#{consultaHhppBean.departamentoList}" 
+                               var="departamento" itemLabel="#{departamento.gpoNombre}" 
+                               itemValue="#{departamento.gpoId}"/> 
+                <f:ajax  event="change" execute="@form" 
+                         listener="#{consultaHhppBean.obtenerCiudadesList()}"
+                         render="ciudad centroPoblado"/> 
+            </h:selectOneMenu> 
+                      
+                  
+            </h:panelGrid>
+            
+            
+            <h:panelGrid>
+                 <h:outputText style="font-weight:bold"  id="cityC" value="Ciudad:"></h:outputText>                
+                            
+            </h:panelGrid>            
+           
+            
+            <h:panelGrid>
+                 <h:selectOneMenu style="width: 140px;" value="#{consultaHhppBean.ciudad}"                                           
+                             id="ciudad" >                            
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                <f:selectItems value="#{consultaHhppBean.ciudadesList}" 
+                               var="ciudad" itemLabel="#{ciudad.gpoNombre}" 
+                               itemValue="#{ciudad.gpoId}"/> 
+                <f:ajax event="change" execute="@form" 
+                        listener="#{consultaHhppBean.obtenerCentroPobladoList()}"
+                        render="centroPoblado "/> 
+            </h:selectOneMenu>     
+                
+            </h:panelGrid>
+            
+             <h:panelGrid>
+          
+                  <h:outputText style="font-weight:bold" value="Centro Poblado" /> 
+            </h:panelGrid>
+
+            <h:panelGrid>
+                <h:selectOneMenu id="centroPoblado" style="width: 140px;"           
+                                 value="#{consultaHhppBean.idCentroPoblado}" >
+                    <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                    <f:selectItems value="#{consultaHhppBean.centroPobladoList}" 
+                                   var="centroPob"
+                                   itemValue="#{centroPob.gpoId}"
+                                   itemLabel="#{centroPob.gpoNombre}">
+                    </f:selectItems>   
+                    <f:ajax  event="change" execute="centroPoblado" render="panelWrapper"
+                             listener="#{consultaHhppBean.obtenerCentroPobladoSeleccionado(false)}"/>  
+                </h:selectOneMenu> 
+            </h:panelGrid>
+      
+        </h:panelGrid>
+
+        <br/><br/>
+        <hr size="5" width="100%" align="LEFT"/>
+        <div style="padding:15px"> 
+            <h:panelGroup id="panelWrapper" >
+
+                <h:panelGroup id="ckPanel" rendered="#{consultaHhppBean.showCKPanel}" >
+
+                    <h:panelGrid columns="6" >
+                        <h:panelGroup  > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="dir" value="*"/>
+                            <h:outputText id="direccionLabel" value="Ingrese la dirección:" /> </h:panelGroup>
+                        <h:panelGroup > <h:inputText value="#{consultaHhppBean.direccionCk}"
+                                                     id="direccion" style="width: 490px; margin-right: 10px;"
+                                                     maxlength="49" /> 
+                        </h:panelGroup>
+                        <h:panelGroup ><h:commandButton value="+" styleClass="btn"
+                                                        title="Construir Direccion"                                                           
+                                                        id="agregarDireccionCkButton"
+                                                        action="#{consultaHhppBean.construirDireccionCk()}"/>
+                               
+                  
+                        </h:panelGroup>
+                        <h:panelGroup ></h:panelGroup>
+                        <h:panelGroup ></h:panelGroup>                   
+                    </h:panelGrid>
+                    
+                                                 <!--STAR-->
+                            <h:panelGroup rendered="#{!consultaHhppBean.notGeoReferenciado}" id="pnNoRefences">
+                                <table style="padding:5px 5px;" cellspacing="2" cellpadding="2">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; vertical-align: middle;height: 20px;">
+                                            <h:outputText id="compDircc4a" value="Calle" style=" text-decoration: underline;font-weight: bold; text-align: center; vertical-align: middle;" ></h:outputText>
+                                        </td>
+                                    </tr>    
+                                    
+                                     <tr>
+                                         <td style="width:130px;margin: 5px 5px;">
+                                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegViaa" value="*"/><h:outputText id="compDircc5a" style="font-weight: bold;margin: 5px 5px;" value="Vía principal:"/>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegNums" value="*"/><h:outputText id="compDircc6s" style="font-weight: bold;margin: 5px 5px;" value="Núm:" />
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:outputText id="compDircc7a" style="font-weight: bold;margin: 5px 5px;" value="Letra:"/>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:outputText id="compDircc8s" style="font-weight: bold;margin: 5px 5px;" value="Letra 2:"/>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:outputText id="compDircc9a" style="font-weight: bold;margin: 5px 5px;" value="Bis:"/>
+                                        </td>
+                                         <td style="width:120px;margin: 5px 5px;">
+                                            <h:outputText  id="compDircc10s" style="font-weight: bold;margin: 5px 5px;" value="Cardinales:"/>
+                                        </td>
+                                    </tr>                                             
+                           
+                                    <tr>
+                                      <td style="width:130px;margin: 5px 5px;">
+                                        <h:selectOneMenu id="viaPrincipala"  value="#{consultaHhppBean.drDireccion.tipoViaPrincipal}" style="width:120px;margin: 5px 5px;">
+                                          <f:selectItem itemValue="" itemLabel=""/>
+                                          <f:selectItems   value="#{consultaHhppBean.obtenerListadoTipoSolicitudList('CALLES_DIR')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                          <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                      </h:selectOneMenu>
+                                      </td>
+
+                                      <td style="width:120px;margin: 5px 5px;">                                                                           
+                                        <h:inputText  id="compDircc12a"  value="#{consultaHhppBean.drDireccion.numViaPrincipal}" style="width:105px;" >                              
+                                         <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:inputText>  
+                                      </td>
+
+                                     <td style="width:70px;margin: 5px 5px;"> 
+                                       <h:selectOneMenu id="letraUnoPrincipala"  value="#{consultaHhppBean.drDireccion.ltViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                          <f:selectItem itemValue="" itemLabel=""/>
+                                          <f:selectItems  value="#{consultaHhppBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>      
+                                          <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                     </td>
+
+                                     <td style="width:70px;margin: 5px 5px;"> 
+                                        <h:selectOneMenu id="letraDosPrincipala"  value="#{consultaHhppBean.drDireccion.nlPostViaP}" style="width:60px;margin: 5px 5px;">
+                                          <f:selectItem itemValue="" itemLabel=""/>
+                                          <f:selectItems  value="#{consultaHhppBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>                                    
+                                          <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                     </td>
+
+                                     <td style="width:70px;margin: 5px 5px;"> 
+                                       <h:selectOneMenu id="bisPrincipala"   value="#{consultaHhppBean.drDireccion.bisViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                          <f:selectItem itemValue="" itemLabel=""/>
+                                          <f:selectItems    value="#{consultaHhppBean.optionBisDir('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>                                   
+                                          <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                       </h:selectOneMenu>
+                                    </td>
+
+                                     <td style="width:120px;margin: 5px 5px;"> 
+                                       <h:selectOneMenu id="cuadrantePrincipala"  value="#{consultaHhppBean.drDireccion.cuadViaPrincipal}" style="width:100px;margin: 5px 5px;">
+                                        <f:selectItem itemValue="" itemLabel=""/>
+                                        <f:selectItems    value="#{consultaHhppBean.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                        <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                      </h:selectOneMenu>
+                                   </td>
+                                 </tr>
+                                 <tr>
+                                   <td colspan="6">
+                                      <h:outputText  id="compDircc17a" value="#"  style=" font-size: 25px; text-align: center;margin:5px 5px;"></h:outputText>
+                                   </td>
+                                 </tr>
+                              </table>
+          
+                             <table id="calleCarrera_9a" style="padding:5px 5px;" cellpadding="2" cellspacing="2">
+                              <tr>
+                                  <td style="text-align:center;" colspan="9">
+                                   <h:outputText id="compDircc18s" value="Placa" style="text-decoration:underline;font-weight:bold;text-align:center;vertical-align: middle;" ></h:outputText>
+                                </td>
+                              </tr> 
+                              <tr>
+                                <td style="width:130px;margin:5px 5px;">                
+                                   <h:outputText  id="compDircc20a" style="font-weight:bold;margin:5px 5px;" value="Cruce"/>
+                                </td>
+                                <td style="width:120px;margin:5px 5px;">                     
+                                   <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegNumGena" value="*"/>
+                                   <h:outputText  id="compDircc21s" style="font-weight:bold;margin:5px 5px;" value="Núm:"/>
+                                </td>
+                                 <td style="width:70px;margin:5px 5px;">
+                                   <h:outputText  id="compDircc22a" style="font-weight:bold;margin:5px 5px;" value="Letra:"/>
+                                </td>
+                                <td style="width:70px;margin:5px 5px;">
+                                   <h:outputText  id="compDircc23d" style="font-weight:bold;margin:5px 5px;" value="Letra 2:"/>
+                                </td>
+                                <td style="width:70px;margin:5px 5px;">
+                                   <h:outputText  id="compDircc24a" style="font-weight:bold;margin:5px 5px;" value="Letra 3:"/>
+                                </td>
+                                <td style="width:120px;margin:5px 5px;">
+                                   <h:outputText  id="compDircc25d" style="font-weight:bold;margin:5px 5px;" value="Bis:"/>
+                                </td>
+                                <td style="width:120px;margin:5px 5px;">
+                                   <h:outputText  id="compDircc26a" style="font-weight:bold;margin:5px 5px;" value="Cardinales:"/>
+                                </td>
+                                <td>
+                                   <h:outputText></h:outputText>
+                                </td>
+                                <td style="width:120px;margin:5px 5px;">
+                                   <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegPlaa" value="*"/>
+                                   <h:outputText  id="compDircc27a" value="No. Placa:" style="font-weight:bold;margin:5px 5px;"/>
+                                </td>                  
+                              </tr>
+                              <tr>
+                                <td style="width:130px;margin: 5px 5px;">
+                                   <h:selectOneMenu id="viaGeneradoras" value="#{consultaHhppBean.drDireccion.tipoViaGeneradora}" style="width:120px;margin: 5px 5px;">
+                                       <f:selectItem itemValue="" itemLabel=""/>
+                                       <f:selectItems value="#{consultaHhppBean.obtenerListadoTipoSolicitudList('CALLES_DIR_GEN')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                       <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                   </h:selectOneMenu> 
+                                </td>
+                                 <td style="width:120px;margin: 5px 5px;">
+                                    <h:inputText id="compDircc261a" value="#{consultaHhppBean.drDireccion.numViaGeneradora}" style="width:105px;margin: 5px 5px;" >
+                                    <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                    </h:inputText>
+                                </td>
+                                <td style="width:70px;margin: 5px 5px;">
+                                    <h:selectOneMenu  id="letraUnoGeneradoras" value="#{consultaHhppBean.drDireccion.ltViaGeneradora}" style="width:60px;margin: 5px 5px;">
+                                        <f:selectItem itemValue="" itemLabel=""/>
+                                        <f:selectItems value="#{consultaHhppBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                        <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                    </h:selectOneMenu>
+                                </td> 
+                                <td style="width:70px;margin: 5px 5px;">
+                                    <h:selectOneMenu id="letraDosGeneradoraa" value="#{consultaHhppBean.drDireccion.nlPostViaG}" style="width:60px;margin: 5px 5px;">
+                                        <f:selectItem itemValue="" itemLabel=""/>
+                                        <f:selectItems value="#{consultaHhppBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                        <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                    </h:selectOneMenu>
+                                </td>
+                                <td style="width:70px;margin: 5px 5px;">
+                                    <h:selectOneMenu id="letraTresGeneradoraa" value="#{consultaHhppBean.drDireccion.letra3G}" style="width:60px;margin: 5px 5px;">
+                                        <f:selectItem itemValue="" itemLabel=""/>
+                                        <f:selectItems value="#{consultaHhppBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                        <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn"/>
+                                    </h:selectOneMenu>
+                                </td> 
+                                <td style="width:120px;margin: 5px 5px;">
+                                    <h:selectOneMenu id="bisGeneradoras" value="#{consultaHhppBean.drDireccion.bisViaGeneradora}" style="width:100px;margin: 5px 5px;">
+                                        <f:selectItem itemValue="" itemLabel=""/>
+                                        <f:selectItems value="#{consultaHhppBean.optionBisDir('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                        <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                    </h:selectOneMenu>
+                                </td>                                   
+                                <td style="width:120px;margin: 5px 5px;">
+                                    <h:selectOneMenu id="cuadranteGeneradoras" value="#{consultaHhppBean.drDireccion.cuadViaGeneradora}" style="width:100px;margin: 5px 5px;">
+                                        <f:selectItem itemValue="" itemLabel=""/>
+                                        <f:selectItems value="#{consultaHhppBean.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                        <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                    </h:selectOneMenu>
+                                </td>
+                                <td>
+                                   <h:outputText  id="compDircc3a4" value="#{' '}-#{' '}" style="font-size: 25px; font-weight:bold"></h:outputText>
+                                </td> 
+                                <td style="width:120px;margin: 5px 5px;">
+                                    <h:inputText id="compDircc35a1"  value="#{consultaHhppBean.drDireccion.placaDireccion}" style="width:90px;margin:5px 5px;">   
+                                        <f:ajax event="change" listener="#{consultaHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel compDircc35a1"/>
+                                   </h:inputText>
+                                </td>
+                              </tr>
+                              <tr>
+                                  <td style="text-align:center;" colspan="9">
+                                    <h:outputText value="#{consultaHhppBean.createDireccion}" style="font-weight:bold;color:red;" id="createDireccionn"/>
+                                  </td>
+                              </tr>                        
+                            </table>                               
+                      </h:panelGroup>
+                </h:panelGroup>
+                <h:panelGroup id="bmPanel" rendered="#{consultaHhppBean.showBMPanel}">
+
+                    <h:panelGrid columns="6" >
+                        <h:panelGroup > 
+                            <h:outputText id="addInfo" value="Ingrese uno a uno los valores:" /> </h:panelGroup>
+                        <h:panelGroup >
+                            <h:selectOneMenu                                     
+                                style="width: 100%" id="tipoDireccionBMComboBox" 
+                                value="#{consultaHhppBean.tipoNivelBm}">
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                <f:selectItems value="#{consultaHhppBean.bmList}" 
+                                               var="barriomanzana"  itemValue="#{barriomanzana.idParametro}" 
+                                               itemLabel="#{barriomanzana.descripcion}"/>
+                            </h:selectOneMenu></h:panelGroup>
+                        <h:panelGroup ><h:inputText value="#{consultaHhppBean.nivelValorBm}" 
+                                                    id="tipoDireccionBM" style="width: 100%; margin-right: 10px;" maxlength="250"  />
+                        </h:panelGroup>              
+                        <h:panelGroup ><h:commandButton                                      
+                                title="Construir Direccion"  value="+" styleClass="btn"
+                                action="#{consultaHhppBean.construirDireccionBm()}" 
+                                id="agregarInfoBMButton" /></h:panelGroup>
+                        <h:panelGroup ></h:panelGroup>
+                        <h:panelGroup ></h:panelGroup>
+                    </h:panelGrid>
+                </h:panelGroup>
+
+                <h:panelGroup id="itPanel" rendered="#{consultaHhppBean.showITPanel}">
+
+                    <h:panelGrid columns="6" >
+                        <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="it" value="*"/> <h:outputText id="addInfoIt" value="Ingrese uno a uno los valores:" /> </h:panelGroup>
+                        <h:panelGroup ><h:selectOneMenu style="width: 100%"  id="tipoDireccionITComboBox"  value="#{consultaHhppBean.tipoNivelIt}">
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                <f:selectItems value="#{consultaHhppBean.itList}" 
+                                               var="intraducible"  itemValue="#{intraducible.idParametro}" itemLabel="#{intraducible.descripcion}"/>
+
+                            </h:selectOneMenu></h:panelGroup>
+                        <h:panelGroup ><h:inputText value="#{consultaHhppBean.nivelValorIt}"  id="tipoDireccionIt" style="width: 100%;margin-right: 10px;" maxlength="250"  /></h:panelGroup>              
+                        <h:panelGroup ><h:commandButton title="Construir Direccion" styleClass="btn" value="+" action="#{consultaHhppBean.construirDireccionIt()}" id="agregarInfoItButton"  /></h:panelGroup>
+                        <h:panelGroup ></h:panelGroup>
+                        <h:panelGroup ></h:panelGroup>
+                    </h:panelGrid>
+                </h:panelGroup>
+            </h:panelGroup>
+
+
+
+
+            <h:panelGrid columns="8"   style="width:100%;"> 
+
+                    <h:outputText style="font-weight:bold" id="complementoLabel" value="Complemento:" />               
+                    <h:selectOneMenu style="width: 90%"  id="tipoComplementoComboBox" 
+                                     value="#{consultaHhppBean.tipoNivelComplemento}"> 
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                        <f:selectItems value="#{consultaHhppBean.complementoList}" 
+                                       var="complemento"  itemValue="#{complemento.idParametro}" 
+                                       itemLabel="#{complemento.descripcion}"/>
+                    </h:selectOneMenu>   
+            
+                    <h:inputText maxlength="50" style="margin-right: 10px;width: 90%" id="complementoParametro" 
+                                 value="#{consultaHhppBean.complemento}" />  
+          
+                    <h:commandButton title="Construir Direccion"
+                                     action="#{consultaHhppBean.construirDireccionComplemento()}"
+                                     id="agregarComplementoButton" styleClass="btn" value="+"> 
+                    </h:commandButton> 
+                    
+                    <h:outputText style="font-weight:bold" id="apartamentoLabel" value="Apartamento:" />         
+                  
+                    <h:selectOneMenu style="width: 90%"  id="tipoApartamentoComboBox" 
+                                     value="#{consultaHhppBean.tipoNivelApartamento}">
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                        <f:selectItems value="#{consultaHhppBean.aptoList}" 
+                                       var="apartamento"  itemValue="#{apartamento.idParametro}"
+                                       itemLabel="#{apartamento.descripcion}"/>
+                    </h:selectOneMenu>  
+       
+
+            
+                    <h:inputText maxlength="10" style="margin-right: 10px;width: 90%" id="apartamentoParametro" 
+                                 value="#{consultaHhppBean.apartamento}" />             
+
+            
+                    <h:commandButton title="Construir Dirección"  
+                                     action="#{consultaHhppBean.construirDireccionApartamento()}"
+                                     id="agregarApartamentoButton" styleClass="btn" value="+"/>          
+               
+                   <h:outputText style="font-weight:bold" id="suscriptorLabel" value="Cuenta Suscriptor:" />  
+                   <h:inputText id="suscriptor" value="#{consultaHhppBean.suscriptor}" 
+                                validatorMessage="Debe ingresar máximo 11 digitos"
+                                converterMessage="El suscriptor debe ser númerico" >                       
+                                <f:validateLength minimum="1" maximum="11"/> 
+                                <f:convertNumber integerOnly="true" type="number" pattern="#0" />  
+                   </h:inputText>            
+            </h:panelGrid>
+        </div>
+        
+        
+       
+        
+       <h:panelGroup id="barriosSugeridospanelWrapper" >
+                    <h:panelGroup id="barriosSugeridosPanel" rendered="#{consultaHhppBean.showBarrio}" >
+                        <hr size="5" width="100%" align="LEFT"/>
+                        <div style="border: 2px groove #f70808; margin: 9px;padding: 8px;">
+
+                            <span class="TituloSeccion"> <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="barriospan" value="BARRIO SUGERIDO"/></span>
+                            <br/>
+                            <h:panelGrid columns="6" >
+
+                                <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="barrioSug" value="*"/> <h:outputText id="barrioSugeridoLabel"
+                                                                                                                                                              value="Seleccione barrio sugerido:" /> </h:panelGroup>
+                                <h:panelGroup > 
+                                    <h:selectOneMenu 
+                                                     style="width: 100%"  id="barrioSugeridoComboBox" 
+                                                     value="#{consultaHhppBean.barrioSugerido}">
+                                        <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                        <f:selectItems value="#{consultaHhppBean.barrioSugeridoList}" var="barriomanzana"  itemValue="#{barriomanzana.neighborhood}" itemLabel="#{barriomanzana.neighborhood}" />
+                                        <f:ajax event="change" execute="barrioSugeridoComboBox"
+                                                listener="#{consultaHhppBean.validarBarrioSugeridoSeleccionado()}"
+                                                render="barriosSugeridospanelWrapper barrioStrsa"/>
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+                                <h:panelGroup > 
+                                    <h:outputText id="barrioText" rendered="#{consultaHhppBean.barrioSugeridoField}"
+                                                  value="Ingrese barrio:" /></h:panelGroup>
+                                <h:panelGroup >
+                                    <h:inputText 
+                                                 id="barrioField" rendered="#{consultaHhppBean.barrioSugeridoField}"  value="#{consultaHhppBean.barrioSugeridoStr}"/></h:panelGroup>
+                                <h:panelGroup >
+                                    <h:commandButton 
+                                                     rendered="#{consultaHhppBean.barrioSugeridoField}"
+                                                     action="#{consultaHhppBean.agregarBarrioSugerido()}"
+                                                     id="agregarBarrioButton" value="Agregar Barrio" 
+                                                     styleClass="btn" > 
+                                        <f:ajax event="change" execute="@this" render="barrioStrsa"/>
+                                    </h:commandButton></h:panelGroup>
+                                <h:panelGroup ></h:panelGroup>
+
+                            </h:panelGrid>
+                        </div>
+                    </h:panelGroup>
+
+                </h:panelGroup>
+
+
+
+        <div style="width: 100%; text-align: center;" >
+            <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;" 
+                          id="direccionStrLabel" value="#{consultaHhppBean.direccionLabel}" /> 
+            
+             <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;" id="barrioStrsa" value="#{consultaHhppBean.barrioSugeridoStr}" /> 
+        </div>
+
+
+        <div style="width: 100%; text-align: center;" >
+            <h:commandButton title="Buscar Hhpp"  
+                             action="#{consultaHhppBean.buscarHhpp()}"
+                             disabled="#{!consultaHhppBean.validarOpcionBuscar()}"
+                             id="searchHhppButton" styleClass="btn" value="Buscar"/>
+
+            <h:commandButton title="Limpiar búsqueda Hhpp"  
+                             action="#{consultaHhppBean.limpiarBusqueda()}"
+                             id="cleanButton" styleClass="btn" value="Limpiar"/>
+        </div>
+        </h:panelGroup>
+           </h:panelGroup>
+        
+        <div style="width: 100%; text-align: center;margin: -6px;">
+              <h:panelGroup id="buttonClean" >
+            <h:commandButton title="Limpiar búsqueda Hhpp" rendered="#{!consultaHhppBean.showPanelBusquedaDireccion}"  
+                             action="#{consultaHhppBean.limpiarBusqueda()}"
+                             id="cleanButtonBusqueda" styleClass="btn" value="Limpiar"/> 
+             </h:panelGroup>
+            <h:panelGroup rendered="#{consultaHhppBean.direccionDetalladaList.size() > 0}" >
+         <h2 style="margin-left: -12px">UNIDADES DE LA DIRECCIÓN </h2>
+         </h:panelGroup>
+        </div>
+       
+        
+        <h:dataTable id="dirList"  rendered="#{consultaHhppBean.direccionDetalladaList.size() > 0}"
+                    value="#{consultaHhppBean.direccionDetalladaList}" 
+                     var="dir" 
+                     styleClass="solicitudesGTable"  
+                     headerClass="solicitudesGTableHeader"
+                     rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"   
+                     style="width: 100%; padding: 0px;">
+            <f:facet name="headerButtoon">                                       
+
+            </f:facet>
+           
+                   <h:column>   
+                <f:facet name="header">                   
+                </f:facet>
+                <div style="text-align: center;">
+                    <h:commandButton action="#{consultaHhppBean.verDetalleHhpp(dir)}"                                     
+                                     value="Detallar" styleClass="btn" >                        
+                    </h:commandButton>
+                </div>
+            </h:column>  
+
+            <h:column >   
+                <f:facet name="header">  
+                    <h:outputText value="N° Cuenta" />                                 
+                </f:facet>
+                <h:outputText value="#{dir.numeroCuentaMatriz}"/>  
+            </h:column>
+
+            <h:column>   
+                <f:facet name="header">
+                    <h:outputText value="Dirección Completa" />                                                                     
+                </f:facet>
+                <h:outputText value="#{dir.direccionTexto}"/> 
+            </h:column>                                 
+
+            <h:column >   
+                <f:facet name="header">
+                    <h:outputText value="Barrio" />
+                </f:facet>
+                <h:outputText value="#{dir.barrio}"/>                                        
+            </h:column>
+
+            <h:column>   
+                <f:facet name="header">
+                    <h:outputText value="Ciudad" />
+                </f:facet>
+                <h:outputText value="#{dir.ciudad}"/>                                        
+            </h:column>
+           
+           <h:column>   
+                <f:facet name="header">
+                    <h:outputText value="Departamento" />
+                </f:facet>
+               <h:outputText value="#{dir.departamento}"/>                                        
+            </h:column>
+           
+            <h:column>   
+                <f:facet name="header">
+                    <h:outputText value="Centro Poblado" />
+                </f:facet>
+                <h:outputText value="#{dir.direccion.ubicacion.gpoIdObj.gpoNombre}"/>                                        
+            </h:column>
+           
+           <h:column>   
+                <f:facet name="header">
+                    <h:outputText value="Es Hhpp" />
+                </f:facet>
+               <div style="text-align: center;">
+                 <h:graphicImage value="/view/img/home.gif"  
+                                 rendered="#{dir.hhppExistente eq true and dir.isNodoCertificado eq true}" /> 
+                 <h:graphicImage value="/view/img/home_1.png"  
+                                 rendered="#{dir.hhppExistente eq true and dir.isNodoCertificado eq false}" /> 
+              </div>
+            </h:column>
+
+
+            <f:facet name="footer" >
+                <h:panelGroup rendered="#{consultaHhppBean.showFooter}">
+                    <h:commandButton title="Primera Página" value="#{consultaHhppBean.inicioPagina}" action="#{consultaHhppBean.pageFirst}"
+                                     class="btn"/>
+                    <h:commandButton title="Página Anterior" value="#{consultaHhppBean.anteriorPagina}" action="#{consultaHhppBean.pagePrevious}"
+                                     class="btn"/>
+                    <h:commandButton title="Número Páginas" value="#{consultaHhppBean.pageActual}" styleClass="botonTPagInicio"    />
+                    <h:selectOneMenu id="listTabla" value="#{consultaHhppBean.numPagina}" 
+                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                        <f:selectItems value="#{consultaHhppBean.paginaList}" var="pag"
+                                       itemValue="#{pag}"
+                                       itemLabel="#{pag}"/>    
+                        <f:ajax render="@form"  event="change"  
+                                listener="#{consultaHhppBean.irPagina()}"  
+                                execute="@this" />                                         
+                    </h:selectOneMenu>  
+                    <h:commandButton title="Página Siguiente" value="#{consultaHhppBean.siguientePagina}" action="#{consultaHhppBean.pageNext}"
+                                     class="btn"/>
+                    <h:commandButton title="Última Página" value="#{consultaHhppBean.finPagina}" action="#{consultaHhppBean.pageLast}"
+                                     class="btn"/>
+                </h:panelGroup>
+            </f:facet>                           
+        </h:dataTable>    
+
+
+
+
+
+
+
+    </ui:define>
+
+
+</ui:composition>

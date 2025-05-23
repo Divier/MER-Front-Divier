@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <cc:interface componentType="co.com.claro.mgl.mbeans.cm.componente.ControlerAuditoriaCM">
+        <cc:attribute name="auditoriaDto" type="java.util.ArrayList" shortDescription="Lista de cambis de un registro" required="true" />
+    </cc:interface> 
+
+    <cc:implementation>
+        <f:view id="viewAuditoria">
+            <style type="text/css">
+                .info {
+                    color:blue; 
+                }
+                .warn{
+                    color:yellow; 
+                } 
+                .err{
+                    color:red;
+                }
+            </style>
+            <h:panelGroup>
+                <div id="marcoAuditoria" style="overflow: scroll;height: 190px; width:80%;" > 
+                    <h:dataTable id="tablaAuditoria" value="#{cc.attrs.auditoriaDto}" 
+                                 var="iterador" transient="true"  
+                                 styleClass="constructGTable2"
+                                 headerClass="horarioTableHeader" 
+                                 rowClasses="auditoriaTableEvenRow,auditoriaTableOddRow">
+                        <h:column id="columnUnoAuditoria">
+                            <f:facet name="header">Usuario Creación</f:facet>
+                            <div id="divUnoAuditoria"  >
+                                <h:outputText value="#{iterador.usuarioCreacion}"/>
+                            </div>
+                        </h:column>    
+                        <h:column id="columnDosAuditoria">
+                            <f:facet name="header">Fecha Creación</f:facet>
+                            <div id="divDosAuditoria"  >
+                                <h:outputText value="#{iterador.fechaCreacion}">
+                                    <f:convertDateTime type="date" pattern="yyyy-MM-dd hh:mm:ss"/>
+                                </h:outputText>    
+                            </div>
+                        </h:column>    
+                        <h:column id="columnTresAuditoria">
+                            <f:facet name="header">Usuario Modificacion</f:facet>
+                            <div id="divTresAuditoria"  >
+                                <h:outputText value="#{iterador.usuarioModificacion}"/>
+                            </div>
+                        </h:column>    
+                        <h:column id="columnCuatroAuditoria">
+                            <f:facet name="header">Fecha Modificacion</f:facet>
+                            <div id="divCuatroAuditoria"  >
+                                <h:outputText value="#{iterador.fechaModificacion}">
+                                    <f:convertDateTime type="date" pattern="yyyy-MM-dd hh:mm:ss"/>
+                                </h:outputText>    
+                            </div>
+                        </h:column>    
+                        <h:column id="columnCincoAuditoria">
+                            <f:facet name="header">Valores Anteriores</f:facet>
+                            <div id="divCincoAuditoria"  >
+                                <h:outputText value="#{iterador.antes}" escape="false" />
+                            </div>
+                        </h:column>    
+                        <h:column id="columnSeisAuditoria">
+                            <f:facet name="header">Valores Nuevos</f:facet>
+                            <div id="divSeisAuditoria"  >
+                                <h:outputText value="#{iterador.despues}" escape="false"/>
+                            </div>
+                        </h:column>    
+                        <h:column id="columnSieteAuditoria">
+                            <f:facet name="header">Justificación</f:facet>
+                            <div id="divSieteAuditoria"  >
+                                <h:outputText value="#{iterador.justificacion}"/>
+                            </div>
+                        </h:column>    
+                    </h:dataTable> 
+                </div>
+            </h:panelGroup> 
+        </f:view> 
+    </cc:implementation> 
+</html>

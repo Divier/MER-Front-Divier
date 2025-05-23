@@ -1,0 +1,220 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/main.xhtml">
+    <ui:define name="content">
+
+        <h:outputText id="busquedaLabel" value="Filtro de Búsqueda: "/>
+
+        <h:inputText value="#{gestionSolicitudDthBean.idSolicitudDth}"
+                     converterMessage="El id de la solicitud debe ser númerico.">
+            <f:convertNumber integerOnly="true" type="number" pattern="#0"/>
+        </h:inputText>
+
+        <h:commandButton id="filtrarSolicitdPorIdButton" value="Buscar"
+                         action="#{gestionSolicitudDthBean.findSolicitudByIdRol()}"
+                         styleClass="btn"/>
+
+        <h:commandButton value="Ver Todas" immediate="true"
+                         actionListener="#{gestionSolicitudDthBean.cargarSolicitudDthList()}"
+                         styleClass="btn">
+        </h:commandButton>
+
+        <h:outputText id="tipoSoliLabel" value="Tipo de Solicitud: "/>
+
+        <h:selectOneMenu style="width:10%" id="filtro"
+                         value="#{gestionSolicitudDthBean.tipoTecnologiaFiltro}">
+            <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+            <f:selectItems value="#{gestionSolicitudDthBean.tipoAccionSolicitudBasicaList}"
+                           var="tipoRed" itemLabel="#{tipoRed.nombreBasica}"
+                           itemValue="#{tipoRed.codigoBasica}"/>
+            <f:ajax event="change"
+                    execute="@this"
+                    render="solicitudDthList"
+                    listener="#{gestionSolicitudDthBean.filtrarSolicitudes()}"/>
+        </h:selectOneMenu>
+        <h:outputText id="space1" value=" "/>
+        <h:outputText id="space2" value=" "/>
+        <h:outputText id="diviLabel" value="Filtro por Divisional: "/>
+
+        <h:selectOneMenu style="width:10%" id="filtroDiv"
+                         value="#{gestionSolicitudDthBean.filtroDivisional}">
+            <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+            <f:selectItems value="#{gestionSolicitudDthBean.listBasicaDivisional}"
+                           var="divisional" itemLabel="#{divisional.nombreBasica}"
+                           itemValue="#{divisional.basicaId}"/>
+            <f:ajax event="change"
+                    execute="@this"
+                    render="solicitudDthList"
+                    listener="#{gestionSolicitudDthBean.filtrarDivicional()}"/>
+        </h:selectOneMenu>
+
+        <h:dataTable id="solicitudDthList"
+                     value="#{gestionSolicitudDthBean.solicitudesDthList}"
+                     var="solicitudDth" rows="15"
+                     styleClass="solicitudesGTable" border="1"
+                     headerClass="solicitudesGTableHeader"
+                     rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"
+                     style="width: 100%">
+            <f:facet name="headerButtoon">
+
+            </f:facet>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Gestionar"/>
+                </f:facet>
+                <div style="text-align: center;">
+
+                    <h:commandButton action="#{gestionSolicitudDthBean.goGestionarSolicitudDth(solicitudDth)}"
+                                     disabled="#{!gestionSolicitudDthBean.validarOpcionGestion()}"
+                                     rendered="#{solicitudDth.disponibilidadGestion eq '0' or solicitudDth.disponibilidadGestion eq null}"
+                                     value="Gestionar" styleClass="btn">
+                    </h:commandButton>
+                    <h:commandButton disabled="true" rendered="#{solicitudDth.disponibilidadGestion eq '1'}"
+                                     value="Gestionando..." styleClass="btn">
+                    </h:commandButton>
+                </div>
+            </h:column>
+            <h:column headerClass="columnAlerta">
+                <f:facet name="header">
+                    <h:outputText value="Alerta"/>
+                </f:facet>
+
+                <h:graphicImage value="/view/img/verde.gif"
+                                rendered="#{solicitudDth.colorAlerta eq 'green'}"
+                                style="float: right"/>
+                <h:graphicImage value="/view/img/amarillo.gif"
+                                rendered="#{solicitudDth.colorAlerta eq 'yellow'}"
+                                style="float: right"/>
+                <h:graphicImage value="/view/img/rojo.gif"
+                                rendered="#{solicitudDth.colorAlerta eq 'red'}"
+                                style="float: right"/>
+
+            </h:column>
+            <h:column headerClass="columnIdSolicitud">
+                <f:facet name="header">
+                    <h:commandLink>
+                        <h:outputText value="Id Solicitud"/>
+                        <f:ajax event="click" render="@form"
+                                listener="#{gestionSolicitudDthBean.cambiarOrdenMayorMenorListado()}"/>
+                    </h:commandLink>
+                </f:facet>
+                <h:outputText value="#{solicitudDth.idSolicitud}"/>
+            </h:column>
+            <h:column headerClass="columnFecha">
+                <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                </f:facet>
+                <h:outputText value="#{solicitudDth.fechaIngreso}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                </h:outputText>
+            </h:column>
+            <h:column headerClass="columnTipoSolicitud">
+                <f:facet name="header">
+                    <h:outputText value="Tipo Solicitud"/>
+                </f:facet>
+                <div style="text-align: center;">
+                    <h:outputText value="#{solicitudDth.tipoAccionSolicitudStr}"/>
+                </div>
+            </h:column>
+            <h:column headerClass="columnCiudad">
+                <f:facet name="header">
+                    <h:outputText value="Ciudad"/>
+                </f:facet>
+                <div style="text-align: center;">
+                    <h:outputText value="#{solicitudDth.ciudad}"/>
+                </div>
+            </h:column>
+            <h:column headerClass="columnSolicitante">
+                <f:facet name="header">
+                    <h:outputText value="Estado"/>
+                </f:facet>
+                <h:outputText value="#{solicitudDth.estado}"/>
+            </h:column>
+            <h:column headerClass="columnTipoSol">
+                <f:facet name="header">
+                    <h:outputText value="TipoSol"/>
+                </f:facet>
+                <h:outputText value="#{solicitudDth.tipoSol}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Dirección"/>
+                </f:facet>
+                <h:outputText
+                        value="#{solicitudDth.cambioDir eq 13 ? solicitudDth.direccion : solicitudDth.direccionDetallada.direccionTexto}"/>
+            </h:column>
+            <h:column headerClass="columnBloqueo">
+                <f:facet name="header">
+                    <h:outputText value="Bloqueada"/>
+                </f:facet>
+                <h:commandLink style="font-style: italic; font-weight: bold;" value="Desbloquear"
+                               action="#{gestionSolicitudDthBean.desbloquearDisponibilidadGestionDth(solicitudDth)}"
+                               rendered="#{solicitudDth.disponibilidadGestion eq '1'}"/>
+            </h:column>
+            <h:column headerClass="columnUsuario">
+                <f:facet name="header">
+                    <h:outputText value="Usuario Bloqueo"/>
+                </f:facet>
+                <h:outputText value="Sin bloqueo"
+                              rendered="#{solicitudDth.disponibilidadGestion eq '0'}"/>
+                <h:outputText value="#{solicitudDth.usuarioVerificador}"
+                              rendered="#{solicitudDth.disponibilidadGestion eq '1'}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Divisional"/>
+                </f:facet>
+
+                <h:outputText value="#{solicitudDth.idBasicaDivi.nombreBasica}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="CX"/>
+                </f:facet>
+
+                <h:outputText value="#{solicitudDth.coordX}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="CY"/>
+                </f:facet>
+
+                <h:outputText value="#{solicitudDth.coordY}"/>
+            </h:column>
+
+            <f:facet name="footer">
+                <h:panelGroup>
+                    <h:commandButton title="Primera Página" value="#{gestionSolicitudDthBean.inicioPagina}"
+                                     action="#{gestionSolicitudDthBean.pageFirst}"
+                                     class="btn"/>
+                    <h:commandButton title="Página Anterior" value="#{gestionSolicitudDthBean.anteriorPagina}"
+                                     action="#{gestionSolicitudDthBean.pagePrevious}"
+                                     class="btn"/>
+                    <h:commandButton title="Número Páginas" value="#{gestionSolicitudDthBean.pageActual}"
+                                     styleClass="botonTPagInicio"/>
+                    <h:selectOneMenu id="listTabla" value="#{gestionSolicitudDthBean.numPagina}"
+                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                        <f:selectItems value="#{gestionSolicitudDthBean.paginaList}" var="pag"
+                                       itemValue="#{pag}"
+                                       itemLabel="#{pag}"/>
+                        <f:ajax render="@form" event="change"
+                                listener="#{gestionSolicitudDthBean.irPagina()}"
+                                execute="@this"/>
+                    </h:selectOneMenu>
+                    <h:commandButton title="Página Siguiente" value="#{gestionSolicitudDthBean.siguientePagina}"
+                                     action="#{gestionSolicitudDthBean.pageNext}"
+                                     class="btn"/>
+                    <h:commandButton title="Última Página" value="#{gestionSolicitudDthBean.finPagina}"
+                                     action="#{gestionSolicitudDthBean.pageLast}"
+                                     class="btn"/>
+                </h:panelGroup>
+            </f:facet>
+        </h:dataTable>
+    </ui:define>
+</ui:composition>

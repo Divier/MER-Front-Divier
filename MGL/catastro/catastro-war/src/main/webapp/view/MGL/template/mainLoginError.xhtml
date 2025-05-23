@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="es" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+  <h:head>
+      <title>MER - Claro</title>
+    <f:facet name="first">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    </f:facet>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+      <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+      <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+      <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />
+      <link href="${facesContext.externalContext.requestContextPath}/view/css/table-style.css" rel="stylesheet" type="text/css" />
+      <link href="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+      <script type="application/javascript" src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery.js"> </script>
+      <script type="application/javascript" src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.js"> </script>
+  </h:head>
+  <h:body>
+      <h:form id="formPrincipal" enctype="multipart/form-data">      
+          <ui:include src="../CM/panelMensajes.xhtml" />
+          <div id="header">
+              <h:panelGroup layout="block">
+                  <div id="titulo">
+                      <h1>
+                          Módulo Expansión de Red<BR/>
+                          <span style="color: #CCCCCC">Micrositio</span>
+                      </h1>
+                  </div>
+              </h:panelGroup>
+          </div>
+          <div id="content">
+              <div id="subcontent">
+                  <div id="contenido">
+                      <ui:insert name="content">
+
+                      </ui:insert>
+                  </div>
+              </div>
+          </div>
+
+      </h:form>
+  </h:body>
+</html>
+

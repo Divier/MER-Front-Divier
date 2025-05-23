@@ -1,0 +1,463 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/otTemplatePF.xhtml"
+    xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title"><span class="TituloSeccion">General OT</span></ui:define>
+    <ui:define name="content">
+        <script language="javascript" type="text/javascript">
+            function noatras() {
+                window.location.hash = "no-back-button";
+                window.location.hash = "Again-No-back-button"
+                window.onhashchange = function () {
+                    window.location.hash = "no-back-button";
+                }
+            }
+			 
+        PrimeFaces.locales['de'] = {
+                closeText: 'Schließen',
+                prevText: 'Zurück',
+                nextText: 'Weiter',
+                monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+                monthNamesShort: ['Jan', 'Feb', 'März', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+                dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+                dayNamesShort: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+                dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
+                weekHeader: 'Woche',
+                FirstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Nur Zeit',
+                timeText: 'Zeit',
+                hourText: 'Stunde',
+                minuteText: 'Minute',
+                secondText: 'Sekunde',
+                currentText: 'Aktuelles Datum',
+                ampm: false,
+                month: 'Monat',
+                week: 'Woche',
+                day: 'Tag',
+                allDayText: 'Ganzer Tag'
+        };
+        PrimeFaces.locales ['de'] = {
+                closeText: 'Schließen',
+                prevText: 'Zurück',
+                nextText: 'Weiter',
+                monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ],
+                monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez' ],
+                dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+                dayNamesShort: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+                dayNamesMin: ['S', 'M', 'D', 'M ', 'D', 'F ', 'S'],
+                weekHeader: 'Woche',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix:'',
+                timeOnlyTitle: 'Nur Zeit',
+                timeText: 'Zeit',
+                hourText: 'Stunde',
+                minuteText: 'Minute',
+                secondText: 'Sekunde',
+                currentText: 'Aktuelles Datum',
+                ampm: false,
+                month: 'Monat',
+                week: 'Woche',
+                day: 'Tag',
+                allDayText: 'Ganzer Tag'
+        };
+        </script>
+        <body  onload="noatras();">
+            <fieldset>
+                <legend> General</legend>
+                <table style="width: 100%; border-spacing: 10px;" >
+                    <tr>
+                        <td></td>
+                        <td> <h:outputText id="NoOtLabel" 
+                                           value="No OT" /></td>
+                        <td>
+                            <h:inputText id="NoOtInput" 
+                                         label="No OT" 
+                                         style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.idOt == null ? '':OtMglBean.ordenTrabajo.idOt}"
+                                         readonly="true" 
+                                         disabled="true" />
+                        </td>
+                        <td>
+                            <h:outputText value="*" class="txtCamposReqMgl" />
+                            <h:outputText value="Tecnología" id="tecLabel" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="tecnologiasList"  
+                                             value="#{OtMglBean.ordenTrabajo.basicaIdTecnologia.basicaId}"
+                                             style="width: 80%" 
+                                             styleClass="ListaConsulta" 
+                                             required="true" 
+                                             requiredMessage="Es necesaria la tecnología para la creación de la orden de trabajo"
+                                             disabled="#{OtMglBean.ordenTrabajo.idOt != null}" >
+                                <f:selectItem itemValue="0" 
+                                              itemLabel="Seleccione Uno" />
+                                <f:selectItems value="#{OtMglBean.listTablaBasicaTecnologias}" 
+                                               var="tec"
+                                               itemValue="#{tec.basicaId}"
+                                               itemLabel="#{tec.nombreBasica}"/>
+                                <f:ajax event="change"
+                                        execute="@this"
+                                        listener="#{OtMglBean.searchListTiposTrabajo()}"
+                                        render="SubtipoTrabajoLabel tipoTrabajoOt EstadoOtList"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td> 
+                            <h:outputText value="*" 
+                                          class="txtCamposReqMgl" />
+                            <h:outputText id="SegmentoOtLabel"
+                                          value="Segmento"  
+                                          styleClass="formColumn1" />
+                        </td>
+                        <td colspan="2">
+                            <h:selectOneMenu id="SegmentoOtList"  
+                                             value="#{OtMglBean.ordenTrabajo.segmento.basicaId}"
+                                             style="width: 100%"
+                                             styleClass="ListaConsulta"
+                                             required="true" 
+                                             requiredMessage="Es necesario el segmento para la creación de la orden de trabajo"
+                                             disabled="#{OtMglBean.ordenTrabajo.idOt != null}" >
+                                <f:selectItem itemValue="0" itemLabel="Seleccione Uno." />
+                                <f:selectItems value="#{OtMglBean.tipoSegmentoOtList}" 
+                                               var="lds"
+                                               itemValue="#{lds.basicaId}"
+                                               itemLabel="#{lds.nombreBasica}" />
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <h:outputText value="*" class="txtCamposReqMgl" />
+                            <h:outputText value="Tipo de Trabajo" id="SubTipoTrabajoOtLabel" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="SubtipoTrabajoLabel"  
+                                             value="#{OtMglBean.ordenTrabajo.basicaIdTipoTrabajo.basicaId}"
+                                             style="width: 80%" 
+                                             styleClass="ListaConsulta"
+                                             required="true" 
+                                             requiredMessage="Es necesario el tipo de trabajo para la creación de la orden de trabajo"
+                                             disabled="#{OtMglBean.ordenTrabajo.idOt != null}" >
+                                <f:selectItem itemValue="0" 
+                                              itemLabel="Seleccione uno" />
+                                <f:selectItems value="#{OtMglBean.tipoGeneralOrdenTrabajo}" 
+                                               var="sub"
+                                               itemValue="#{sub.basicaId}"
+                                               itemLabel="#{sub.nombreBasica}"/>
+                                <f:ajax event="change"
+                                        execute="@this"
+                                        listener="#{OtMglBean.searchListSubTiposTrabajo()}"
+                                        render="tipoTrabajoOt EstadoOtList"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td> 
+                            <h:outputText value="*" class="txtCamposReqMgl" />
+                            <h:outputText value="Sub Tipo de Trabajo" 
+                                          id="TipoTrabajoOtLabel"/>
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="tipoTrabajoOt"  
+                                             value="#{OtMglBean.subTipoTrabaoListSelect}"
+                                             style="width: 80%" 
+                                             styleClass="ListaConsulta"
+                                             required="true" 
+                                             requiredMessage="Es necesario un SUB tipo de trabajo para la creación de la orden de trabajo"
+                                             disabled="#{OtMglBean.ordenTrabajo.idOt != null}">
+                                <f:selectItem itemValue="0" 
+                                              itemLabel="Seleccione Uno." />
+                                <f:selectItems value="#{OtMglBean.subTipoOrdenTrabajo}" 
+                                               var="tt"
+                                               itemValue="#{tt.idTipoOt}"
+                                               itemLabel="#{tt.descTipoOt}"/>
+                                <f:ajax event="change"
+                                        execute="@this"
+                                        listener="#{OtMglBean.searchListEstadoInternoOT()}"
+                                        render="EstadoOtList"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td> 
+                            <h:outputText value="" 
+                                          styleClass="formColumn1"/>
+                        </td>
+                        <td> 
+                            <h:outputText value="" 
+                                           styleClass="formColumn1"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td />
+                        <td>
+                            <h:outputText value="*" class="txtCamposReqMgl" />
+                            <h:outputText id="EstInternoOtLabel" 
+                                          value="Estado Interno"  
+                                          styleClass="formColumn1" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="EstadoOtList"  
+                                             value="#{OtMglBean.estadoOtId}"
+                                             styleClass="ListaConsulta"  
+                                             style="width: 80%" 
+                                             required="true"     
+                                             requiredMessage="Es necesario el estado interno para la creación de la orden de trabajo"
+                                             disabled="#{OtMglBean.estadoInternoExterno != null and 
+                                                         OtMglBean.estadoInternoExterno.idEstadoExt != null and 
+                                                         OtMglBean.estadoInternoExterno.idEstadoExt.identificadorInternoApp != null and
+                                                         OtMglBean.estadoInternoExterno.idEstadoExt.identificadorInternoApp ne '@ABR'}">
+                                <f:selectItem itemValue="#{OtMglBean.ordenTrabajo.estadoInternoObj.basicaId}"
+                                              itemLabel="#{OtMglBean.ordenTrabajo.estadoInternoObj.nombreBasica}" />
+                                <f:selectItems value="#{OtMglBean.detalleFlujoEstActual}" 
+                                               var="lde"
+                                               itemValue="#{lde.proximoEstado.basicaId}"
+                                               itemLabel="#{lde.proximoEstado.nombreBasica}"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>  
+                            <h:outputText id="EstExternoOtLabel" 
+                                          value="Estado Externo"  
+                                          styleClass="formColumn1"/>
+                        </td>
+                        <td>
+                            <h:inputText id="EstExternoOtInput" 
+                                         label="Estado Externo" 
+                                         style="width: 80%"
+                                         value="#{OtMglBean.estadoInternoExterno.idEstadoExt.nombreBasica}"
+                                         readonly="true" 
+                                         disabled="true"/>
+                        </td>
+                        <td> 
+                            <h:outputText id="FcreacionOtLabel" 
+                                          value="Fecha Creación"
+                                          styleClass="formColumn1" />
+                        </td>
+                        <td colspan="2">
+                            <h:inputText id="FcreacionOtInput" 
+                                         label="Fecha Creación"
+                                         style="width: 100%"
+                                         value="#{OtMglBean.ordenTrabajo.fechaCreacion}"
+                                         readonly="true" 
+                                         disabled="true" >
+                                <f:convertDateTime type="date" 
+                                                   pattern="dd/MM/yyyy HH:mm:ss.SS"/>
+                            </h:inputText>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <h:outputText id="FprogramacionOtLabel" 
+                                          value="Fecha Sugerida OT" />
+                        </td>
+                        <td>
+                            <h:panelGroup id="panelGruopFprogramacionOt">
+                                <p:calendar id="FprogramacionOtInput" 
+                                            value="#{OtMglBean.ordenTrabajo.fechaProgramacion}"
+                                            disabled="#{OtMglBean.estadoInternoExterno != null and 
+                                                         OtMglBean.estadoInternoExterno.idEstadoExt != null and 
+                                                         OtMglBean.estadoInternoExterno.idEstadoExt.identificadorInternoApp != null and
+                                                         OtMglBean.estadoInternoExterno.idEstadoExt.identificadorInternoApp ne '@ABR'}" 
+                                            locale="es_ES" 
+                                            pattern="dd/MM/yyyy HH:mm:ss" 
+                                            style="width: 100%"
+                                            effect="explode">
+                                </p:calendar>
+                            </h:panelGroup>
+                        </td>
+                        <td>
+                            <h:outputText id="SLAOtLabel" 
+                                          value="SLA" 
+                                          styleClass="formColumn1" />
+                        </td>
+                        <td>
+                            <h:inputText id="SLAOtInput" 
+                                         label="SLA" 
+                                         style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.tipoOtObj.ans}"
+                                         readonly="true" 
+                                         disabled="true"/>
+                        </td>
+                        <td>
+                            <h:outputText id="SolicitanteOtLabel" 
+                                          value="Solicitante" 
+                                          styleClass="formColumn1" />
+                        </td>
+                        <td colspan="2">
+                            <h:inputText id="SolicitanteOtInput" 
+                                         label="Solicitante" 
+                                         style="width: 100%"
+                                         value="#{OtMglBean.ordenTrabajo.idOt == null ? '':OtMglBean.ordenTrabajo.usuarioCreacion}"
+                                         readonly="true" 
+                                         disabled="true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td />
+                        <td>
+                            <h:outputText id="AnsOtLabel" 
+                                          value="ANS" 
+                                          styleClass="formColumn1" />
+                        </td>
+                        <td>
+                            <h:inputText id="AnsOtInput" 
+                                         label="ANS" 
+                                         style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.ans}"
+                                         readonly="true" 
+                                         disabled="true" />
+                        </td>
+                        <td>
+                            <h:outputText value="*" 
+                                          class="txtCamposReqMgl" />
+                            <h:outputText id="ClaseTraOtLabel" 
+                                          value="Clase OT" 
+                                          styleClass="formColumn1"/>
+                        </td>
+                        <td>  
+                            <h:selectOneMenu id="ClaseTraOtList"  
+                                             value="#{OtMglBean.ordenTrabajo.claseOrdenTrabajo.basicaId}"
+                                             styleClass="ListaConsulta"  
+                                             style="width: 80%"
+                                             required="true" 
+                                             requiredMessage="El campo Clase OT es requerido"  
+                                             disabled="#{OtMglBean.estadoInternoExterno != null and 
+                                                         OtMglBean.estadoInternoExterno.idEstadoExt != null and 
+                                                         OtMglBean.estadoInternoExterno.idEstadoExt.identificadorInternoApp != null and
+                                                         OtMglBean.estadoInternoExterno.idEstadoExt.identificadorInternoApp ne '@ABR'}">
+                                <f:selectItem itemValue="" 
+                                              itemLabel="" />
+                                <f:selectItems value="#{OtMglBean.claseOtList}" 
+                                               var="cl"
+                                               itemValue="#{cl.basicaId}"
+                                               itemLabel="#{cl.nombreBasica}"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText id="SolicitanteUsuarioLabel" 
+                                          value="Nombre del usuario"/>
+                        </td>
+                        <td colspan="2">
+                            <h:inputText id="SolicitanteUsuarioInput" 
+                                         label="Nombre del Usuario" 
+                                         style="width: 100%"
+                                         value="#{ OtMglBean.ordenTrabajo.idOt == null ? '': OtMglBean.nombreUsuario }"
+                                         readonly="true" 
+                                         disabled="true" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td />
+                        <td>
+                            <h:outputText id="SolicitanteAreaLabel" 
+                                          value="Área responsable"
+                                          styleClass="formColumn1" />
+                        </td>
+                       <td>
+                            <h:inputText id="SolicitanteAreaInput" 
+                                         label="Área responsable"
+                                         style="width: 80%"
+                                         value="#{ OtMglBean.ordenTrabajo.idOt == null ? '': OtMglBean.areaResponsable }"
+                                         readonly="true" 
+                                         disabled="true" />
+                        </td>
+                        <td>
+                            <h:outputText id="enlaceLabel" 
+                                          value="Enlace:"/>
+                        </td>
+                        <td>
+                            <h:inputText id="EnlaceInput" 
+                                         label="Nombre del Enlace" 
+                                         style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.enlaceId}"
+                                         readonly="true" 
+                                         disabled="true" />
+                        </td>
+                    </tr>
+                </table>
+                <tr>
+                    <td style="display: inline-flex">
+                        <ui:repeat var="detalleFlujo"    
+                                   value="#{OtMglBean.detalleFlujoSolAprobacion}" >  
+                            <h:panelGrid columns="2" 
+                                         style="display: inline-flex" >
+                                <h:outputText class="columnReadForm" 
+                                              value="Aprobar el paso del estado &lt;br /&gt; #{detalleFlujo.estadoInicialObj.nombreBasica}  
+                                              al estado &lt;br /&gt;#{detalleFlujo.proximoEstado.nombreBasica}" 
+                                              escape="false" />
+                                <td>
+                                    <h:selectBooleanCheckbox  id = "chkAprobacion"  
+                                                              value="#{detalleFlujo.apruebaCambioEstado}" 
+                                                              rendered="#{OtMglBean.validarUsuarioAprueba(detalleFlujo)}" >
+                                        <f:ajax  event="change"
+                                                 execute="@form" 
+                                                 render="@form" 
+                                                 listener="#{OtMglBean.usuarioAprobo(detalleFlujo)}"/>
+                                    </h:selectBooleanCheckbox>
+                                </td>
+                            </h:panelGrid> 
+                        </ui:repeat>     
+                    </td>                  
+                </tr>
+            </fieldset>
+            <br/>
+            <fieldset>
+                <legend>  
+                    <h:outputText value="*" 
+                                  class="txtCamposReqMgl" /> 
+                    Observaciones (1000 Caracteres)
+                </legend>
+                <h:panelGrid id="panelGridObservacinesOt" 
+                             columns="1" 
+                             style="width: 100%" >
+                    <h:inputTextarea id="ObservacionesOtInput"
+                                     label="Observaciones" 
+                                     style="width: 100%; resize: none; overflow-y: scroll" 
+                                     rows="10"
+                                     value="#{OtMglBean.ordenTrabajo.observacion}"
+                                     readonly="#{OtMglBean.ordenTrabajo.idOt != null}"
+                                     disabled="#{OtMglBean.ordenTrabajo.idOt != null}"
+                                     required="true" 
+                                     requiredMessage="El campo observaciones es requerido">
+                        <f:validateLength maximum="1000" />
+                    </h:inputTextarea>
+                </h:panelGrid>
+            </fieldset>
+        </body>
+        <h:commandLink id="volverId"
+                       value="Volver al Listado"
+                       immediate="true"
+                       action="#{OtMglBean.volverListaOrdenes()}"/>
+        <br/>
+        <h:panelGrid id="panelGridBotonesOt" 
+                     columns="4" 
+                     style="margin: 0 auto;" >
+            <h:commandButton id="CrearOtButton"
+                             value="Crear" 
+                             rendered="#{OtMglBean.ordenTrabajo.idOt == null and !OtMglBean.validarEstadoFlujoOT()}"
+                             styleClass="btn"
+                             action="#{OtMglBean.crearOT()}"
+                             disabled="#{!OtMglBean.validarCrearRol()}"/>
+            <h:commandButton value="Actualizar"
+                             id="ActualizarOtButton" 
+                             styleClass="btn"
+                             action="#{OtMglBean.actualizarEstadoOT()}"
+                             rendered="#{OtMglBean.validarEdicionGeneral() and
+                                         OtMglBean.ordenTrabajo.idOt != null
+                                         and !OtMglBean.validarEstadoFlujoOT()}"/>
+            <h:commandButton value="Agendar"
+                             id="AgendarOtButton" 
+                             styleClass="btn"
+                             action="#{OtMglBean.irAgendar()}"
+                             rendered="#{OtMglBean.validarReglasPestaniaAgenda()}"
+                             disabled="#{!OtMglBean.validarEditarRol()}"/>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

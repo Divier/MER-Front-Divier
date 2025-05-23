@@ -1,0 +1,419 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html"
+                 xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                 template="/view/MGL/template/VT/homeGestionSolicitudes.xhtml">  
+    <ui:define name="content"><div align="center">
+        <h:form id="form_gestion_solicitud">
+          <h:panelGrid cellpadding = "10" cellspacing = "10" >
+            <f:facet name="header">
+              <h:outputText 
+                value="#{busquedaSolicitud.gestionarSolicitud(
+                         actionManagedBean.action,
+                         controllerListSolicitud.solicitud)}"/>
+            </f:facet>
+
+            <h:outputText value="N° de la Solicitud: 
+                          #{busquedaSolicitud.solicitud.idSolicitud}" 
+                          styleClass="output"/>
+
+            <h:panelGrid 
+              style="width:100%;" 
+              columns="4" 
+              cellpadding="10" 
+              cellspacing="10"
+              rendered="#{not(actionManagedBean.action eq
+                          actionManagedBean.gestionarVtEnCasas) and
+                          not(actionManagedBean.action eq
+                          actionManagedBean.gestionarCreacionCuentaMatriz)
+                          and not(actionManagedBean.action eq
+                          actionManagedBean.gestionarViabilidadInternet)}">
+              <f:facet name="header">
+                <h:outputText value="DATOS DEL EDIFICIO"/>
+              </f:facet>
+              <h:panelGrid>
+                <h:outputLabel value="Cuenta Matriz" styleClass="output"/>
+                <h:outputText value="#{busquedaSolicitud.solicitud.cuentaMatriz}"/>
+              </h:panelGrid>
+
+              <h:panelGrid>
+                <h:outputLabel value="Nodo" styleClass="output"/>
+                <h:outputLabel value="#{busquedaSolicitud.nodo}" />
+              </h:panelGrid>
+
+              <h:panelGrid>
+                <h:outputLabel value="Unidades" styleClass="output"/>
+                <h:outputLabel value="#{busquedaSolicitud.unidades}"/>
+              </h:panelGrid>
+
+              <h:panelGrid>
+                <h:outputLabel value="Torres" styleClass="output"/>
+                <h:outputLabel value="#{busquedaSolicitud.torres}"/>
+              </h:panelGrid>
+
+              <h:panelGrid>
+                <h:outputLabel value="Producto" styleClass="output"/>
+                <h:outputLabel value="#{busquedaSolicitud.producto}"/>
+              </h:panelGrid>
+
+              <h:panelGrid>
+                <h:outputLabel value="Teléfono" styleClass="output"/>
+                <h:outputLabel value="#{busquedaSolicitud.telefono}" />
+              </h:panelGrid>
+
+              <h:panelGrid>
+                <h:outputLabel value="Dirección" styleClass="output"/>
+                <h:outputLabel value="#{busquedaSolicitud.direccion}" />
+              </h:panelGrid>
+
+              <h:panelGrid>
+                <h:outputLabel value="Contacto" styleClass="output"/>
+                <h:outputLabel value="#{busquedaSolicitud.contacto}" />
+              </h:panelGrid>
+            </h:panelGrid>
+
+            <h:panelGrid columns="6" cellpadding="10" 
+                         cellspacing="10" 
+                         style="width:100%;"
+                         rendered="#{busquedaSolicitud.solicitud.tipo eq 'CAMBIOEST'}"
+                         >
+                <f:facet name="header">
+                    <h:outputText value="DATOS DEL CAMBIO"/>
+                </f:facet>
+
+                <h:outputLabel value="Estrato Antiguo" styleClass="output"/>
+                <h:outputText value="#{busquedaSolicitud.solicitud.estratoAntiguo}"/>
+
+                <h:outputText value="Estrato Nuevo" styleClass="output"/>
+                <h:outputText value="#{busquedaSolicitud.solicitud.estratoNuevo}"/>
+                
+                <h:outputText style="font-weight:bold" id="documentosAdjLabelCamEst" 
+                              value="Documentos Adjuntos:"/>  
+                
+                <ui:repeat  var="ar" value="#{busquedaSolicitud.tecArchivosCambioEstratos}">  
+                    <div style="text-align: left;">
+
+                        <a href="#{ar.urlArchivoSoporte}" 
+                           target="blank" id="linkDescarga2" >                                    
+                                        #{ar.nombreArchivo}
+                        </a>
+                    </div>
+                </ui:repeat>    
+
+            </h:panelGrid>
+            
+            <h:panelGrid columns="6" cellpadding="10" 
+                         cellspacing="10" 
+                         style="width:100%;"
+                         rendered="#{(actionManagedBean.action eq 
+                                     actionManagedBean.gestionarModificarEliminarCuentaMatriz)}"
+                         >
+              <f:facet name="header">
+                <h:outputText value="DATOS DEL CAMBIO"/>
+              </f:facet>
+
+              <h:outputLabel value="Estrato Antiguo" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.estratoAntiguo}"/>
+
+              <h:outputText value="Estrato Nuevo" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.estratoNuevo}"/>
+
+              <h:outputText value="Distribución de HHPP" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.corregirHHPP}"/>
+
+              <h:outputText value="Nodo Nuevo" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.cambioNodo}"/>
+
+              <h:outputText value="Nombre Nuevo Edificio" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.nombreNuevoEdificio}"/>
+
+
+              <h:outputText value="Dirección Nueva" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.direccion} 
+                            #{busquedaSolicitud.solicitud.numPuerta}"/>
+
+              <h:outputText value="Producto Nuevo" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.nuevoProducto}"/>
+
+            </h:panelGrid>
+
+            <h:panelGrid style="width:100%;">
+              <f:facet name="header">
+                <h:outputLabel value="DATOS INGRESADOS"/>
+              </f:facet>
+
+              <h:panelGrid columns="4" 
+                           cellpadding="10" 
+                           cellspacing="10" 
+                           style="width:100%;">
+
+                <h:panelGrid  
+                  rendered="#{not(actionManagedBean.action eq 
+                              actionManagedBean.gestionarVtEdificioConjunto)
+                              and not(actionManagedBean.action eq
+                              actionManagedBean.gestionarVtReeplanteamiento)
+                              and  not(actionManagedBean.action eq
+                              actionManagedBean.gestionarVtEnCasas)
+                              and not(actionManagedBean.action eq
+                              actionManagedBean.gestionarCreacionCuentaMatriz)
+                              and not(actionManagedBean.action eq
+                              actionManagedBean.gestionarModificarEliminarCuentaMatriz)
+                              and not(actionManagedBean.action eq
+                              actionManagedBean.gestionarViabilidadInternet)}">
+
+                  <h:outputLabel value="No de Apartamento" 
+                                 styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.
+                                         solicitud.aparmentNumber}"/>
+                </h:panelGrid>
+                <h:panelGrid 
+                  rendered="#{not(actionManagedBean.action  eq
+                              actionManagedBean.gestionarVtReeplanteamiento) and
+                              not(actionManagedBean.action  eq
+                              actionManagedBean.gestionarModificarEliminarCuentaMatriz)}">
+
+                  <h:outputLabel value="Regional" 
+                                 styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.
+                                         solicitud.regional}"/>
+                </h:panelGrid>
+                <h:panelGrid
+                  rendered="#{not(actionManagedBean.action eq
+                              actionManagedBean.gestionarVtReeplanteamiento)}">
+
+                  <h:outputLabel value="Ciudad" 
+                                 styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.
+                                         solicitud.ciudad}"/>
+                </h:panelGrid>
+                <h:panelGrid 
+                  rendered="#{not(actionManagedBean.action eq
+                              actionManagedBean.gestionarCreacionHHPPEnCuentaMatriz)}">
+                  <h:outputLabel value="Dirección Completa"
+                                 styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.direccion} 
+                                #{busquedaSolicitud.solicitud.numPuerta} 
+                                #{busquedaSolicitud.solicitud.tipoVivienda}"/>
+                </h:panelGrid>
+
+                <h:panelGrid rendered="#{not(actionManagedBean.action eq
+                                         actionManagedBean.gestionarCreacionHHPPEnCuentaMatriz)}">
+                  <h:outputLabel value="Dirección Alterna"
+                                 styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.direccion1}"/>
+                </h:panelGrid>
+
+
+                <h:panelGrid rendered="#{not(actionManagedBean.action eq
+                                         actionManagedBean.gestionarCreacionCuentaMatriz)
+                                         and not(actionManagedBean.action eq
+                                         actionManagedBean.gestionarCreacionHHPPEnCuentaMatriz)}">
+                  <h:outputLabel value="Teléfono 1" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.telefono}"/>
+                </h:panelGrid>
+
+                <h:panelGrid
+                  rendered="#{not(actionManagedBean.action  eq 
+                              actionManagedBean.gestionarVtEdificioConjunto) and
+                              not(actionManagedBean.action  eq 
+                              actionManagedBean.gestionarVtReeplanteamiento) and
+                              not(actionManagedBean.action  eq 
+                              actionManagedBean.gestionarCreacionCuentaMatriz) 
+                              and not(actionManagedBean.action  eq 
+                              actionManagedBean.gestionarModificarEliminarCuentaMatriz)}"
+                  >
+                  <h:outputLabel value="Nodo" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.nodo}"/>
+                </h:panelGrid>
+
+                <h:panelGrid rendered="#{not(actionManagedBean.action eq
+                                         actionManagedBean.gestionarVtEnCasas)
+                                         and not(actionManagedBean.action eq
+                                         actionManagedBean.gestionarCreacionCuentaMatriz)
+                                         and not(actionManagedBean.action eq
+                                         actionManagedBean.gestionarCreacionHHPPEnCuentaMatriz)}">
+                  <h:outputLabel value="Teléfono 2" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.telefono1}"/>
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value="Contacto" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.contacto}"/>
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value="Teléfono Contacto" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.telContacto}"/>
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value="Fecha Inicial" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.fechaIngreso}">
+                    <f:convertDateTime 
+                      pattern="dd-MM-yyyy hh:mm a"  
+                      timeZone="America/Bogota" />
+                  </h:outputText>
+                </h:panelGrid>
+
+                <h:panelGrid rendered="#{not(actionManagedBean.action eq
+                                         actionManagedBean.gestionarVtEnCasas) and
+                                         not(actionManagedBean.action eq
+                                         actionManagedBean.gestionarCreacionCuentaMatriz)}">
+                  <h:outputLabel value="Administrador" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.contacto1}"/>
+                </h:panelGrid>
+
+                <h:panelGrid rendered="#{not(actionManagedBean.action eq
+                                         actionManagedBean.gestionarVtEnCasas) and
+                                         not(actionManagedBean.action eq
+                                         actionManagedBean.gestionarCreacionCuentaMatriz)}">
+                  <h:outputLabel value="Teléfono Administrador" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.telContacto1}"/>
+                </h:panelGrid>
+
+                <h:panelGrid
+
+                  rendered="#{not(actionManagedBean.action eq
+                              actionManagedBean.gestionarVtEdificioConjunto) and
+                              not(actionManagedBean.action eq
+                              actionManagedBean.gestionarVtEnCasas) and
+                              not(actionManagedBean.action eq
+                              actionManagedBean.gestionarCreacionCuentaMatriz)
+                              and not(actionManagedBean.action eq
+                              actionManagedBean.gestionarCreacionHHPPEnCuentaMatriz)
+                              and not(actionManagedBean.action eq
+                              actionManagedBean.gestionarModificarEliminarCuentaMatriz)}">
+                  <h:outputLabel value="Supervisor" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.supervisor}"/>
+                </h:panelGrid>
+
+                <h:panelGrid
+                  rendered="#{not(actionManagedBean.action eq
+                              actionManagedBean.gestionarVtEdificioConjunto) and
+                              not(actionManagedBean.action eq
+                              actionManagedBean.gestionarVtEnCasas) and
+                              not(actionManagedBean.action eq
+                              actionManagedBean.gestionarCreacionCuentaMatriz)
+                              and not(actionManagedBean.action eq
+                              actionManagedBean.gestionarCreacionHHPPEnCuentaMatriz)
+                              and not(actionManagedBean.action eq
+                              actionManagedBean.gestionarModificarEliminarCuentaMatriz)}">
+                  <h:outputLabel value="Móvil" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.movil}"/>
+                </h:panelGrid>
+              </h:panelGrid>
+
+              <h:panelGrid style="border:1px; width:100%; height:65px ">
+                <h:outputText value="Observaciones Especiales" 
+                              styleClass="output"/>
+                <h:inputTextarea style="border:1px; background:#DFEDDF; width:100%; height:65px " 
+                                 value="#{busquedaSolicitud.solicitud.motivo}"  
+                                 disabled="true"/>
+              </h:panelGrid>
+
+              <h:panelGrid columns="3" 
+                           cellpadding="10" 
+                           cellspacing="10" 
+                           style="width:100%;">
+
+                <h:panelGrid>
+                  <h:outputLabel value="Tipo Solicitud" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.tipoSol}"/>
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value="Solicitante" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.solicitante}"/>
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel value="Correo Solicitante" styleClass="output"/>
+                  <h:outputText value="#{busquedaSolicitud.solicitud.correo}"/>
+                </h:panelGrid>
+
+                <h:panelGrid>                              
+                  <h:outputLabel value="Usuario" styleClass="output"/>
+                  <h:selectOneMenu 
+                    id="idusuario" 
+                    value="#{busquedaSolicitud.solicitud.usuario}"
+                    disabled="#{busquedaSolicitud.solicitud.estado eq 'FINALIZADO' }"
+                    required="true"
+                    requiredMessage="Debe seleccionar un valor en el campo Usuario"
+                    styleClass="input">
+                    <f:selectItems value="#{busquedaSolicitud.usuarios}" />
+                    <f:ajax event="blur" render="msg_usuario"/>
+                  </h:selectOneMenu>
+                  <h:message 
+                    id="msg_usuario" 
+                    style="color: red;" 
+                    for="idusuario" />
+                </h:panelGrid>
+
+                <h:panelGrid>                              
+                  <h:outputLabel 
+                    value="Resultado de la Gestión"
+                    styleClass="output"/>
+                  <h:selectOneMenu 
+                    id="idresultadogestion" 
+                    value="#{busquedaSolicitud.solicitud.rptGestion}"
+                    disabled="#{busquedaSolicitud.solicitud.estado eq 'FINALIZADO' }"
+                    required="true"
+                    requiredMessage="Debe seleccionar un valor en el campo Resultado de la Gestión"
+                    styleClass="input">
+                    <f:selectItems 
+                      value="#{busquedaSolicitud.getResultadoGestiones(actionManagedBean.action)}" />
+                    <f:ajax event="blur" render="msg_resultadogestion"/>
+                  </h:selectOneMenu>
+                  <h:message 
+                    id="msg_resultadogestion" 
+                    style="color: red;" 
+                    for="idresultadogestion" />
+                </h:panelGrid>
+              </h:panelGrid>
+
+
+              <h:panelGrid style="width:100%;">
+
+                <h:outputText value="Respuesta Actual" styleClass="output"/>
+                <h:inputTextarea style="border:1px; background:#DFEDDF; width:100%; height:65px " 
+                                 value="#{busquedaSolicitud.solicitud.respuesta}"  
+                                 disabled="#{busquedaSolicitud.solicitud.estado eq 'FINALIZADO' }"
+                                 />
+              </h:panelGrid>
+
+            </h:panelGrid>
+
+            <f:facet name = "footer">
+              <h:panelGroup style = "display:block; text-align:center;">
+                <h:commandButton 
+                  styleClass="btn" 
+                  value = "Finalizar" 
+                  action="#{busquedaSolicitud.finalizarSolicitud()}"
+                  disabled="#{busquedaSolicitud.solicitud.estado eq 'FINALIZADO'}"
+                  />
+                <h:commandButton 
+                  styleClass="btn"                 
+                  action="#{controllerListSolicitud.volverList()}"                 
+                  value="Volver" 
+                  immediate="true"
+                  rendered="#{busquedaSolicitud.botonListMigrada}"
+                  >
+
+                </h:commandButton>
+                                <h:commandButton 
+                  styleClass="btn"                 
+                  action="#{controllerListSolicitud.volverListEstSol()}"                 
+                  value="Volver" 
+                  immediate="true"
+                  rendered="#{busquedaSolicitud.botonListEstado}"
+                  >
+
+                </h:commandButton>
+              </h:panelGroup>
+            </f:facet>
+          </h:panelGrid>
+        </h:form></div>
+      </ui:define>
+    </ui:composition>

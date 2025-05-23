@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >       
+
+    <ui:define name="title"><span class="TituloSeccion">Editar Estados</span></ui:define>
+
+    <h2>Editar Relación de Estados Internos X Externos Ot</h2>
+    <table style="width: 766px; ">
+        <tr>
+            <td style="width:6%;" />
+            <td style="width:19%;" />
+            <td style="width:18%;" />
+            <td style="width:6%;" />
+            <td style="width:19%;" />
+            <td style="width:18%;" />
+            <td style="width:6%;" />
+        </tr> 
+
+        <tr> <td/>
+            <td>        <h:outputText value="Estado Interno Ot:" /> </td>
+            <td>        <h:outputText value="#{estadosExternosInternosOtBean.cmtEstadoIntxExtMglSeleccionada.idEstadoInt.nombreBasica}" /> </td>      
+            <td/>
+            <td> 
+                <h:outputText value="Estado Externo Ot:" /> </td>
+            <td>   <h:selectOneMenu style="width: 90%" id="EditEstadoExternoComboBox" 
+                                    value="#{estadosExternosInternosOtBean.cmtEstadoIntxExtMglSeleccionada.idEstadoExt.basicaId}" >
+                    <f:selectItems value="#{estadosExternosInternosOtBean.estadoExternoOtList}"
+                                   var="estadoExternoOt" itemLabel="#{estadoExternoOt.nombreBasica}" 
+                                   itemValue="#{estadoExternoOt.basicaId}"/>
+                </h:selectOneMenu>                </td>
+
+            <td>         <h:commandButton action="#{estadosExternosInternosOtBean.editarRelacionEstados()}" 
+                                          id="EditarTipoProyectoButton" value="Editar" styleClass="btn" />
+            </td>
+        </tr>        
+
+    </table>
+
+    <div style="text-align: center;">
+        <h:commandButton id="goBack" styleClass="btn" value="Atrás" action="#{estadosExternosInternosOtBean.goListadoEstadosInternosExternosList()}"> 
+              
+        </h:commandButton>  </div>
+
+</f:view>

@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/main.xhtml"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title"><span class="TituloSeccion">Administrador SubEdificios</span></ui:define>
+    <ui:define name="message"><span class="error"> #{subEdificiosMglBean.message}</span></ui:define>
+    <ui:define name="content">
+
+
+
+        <h:form id="form1">
+
+        <h:panelGrid columns="1">              
+            <!--h:commandButton value="Nuevo" action="#\{subEdificiosMglBean.nuevosubEdificiosMgl()}" styleClass="buttonl" style="text-align: center; color:#FFFFFF; ">
+            </h:commandButton-->
+        </h:panelGrid>
+        <h:panelGrid columns="4"> 
+            <!--h:outputText value="Buscar por Acrónimo" id="geo_nombrelb"  style="align:right;  font-size: 12px"  /-->
+            <!--h:inputText  id="geoNombre" value="#\{subEdificiosMglBean.codigo}" style="align:right;  z-index: 1000;"  /-->
+            <!--h:commandButton value="Filtrar" action="#\{subEdificiosMglBean.buscarsubEdificiosByCodigo()}" styleClass="buttonl" 
+                             style="text-align: center; color:#FFFFFF;  z-index: 1000;   "/>
+            <h:commandButton value="Ver Todas" action="#\{subEdificiosMglBean.buscarsubEdificiosTodos()}" styleClass="buttonl" 
+                             style="text-align: center; color:#FFFFFF;  z-index: 1000;   "/-->
+        </h:panelGrid>
+        <div align="justify">
+            <h:panelGrid columns="2"  > 
+                <h:panelGrid    style="height: 430px;width: 200px;float:left;overflow-y: auto; " >
+                    <h:dataTable id="subEdificiosMglTable" 
+                                     binding="#{subEdificiosMglBean.dataTable}"  value="#{subEdificiosMglBean.subEdificioMglList}" var="subEdificiosMgl" rows="15"                         
+
+                                 headerClass="constructGTableHeader" rowClasses="constructGTableOddRowSelect , constructGTableEvenRowSelect" style="width: 100px;overflow: scroll;    margin:0px;padding:0px;
+
+                                 border:1px solid #999999;
+                                 border-width:1px 1px 1px 1px;
+                                 border-collapse: collapse ;
+                                 border-spacing: 0 ;">
+
+                        <!--h:column>
+                            <f:facet name="header">
+                                <t:outputText value="Seleccionar"/>
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#/{subEdificiosMgl.seleccionado}" >
+                                <f:ajax render="subEdificiosMglTable" listener="#/{subEdificiosMglBean.selectOneRow(subEdificiosMgl.subEdificioId)}"/>
+                            </h:selectBooleanCheckbox>
+                        </h:column-->
+
+                        <h:column>    
+                            <f:facet name="header" >
+                                <h:outputText value="Sub-Edificios "  />
+                            </f:facet>
+                            <div align="left" style="#{subEdificiosMgl.subEdificioId eq subEdificiosMglBean.subEdificioMgl.subEdificioId ? 'background-color: #D52B1E;padding: 6px;width: 130px;':'padding: 5px;width: 130px;'}"  >
+                                <h:commandLink value="#{subEdificiosMgl.nombreSubEdificio}" action="#{subEdificiosMglBean.goActualizar()}" >
+                                    <f:setPropertyActionListener target="#{subEdificiosMglBean.idSqlSelected}" value="#{subEdificiosMgl.subEdificioId}"  />                                    
+                                </h:commandLink>
+                            </div>
+                        </h:column>
+
+                        <h:column  > 
+                            <f:facet name="header">
+                                <h:outputText value="Estado" />
+                            </f:facet>
+                            <div align="left" style="#{subEdificiosMgl.subEdificioId eq subEdificiosMglBean.subEdificioMgl.subEdificioId ? 'background-color: #D52B1E;padding: 5px;':'padding: 5px;'}" >
+                                <h:outputText value="#{subEdificiosMgl.estadoSubEdificio}"  />      
+                            </div>                                  
+                        </h:column>
+
+                        <!--h:column>   <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Página Web" />
+                                </f:facet>
+                                <h:outputText value="#/{subEdificiosMgl.tipoSubEdificio}" />      </div>                                  
+                        </h:column>
+                        <h:column>   <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Departamento" />
+                                </f:facet>
+                                <h:outputText value="#/{subEdificiosMgl.estadoSubEdificio}" />      </div>                                  
+                        </h:column>
+                        <h:column>   <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Municipio" />
+                                </f:facet>
+                                <h:outputText value="#/{subEdificiosMgl.companiaConstructora}" />      </div>                                  
+                        </h:column>
+                        <h:column>   <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Centro poblado" />
+                                </f:facet>
+                                <h:outputText value="#/{subEdificiosMgl.tipoAcometida}" />      </div>                                  
+                        </h:column>
+    
+                        <h:column>   <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Barrio" />
+                                </f:facet>
+                                <h:outputText value="#/{subEdificiosMgl.abministracion}" />      </div>                                  
+                        </h:column>
+    
+                        <h:column>   <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Dirección" />
+                                </f:facet>
+                                <h:outputText value="#/{subEdificiosMgl.nodoId}" />      </div>                                  
+                        </h:column-->
+
+                    </h:dataTable>  
+
+
+                </h:panelGrid>
+
+
+                <h:panelGrid      id="detailsBlueBoxGrid" columns="6" styleClass="blue_box"  style="margin-top: 10px; margin-left: 10px; height: 300px;">
+
+                    <h:outputText value="Fecha Creación SubEdificio" id="nod_fecha_activacionlb"/>
+                    <p:calendar id="initDateFCS" 
+                                value="#{subEdificiosMglBean.subEdificioMgl.fechaCreacionSubEdificio}" 
+                                style="width: 130px"
+                                readonly="true" 
+                                showOn="both">
+                    </p:calendar>
+
+                    <h:outputText value="Tipo SubEdificio" id="sbed_head_endlb2"/>
+                    <h:inputText id="sbed_head_endTxt2" value="#{subEdificiosMglBean.subEdificioMgl.tipoSubEdificio}"     />  
+
+                    <h:outputText value="Nombre subEdificios" id="sbed_nombrelb2"/>
+                    <h:inputText id="sbed_nombreTxt2" value="#{subEdificiosMglBean.subEdificioMgl.nombreSubEdificio}"      />  
+
+                    <h:outputText value="Estado" id="sbed_campo_adicional1lb2"/>
+                    <h:selectOneMenu id="sbed_estadoSubEdificioTxt2" value="#{subEdificiosMglBean.subEdificioMgl.estadoSubEdificio}" 
+                                     styleClass="ListaConsulta">
+                        <f:selectItem itemValue="0" itemLabel="" />
+                        <f:selectItem itemValue="Acometida" itemLabel="Acometida" />
+                        <f:selectItem itemValue="Sin VT" itemLabel="Sin VT" />
+                        <f:selectItem itemValue="A" itemLabel="A" />
+                    </h:selectOneMenu> 
+
+                    <h:outputText value="Constructora" id="sbed_campo_adicional2lb2"/>
+                    <h:selectOneMenu id="companiaConstructora2" value="#{subEdificiosMglBean.subEdificioMgl.companiaConstructora}" 
+                                     styleClass="ListaConsulta">
+                        <f:selectItem itemValue="#{null}" itemLabel="" />
+                        <f:selectItems value="#{subEdificiosMglBean.listCompaniaConstructora}" var="lc"
+                                       itemValue="#{lc.companiaId}"
+                                       itemLabel="#{lc.nombreCompania}"/>                
+                    </h:selectOneMenu> 
+
+                    <h:outputText value="Aministración" id="sbed_campo_adicional4lb2" />
+                    <h:selectOneMenu id="abministracion2" value="#{subEdificiosMglBean.subEdificioMgl.abministracion}" 
+                                     styleClass="ListaConsulta">
+                        <f:selectItem itemValue="0" itemLabel="" />
+                        <f:selectItems value="#{subEdificiosMglBean.listAbministracion}" var="la"
+                                       itemValue="#{la.companiaId}"
+                                       itemLabel="#{la.nombreCompania}"/>                
+                    </h:selectOneMenu> 
+
+                    <h:outputText value="Tipo Acometida" id="sbed_campo_adicional3lb2"/>
+                    <h:inputText id="sbed_campo_adicional3Txt2" value="#{subEdificiosMglBean.subEdificioMgl.tipoAcometida}"      />  
+
+                    <h:outputText value="Inventario" id="sbed_campo_Inventariolb"/>
+                    <h:selectOneMenu id="sbed_inventarioTxt" value="#{subEdificiosMglBean.subEdificioMgl.inventario}" 
+                                     styleClass="ListaConsulta">
+                        <f:selectItem itemValue="0" itemLabel="" />
+                        <f:selectItem itemValue="inventario1" itemLabel="inventario1" />
+                        <f:selectItem itemValue="inventario2" itemLabel="inventario2" />
+                        <f:selectItem itemValue="inventario3" itemLabel="inventario3" />
+                    </h:selectOneMenu> 
+
+                    <h:outputText value="Nodo" id="sbed_campo_adicional5lb2"/>
+                    <h:inputText id="sbed_campo_adicional5Txt2" value="#{subEdificiosMglBean.subEdificioMgl.nodoId}"       />  
+
+                    <h:outputText value="Fecha Entrega Edificio" id="sbed_campo_fechaEntregaEdificiolb"/>
+
+                     <p:calendar id="initDateFEE" 
+                                value="#{subEdificiosMglBean.subEdificioMgl.fechaEntregaEdificio}" 
+                                style="width: 130px"
+                                readonly="true" 
+                                showOn="both">
+                    </p:calendar>
+
+                    <h:outputText value="Total HHPP Planeadas" id="sbed_campo_TotalHHPPPlaneadaslb"/>
+                    <h:inputText id="sbed_campo_TotalHHPPPlaneadas5Txt" value="#{subEdificiosMglBean.subEdificioMgl.totalUidadesPlaneadas}"       />  
+
+                    <h:outputText value="Dirección" id="sbed_direccionlb"/>
+                    <h:inputText id="sbed_direccionTxt" value="#{subEdificiosMglBean.subEdificioMgl.direccion}"      />  
+
+                    <h:outputText value="OT" id="sbed_OTlb"/>
+                    <h:inputText id="sbed_OTxt" value="#{subEdificiosMglBean.subEdificioMgl.ot}"      />  
+
+                    <h:outputText value="Alarma OT" id="sbed_alarmaOtlb"/>
+                    <h:inputText id="sbed_AlarmaOTxt" value="#{subEdificiosMglBean.subEdificioMgl.alarmaOt}"      />  
+
+                    <h:outputText value="Estrato" id="sbed_estratolb"/>
+                    <h:selectOneMenu id="sbed_estratoTxt" value="#{subEdificiosMglBean.subEdificioMgl.estrato}" 
+                                     styleClass="ListaConsulta">
+                        <f:selectItem itemValue="0" itemLabel="" />
+                        <f:selectItem itemValue="1" itemLabel="1" />
+                        <f:selectItem itemValue="2" itemLabel="2" />
+                        <f:selectItem itemValue="3" itemLabel="3" />
+                        <f:selectItem itemValue="4" itemLabel="4" />
+                        <f:selectItem itemValue="5" itemLabel="5" />
+                        <f:selectItem itemValue="6" itemLabel="6" />
+                    </h:selectOneMenu> 
+
+                    <h:outputText value="Costo" id="sbed_costolb"/>
+                    <h:inputText id="sbed_costoTxt" value="#{subEdificiosMglBean.subEdificioMgl.costo}"      />  
+
+                    <h:outputText value="Meta" id="sbed_metalb"/>
+                    <h:inputText id="sbed_metaTxt" value="#{subEdificiosMglBean.subEdificioMgl.meta}"      />  
+
+                    <h:outputText value="Renta" id="sbed_rentalb"/>
+                    <h:inputText id="sbed_rentaTxt" value="#{subEdificiosMglBean.subEdificioMgl.renta}"      /> 
+
+                    <h:outputText value="Cumplimiento" id="sbed_cumplimientolb"/>
+                    <h:inputText id="sbed_cumplimientoTxt" value="#{subEdificiosMglBean.subEdificioMgl.cumplimiento}"      /> 
+
+                    <h:outputText value="Hogares" id="sbed_hogareslb"/>
+                    <h:inputText id="sbed_hogaresTxt" value="#{subEdificiosMglBean.subEdificioMgl.hogares}"      /> 
+
+                    <h:outputText value="Administrador" id="sbed_administradorlb"/>
+                    <h:inputText id="sbed_administradorTxt" value="#{subEdificiosMglBean.subEdificioMgl.administrador}"      /> 
+
+                    <h:outputText value="Unidades VT" id="sbed_unidadesVtlb"/>
+                    <h:inputText id="sbed_unidadesVtTxt" value="#{subEdificiosMglBean.subEdificioMgl.unidadesVt}"      /> 
+
+                    <h:outputText value="unidades RR" id="sbed_unidadesRrlb"/>
+                    <h:inputText id="sbed_unidadesRrTxt" value="#{subEdificiosMglBean.subEdificioMgl.unidadesRr}"      /> 
+
+                    <h:outputText value="Total HHPP Reales" id="sbed_totalHhppReales"/>
+                    <h:inputText id="sbed_totalHhppRealesTxt" value="#{subEdificiosMglBean.subEdificioMgl.totalHhppReales}"      /> 
+
+                    <!--h:outputText value="Id subEdificios" id="sbed_idlb"  style="align:right"  rendered="false" />
+                    <h:inputText id="IdSqlTxt" value="#/{subEdificiosMglBean.subEdificioMgl.subEdificioId}" disabled="true" rendered="false" />    
+   
+                    <h:outputText value="Código subEdificios RR" id="sbed_codigolb"/>
+                    <h:inputText id="sbed_codigoTxt" value="#/{subEdificiosMglBean.subEdificioMgl.cuentaMatrizId}"  maxlength="15"     /-->
+
+                </h:panelGrid>
+
+                <h:commandButton disabled="#{subEdificiosMglBean.idsubEdificio != null}" action="#{subEdificiosMglBean.nuevosubEdificioMgl()}" value="Adicionar" styleClass="btn"/>
+            </h:panelGrid>
+        </div>
+        <div class="buttonArea">
+            <h:commandButton value="Aceptar" action="#{subEdificiosMglBean.actualizarlsubEdificioMgl()}"  styleClass="btn" rendered="#{!(subEdificiosMglBean.subEdificioMgl.subEdificioId  eq 0) and subEdificiosMglBean.adicion }"  ></h:commandButton>
+            <h:commandButton value="Aceptar" action="#{subEdificiosMglBean.crearsubEdificioMgl()}" styleClass="btn" rendered="#{(subEdificiosMglBean.subEdificioMgl.subEdificioId  eq 0) and subEdificiosMglBean.adicion}"   disabled="#{(subEdificiosMglBean.guardado)}" ></h:commandButton>
+            <h:commandButton value="Eliminar" action="#{subEdificiosMglBean.eliminarlsubEdificioMgl()}" styleClass="btn" rendered="#{!(subEdificiosMglBean.subEdificioMgl.subEdificioId  eq 0) and subEdificiosMglBean.adicion}"  ></h:commandButton>
+            <h:commandButton value="Cancelar" action="subEdificiosMglListView" styleClass="btn" actionListener="#{subEdificiosMglBean.setAdicion(false)}" rendered="#{subEdificiosMglBean.adicion}" ></h:commandButton>
+            <h:commandButton value="CUNIDADESar" action="unidadesHHPPMglListView" styleClass="btn" ></h:commandButton>
+        </div>
+        <div id="espac" style="height: 30px;">        
+        </div>
+        </h:form>
+
+
+    </ui:define>
+
+
+</ui:composition>
+

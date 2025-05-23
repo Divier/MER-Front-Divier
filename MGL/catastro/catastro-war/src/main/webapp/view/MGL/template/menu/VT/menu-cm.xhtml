@@ -1,0 +1,560 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+  <ul>
+      <li class='has-sub'>
+        <a title="Solicitar" value="Solicitar" immediate="true">Solicitar</a>
+        <ul>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                id="vis23"
+                action="#{createsolicitud.prepareSolicitud()}" 
+                title="Visita Técnica Edificio o Conjunto"
+                value="Visita Técnica Edificio o Conjunto"
+                immediate="true" 
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitudVisitaTecnicaEdificioConjunto}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                id="vis24"
+                action="#{createsolicitud.prepareSolicitud()}" 
+                title="Visita Técnica Replanteamiento"
+                value="Visita Técnica Replanteamiento"
+                immediate="true" 
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitudVisitaTecnicaReeplanteamiento}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                id="vis25"
+                action="#{createsolicitud.prepareSolicitud()}" 
+                title="Visita Técnica En casas"
+                value="Visita Técnica En casas"
+                immediate="true" 
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitudVisitaTecnicaEnCasa}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                id="vis26"
+                action="#{createsolicitud.prepareSolicitud()}" 
+                title="Creación de cuenta Matriz."
+                value="Creación de cuenta Matriz."
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitarCreacionCuentaMatriz}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li style="background:darkseagreen; ">
+            <h:form>
+              <h:commandLink 
+                id="vis27"
+                title="Creación de HHPP Unidireccional."
+                value="Creación de HHPP Unidireccional"
+                rendered="false"
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitarCreacionHhppUnidireccional}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                id="vis28"
+                action="#{createsolicitud.prepareSolicitud()}" 
+                title="Creación de HHPP en Cuenta Matriz."
+                value="Creación de HHPP en Cuenta Matriz."
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitarCreacionHhppEnCuentaMatriz}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li style="background:darkseagreen; ">
+            <h:form>
+              <h:commandLink 
+                id="vis29"
+                title="Cambios de estrato" 
+                value="Cambios de estrato" immediate="true"   
+                rendered="true"
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitarActualizacionCambioEstrato}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                id="vis30"
+                action="#{createsolicitud.prepareSolicitud()}" 
+                title="Modificar Eliminar Cuenta Matriz" 
+                value="Modificar Eliminar Cuenta Matriz" 
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitarActualizacionModificarEliminarCuentaMatriz}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li style="background:darkseagreen; ">
+            <h:form>
+              <h:commandLink 
+                id="vis31"
+                title="Modificación HHPP"
+                value="Modificación HHPP"
+                rendered="false"
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitarModificarHHPP}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li style="background:darkseagreen; ">
+            <h:form>
+
+              <h:commandLink 
+                action="#{createsolicitud.prepareSolicitud()}" 
+                id="vis32"
+                title="Verificación de casas"
+                value="Verificación de casas"
+                rendered="false"
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitarVerificacionCasas}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                action="#{createsolicitud.prepareSolicitud()}" 
+                id="vis33"
+                title="Viabilidad Internet" 
+                value="Viabilidad Internet" 
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.solicitarViabilidadInternet}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+        </ul>   
+      </li>
+    <!--menu gestionar solicitudes-->
+      <li class='has-sub'>
+        <a title="Gestionar Solicitud" 
+           value="Gestionar Solicitud" 
+           immediate="true">
+          Gestionar Solicitud
+        </a>
+
+        <ul>
+     <li>
+            <h:form>
+              <h:commandLink 
+                id="vis40"
+                rendered="true"
+                title="Cambios de estrato" 
+                value="Cambios de estrato" immediate="true"   
+                >   
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.redirecToGestionar()}"/>   <!--# {actionManagedBean.gestionarActualizacionCambioEstrato} -->
+              </h:commandLink>
+            </h:form>
+          </li>
+          <li>
+            <h:form>
+              <h:commandLink 
+                action="#{controllerListSolicitud.prepareGestorSolicitudes()}"
+                actionListener="#{controllerListSolicitud.prepareList()}"
+                id="vis34"
+                title="Visita Técnica Edificio o Conjunto"
+                value="Visita Técnica Edificio o Conjunto"
+                immediate="true" 
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.gestionarVtEdificioConjunto}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+
+              <h:commandLink 
+                action="#{controllerListSolicitud.prepareGestorSolicitudes()}"
+                actionListener="#{controllerListSolicitud.prepareList()}"
+                id="vis35"
+                title="Visita Técnica Replanteamiento"
+                value="Visita Técnica Replanteamiento"
+                immediate="true" 
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.gestionarVtReeplanteamiento}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                action="#{controllerListSolicitud.prepareGestorSolicitudes()}"
+                actionListener="#{controllerListSolicitud.prepareList()}"
+                id="vis36"
+                title="Visita Técnica En casas"
+                value="Visita Técnica En casas"
+                immediate="true" 
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.gestionarVtEnCasas}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                action="#{controllerListSolicitud.prepareGestorSolicitudes()}"
+                actionListener="#{controllerListSolicitud.prepareList()}"
+                id="vis37"
+                title="Creación de cuenta Matriz."
+                value="Creación de cuenta Matriz."
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.gestionarCreacionCuentaMatriz}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li style="background:darkseagreen; ">
+            <h:form>
+              <h:commandLink 
+                id="vis38"
+                title="Creación de HHPP Unidireccional."
+                value="Creación de HHPP Unidireccional"
+                rendered="false"
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.gestionarCreacionHHPPUnidireccional}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                action="#{controllerListSolicitud.prepareGestorSolicitudes()}"
+                actionListener="#{controllerListSolicitud.prepareList()}"
+                id="vis39"
+                title="Creación de HHPP en Cuenta Matriz."
+                value="Creación de HHPP en Cuenta Matriz."
+                immediate="true">   
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.gestionarCreacionHHPPEnCuentaMatriz}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                action="#{controllerListSolicitud.prepareGestorSolicitudes()}"
+                actionListener="#{controllerListSolicitud.prepareList()}"
+                id="vis41"
+                title="Modificar Eliminar Cuenta Matriz" 
+                value="Modificar Eliminar Cuenta Matriz" 
+                immediate="true"   
+                >   
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.
+                           gestionarModificarEliminarCuentaMatriz}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li style="background:darkseagreen; ">
+            <h:form>
+              <h:commandLink 
+                action="/gestorsolicitud/list_solicitudes.xhtml?faces-redirect=true"                                             
+                id="vis42"
+                rendered="false"
+                title="Modificación HHPP"
+                value="Modificación HHPP"
+                immediate="true"   
+                >   
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.gestionarActualizacionHHPP}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li style="background:darkseagreen; ">
+            <h:form>
+              <h:commandLink 
+                action="#{controllerListSolicitud.prepareGestorSolicitudes()}"
+                id="vis43"
+                rendered="false"
+                title="Verificación de casas"
+                value="Verificación de casas"
+                immediate="true"   
+                >   
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.gestionarVerificacionCasas}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                action="#{controllerListSolicitud.prepareGestorSolicitudes()}"
+                actionListener="#{controllerListSolicitud.prepareList()}"
+                id="vis44"
+                title="Viabilidad Internet" 
+                value="Viabilidad Internet" 
+                immediate="true"   
+                >   
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.gestionarViabilidadInternet}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+        </ul>   
+      </li>
+
+      <li>
+        <h:form>
+          <h:commandLink 
+            action="#{busquedaSolicitud.prepareVerEstado()}"
+            id="vis45"
+            title="Estado de la solicitud" 
+            value="Estado de la solicitud" 
+            immediate="true"   
+            >
+            <f:setPropertyActionListener 
+              target="#{actionManagedBean.action}" 
+              value="#{actionManagedBean.estadoSolicitud}"/>   
+          </h:commandLink>
+        </h:form>
+      </li>
+
+      <li>
+        <h:form>
+          <h:commandLink 
+            action="#{parametrosCallesController.prepareList()}"
+            id="vis46"
+            title="Administrador" 
+            value="Administrador" 
+            immediate="true"   
+            >
+            <f:setPropertyActionListener 
+              target="#{actionManagedBean.action}" 
+              value="#{actionManagedBean.administrador}"/>   
+          </h:commandLink>
+        </h:form>
+      </li>
+
+      <li>
+        <h:form>
+          <h:commandLink 
+            action="#{reporteBean.prepareReporte()}"
+            id="vis47"
+            title="Reportes Solicitudes" 
+            value="Reportes" 
+            >
+            <f:setPropertyActionListener 
+              target="#{actionManagedBean.action}" 
+              value="#{actionManagedBean.reportesSolicitudes}"/>   
+          </h:commandLink>
+        </h:form>
+      </li>
+
+      <li>
+        <h:form>
+          <h:commandLink 
+            action="#{cierreMasivoBean.prepareCierreMasivo()}"
+            id="vis48"
+            title="Cierre Masivo" 
+            value="Cierre Masivo" 
+            immediate="true"   
+            >
+            <f:setPropertyActionListener 
+              target="#{actionManagedBean.action}" 
+              value="#{actionManagedBean.cierreMasivo}"/>   
+          </h:commandLink>
+        </h:form>
+      </li>
+
+      <li class='has-sub'>
+        <a title="Administrador de Direcciones" 
+           value="Administrador de Direcciones" 
+           immediate="true">Administrador de Direcciones
+        </a>
+        <ul>
+          <li>
+            <h:form>
+              <h:commandLink 
+                id="vis49"
+                title="Administrador Nodo" 
+                value="Administrador Nodo" 
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.administradorDeDireccionesNodo}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                id="vis50"
+                title="Administrador HHPP" 
+                value="Administrador HHPP" 
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.administradorDeDireccionesHHPP}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                id="vis51"
+                title="Administrador Dirección"
+                value="Administrador Dirección"
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.administradorDeDireccionesDireccion}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                id="vis52"
+                title="Administrador Dptos y ciudades" 
+                value="Administrador Dptos y ciudades" 
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.administradorDeDireccionesDptoCiudades}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+        </ul>
+      </li>
+
+      <li class='has-sub'>
+        <a title="Operaciones sobre el HHPP" 
+           value="Operaciones sobre el HHPP" 
+           immediate="true">Operaciones sobre el HHPP
+        </a>
+        <ul>
+          <li>
+            <h:form>
+              <h:commandLink 
+                action="/gestorsolicitud/list_solicitudes.xhtml?faces-redirect=true"                                             
+                id="vis53"
+                title="Cambio de Estrato Masivo" 
+                value="Cambio de Estrato Masivo" 
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.operacionesHHPPCambioEstratoMasivo}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+          <li>
+            <h:form>
+              <h:commandLink 
+                action="/gestorsolicitud/list_solicitudes.xhtml?faces-redirect=true"                                             
+                id="vis54"
+                title="Eliminar Masivamente HHPP" 
+                value="Eliminar Masivamente HHPP" 
+                immediate="true"   
+                >
+                <f:setPropertyActionListener 
+                  target="#{actionManagedBean.action}" 
+                  value="#{actionManagedBean.operacionesHHPPEliminarMasivamenteHHPP}"/>   
+              </h:commandLink>
+            </h:form>
+          </li>
+
+        </ul>
+      </li>
+  </ul>  
+</ui:composition>        

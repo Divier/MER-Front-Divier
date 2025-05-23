@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                template="/view/MGL/template/cm.xhtml">
+
+    <ui:define name="content">
+        <h2 id="myhMmData">Ascensores [#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.nombreSubedificio}]</h2>
+        <ul id="nav">
+            <li ><h:commandLink action="gestion-administracion" value="Compañías Administración" immediate="true"/></li>
+            <li ><h:commandLink action="gestion-constructoras" value="Compañías Constructoras" immediate="true"/></li>
+            <li class="active"><h:commandLink action="gestion-ascensores" value="Compañías de Ascensores" /></li>
+        </ul>
+        <h:panelGroup id="formAdmin">
+            <h:panelGrid id="tipo_3" rendered="#{gestionCompaniaAscensoresBean.vistas.view eq 'Compania'}" class="formulario" columns="4">
+
+                <h:outputText escape="false" value="Compañía Administración" />
+                <h:selectOneMenu required="true" requiredMessage="Seleccione una compañía" id="nombreCompania" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.companiaId}">
+                    <f:selectItem itemLabel="" itemValue="0"/>                    
+                    <f:selectItems value="#{gestionCompaniaAscensoresBean.listCmtCompaniaMgl}" var="com"
+                                   itemValue="#{com.companiaId}"
+                                   itemLabel="#{com.nombreCompania}"/>    
+                    <f:ajax event="change"  execute="@this" render="formAdmin"  listener="#{gestionCompaniaAscensoresBean.asignarCompania}" />
+                </h:selectOneMenu> 
+                <h:outputText value="Departamento" class="txtLabelsMgl" />
+                <h:outputText id="depto" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.departamento.gpoNombre}" class="columnReadForm" />
+                <h:outputText value="Código" class="txtLabelsMgl"/>
+                <h:outputText id="codigo" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.codigoRr}" class="columnReadForm"/>
+                <h:outputText value="Municipio" class="txtLabelsMgl"/>
+                <h:outputText id="muni" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.municipio.gpoNombre}" class="columnReadForm"/>
+                <h:outputText value="NIT" class="txtLabelsMgl"/>
+                <h:outputText id="nit" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.nitCompania}" class="columnReadForm"/>
+                <h:outputText value="Centro Poblado" class="txtLabelsMgl"/>
+                <h:outputText id="centp" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.centroPoblado.gpoNombre}" class="columnReadForm"/>
+                <h:outputText value="Abreviatura" class="txtLabelsMgl"/>
+                <h:outputText id="abrev" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.abreviatura}" class="columnReadForm"/>
+                <h:outputText value="Barrio" class="txtLabelsMgl"/>
+                <h:outputText id="barrio" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.barrio}" class="columnReadForm"/>
+                <h:outputText value="Nombre Contacto" class="txtLabelsMgl"/>
+                <h:outputText id="contacto" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.nombreContacto}" class="columnReadForm"/>
+                <h:outputText value="Dirección" class="txtLabelsMgl"/>
+                <h:outputText id="dir" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.direccion}" class="columnReadForm"/>
+                <h:outputText value="Teléfonos" class="txtLabelsMgl"/>
+                <h:outputText value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.telefonos}"  id="tel1" class="columnReadForm"/>
+                <h:outputText value="E-mail" class="txtLabelsMgl"/>
+                <h:outputText id="email" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.email}" class="columnReadForm"/>
+                <h:outputText value="Página WEB" class="txtLabelsMgl"/>
+                <h:outputText id="pagWeb" value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.paginaWeb}" class="columnReadForm"/>
+                <h:outputText value="Costo" class="txtLabelsMgl"/>
+                <h:outputText value="#{gestionCompaniaAscensoresBean.cmtSubEdificioMgl.companiaAscensorObj.costo}" class="columnReadFormNumero">
+                    <f:convertNumber type="number" groupingUsed="true" minFractionDigits="2" pattern="$##,###,###,###"/>
+                </h:outputText>
+                <h:commandButton value="Guardar" action="#{gestionCompaniaAscensoresBean.guardarAsociacion}" class="btn" style="width: 70px;" disabled="#{!gestionCompaniaAscensoresBean.rolEditar}"/>
+                <h:commandButton value="Horarios" action="#{gestionCompaniaAscensoresBean.irHorarios}" class="btn" style="width: 70px;"/>
+            </h:panelGrid>
+            <h:panelGroup id="pnlHorarios" rendered="#{gestionCompaniaAscensoresBean.vistas.view eq 'Horario'}">
+                <cc:componente-horario id="compHorarios" horarioRestriccion="#{gestionCompaniaAscensoresBean.horarioRestriccion}" horarioEditable="L"
+                                       permisoCreacion="true" permisoEliminacion="#{gestionCompaniaAscensoresBean.rolEliminar()}"/>
+                <h:commandButton value="Volver" action="#{gestionCompaniaAscensoresBean.volverDeHorarios}" class="btn" style="width: 70px;"/>
+            </h:panelGroup>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+
+

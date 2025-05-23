@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    xmlns:a4j="http://richfaces.org/a4j"
+    template="/view/MGL/template/main.xhtml"
+    xmlns:id="http://illegalargumentexception.googlecode.com/clientId">
+
+    <ui:define name="title"><span class="TituloSeccion">Administrador comunidades</span></ui:define>
+    <ui:define name="message"><span class="error"> #{comunidadesBean.message}</span></ui:define>
+    <ui:define name="content">
+    <script type="text/javascript">   
+     function setFocus(elm) {
+     console.log(elm);
+     document.getElementById("formPrincipal:tablaComunidadesMglTable:"+elm).focus();
+     }        
+    </script>
+            
+
+        <h:panelGroup id="tblConsulta">
+            <div class="tableContent">          
+                <fieldset>
+                    <legend>MANTENIMIENTO COMUNIDADES </legend>
+                    <br></br>           
+
+                    <br></br>
+
+
+                    <h:dataTable id="tablaComunidadesMglTable" 
+                                 binding="#{comunidadesBean.dataTable}" 
+                                 value="#{comunidadesBean.comunidadRrList}" 
+                                 var="comunidadesMgl" rows="15" styleClass="constructGTable"                        
+                                 headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        <h:column>    
+                            <div align="left" >
+                                <f:facet name="header">
+                                    <h:outputText value="Id " /><BR/>
+                                </f:facet>
+                                <h:commandLink value="#{comunidadesMgl.comunidadRrId}"
+                                               action="#{comunidadesBean.goActualizar()}"
+                                               disabled="#{!comunidadesBean.validarIdRol()}">
+                                     <f:setPropertyActionListener target="#{comunidadesBean.idSqlSelected}" 
+                                                                  value="#{comunidadesMgl.comunidadRrId}" />   
+                                </h:commandLink>
+                            </div>                                    
+                        </h:column>
+                        <h:column>    
+                            <div align="left" >
+                                <f:facet name="header">
+                                    <h:outputText value="Código" /><BR/>
+                                    <h:inputText maxlength="3" id="codigoConsulta" style="width: 35px" onfocus="this.selectionStart = this.selectionEnd = this.value.length;" binding="#{codigoConsulta}"
+                                                  value="#{comunidadesBean.filtroConsultaComunidadDto.codigoRr}"
+                                                >
+                                        <a4j:ajax listener="#{comunidadesBean.findByFiltro}" oncomplete = "setFocus('#{codigoConsulta.id}')" event="keyup" execute="@this" render="tablaComunidadesMglTable"
+                                       />
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{comunidadesMgl.codigoRr}"/>     
+                            </div>                                    
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre" /><BR/>
+                                    <h:inputText maxlength="30" id="nombreConsulta" style="width: 105px" 
+                                                 onfocus="this.selectionStart = this.selectionEnd = this.value.length;" 
+                                                 binding="#{nombreConsulta}"
+                                                 value="#{comunidadesBean.filtroConsultaComunidadDto.nombreComunidad}">
+                                            
+                                        <a4j:ajax listener="#{comunidadesBean.findByFiltro}" oncomplete = "setFocus('#{nombreConsulta.id}')"        event="keyup" 
+                                                execute="@this" 
+                                                render="tablaComunidadesMglTable"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{comunidadesMgl.nombreComunidad}" />     
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre corto" /><BR/>
+                                    <h:inputText maxlength="3" id="nombreCorto" style="width: 35px" 
+                                                 onfocus="this.selectionStart = this.selectionEnd = this.value.length;"
+                                                 binding="#{nombreCorto}"
+                                                 value="#{comunidadesBean.filtroConsultaComunidadDto.nombreCortoRegional}">
+
+                                        <a4j:ajax listener="#{comunidadesBean.findByFiltro}" 
+                                                oncomplete = "setFocus('#{nombreCorto.id}')"
+                                                event="keyup" 
+                                                execute="@this" 
+                                                render="tablaComunidadesMglTable"/>
+
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{comunidadesMgl.nombreCortoRegional}" />      
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Tecnología" /><BR/>
+                                    <h:inputText maxlength="3" id="tecnologia" style="width: 35px" 
+                                                 onfocus="this.selectionStart = this.selectionEnd = this.value.length;"
+                                                 binding="#{tecnologia}"
+                                                 value="#{comunidadesBean.filtroConsultaComunidadDto.tecnologia}"
+                                                 >
+                                        <a4j:ajax listener="#{comunidadesBean.findByFiltro}" 
+                                                  oncomplete = "setFocus('#{tecnologia.id}')"
+                                                  event="keyup" 
+                                                  execute="@this" 
+                                                  render="tablaComunidadesMglTable"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{comunidadesMgl.tecnologia.abreviatura}" />      </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Regional" /><BR/>
+                                    <h:inputText maxlength="30" id="regional" style="width: 35px" 
+                                                 onfocus="this.selectionStart = this.selectionEnd = this.value.length;"
+                                                 binding="#{regional}"
+                                                 value="#{comunidadesBean.filtroConsultaComunidadDto.regionalRr}"
+                                                 >
+                                        <a4j:ajax listener="#{comunidadesBean.findByFiltro}"
+                                                oncomplete = "setFocus('#{regional.id}')"
+                                                event="keyup" 
+                                                execute="@this" 
+                                                render="tablaComunidadesMglTable"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{comunidadesMgl.regionalRr.nombreRegional}" />      </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Código postal" /><BR/>
+                                    <h:inputText maxlength="8" id="codigoPostal" style="width: 35px" 
+                                                 onfocus="this.selectionStart = this.selectionEnd = this.value.length;"
+                                                 binding="#{codigoPostal}"
+                                                 value="#{comunidadesBean.filtroConsultaComunidadDto.codigoPostal}">
+                                        <a4j:ajax listener="#{comunidadesBean.findByFiltro}" 
+                                                oncomplete = "setFocus('#{codigoPostal.id}')"
+                                                event="keyup" 
+                                                execute="@this" 
+                                                render="tablaComunidadesMglTable"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{comunidadesMgl.codigoPostal}" />      </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Ubicacón" /><BR/> 
+                                    <h:inputText maxlength="8" id="ubicacion" style="width: 35px" 
+                                                 onfocus="this.selectionStart = this.selectionEnd = this.value.length;"
+                                                 binding="#{ubicacion}"
+                                                 value="#{comunidadesBean.filtroConsultaComunidadDto.ubicacion}"
+                                                 >
+                                        <a4j:ajax listener="#{comunidadesBean.findByFiltro}" 
+                                                oncomplete = "setFocus('#{ubicacion.id}')"
+                                                event="keyup" 
+                                                execute="@this" 
+                                                render="tablaComunidadesMglTable"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{comunidadesMgl.ubicacion == null ? '' : comunidadesMgl.ubicacion == 1 ? 'Rural' : 'Urbano'}" />      
+                            </div>                                  
+                        </h:column>
+
+                        <f:facet name="footer" >
+                            <div class="pagination2">
+                                <h:panelGroup>
+                                    <h:commandButton value= ""  action="#{comunidadesBean.pageFirst}" class="botonTPagInicioCm botonBaselista"/>
+                                    <h:commandButton  value= "" action="#{comunidadesBean.pagePrevious}" class="botonTPagAnteriorCm botonBaselista"/>
+                                    <h:commandButton value="#{comunidadesBean.pageActual}" />
+                                    <h:selectOneMenu  value="#{comunidadesBean.numPagina}" 
+                                                      styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                        <f:selectItems value="#{comunidadesBean.paginaList}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>    
+                                        <f:ajax render="tablaComunidadesMglTable"  event="change"  listener="#{comunidadesBean.irPagina()}"  execute="@this" />                                         
+                                    </h:selectOneMenu>  
+                                    <h:commandButton  value= "" action="#{comunidadesBean.pageNext}" class="botonTPagSiguienteCm botonBaselista"/>
+                                    <h:commandButton  value= "" action="#{comunidadesBean.pageLast}" class="botonTPagFinCm botonBaselista"/>
+                                </h:panelGroup>
+                            </div>
+                        </f:facet>   
+                    </h:dataTable>  
+                </fieldset>
+            </div>
+            <div class="buttonArea">
+                <h:commandButton action="#{comunidadesBean.nuevaComunidadMgl()}" 
+                                 disabled="#{!comunidadesBean.validarOpcionNuevo()}"
+                                 value="Crear Registro" styleClass="btn" id="btnCreacion"/>
+            </div>    
+        </h:panelGroup>   
+
+    </ui:define>
+</ui:composition>
+

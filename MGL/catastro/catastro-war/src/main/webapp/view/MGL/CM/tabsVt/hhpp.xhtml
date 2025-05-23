@@ -1,0 +1,581 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/vt.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>
+    <ui:define name="content">
+        <h2>HHPP</h2>
+        <div id="creacionHhppsubEdificioVtList" columns="2" style="width: 100%">
+            <div id="panelGridSubEdificioVtList" style="width: 25%;display: inline-block; vertical-align: top;">
+                <ui:include src="subedificiosVt-list.xhtml" />
+            </div>
+            <!--Panel para carga AUTOMATICA edificios sin direccion -->
+            <div  id="panelGridCreacionHhpp" style="width: 70%;display: inline-block;" >
+                <h:dataTable id="optionHhppVtTable"
+                             styleClass="constructGTable2"
+                             style="width: 100%" var="hhppVt"
+                             headerClass="constructGTableHeader"
+                             value="#{tecnologiaHabilitadaVtBean.listHhppVtDto}"
+                             rendered="#{tecnologiaHabilitadaVtBean.tipoCreacionHhpp eq 'Automatica' 
+                                         and tecnologiaHabilitadaVtBean.validarCreacion() and tecnologiaHabilitadaVtBean.validarTorre}"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Piso" />
+                        </f:facet>
+                        <h:outputText id="txtPiso" value="#{hhppVt.valorNivel5}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Cantidad Unidades" />
+                        </f:facet>
+                        <h:inputText id="txtCantidad" 
+                                      disabled="#{(tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA')}"
+                                     value="#{hhppVt.cantidad}" 
+                                     label="Cantidad Unidades"
+                                     validatorMessage="El campo Cantidad debe ser numérico">
+                        </h:inputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Inicio Rango" />
+                        </f:facet>
+                        <h:inputText id="txtIniRango" 
+                                     disabled="#{(tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA')}"
+                                     value="#{hhppVt.iniRango}"
+                                     label="Inicio Rango"
+                                     validatorMessage="El campo Rango debe ser numérico">
+                        </h:inputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nivel 5" />
+                        </f:facet>
+                        <h:selectOneMenu id="lstNivel5"
+                                         disabled="#{(tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA')}"
+                                         style=" width: 10em" value="#{hhppVt.opcionNivel5}"
+                                         styleClass="ListaConsulta">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.dirNivel5List}" var="ltm5"
+                                           itemValue="#{ltm5.descripcion}"
+                                           itemLabel="#{ltm5.descripcion}"/>
+                            <f:ajax listener="#{tecnologiaHabilitadaVtBean.cargarRegla(hhppVt.opcionNivel5)}" 
+                                    event="change" 
+                                    execute="@this" 
+                                    render="tipoHhpp"/>
+                        </h:selectOneMenu>							      
+                    </h:column>
+                  
+                       <h:column >
+                        <f:facet name="header">
+                            <h:outputText value="Nivel 6" />
+                        </f:facet>
+                        <h:selectOneMenu id="lstNivel6"
+                                         disabled="#{(tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA')}"
+                                         style=" width: 10em" value="#{hhppVt.opcionNivel6}"
+                                         styleClass="ListaConsulta">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.dirNivel6List}" var="ltm6"
+                                           itemValue="#{ltm6.descripcion}"
+                                           itemLabel="#{ltm6.descripcion}"/>
+                        </h:selectOneMenu>
+                    </h:column>
+					  <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Vivienda" />
+                        </f:facet>
+                        <h:selectOneMenu id="tipoHhpp"
+                                         value="#{hhppVt.thhVtIdSelect}"
+                                         styleClass="ListaConsulta"  style=" width: 10em" >
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.listaTipoHhpp}" var="listTipo"
+                                           itemValue="#{listTipo.thhID}"
+                                           itemLabel="#{listTipo.thhID.concat(' - ').concat(listTipo.thhValor)}"/>
+                            
+                        </h:selectOneMenu>
+                    </h:column>
+                    <h:column>
+                        <h:commandButton value="Generar HHPP" 
+                                         id="btnGenerarHhPp"
+                                         disabled="#{(tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA')
+                                                     ||   hhppVt.btnDisable}"
+                                         class="btn"                              
+                                         action="#{tecnologiaHabilitadaVtBean.createHhppAutomatic(hhppVt)}"
+                                         rendered="#{!visitaTecnicaBean.validarFlujoOt}"/>                         
+                    </h:column>
+                </h:dataTable>
+                
+                
+
+                <!--Panel para Resgistrar MANUAL casas con su propia direccion  y subediicios con su propia direccion-->
+     
+                  <h:dataTable id="cargaDatos"
+                             styleClass="constructGTable2"
+                             style="width: 100%" var="hhppVtCarque"
+                             headerClass="constructGTableHeader"
+                             value="#{tecnologiaHabilitadaVtBean.listHhppCargue}"
+                             rendered="#{tecnologiaHabilitadaVtBean.validarCreacion() and tecnologiaHabilitadaVtBean.validarCargaDatos}"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Direccion Sub-edificio" />
+                        </f:facet>
+                        
+                        <h:outputText id="lblDirSubEdif" value="#{tecnologiaHabilitadaVtBean.selectedSubEdificioVt.nombreSubEdificio}" style="font-size: smaller;"/>
+                    </h:column>
+
+                 
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Apartamento" />
+                        </f:facet>
+                        <h:selectOneMenu id="lstNivel5Cargue"  style="width: 90%" 
+                                         value="#{hhppVtCarque.opcionNivel5}"
+                                         disabled="#{(tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA')}"  
+                                         styleClass="ListaConsulta"  
+                                        >
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.dirNivel5List}" var="ltm5"
+                                           itemValue="#{ltm5.descripcion}"
+                                           itemLabel="#{ltm5.descripcion}"/>
+                            
+                            <f:ajax listener="#{tecnologiaHabilitadaVtBean.cargarRegla(hhppVtCarque.opcionNivel5)}" 
+                                    event="change" 
+                                    execute="@this" 
+                                    render="tipoHhppCasas"/>
+                        </h:selectOneMenu>
+                    </h:column>
+                    <h:column >
+                        <f:facet name="header">
+                            <h:outputText value="Valor" />
+                        </f:facet>
+                        <h:inputText id="lblvalorNivel5Cargue"  title="Solo 10 caracteres" 
+                                     value="#{hhppVtCarque.valorNivel5}" 
+                                     disabled="#{!tecnologiaHabilitadaVtBean.validarEdicion() || tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     style="width: 10em;"/>
+                        
+                        
+                    </h:column>
+                   
+                      <h:column rendered="#{tecnologiaHabilitadaVtBean.habilitarColumsComp}">
+                        <f:facet name="header">
+                            <h:outputText value="Complemento" />
+                        </f:facet>
+                        <h:selectOneMenu id="lstNivel6Cargue"  style="width: 90%" 
+                                          disabled="#{tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"  
+                                         value="#{hhppVtCarque.opcionNivel6}"
+                                         styleClass="ListaConsulta">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.dirNivel6List}" var="ltm6"
+                                           itemValue="#{ltm6.descripcion}"
+                                           itemLabel="#{ltm6.descripcion}"/>
+                        </h:selectOneMenu>
+                    </h:column >
+                      <h:column rendered="#{tecnologiaHabilitadaVtBean.habilitarColumsComp}">
+                        <f:facet name="header">
+                            <h:outputText value="Valor" />
+                        </f:facet>
+                        <h:inputText id="lblvalorNivel6Cargue" 
+                                     value="#{hhppVtCarque.valorNivel6}" 
+                                     disabled="#{!tecnologiaHabilitadaVtBean.validarEdicion() || tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     style="width: 10em;"/>
+                   </h:column>
+                   <h:column rendered="#{tecnologiaHabilitadaVtBean.direccionGeo}">                    
+                          <f:facet name="header">
+                              <h:outputText value="Dirección"/>
+                          </f:facet>
+                          <h:inputText id="txtDireccionCasasCargue"    disabled="#{tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"  
+                                       style="width: 85%" 
+                                       value="#{hhppVtCarque.direccionValidada}"/>
+                          <h:outputText value="&#160;" />
+                          <h:commandButton  id="cargue" 
+                                            disabled="#{tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"  
+                                            image="/view/img/home.gif" 
+                                            style="width: 13px; " 
+                                            title="Validar dirección">
+                              <f:ajax render="@form" execute="@form" 
+                                      event="click" listener="#{visitaTecnicaBean.irPopUpDireccionHHpp(hhppVtCarque)}" />
+                          </h:commandButton>
+                      </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Vivienda" />
+                        </f:facet>
+                        <h:selectOneMenu id="tipoHhppCasas"
+                                         value="#{hhppVtCarque.thhVtId}"
+                                         styleClass="ListaConsulta"  style=" width: 10em" >
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.listaTipoHhpp}" var="listTipo"
+                                           itemValue="#{listTipo.thhID}"
+                                           itemLabel="#{listTipo.thhID.concat(' - ').concat(listTipo.thhValor)}"/>
+                            
+                        </h:selectOneMenu>
+                    </h:column>
+                      
+                    <h:column>
+                        <h:commandButton value="Generar HHPP" 
+                                         id="btnGenerarManuelHhPp"
+                                         disabled="#{hhppVtCarque.procesado == 1 || tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         class="btn"                              
+                                         action="#{tecnologiaHabilitadaVtBean.createHhppManual(hhppVtCarque)}" 
+                                         rendered="#{hhppVtCarque.estadoRegistro ne '1' and !visitaTecnicaBean.validarFlujoOt}" />    
+                       
+                    </h:column>
+                </h:dataTable>
+               
+
+                <!--Panel para visualizar casas con su propia direccion -->
+
+                <h:outputText value="&#160;" id="blancohhppVtTableByCasas" style="width: 100%"/>
+                <h:dataTable id="hhppVtTableByCasas" 
+                             var="hhppVtCasas" 
+                             value="#{tecnologiaHabilitadaVtBean.listHhppByCasas}"
+                             rendered="#{tecnologiaHabilitadaVtBean.listHhppByCasas.size() gt 0 
+                                         and tecnologiaHabilitadaVtBean.validarCasas }"
+                             styleClass="constructGTable2"
+                             headerClass="constructGTableHeader" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    
+                      <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Torre o Casa" />
+                        </f:facet>
+                          <h:outputText id="lblNombreRr1"  value="#{hhppVtCasas.subEdificioVtObj.nombreSubEdificio}" style="font-size: smaller;"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Dirección Sub-edificio" />
+                        </f:facet>
+                          <h:outputText id="lblEntSubE"  value="#{hhppVtCasas.subEdificioVtObj.calleRr.concat(' #').concat(' ').concat(hhppVtCasas.subEdificioVtObj.unidadRr)
+                                                                }" style="font-size: smaller;"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Dirección Unidad/Casa" />
+                        </f:facet>
+                        <h:outputText id="lblDirSubEdificio" value="#{hhppVtCasas.calleRr.concat(' #').concat(' ').concat(hhppVtCasas.unidadRr)}" style="font-size: smaller;"/>
+                    </h:column>
+                     <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nivel 5" />
+                        </f:facet>
+                        <h:selectOneMenu id="lstNivel5Casas"
+                                          disabled="#{tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         value="#{hhppVtCasas.opcionNivel5}"
+                                         styleClass="ListaConsulta" style=" width: 10em">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.dirNivel5List}" var="ltm5"
+                                           itemValue="#{ltm5.descripcion}"
+                                           itemLabel="#{ltm5.descripcion}"/>
+                        </h:selectOneMenu>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Val Nivel 5" />
+                        </f:facet>
+                        <h:inputText id="lblvalorNivel5Casas" 
+                                     value="#{hhppVtCasas.valorNivel5}" 
+                                     disabled="#{hhppVtCasas.procesado == 1 or
+                                                 !tecnologiaHabilitadaVtBean.validarEdicion() || tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     style="width: 10em;"/>
+                    </h:column>
+
+     
+                     <h:column rendered="#{tecnologiaHabilitadaVtBean.habilitarCampoRR}">
+                        <f:facet name="header">
+                            <h:outputText value="Valor RR" />
+                        </f:facet>
+
+                        <h:inputText maxlength="10" id="lblvalorRR" title="Solo 10 caracteres"  style="width: 10em;"  
+                                     value="#{hhppVtCasas.nombreValidoRR}" 
+                                     disabled="#{hhppVtCasas.procesado == 1 or tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA' }"
+                                     >
+                            <f:ajax listener="#{tecnologiaHabilitadaVtBean.cargarLista(hhppVtCasas)}" 
+                                    event="blur" 
+                                    execute="@this" 
+                                    render="hhppVtTableByCasas"/>
+                        </h:inputText>
+
+
+                    </h:column>
+                  <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nivel 6" />
+                        </f:facet>
+                         <h:selectOneMenu id="lstNivel6Casas"
+                                         value="#{hhppVtCasas.opcionNivel6}"
+                                           disabled="#{tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         styleClass="ListaConsulta"  style=" width: 10em">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.dirNivel6List}" var="ltm6"
+                                           itemValue="#{ltm6.descripcion}"
+                                           itemLabel="#{ltm6.descripcion}"/>
+                        </h:selectOneMenu>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Val Nivel 6" />
+                        </f:facet>
+                        <h:inputText id="lblvalorNivel6Casas" 
+                                     value="#{hhppVtCasas.valorNivel6}" 
+                                     disabled="#{hhppVtCasas.procesado == 1 or
+                                                 !tecnologiaHabilitadaVtBean.validarEdicion() || tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     style="width: 10em;"/>
+                    </h:column>
+                     <h:column>
+
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Vivienda" />
+                        </f:facet>
+                       <h:selectOneMenu id="lstTipoVivienda2"
+                                         value="#{hhppVtCasas.thhVtId}"
+                                         styleClass="ListaConsulta"  style=" width: 10em">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.listaTipoHhpp}" var="listTipo"
+                                           itemValue="#{listTipo.thhID}"
+                                           itemLabel="#{listTipo.thhID.concat(' - ').concat(listTipo.thhValor)}"/>
+                        </h:selectOneMenu>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Procesado" />
+                        </f:facet>
+                        <h:outputText id="lblhhppProcesado2" 
+                                      value="#{hhppVtCasas.procesado eq 1?'Si':'No'}" 
+                                      style="width: 10em;"/>
+                    </h:column>
+                        <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Razón" />
+                        </f:facet>
+                        <h:outputText id="lblhhppMensajeCasas" 
+                                      value="#{hhppVtCasas.mensajeCreacion}" 
+                                      style="width: 10em;"/>
+                    </h:column>
+                    <h:column>
+                        
+
+                        <h:commandLink value="" title="Crear" 
+                                        disabled="#{hhppVtCasas.procesado == 1 or
+                                                 !tecnologiaHabilitadaVtBean.validarEdicion() || tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                       rendered="#{hhppVtCasas.estadoRegistro ne '1' and !visitaTecnicaBean.validarFlujoOt}" 
+                                       styleClass="btnIconCrear" >
+                            <f:ajax  execute="@this" render="@form"
+                                     event="click" listener="#{tecnologiaHabilitadaVtBean.createHhppManual(hhppVtCasas)}" />
+                        </h:commandLink>  
+                        <h:commandLink value="" title="Guardar"
+                                       styleClass="btnIconGuardar"
+                                       action="#{tecnologiaHabilitadaVtBean.editHhppManual(hhppVtCasas)}"
+                                       disabled="#{hhppVtCasas.procesado == 1 or
+                                                 !tecnologiaHabilitadaVtBean.validarEdicion() || tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                       rendered="#{hhppVtCasas.estadoRegistro eq '1' and
+                                                   tecnologiaHabilitadaVtBean.validarEdicion()
+                                                   and !visitaTecnicaBean.validarFlujoOt}"   />
+                        <h:commandLink value="" title="Eliminar" 
+                                       disabled="#{hhppVtCasas.procesado == 1 or
+                                                 !tecnologiaHabilitadaVtBean.validarEdicion() || tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                       rendered="#{hhppVtCasas.estadoRegistro eq '1' and
+                                                   tecnologiaHabilitadaVtBean.validarBorrado()
+                                                   and !visitaTecnicaBean.validarFlujoOt}"  
+                                       styleClass="btnIconEliminar" >
+                            <f:ajax  execute="@this" render="@form"
+                                     event="click" listener="#{tecnologiaHabilitadaVtBean.deleteHhppVt(hhppVtCasas)}" />
+                        </h:commandLink>  
+                      
+                    </h:column>
+                </h:dataTable> 
+
+                
+
+
+
+
+                <!-- Panel para visualizar resultado edificios con y sin direccion-->
+
+                <h:outputText value="&#160;" id="blancohhppVtTableBySubEdi" style="width: 100%"/>
+                <h:dataTable id="hhppVtTableBySubEdi" 
+                             var="hhppVtSubEdi"
+                             value="#{tecnologiaHabilitadaVtBean.listHhppBySubEdificio}"
+                             rendered="#{tecnologiaHabilitadaVtBean.listHhppBySubEdificio.size() gt 0 
+                                         and tecnologiaHabilitadaVtBean.validarTorreManual }"
+                             styleClass="constructGTable2"
+                             headerClass="constructGTableHeader" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Torres" />
+                        </f:facet>
+                        <h:outputText id="lblNombreRr"  value="#{hhppVtSubEdi.subEdificioVtObj.nombreSubEdificio}" style="font-size: smaller;"/>
+                    </h:column>
+                    
+                      <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Dirección Sub-edificio" />
+                        </f:facet>
+                          <h:outputText id="lblEntSub"  value="#{hhppVtSubEdi.subEdificioVtObj.calleRr.concat(' #').concat(' ').concat(hhppVtSubEdi.subEdificioVtObj.unidadRr)
+                                                                }" style="font-size: smaller;"/>
+                    </h:column>
+                        <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Dirección Unidad/Casa" />
+                        </f:facet>
+                        <h:outputText id="lblDirSubEdi" value="#{hhppVtSubEdi.calleRr.concat(' #').concat(' ').concat(hhppVtSubEdi.unidadRr)}" style="font-size: smaller;"/>
+                    </h:column>
+                 
+
+                    <h:column>
+
+                        <f:facet name="header">
+                            <h:outputText value="Nivel 5" />
+                        </f:facet>
+                        <h:selectOneMenu id="listNivel5Sub"
+                                         value="#{hhppVtSubEdi.opcionNivel5}" 
+                                         disabled="#{hhppVtSubEdi.procesado == 1 or
+                                                     tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'  }"
+                                         styleClass="ListaConsulta" style="width: 10em;">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.dirNivel5List}" var="ltm5"
+                                           itemValue="#{ltm5.descripcion}"
+                                           itemLabel="#{ltm5.descripcion}"/>
+                          
+                        </h:selectOneMenu>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Val Nivel 5" />
+                        </f:facet>
+                        <h:inputText id="lblvalorNivel5" maxlength="6" 
+                                     value="#{hhppVtSubEdi.valorNivel5}" 
+                                     disabled="#{hhppVtSubEdi.procesado == 1 or
+                                                tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA' || !tecnologiaHabilitadaVtBean.habilitaCampoTextoProcesoRr}"
+                                     style="width: 10em;"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nivel 6" />
+                        </f:facet>
+                        <h:selectOneMenu id="listNivel6Sub"
+                                         value="#{hhppVtSubEdi.opcionNivel6}"
+                                         disabled="#{hhppVtSubEdi.procesado == 1 or
+                                                tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         styleClass="ListaConsulta" style="width: 10em;">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.dirNivel6List}" var="ltm6"
+                                           itemValue="#{ltm6.descripcion}"
+                                           itemLabel="#{ltm6.descripcion}"/>
+                        </h:selectOneMenu>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Val Nivel 6" />
+                        </f:facet>
+                        <h:inputText id="lblvalorNivel6" 
+                                     value="#{hhppVtSubEdi.valorNivel6}"  maxlength="6"
+                                     disabled="#{hhppVtSubEdi.procesado == 1 or
+                                               tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     style="width: 10em;"/>
+                    </h:column>
+					  <h:column>
+
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Vivienda" />
+                        </f:facet>
+                       <h:selectOneMenu id="lstTipoVivienda3"
+                                         value="#{hhppVtSubEdi.thhVtId}"
+                                         disabled="#{hhppVtSubEdi.procesado == 1 or
+                                                tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         styleClass="ListaConsulta" style="width: 10em;">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tecnologiaHabilitadaVtBean.listaTipoHhpp}" var="listTipo"
+                                           itemValue="#{listTipo.thhID}"
+                                           itemLabel="#{listTipo.thhID.concat(' - ').concat(listTipo.thhValor)}"/>
+                        </h:selectOneMenu>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Procesado" />
+                        </f:facet>
+                        <h:outputText id="lblhhppProcesado" 
+                                      value="#{hhppVtSubEdi.procesado eq 1?'Si':hhppVtSubEdi.limiteExcedido ? 'Limite Excedido': 'No'}" 
+                                      style="width: 10em;"/>
+                    </h:column>
+                     <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Razón" />
+                        </f:facet>
+                        <h:outputText id="lblhhppMensaje" 
+                                      value="#{hhppVtSubEdi.mensajeCreacion}" 
+                                      style="width: 10em;"/>
+                    </h:column>
+                    <h:column>
+                        <h:commandLink value="" title="Crear" 
+                                       action="#{tecnologiaHabilitadaVtBean.createHhppManual(hhppVtSubEdi)}" 
+                                       disabled="#{hhppVtSubEdi.procesado == 1 ||tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                       rendered="#{hhppVtSubEdi.estadoRegistro ne '1' and !visitaTecnicaBean.validarFlujoOt}" 
+                                       styleClass="btnIconCrear" />
+                        <h:commandLink value="" title="Guardar"
+                                       styleClass="btnIconGuardar"
+                                       action="#{tecnologiaHabilitadaVtBean.editHhppManual(hhppVtSubEdi)}"
+                                       disabled="#{hhppVtSubEdi.procesado == 1 || tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                       rendered="#{hhppVtSubEdi.estadoRegistro eq '1' and
+                                                   tecnologiaHabilitadaVtBean.validarEdicion()
+                                                   and !visitaTecnicaBean.validarFlujoOt}" />
+                        <h:commandLink value="" title="Eliminar"
+                                       styleClass="btnIconEliminar"
+                                       action="#{tecnologiaHabilitadaVtBean.deleteHhppVt(hhppVtSubEdi)}"
+                                       disabled="#{hhppVtSubEdi.procesado == 1 || tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            tecnologiaHabilitadaVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                       rendered="#{hhppVtSubEdi.estadoRegistro eq '1' and
+                                                   tecnologiaHabilitadaVtBean.validarBorrado()
+                                                   and !visitaTecnicaBean.validarFlujoOt}" />
+                    </h:column>
+                </h:dataTable> 
+                <h:outputText value="&#160;" id="blancohhppVtTableDireccion" style="width: 100%"/>
+
+
+            </div>
+        </div>
+
+        <h:panelGrid columns="3" style="width: 100%; margin: 0px auto">
+            <h:commandButton value="Exportar a Excel" 
+                             id="btnExportar"
+                             class="unblockClaro btn"                              
+                             action="#{tecnologiaHabilitadaVtBean.exportExcel()}"
+                             rendered="#{tecnologiaHabilitadaVtBean.listHhppBySubEdificio.size() > 0}"/>
+            
+            <!--            <h:commandButton value="Consolidar Sub-Edificios" id="btnConsolidarSubEdi"
+                                         styleClass="btn"
+                                         action="# {subEdificiosVtBean.consolidarSubEdi()}"
+                                         rendered="# {tecnologiaHabilitadaVtBean.listHhppBySubEdificio.size() > 0}"/>-->
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

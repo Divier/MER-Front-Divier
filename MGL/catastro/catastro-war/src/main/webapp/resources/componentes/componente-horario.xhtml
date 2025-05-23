@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <cc:interface componentType="co.com.claro.mgl.mbeans.cm.componente.ControlerHorariosCM">
+        <cc:attribute name="horarioRestriccion" type="java.util.ArrayList" shortDescription="Horarios restriccion" required="true" />
+        <cc:attribute name="horarioEditable" type="java.lang.String" shortDescription="Permite mostrar los controles de edición del horario E=Editable" required="true" />
+        <cc:attribute name="permisoCreacion" type="java.lang.Boolean" shortDescription="Permite autorizar procesos de creación" required="false" />
+        <cc:attribute name="permisoEliminacion" type="java.lang.Boolean" shortDescription="Permite autorizar procesos de eliminación" required="false" />
+    </cc:interface>
+
+    <cc:implementation>
+        <f:view id="preubaid">
+            <style type="text/css">
+                .info {
+                    color:blue; 
+                }
+                .warn{
+                    color:yellow; 
+                } 
+                .err{
+                    color:red;
+                }
+            </style>
+            <h:panelGroup  id="idPanelHorario"  rendered="#{cc.attrs.horarioEditable eq 'E'}"> 
+                <h:panelGrid id="HorarioRestriccionPanel" columns="8">
+                    <h:selectOneMenu id="DiasHorarioInicio" value="#{cc.horarioRestriccionCmEdit.diaInicio}" required="true">
+                        <h:outputText value="DESDE " />
+                        <f:selectItems value="#{cc.dayOfWeekValues}"/>
+                    </h:selectOneMenu> 
+                    <h:selectOneMenu id="DiasHorarioFin" value="#{cc.horarioRestriccionCmEdit.diaFin}" required="true">
+                        <h:outputText value="HASTA " />
+                        <f:selectItems value="#{cc.dayOfWeekValues}"/>
+                    </h:selectOneMenu> 
+                    <h:selectOneMenu id="HorasHorarioInicio" value="#{cc.horarioRestriccionCmEdit.horaInicio}" required="true" >
+                        <h:outputText value="INICIO " />
+                        <f:selectItems id="horaInicioHorario"  value="#{cc.lsHoras}" var="hora" itemLabel="#{hora.hora}" 
+                                       itemValue="#{hora.valor}"  />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="horafinHorario" value="#{cc.horarioRestriccionCmEdit.horaFin}" required="true" >
+                        <h:outputText value="FIN " />
+                        <f:selectItems id="horaFinHorario" value="#{cc.lsHoras}" var="hora" itemLabel="#{hora.hora}" 
+                                       itemValue="#{hora.valor}" />
+                    </h:selectOneMenu>
+                    <h:commandButton id="cmdAddHorario" value="Adicionar Disponibilidad/Restricción" 
+                                     action="#{cc.addNewHorarioRestriccion}" styleClass="btn" disabled="#{!cc.attrs.permisoCreacion}"/>
+                    <h:message for="cmdAddHorario"/>
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <h:selectOneRadio id="tipoRestriccionHorario" value="#{cc.horarioRestriccionCmEdit.tipoRestriccion}">
+                        <f:selectItems value ="#{cc.tipoRestriccion}" var="tipoRes" itemLabel="#{tipoRes.tipoRestriccion}" />
+                        <f:ajax execute="@form" render="idPanelHorario"/> 
+                    </h:selectOneRadio>
+                    <h:outputText></h:outputText>
+                    <h:outputLabel id="LabelHorarioRestriccion" rendered="#{cc.horarioRestriccionCmEdit.tipoRestriccion eq 'RESTRICCION'}">
+                        Razón de Restricción
+                    </h:outputLabel>    
+                    <h:inputText id="inTextRazonRestriccion" maxlength="100" value="#{cc.horarioRestriccionCmEdit.razonRestriccion}" 
+                                 rendered="#{cc.horarioRestriccionCmEdit.tipoRestriccion eq 'RESTRICCION'}"/>
+                </h:panelGrid>        
+            </h:panelGroup>     
+            <div id="marcocomponeteRestricciones" style="overflow: scroll;height: 175px;" > 
+                <h:dataTable id="dtRestriccionHorario" value="#{cc.arraylistregistroHorario}" var="iterador" transient="true" styleClass="horarioTable" headerClass="horarioTableHeader" rowClasses="horarioTableEvenRow,horarioTableOddRow">
+                    <h:column id="HorariosHorarioTabla">
+                        <f:facet name="header">Horarios</f:facet>
+                        <div id="LunesHorarioDiv" style="background-color: gainsboro;" >
+                            <h:outputText value="#{iterador.hora}"/>
+                        </div>
+                    </h:column>    
+                    <h:column id="ColLunesHorario">
+                        <f:facet name="header">Lunes</f:facet>
+                        <h:panelGroup id="LunesHorariopanelGroup" rendered="#{not empty (iterador.lunes.tipoRestriccion)}">
+                            <div title="#{iterador.lunes.razonRestriccion}" id="LunesHorarioDivRestriccion" style="background-color: #{iterador.lunes.tipoRestriccion eq 'RESTRICCION'?  'yellow' : iterador.lunes.tipoRestriccion eq 'NO_DISPONIBLE'? 'red' : iterador.lunes.tipoRestriccion eq 'DISPONIBLE'? 'greenyellow' : 'white'}">
+                                <div id="LunesHorarioDivRestriccion2" style="position: absolute; display: none; background-color: gainsboro; border-style: #{empty iterador.lunes.razonRestriccion?'none':'ridge'};border-color: black;">#{iterador.lunes.razonRestriccion}</div>
+                                <h:commandLink id="cmdlEliminar" action="#{cc.eliminarHorario(iterador.lunes.horarioRestriccionCm)}"
+                                               rendered="#{not empty (iterador.lunes.tipoRestriccion) and (cc.attrs.horarioEditable eq 'E') and cc.attrs.permisoEliminacion}">
+                                    <h:graphicImage url="/resources/images/delete.jpg" style="display:#{empty iterador.lunes.tipoRestriccion?'none':'display'}"/>
+                                </h:commandLink> 
+                                <h:outputText value="&nbsp;"/>
+                            </div>
+                        </h:panelGroup>
+                    </h:column>
+                    <h:column id="ColMartesHorario">
+                        <f:facet name="header">Martes</f:facet>
+                        <h:panelGroup id="MartesHorariopanelGroup" rendered="#{not empty (iterador.martes.tipoRestriccion)}">
+                            <div title="#{iterador.martes.razonRestriccion}" id="MartesHorarioDivRestriccion" style="background-color: #{iterador.martes.tipoRestriccion eq 'RESTRICCION'?  'yellow' : iterador.martes.tipoRestriccion eq 'NO_DISPONIBLE'? 'red' : iterador.martes.tipoRestriccion eq 'DISPONIBLE'? 'greenyellow' : 'white'}">
+                                <div id="MartesHorariopanelGroup2" style="position: absolute; display: none; background-color: gainsboro; border-style: #{empty iterador.martes.razonRestriccion?'none':'ridge'};border-color: black; ">#{iterador.martes.razonRestriccion}</div>
+                                <h:commandLink    action="#{cc.eliminarHorario(iterador.martes.horarioRestriccionCm)}"
+                                                  rendered="#{not empty(iterador.martes.tipoRestriccion) and (cc.attrs.horarioEditable eq 'E') and cc.attrs.permisoEliminacion}">
+                                    <h:graphicImage url="/resources/images/delete.jpg" style=" display:#{empty iterador.martes.tipoRestriccion?'none':'display'}"/>
+                                </h:commandLink> 
+                                <h:outputText value="&nbsp;"/>
+                            </div>
+                        </h:panelGroup>
+                    </h:column>
+                    <h:column id="ColMiercolesHorario"  >
+                        <f:facet name="header">Miércoles</f:facet>
+                        <h:panelGroup id="MiercolesHorariopanelGroup" rendered="#{not empty (iterador.miercoles.tipoRestriccion)}">
+                            <div title="#{iterador.miercoles.razonRestriccion}" id="MiercolesHorarioDivRestriccion" style="background-color: #{iterador.miercoles.tipoRestriccion eq 'RESTRICCION'?  'yellow' : iterador.miercoles.tipoRestriccion eq 'NO_DISPONIBLE'? 'red' : iterador.miercoles.tipoRestriccion eq 'DISPONIBLE'? 'greenyellow' : 'white'}">
+                                <div id="MiercolesHorarioDivRestriccion2" style="position: absolute; display: none; background-color: gainsboro; border-style:#{iterador.miercoles.razonRestriccion?'none':'ridge'};border-color: black ">#{iterador.miercoles.razonRestriccion} </div>
+                                <h:commandLink   action="#{cc.eliminarHorario(iterador.miercoles.horarioRestriccionCm)}"
+                                                 rendered="#{not empty (iterador.miercoles.tipoRestriccion) and (cc.attrs.horarioEditable eq 'E') and cc.attrs.permisoEliminacion}">
+                                    <h:graphicImage url="/resources/images/delete.jpg" style=" display:#{empty iterador.miercoles.tipoRestriccion?'none':'display'}" />           
+                                </h:commandLink> 
+                                <h:outputText value="&nbsp;"/>
+                            </div>
+                        </h:panelGroup>
+                    </h:column >
+                    <h:column id="ColJuevesHorario">
+                        <f:facet name="header">Jueves</f:facet>
+                        <h:panelGroup id="JuevesHorariopanelGroup" rendered="#{not empty (iterador.jueves.tipoRestriccion)}">
+                            <div title="#{iterador.jueves.razonRestriccion}"  id="JuevesHorarioDivRestriccion" style="background-color: #{iterador.jueves.tipoRestriccion eq 'RESTRICCION'?  'yellow' : iterador.jueves.tipoRestriccion eq 'NO_DISPONIBLE'? 'red' : iterador.jueves.tipoRestriccion eq 'DISPONIBLE'? 'greenyellow' : 'white'}">
+                                <div id="JuevesHorarioDivRestriccion2" style="position: absolute; display: none; background-color: gainsboro; border-style:#{empty iterador.jueves.razonRestriccion?'none':'ridge'};border-color: black ">#{iterador.jueves.razonRestriccion} </div>
+                                <h:commandLink    action="#{cc.eliminarHorario(iterador.jueves.horarioRestriccionCm)}"
+                                                  rendered="#{not empty(iterador.jueves.tipoRestriccion) and (cc.attrs.horarioEditable eq 'E') and cc.attrs.permisoEliminacion}" >
+                                    <h:graphicImage url="/resources/images/delete.jpg"  style=" display:#{empty iterador.jueves.tipoRestriccion?'none':'display'}" />           
+                                </h:commandLink> 
+                                <h:outputText value="&nbsp;"/>
+                            </div>
+                        </h:panelGroup>
+                    </h:column>
+                    <h:column id="ColViernesHorario">
+                        <f:facet name="header">Viernes</f:facet>
+                        <h:panelGroup id="ViernesHorariopanelGroup" rendered="#{not empty(iterador.viernes.tipoRestriccion)}">
+                            <div title="#{iterador.viernes.razonRestriccion}" id="ViernesHorarioDivRestriccion" style="background-color: #{iterador.viernes.tipoRestriccion eq 'RESTRICCION'?  'yellow' : iterador.viernes.tipoRestriccion eq 'NO_DISPONIBLE'? 'red' : iterador.viernes.tipoRestriccion eq 'DISPONIBLE'? 'greenyellow' : 'white'}">
+                                <div id="ViernesHorarioDivRestriccion2" style="position: absolute; display: none; background-color: gainsboro; border-style:#{empty iterador.viernes.razonRestriccion?'none':'ridge'};border-color: black ">#{iterador.viernes.razonRestriccion} </div>
+                                <h:commandLink  action="#{cc.eliminarHorario(iterador.viernes.horarioRestriccionCm)}"
+                                                rendered="#{not empty (iterador.viernes.tipoRestriccion) and (cc.attrs.horarioEditable eq 'E') and cc.attrs.permisoEliminacion}" >
+                                    <h:graphicImage url="/resources/images/delete.jpg" style=" display:#{empty iterador.viernes.tipoRestriccion?'none':'display'}" />           
+                                </h:commandLink> 
+                                <h:outputText value="&nbsp;"/>
+                            </div>
+                        </h:panelGroup>    
+                    </h:column>
+                    <h:column id="ColSabadoHorario">
+                        <f:facet name="header">Sábado</f:facet>
+                        <h:panelGroup id="SabadoHorariopanelGroup" rendered="#{not empty(iterador.sabado.tipoRestriccion)}">
+                            <div title="#{iterador.sabado.razonRestriccion}" id="SabadoHorarioDivRestriccion" style="background-color: #{iterador.sabado.tipoRestriccion eq 'RESTRICCION'?  'yellow' : iterador.sabado.tipoRestriccion eq 'NO_DISPONIBLE'? 'red' : iterador.sabado.tipoRestriccion eq 'DISPONIBLE'? 'greenyellow' : 'white'}">
+                                <div id="SabadoHorarioDivRestriccion2" style="position: absolute; display: none; background-color: gainsboro; border-style:#{empty iterador.sabado.razonRestriccion? 'none':'ridge'};border-color: black ">#{iterador.sabado.razonRestriccion} </div>
+                                <h:commandLink   action="#{cc.eliminarHorario(iterador.sabado.horarioRestriccionCm)}"
+                                                 rendered="#{not empty(iterador.sabado.tipoRestriccion) and (cc.attrs.horarioEditable eq 'E') and cc.attrs.permisoEliminacion}" >
+                                    <h:graphicImage url="/resources/images/delete.jpg" style=" display:#{empty iterador.sabado.tipoRestriccion?'none':'display'}" />           
+                                </h:commandLink> 
+                                <h:outputText value="&nbsp;"/>
+                            </div>
+                        </h:panelGroup>    
+                    </h:column>
+                    <h:column id="ColDomingoHorario">
+                        <f:facet name="header">Domingo</f:facet>
+                        <h:panelGroup id="DomingoHorariopanelGroup" rendered="#{not empty (iterador.domingo.tipoRestriccion)}">
+                            <div title="#{iterador.domingo.razonRestriccion}" id="DomingoHorarioDivRestriccion" style="background-color: #{iterador.domingo.tipoRestriccion eq 'RESTRICCION'?  'yellow' : iterador.domingo.tipoRestriccion eq 'NO_DISPONIBLE'? 'red' : iterador.domingo.tipoRestriccion eq 'DISPONIBLE'? 'greenyellow' : 'white'}">
+                                <div id="DomingoHorarioDivRestriccion2" style="position: absolute; display: none; background-color: gainsboro; border-style:#{empty iterador.domingo.razonRestriccion?'none':'ridge'};border-color: black ">#{iterador.domingo.razonRestriccion} </div>
+                                <h:commandLink   action="#{cc.eliminarHorario(iterador.domingo.horarioRestriccionCm)}"
+                                                 rendered="#{not empty(iterador.domingo.tipoRestriccion) and (cc.attrs.horarioEditable eq 'E') and cc.attrs.permisoEliminacion}">
+                                    <h:graphicImage url="/resources/images/delete.jpg" style=" display:#{empty iterador.domingo.tipoRestriccion?'none':'display'}" /> 
+                                </h:commandLink> 
+                                <h:outputText value="&nbsp;"/>
+                            </div>
+                        </h:panelGroup>    
+                    </h:column>
+                </h:dataTable> 
+            </div>
+        </f:view> 
+        <f:event type="preRenderView" listener="#{cc.init}"/>
+
+    </cc:implementation> 
+</html>

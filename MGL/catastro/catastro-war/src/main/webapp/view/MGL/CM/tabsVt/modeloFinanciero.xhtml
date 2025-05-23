@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/vt.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>
+    <!-- <ui:define name="message"><span class="error"> # {direccionAlternaMglBean.message}</span></ui:define> -->
+    <ui:define name="content">
+        <fieldset>
+
+            <legend> Modelo Financiero</legend>
+            <table style="width: 100%; border-spacing: 10px;">
+                <tr>
+                    <td><h:outputText  id="lblUusario" value="Usuario" /></td>
+                    <td><h:inputText id="usuario" value="#{visitaTecnicaBean.usuarioVT}"  disabled="#{!empty subEdiLst.codigoRr || visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' }"  readonly="true"/></td>
+                    <td><h:outputText  id="lblFecha" value="Fecha" /></td>
+                    <td><h:inputText id="fecha" value="#{visitaTecnicaBean.vt.fechaCreacion}"  disabled="true"/></td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:panelGroup>
+                            <h:outputText value="*"  />
+                            <h:outputText  id="lblSubTipo" value="Tipo de Trabajo" />
+                        </h:panelGroup>
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="SubtipoTrabajoLabel"  value="#{visitaTecnicaBean.tipoTrabajo.basicaId}"
+                                         style="width: 140px"
+                                         required="true"
+                                         disabled="#{visitaTecnicaBean.tipoTrabajo.basicaId != null || visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{visitaTecnicaBean.listTipoOrdenTrabajo}" var="sub"
+                                           itemValue="#{sub.basicaId}"
+                                           itemLabel="#{sub.nombreBasica}"/>       
+                        </h:selectOneMenu>
+                    </td>
+                    <td>
+                        <h:panelGroup>
+                            <h:outputText value="*"  />
+                            <h:outputText id="lblVt" value="Sub Tipo de Trabajo" />
+                        </h:panelGroup>
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="tipoTrabajoOt"  value="#{visitaTecnicaBean.subTipoTrabajo.idTipoOt}"
+                                         style="width: 140px"
+                                         required="true" 
+                                         disabled="#{visitaTecnicaBean.subTipoTrabajo.idTipoOt != null ||  visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{visitaTecnicaBean.listTipoTrabajoOt}" var="tt"
+                                           itemValue="#{tt.idTipoOt}"
+                                           itemLabel="#{tt.descTipoOt}"/>    
+
+                        </h:selectOneMenu>
+                    </td>
+                    <td>
+                        <h:panelGroup>
+                            <h:outputText value="*"  />
+                            <h:outputText value="Tecnología"/>
+                        </h:panelGroup>  
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="tecnologiasList"  value="#{visitaTecnicaBean.tecnologia.basicaId}"
+                                         style="width: 140px"
+                                         required="true"
+                                         disabled="#{visitaTecnicaBean.tecnologia.basicaId != null ||  visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{visitaTecnicaBean.listTablaBasicaTecnologias}" var="tec"
+                                           itemValue="#{tec.basicaId}"
+                                           itemLabel="#{tec.nombreBasica}"/>                 
+                        </h:selectOneMenu>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td> <h:outputText value="Costo Total VT"/></td>
+                    <td> <h:outputText id="costoTotal"  value="#{costosVtBean.costoTotalAcometida}">
+                            <f:convertNumber pattern="$#,##0.00" />
+                        </h:outputText></td>
+                    <td> <h:outputText  value="Nro Torres"/></td>
+                    <td> <h:outputText  id="nroTorre" value="#{visitaTecnicaBean.contarSubEdificiosVt()}"/>  </td>
+                    <td> <h:outputText  value="Total de Unidades"/></td>
+                    <td> <h:outputText  id="totalUnidades" value="#{visitaTecnicaBean.contarHhppSubEdificioVt()}"/></td>
+                    <td> <h:outputText value="Nivel Socio Económico"/></td>
+                    <td> <h:outputText  id="estrato" value="#{visitaTecnicaBean.vt.otObj.cmObj.subEdificioGeneral.estrato.nombreBasica}"/></td>
+
+                </tr>
+                <tr>
+                    <td> <h:outputText  value="División"/></td>
+                    <td> <h:outputText  id="division" value="#{visitaTecnicaBean.vt.otObj.cmObj.division}"/>  </td>
+                    <td> <h:outputText  value="Área"/></td>
+                    <td> <h:outputText  id="area" value="#{visitaTecnicaBean.vt.otObj.cmObj.subEdificioGeneral.nodoObj.areId.nombreBasica}"/></td>
+                    <td> <h:outputText value="Zona"/></td>
+                    <td> <h:outputText  id="zona" value="#{visitaTecnicaBean.vt.otObj.cmObj.subEdificioGeneral.nodoObj.zonId.nombreBasica}"/></td>
+
+                </tr>
+                <tr>
+                    <td> <h:outputText value="Aporte Financiero ($)"/></td>
+                    <td> <h:inputText id="aporteFonanciero" value="#{itemVtBean.vt.aporteFinanciero}" converterMessage=" Aporte Financiero es numerico" required="true" requiredMessage="Aporte Financiero es obligatorio">
+                            <f:convertNumber pattern="#,##0.00" currencySymbol="$" />
+                        </h:inputText></td>
+
+                    <td> <h:outputText  value="Compromiso Comercial (%)"/></td>
+                    <td>
+                        <h:inputText id="compromisoComercial" value="#{visitaTecnicaBean.vt.meta}"
+                                      disabled="#{ visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     converterMessage="El compromiso comercial debe ser un valor entero entre 0(cero) y 100(cien)"
+                                     validatorMessage="El compromiso comercial debe ser un valor entero entre 0(cero) y 100(cien)">
+                            <f:convertNumber maxIntegerDigits="3" integerOnly="true" />
+                            <f:validateLongRange maximum="100" minimum="0" />
+                        </h:inputText>
+                    </td>
+
+                    <!-- <td><h:outputText value="Fecha habilitación" id="FHabilitacionVtLabel" /></td>
+                    <td>   
+                        <h:panelGroup id="panelGruopFHabilitacionVt">
+                            <h:inputText label="Fecha habilitación" id="FHabilitacionVtInput" style="width: 120px"
+                                         value="# {visitaTecnicaBean.vt.fechaEntregaEdificio}"                                          
+                                        disabled="# {visitaTecnicaBean.vt.otObj.estadoInternoObj.basicaId == 10}"
+                                         readonly="false"  styleClass="datepicker"
+                                         validatorMessage="Formato de fecha incorrecto en el campo Fecha Programación">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                            </h:inputText>
+                        </h:panelGroup>
+                    </td>-->
+
+                    <td> <h:outputText  value="Tiempo de  Recuperación"/></td>
+                    <td> 
+                        <h:selectOneMenu id="periodoRecuperacion" 
+                                          disabled="#{ visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         value="#{visitaTecnicaBean.vt.tiempoRecuperacion}" style="width: 140px">
+                            <f:selectItem itemValue="6" itemLabel="6 Meses" />
+                            <f:selectItem itemValue="12" itemLabel="12 Meses" />
+                            <f:selectItem itemValue="18" itemLabel="18 Meses" />
+                            <f:selectItem itemValue="24" itemLabel="24 Meses" />
+                            <f:selectItem itemValue="36" itemLabel="36 Meses" />
+                        </h:selectOneMenu>
+                    </td>
+
+                </tr>
+                <tr>
+
+                    <td> <h:outputText  value="Periodo Recuperación"/></td>
+                    <td> <h:selectOneMenu id="tiempoRec" value="#{visitaTecnicaBean.periodoRecuperacion}" 
+                                           disabled="#{ visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                          style="width: 140px">
+                            <f:selectItem itemValue="1" itemLabel="Aceptable" />
+                            <f:selectItem itemValue="0" itemLabel="No Aprobado" />
+                        </h:selectOneMenu>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td> <h:outputText value="Nodos"/></td>
+                    <td> 
+                        <h:panelGroup id="cmDataD" >
+                            <div id="idDivTab" style="overflow-y: #{subEdificiosVtBean.subEdificioVtList != null and subEdificiosVtBean.subEdificioVtList.size() > 3 ? 'scroll' : 'hidden'}; height: 75px;" >
+                                <h:dataTable class="contenidoTable" value="#{subEdificiosVtBean.subEdificioVtList}" var="s" >
+                                    <h:column headerClass="col1">
+                                        <f:facet name="header">Nombre</f:facet>
+                                        <h:inputText value="#{s.nombreSubEdificio}" title="#{s.getDirSubEdificioVT()}"  disabled="true" />
+                                    </h:column> 
+                                    <h:column headerClass="col2">
+                                        <f:facet name="header">Nodo</f:facet>
+                                        <h:inputText value="#{s.codigoNodo}" title="#{s.codigoNodo}" disabled="true" style="text-align: center;" />
+                                    </h:column>  
+                                </h:dataTable>
+                            </div>
+
+                        </h:panelGroup>
+
+                    </td>
+                    <td></td>
+                    <td>
+                        <h:dataTable id="tableCargaArchivoViabilidad"
+
+                                     styleClass="constructGTable2"
+                                     headerClass="constructGTableHeader" 
+                                     value="#{visitaTecnicaBean.lstArchivosVtMgls}" var="archivosLst"
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Archivo VT"/>
+                                </f:facet>
+                                <h:outputText value="&#160;" />
+                                <h:outputText value="#{archivosLst.idArchivosVt}" />  
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre Archivo"/>
+                                </f:facet>
+                                <h:outputText escape="false" 
+                                              value="#{itemVtBean.armarUrl(archivosLst)}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Acción"/>
+                                </f:facet>
+                                <h:commandLink id="lnkCancelar"
+                                       value="" title="Eliminar"
+                                       actionListener="#{itemVtBean.eliminarArchivo(archivosLst)}"
+                                       styleClass="btnIconEliminar"
+                                       onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"/>
+                            </h:column>
+                        </h:dataTable> 
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <h:panelGroup id="panelGroupCostosTotalesInfra" >
+            <h:panelGrid columns="1">                            
+                <p:fileUpload  id="fileVtInfra"  label="Seleccionar Archivo"
+                               value="#{visitaTecnicaBean.uploadedFile}" 
+                               rendered="#{itemVtBean.activacionUCM}"
+                               mode="simple" skinSimple="true"/>
+
+            </h:panelGrid>
+        </h:panelGroup>
+
+    </ui:define>
+</ui:composition>

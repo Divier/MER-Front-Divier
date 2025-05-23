@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+	<proxies>
+        <proxy>
+            <protocol>http</protocol>
+            <active>true</active>
+            <port>3128</port>
+            <host>hbogproxy01.globalhitss.com</host>
+        </proxy>
+	</proxies>
+	
+	<profiles>
+		<profile>
+			<id>MGLProfile</id>
+			<repositories>
+				<repository>
+				 <id>mvnrepository</id>
+				 <name>MVN Repository - Jabylon</name>
+				 <url>http://www.jabylon.org/maven</url>
+			   </repository>
+			   <repository>
+				 <id>centralMaven</id>
+				 <name>MVN Repository - Central Maven2</name>
+				 <url>http://central.maven.org/maven2</url>
+			   </repository>
+			   <repository>
+				 <id>maven2</id>
+				 <name>Maven2 Repository</name>
+				 <url>https://repo.maven.apache.org/maven2</url>
+			   </repository>
+			   <repository>
+				 <id>Repo1 maven2</id>
+				 <name>Maven2 Repository - Repo1</name>
+				 <url>http://repo1.maven.org/maven2</url>
+			   </repository>
+			   <repository>
+				 <id>mavenMIT</id>
+				 <name>Maven MIT</name>
+				 <url>http://maven.mit.edu/nexus/content/repositories/public</url>
+			   </repository>
+			 </repositories>
+		</profile>
+	</profiles>
+	
+	 <activeProfiles>
+	   <activeProfile>MGLProfile</activeProfile>
+	 </activeProfiles>
+    
+    <localRepository>${user.home}/.m2/claro_repository/</localRepository>
+	
+</settings>

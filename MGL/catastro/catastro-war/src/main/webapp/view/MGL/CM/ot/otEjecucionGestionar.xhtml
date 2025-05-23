@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/main.xhtml"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title"><span class="TituloSeccion">Gestión de Ordenes de Trabajo Aprobadas Financieramente</span></ui:define>
+    <ui:define name="content">
+        <h2>Gestión de Ordenes de Trabajo Aprobadas Financieramente</h2>
+
+        <h:dataTable id="OrdenesTrabajoAproFinanTable" 
+                     value="#{generarOtEjecucionBean.ordenTrabajoGeneranAcoList}" 
+                     var="ot" rows="#{generarOtEjecucionBean.filasPag}"                         
+                     styleClass="constructGTable" 
+                     rowClasses="constructGTableEvenRow, constructGTableOddRow "
+                     style="width: 100%">
+
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Fecha Ingreso" />
+                     <p:calendar id="button" 
+                                value="#{generarOtEjecucionBean.filtroConsultaOrdenesDto.fechaIngresoSeleccionada}" 
+                                style="white-space: nowrap;"
+                                styleClass="estiloCalendar"
+                                showOn="both">
+                                <f:ajax event="dateSelect" listener="#{generarOtEjecucionBean.filtrarInfo()}"  
+                                 execute="@this OrdenesTrabajoAproFinanTable" 
+                                 render="OrdenesTrabajoAproFinanTable"/>
+                    </p:calendar>
+                </f:facet>
+                <h:outputText value="#{ot.fechaCreacion}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                </h:outputText>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Id OT" />
+                    <h:inputText  maxlength="20" id="idOtId" 
+                                  style="width: 50px"  onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{generarOtEjecucionBean.filtroConsultaOrdenesDto.idOtSelecionada}">
+                        <f:ajax listener="#{generarOtEjecucionBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoAproFinanTable"/>
+                    </h:inputText>
+                </f:facet>
+                <h:commandLink value="#{ot.idOt}"
+                               action="#{generarOtEjecucionBean.goGestionOtEjecucion(ot)}"
+                               disabled="#{!generarOtEjecucionBean.validarIdOtRol()}"/>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Cuenta Matriz" />
+                    <h:inputText  maxlength="50" id="ccmmIdRrId" 
+                                  style="width: 80px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{generarOtEjecucionBean.filtroConsultaOrdenesDto.ccmmRrSelecionada}">
+                        <f:ajax listener="#{generarOtEjecucionBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoAproFinanTable"/>
+                    </h:inputText>
+                </f:facet>
+                <h:commandLink value="#{ot.cmObj.numeroCuenta}"
+                               action="#{generarOtEjecucionBean.goCuentaMatriz(ot.cmObj)}"
+                               disabled="#{!generarOtEjecucionBean.validarIdOtRol()}"/>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Tipo de OT" />
+                    <h:inputText  maxlength="100" id="tipoOtId" 
+                                  style="width: 170px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{generarOtEjecucionBean.filtroConsultaOrdenesDto.tipoOtSelecionada}">
+                        <f:ajax listener="#{generarOtEjecucionBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoAproFinanTable"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.tipoOtObj.descTipoOt}"/>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Departamento" />
+                    <h:inputText  maxlength="100" id="dptoId" 
+                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{generarOtEjecucionBean.filtroConsultaOrdenesDto.dptoSelecionado}">
+                        <f:ajax listener="#{generarOtEjecucionBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoAproFinanTable"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.cmObj.departamento.gpoNombre}"/>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Ciudad" />
+                    <h:inputText  maxlength="100" id="ciudadId" 
+                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{generarOtEjecucionBean.filtroConsultaOrdenesDto.ciudadSelecionada}">
+                        <f:ajax listener="#{generarOtEjecucionBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoAproFinanTable"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.cmObj.municipio.gpoNombre}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Tecnología" />
+                    <h:inputText  maxlength="100" id="tecnoId" 
+                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{generarOtEjecucionBean.filtroConsultaOrdenesDto.tecnoSelecionada}">
+                        <f:ajax listener="#{generarOtEjecucionBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoAproFinanTable"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.basicaIdTecnologia.nombreBasica}"/>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Estado" />
+                    <h:inputText  maxlength="100" id="estadoId" 
+                                  style="width: 140px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{generarOtEjecucionBean.filtroConsultaOrdenesDto.estIntSelecionada}">
+                        <f:ajax listener="#{generarOtEjecucionBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoAproFinanTable"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.estadoInternoObj.nombreBasica}"/>
+            </h:column>
+             <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="SLA" />
+                    <h:inputText  maxlength="50" id="slaId" 
+                                  style="width: 50px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{generarOtEjecucionBean.filtroConsultaOrdenesDto.slaSeleccionada}">
+                        <f:ajax listener="#{generarOtEjecucionBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoAproFinanTable"/>
+                    </h:inputText>
+                </f:facet>
+                 <h:outputText value="#{ot.tipoOtObj.ans}"/>
+            </h:column>
+
+            <f:facet name="footer" >
+                <h:panelGroup rendered="#{generarOtEjecucionBean.showFooterTable}">
+                    <h:commandButton value="" action="#{generarOtEjecucionBean.pageFirst}"
+                                     class="botonTPagInicioCm botonBaselista"/>
+                    <h:commandButton value="" action="#{generarOtEjecucionBean.pagePrevious}"
+                                     class="botonTPagAnteriorCm botonBaselista"/>
+                    <h:commandButton value="#{generarOtEjecucionBean.pageActual}" styleClass="botonTPagInicio"    />
+                    <h:selectOneMenu id="listTabla" value="#{generarOtEjecucionBean.numPagina}" 
+                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                        <f:selectItems value="#{generarOtEjecucionBean.paginaList}" var="pag"
+                                       itemValue="#{pag}"
+                                       itemLabel="#{pag}"/>       
+                          <f:ajax listener="#{generarOtEjecucionBean.irPagina}"
+                           event="change" execute="@this" render="OrdenesTrabajoAproFinanTable"/>
+                    </h:selectOneMenu>  
+                    <h:commandButton value="" action="#{generarOtEjecucionBean.pageNext}"
+                                     class="botonTPagSiguienteCm botonBaselista"/>
+                    <h:commandButton value="" action="#{generarOtEjecucionBean.pageLast}"
+                                     class="botonTPagFinCm botonBaselista"/>
+                </h:panelGroup>
+            </f:facet> 
+        </h:dataTable>
+    </ui:define>
+</ui:composition>

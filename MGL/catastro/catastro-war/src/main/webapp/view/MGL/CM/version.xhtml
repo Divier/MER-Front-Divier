@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:panelGrid columns="1">
+        <h:outputLabel value="Servidor:  " />
+        <h:outputLabel value="#{ApplicationBean.hostName}" />
+        
+        <h:outputLabel value="Nodo: " />
+        <h:outputLabel value="#{ApplicationBean.serverWlName}" />
+        
+        <h:outputLabel value="Versión: " />
+        <h:outputLabel value="#{ApplicationBean.metadataProyecto.version}" />
+        
+        <h:outputLabel value="Fecha Compilación: " />
+        <h:outputLabel value="#{ApplicationBean.metadataProyecto.fechaVersion}" />
+
+        <h:outputLabel value="Perfil: "/>
+        <h:outputLabel value="#{usuarioLogueado.idPerfilUsuario}"/>
+        
+        <h:outputLabel value="Usuario: " />
+        <h:outputLabel value="#{usuarioLogueado.usuarioLogueado}" />
+        <h:commandLink immediate= "true" value = "Log out" action = "#{loginMglBean.cerrarSesion()}"   /> 
+        
+        
+    </h:panelGrid>
+</ui:composition>

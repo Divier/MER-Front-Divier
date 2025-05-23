@@ -1,0 +1,34 @@
+<pcml version="4.0">                                                           
+   <!-- RPG module: CLPLTIR0  -->                                             
+   <!-- created: 2019-04-16-09.19.05 -->
+   <!-- old source: JSEGURA/QDSCLARO(INSPLANTA) -->
+   <!-- source: JSEGURA/QDSCLARO(CLPLTIR0) -->                                
+   <!-- 3800 -->                                                               
+   <program name="CLPLTIR0"  path="/QSYS.LIB/TVCABLEEXE.LIB/CLPLTIR0.PGM">                           
+      <data name="IDPRC" type="char" length="1" usage="inputoutput" />         
+      <data name="IDUSER" type="char" length="10" usage="inputoutput" />       
+      <data name="PFHTYP" type="char" length="2" usage="inputoutput" />        
+      <data name="PFHEND" type="char" length="6" usage="inputoutput" />        
+      <data name="PFSTYP" type="char" length="2" usage="inputoutput" />        
+      <data name="PFSNOD" type="char" length="6" usage="inputoutput" />        
+      <data name="PFRTYP" type="char" length="2" usage="inputoutput" />        
+      <data name="PFRNOD" type="char" length="6" usage="inputoutput" />        
+      <data name="PFDESC" type="char" length="40" usage="inputoutput" />       
+      <data name="PF1DYNP" type="char" length="3" usage="inputoutput" />       
+      <data name="PF1DYTP" type="char" length="3" usage="inputoutput" />       
+      <data name="PF2DYNP" type="char" length="3" usage="inputoutput" />       
+      <data name="PF2DYTP" type="char" length="3" usage="inputoutput" />     
+      <data name="PF1WKNP" type="char" length="3" usage="inputoutput" />     
+      <data name="PF1WKTP" type="char" length="3" usage="inputoutput" />     
+      <data name="PF1MTNP" type="char" length="3" usage="inputoutput" />     
+      <data name="PF1MTTP" type="char" length="3" usage="inputoutput" />     
+      <data name="PF1YRNP" type="char" length="5" usage="inputoutput" />     
+      <data name="PF1YRTP" type="char" length="5" usage="inputoutput" />     
+      <data name="IDENDM" type="char" length="7" usage="inputoutput" />      
+      <data name="ENDMSG" type="char" length="200" usage="inputoutput" />    
+  </program>                                                                
+</pcml> 
+
+
+
+ 

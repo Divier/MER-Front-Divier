@@ -1,0 +1,242 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/vt.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes">
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>
+    <ui:define name="content">
+        <h2>Sub - Edificios</h2>
+        <h:panelGrid id="panelGridEdProcess" columns="2" style="width: 100%" >
+            <h:panelGroup id="panelGroupListEdSinVt" style="width: 20%" 
+                          rendered="#{subEdificiosVtBean.subEdificioSinVtList != null
+                                      and subEdificiosVtBean.subEdificioSinVtList.size() > 0 }">
+                <ui:include src="subEdificioCmSinVtList.xhtml" />
+            </h:panelGroup>
+            <h:panelGroup id="panelGroupOptCreaSubEd" style="width: 80%" 
+                          rendered="#{!subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean}">
+                <h:panelGrid columns="2" class="formulario2" style="width: 50%">
+                    <h:outputText value="Número de Sub-Edificios"/>
+                    <h:inputText id="txtCantidadSubEdificio"
+                                 maxlength="4" disabled="#{ subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                 required="#{subEdificiosVtBean.subEdificioVtList == null or subEdificiosVtBean.subEdificioVtList.size() == 0}"
+                                 requiredMessage="El campo Número de Sub-Edificios es requerido"
+                                 validatorMessage="Debe ingresar un valor mayor a Cero en el campo Número de Sub-Edificios"
+                                 value="#{subEdificiosVtBean.cantidadSubEdificio}">
+                    </h:inputText>
+                </h:panelGrid>
+                <h:panelGrid columns="4" class="formulario2" style="width: 100%">
+                    <h:outputText value="Nivel 1"/>
+                    <h:outputText value="Nivel 2"/>
+                    <h:outputText value="Nivel 3"/>
+                    <h:outputText value="Nivel 4"/>
+
+                    <h:selectOneMenu id="nivel1" disabled="#{subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}" 
+                                     value="#{subEdificiosVtBean.optipoNivel1}"
+                                     requiredMessage="Debe seleccionar un valor para el Nivel 1">
+                        <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                        <f:selectItems value="#{subEdificiosVtBean.tipoSubEdificioList}" var="subEdiVt1"
+                                       itemValue="#{subEdiVt1.basicaId}"
+                                       itemLabel="#{subEdiVt1.nombreBasica}" />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="nivel2" value="#{subEdificiosVtBean.optipoNivel2}" 
+                                     disabled="#{subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}" >
+                        <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                        <f:selectItems value="#{subEdificiosVtBean.tipoSubEdificioList}" var="subEdiVt2"
+                                       itemValue="#{subEdiVt2.basicaId}"
+                                       itemLabel="#{subEdiVt2.nombreBasica}" />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="nivel3" value="#{subEdificiosVtBean.optipoNivel3}" 
+                                     disabled="#{subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}" >
+                        <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                        <f:selectItems value="#{subEdificiosVtBean.tipoSubEdificioList}" var="subEdiVt3"
+                                       itemValue="#{subEdiVt3.basicaId}"
+                                       itemLabel="#{subEdiVt3.nombreBasica}" />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="nivel4" value="#{subEdificiosVtBean.optipoNivel4}" 
+                                     disabled="#{subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}" >
+                        <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                        <f:selectItems value="#{subEdificiosVtBean.tipoSubEdificioList}" var="subEdiVt4"
+                                       itemValue="#{subEdiVt4.basicaId}"
+                                       itemLabel="#{subEdiVt4.nombreBasica}" />
+                    </h:selectOneMenu>
+
+                </h:panelGrid>
+
+            </h:panelGroup>
+        </h:panelGrid>
+                       
+                <h:panelGroup style="width: 100%; margin: 0px auto ; alignment-adjust: central; "
+                               rendered="#{subEdificiosVtBean.subEdificioSinVtList != null
+                                       }">
+                    <h:commandButton id="btnCrearSubEdi" value="Crear Sub-Edificios"
+                                     styleClass="btn" disabled="#{subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'
+                                            || !subEdificiosVtBean.isRolCrearSubEdificios()}"
+                                     action="#{subEdificiosVtBean.crearSubEdificios()}"
+                                     rendered="#{!visitaTecnicaBean.validarEstadoFlujoOT() and !subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean}"/>
+                    <h:panelGroup style="width: 100%; margin: 0px auto ; alignment-adjust: central"></h:panelGroup>
+                  
+
+                </h:panelGroup>
+         
+     
+        
+        <h:panelGroup id="panelGroupListEdVt" >
+
+            <h:panelGrid columns="1" class="formulario2" width="100%" >
+                <h:dataTable id="tableSubEdi"
+                             rendered="#{subEdificiosVtBean.subEdificioVtList != null and subEdificiosVtBean.subEdificioVtList.size() > 0}"
+                             value="#{subEdificiosVtBean.subEdificioVtList}" var="subEdiLst"
+                             styleClass="constructGTable2"
+                             headerClass="constructGTableHeader"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nivel 1"/>
+                        </f:facet>
+                        <h:selectOneMenu id="tbNivel1" 
+                                         style="width: 55%"
+                                         disabled="#{(subEdiLst.prossesedAnnyHhpp)||(subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean) ||subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         value="#{subEdiLst.optipoNivel1}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{subEdificiosVtBean.tipoSubEdificioList}" var="tbSubEdiVt1"
+                                           itemValue="#{tbSubEdiVt1.basicaId}"
+                                           itemLabel="#{tbSubEdiVt1.nombreBasica}" />
+                        </h:selectOneMenu>
+                        <h:outputText value="&#160;" />
+                        <h:inputText id="txtNivel1" 
+                                     disabled="#{subEdiLst.prossesedAnnyHhpp||(subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean)|| subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     style="width: 40%"
+                                     value="#{subEdiLst.valorNivel1}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nivel 2"/>
+                        </f:facet>
+                        <h:selectOneMenu id="tbNivel2"
+                                         style="width: 55%"
+                                         disabled="#{(subEdiLst.prossesedAnnyHhpp)||(subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean)|| subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         value="#{subEdiLst.optipoNivel2}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{subEdificiosVtBean.tipoSubEdificioList}" var="tbSubEdiVt2"
+                                           itemValue="#{tbSubEdiVt2.basicaId}"
+                                           itemLabel="#{tbSubEdiVt2.nombreBasica}" />
+                        </h:selectOneMenu>
+                        <h:outputText value="&#160;" />
+                        <h:inputText id="txtNivel2"
+                                     disabled="#{subEdiLst.prossesedAnnyHhpp||(subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean)|| subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     style="width: 40%"
+                                     value="#{subEdiLst.valorNivel2}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nivel 3"/>
+                        </f:facet>
+                        <h:selectOneMenu id="tbNivel3"
+                                         style="width: 55%"
+                                         disabled="#{(subEdiLst.prossesedAnnyHhpp)||(subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean)|| subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         value="#{subEdiLst.optipoNivel3}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{subEdificiosVtBean.tipoSubEdificioList}" var="tbSubEdiVt3"
+                                           itemValue="#{tbSubEdiVt3.basicaId}"
+                                           itemLabel="#{tbSubEdiVt3.nombreBasica}" />
+                        </h:selectOneMenu>
+                        <h:outputText value="&#160;" />
+                        <h:inputText id="txtNivel3"
+                                     disabled="#{subEdiLst.prossesedAnnyHhpp||(subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean)|| subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     style="width: 40%"
+                                     value="#{subEdiLst.valorNivel3}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nivel 4"/>
+                        </f:facet>
+                        <h:selectOneMenu id="tbNivel4"
+                                         disabled="#{(subEdiLst.prossesedAnnyHhpp)||(subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean)|| subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         style="width: 55%"
+                                         value="#{subEdiLst.optipoNivel4}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{subEdificiosVtBean.tipoSubEdificioList}" var="tbSubEdiVt4"
+                                           itemValue="#{tbSubEdiVt4.basicaId}"
+                                           itemLabel="#{tbSubEdiVt4.nombreBasica}" />
+                        </h:selectOneMenu>
+                        <h:outputText value="&#160;" />
+                        <h:inputText id="txtNivel4"
+                                     disabled="#{subEdiLst.prossesedAnnyHhpp||(subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean)||subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     style="width: 40%"
+                                     value="#{subEdiLst.valorNivel4}"/>
+                    </h:column>
+                 <h:column>                    
+                            <f:facet name="header">
+                                <h:outputText value="Dirección"/>
+                            </f:facet>
+                            <h:inputText id="txtDireccion"   
+                                         disabled="#{(subEdiLst.prossesedAnnyHhpp)||(subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean)|| subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                            style="width: 85%" title="#{subEdiLst.subEdificioObj.direccionSubEdificio}"
+                                         value="#{subEdiLst.direccionSubEdificio}"/>
+                            <h:outputText value="&#160;" />
+                            <h:commandButton  id="mostrarComponenteButtonSolCrea" 
+                                              disabled="#{(subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                               subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA' ||
+                                               (subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean)) ||
+                                               !visitaTecnicaBean.validarCrearMultiedificio()}"
+                                              image="/view/img/home.gif" 
+                                              style="width: 13px; " 
+                                              title="Validar dirección">
+                                <f:ajax render="@form" execute="@form" 
+                                        event="click" listener="#{visitaTecnicaBean.irPopUpDireccion(subEdiLst)}" />
+                            </h:commandButton>
+                        </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nro de Pisos"/>
+                        </f:facet>
+                        <h:inputText id="txtPisos" label="número de pisos"
+                                     disabled="#{subEdiLst.prossesedAnnyHhpp || subEdiLst.tipoNivel1.identificadorInternoApp eq '@B_CASAS'  || subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     style="width: 55%"
+                                     value="#{subEdiLst.numeroPisosCasas}"/>
+                    </h:column>
+                  <!--  <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nodo"/>
+                        </f:facet>
+                        <h:inputText id="idNodo"
+                                     disabled="# {subEdiLst.prossesedAnnyHhpp || (subEdificiosVtBean.vt.otObj.estadoInternoObj.basicaId == 10) ||  (subEdificiosVtBean.vt.otObj.estadoInternoObj.basicaId == 11)}"
+                                     style="width: 55%"
+                                     value="# {subEdiLst.codigoNodo}"/>
+                    </h:column> -->
+                    <h:column>
+                        <h:commandLink id="lnkEliminar"
+                                       disabled="#{(subEdiLst.prossesedAnnyHhpp ||
+                                       subEdiLst.prossesedAnnyHhpp ||
+                                       subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                       subEdificiosVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA' ) ||
+                                       !visitaTecnicaBean.validarELiminarMultiedificio()}"
+                                       value="" title="Eliminar"
+                                       action="#{subEdificiosVtBean.deleteSubEdificioVt(subEdiLst)}"
+                                       styleClass="btnIconEliminar"
+                                       rendered="#{!visitaTecnicaBean.validarEstadoFlujoOT()}"/>
+                    </h:column>
+                </h:dataTable>
+            </h:panelGrid>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

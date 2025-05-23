@@ -1,0 +1,238 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/main.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Viabilidad HHPP</span></ui:define>
+    <ui:define name="content">
+        <h3>Viabilidad Segmento Estratos</h3>
+        <h:panelGrid id="panelViabilidadTable" 
+                     columns="1" style="width: 100%;"
+                     rendered="#{!viabilidadSegmentoEstratoBean.renderDetalle}">
+            <div class="tableContent" >
+                <h:dataTable id="CompetenciaMglTable" 
+                             value="#{viabilidadSegmentoEstratoBean.listaViabilidadEstratos}" 
+                             var="viabilidad" rows="15"                         
+                             styleClass="constructGTable" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                             style="width: 100%">
+
+                    <h:column>
+                        <div align="CENTER">
+                            <f:facet name="header">
+                                <h:outputText value="ID" />
+                                <br />
+                                <h:inputText  maxlength="50" id="codigoId" 
+                                              style="width: 50px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{viabilidadSegmentoEstratoBean.filtroConsultaViabilidadSegmentoDto.idViaSeleccionada}"
+                                              >
+                                    <f:ajax listener="#{viabilidadSegmentoEstratoBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="CompetenciaMglTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:commandLink value="#{viabilidad.reglaId}"
+                                           disabled="#{!viabilidadSegmentoEstratoBean.validarIdRol()}"
+                                           actionListener="#{viabilidadSegmentoEstratoBean.verDetalleViabilidad(viabilidad)}" />
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <div align="CENTER">
+                            <f:facet name="header">
+                                <h:outputText value="ESTADO VIABILIDAD" />
+                                <br />
+                                <h:selectOneMenu id="estadoViaId"  style="width: 100px"
+                                                 value="#{viabilidadSegmentoEstratoBean.filtroConsultaViabilidadSegmentoDto.estadoViaSeleccionada}">
+                                    <f:selectItem itemLabel="Todos" itemValue=""/>
+                                    <f:selectItem itemLabel="Activo" itemValue="Activo"/>
+                                    <f:selectItem itemLabel="Inactivo" itemValue="Inactivo"/>   
+                                    <f:ajax listener="#{viabilidadSegmentoEstratoBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="CompetenciaMglTable"/>
+                                </h:selectOneMenu> 
+                            </f:facet>
+                            <h:outputText value="#{viabilidadSegmentoEstratoBean.buscarValorLista(viabilidadSegmentoEstratoBean.listaEstadosRegistro, viabilidad.estadoRegistro)}"/>
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <div align="CENTER">
+                            <f:facet name="header">
+                                <h:outputText value="SEGMENTO" />
+                                <br />
+                                  <h:selectOneMenu id="segmentoId"  style="width: 100px"
+                                                 value="#{viabilidadSegmentoEstratoBean.filtroConsultaViabilidadSegmentoDto.segmentoSeleccionado}">
+                                    <f:selectItem itemLabel="Todos" itemValue=""/>
+                                    <f:selectItem itemLabel="Pyme" itemValue="PY"/>
+                                    <f:selectItem itemLabel="Soho" itemValue="SH"/> 
+                                    <f:selectItem itemLabel="Residencial" itemValue="RE"/> 
+                                    <f:ajax listener="#{viabilidadSegmentoEstratoBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="CompetenciaMglTable"/>
+                                </h:selectOneMenu> 
+                            </f:facet>
+                            <h:outputText value="#{viabilidadSegmentoEstratoBean.buscarValorLista(viabilidadSegmentoEstratoBean.listaSegmentos, viabilidad.segmento)}"/>
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <div align="CENTER">
+                            <f:facet name="header">
+                                <h:outputText value="ESTRATO" />
+                                <br />
+                                <h:inputText  maxlength="50" id="estratoId" 
+                                              style="width: 50px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{viabilidadSegmentoEstratoBean.filtroConsultaViabilidadSegmentoDto.estratoSeleccionado}">
+                                    <f:ajax listener="#{viabilidadSegmentoEstratoBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="CompetenciaMglTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{viabilidadSegmentoEstratoBean.buscarValorLista(viabilidadSegmentoEstratoBean.listaEstratos, viabilidad.estrato)}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="CENTER">
+                            <f:facet name="header">
+                                <h:outputText value="VIABLE" />
+                                <br />
+                                <h:selectOneMenu id="viableId"  style="width: 100px"
+                                                 value="#{viabilidadSegmentoEstratoBean.filtroConsultaViabilidadSegmentoDto.viableSeleccionada}">
+                                    <f:selectItem itemLabel="Todos" itemValue=""/>
+                                    <f:selectItem itemLabel="SI" itemValue="SI"/>
+                                    <f:selectItem itemLabel="NO" itemValue="NO"/>   
+                                    <f:ajax listener="#{viabilidadSegmentoEstratoBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="CompetenciaMglTable"/>
+                                </h:selectOneMenu> 
+                            </f:facet>
+                            <h:outputText value="#{viabilidadSegmentoEstratoBean.buscarValorLista(viabilidadSegmentoEstratoBean.listaOpcionesViabilidad, viabilidad.viable)}"/>
+                        </div>
+                    </h:column>
+
+
+
+                    <f:facet name="footer">
+                        <h:panelGroup>
+                            <h:commandButton value="" action="#{viabilidadSegmentoEstratoBean.pageFirst}"
+                                             class="botonTPagInicioCm botonBaselista"/>
+                            <h:commandButton value="" action="#{viabilidadSegmentoEstratoBean.pagePrevious}"
+                                             class="botonTPagAnteriorCm botonBaselista"/>
+                            <h:commandButton value="#{viabilidadSegmentoEstratoBean.pageActual}" styleClass="botonTPagInicio"    />
+                            <h:selectOneMenu id="listTabla" value="#{viabilidadSegmentoEstratoBean.numPagina}" 
+                                             styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                <f:selectItems value="#{viabilidadSegmentoEstratoBean.paginaList}" var="pag"
+                                               itemValue="#{pag}"
+                                               itemLabel="#{pag}"/>    
+                                <f:ajax render="@form"  event="change"  listener="#{viabilidadSegmentoEstratoBean.irPagina()}"  execute="@this" />                                         
+                            </h:selectOneMenu>  
+                            <h:commandButton value="" action="#{viabilidadSegmentoEstratoBean.pageNext}"
+                                             class="botonTPagSiguienteCm botonBaselista"/>
+                            <h:commandButton value="" action="#{viabilidadSegmentoEstratoBean.pageLast}"
+                                             class="botonTPagFinCm botonBaselista"/>
+                        </h:panelGroup>
+                    </f:facet> 
+                </h:dataTable>
+            </div>
+            <h:commandButton value="Crear" styleClass="btn"
+                             action="#{viabilidadSegmentoEstratoBean.irCrearViabilidad()}" 
+                             disabled="#{!viabilidadSegmentoEstratoBean.validarCrearRol()}"/>
+        </h:panelGrid>
+        <div align="center">
+            <h:panelGroup id="panelGroupDetalle" 
+                          rendered="#{viabilidadSegmentoEstratoBean.renderDetalle}">
+                <h:panelGrid id="panelDetalleCompetencia" style="width: 50% "
+                             rendered="#{viabilidadSegmentoEstratoBean.renderDetalle}"  columns="2" >
+
+                    <h:panelGroup>
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl" value="Estado Viabilidad"  />
+                    </h:panelGroup>
+                    <h:selectOneMenu  id="selOneMenuEstado" 
+                                      styleClass="ListaConsulta" style="width: 50%"
+                                      value="#{viabilidadSegmentoEstratoBean.viabilidadSelected.estadoRegistro}"
+                                      required="true" requiredMessage="El campo Estado Viabilidad es requerido.">
+                        <f:selectItem itemValue="" itemLabel="" /> 
+                        <f:selectItems value="#{viabilidadSegmentoEstratoBean.listaEstadosRegistro}" var="li"
+                                       itemValue="#{li.value}"
+                                       itemLabel="#{li.label}"/>
+                    </h:selectOneMenu> 
+
+                    <h:panelGroup>
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl" value="Segmento"  />
+                    </h:panelGroup>
+                    <h:selectOneMenu  id="selOneMenuEstadosNodos" 
+                                      styleClass="ListaConsulta" style="width: 50%"
+                                      value="#{viabilidadSegmentoEstratoBean.viabilidadSelected.segmento}"
+                                      required="true" requiredMessage="El campo Segmento es requerido.">
+                        <f:selectItem itemValue="" itemLabel="" /> 
+                        <f:selectItems value="#{viabilidadSegmentoEstratoBean.listaSegmentos}" var="li"
+                                       itemValue="#{li.value}"
+                                       itemLabel="#{li.label}"/>
+                    </h:selectOneMenu>   
+
+                    <h:panelGroup>
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl" value="Estrato"  />
+                    </h:panelGroup>
+                    <h:selectOneMenu  id="selOneMenuEstadosCm" 
+                                      styleClass="ListaConsulta" style="width: 50%"
+                                      value="#{viabilidadSegmentoEstratoBean.viabilidadSelected.estrato}"
+                                      required="true" requiredMessage="El campo Estrato es requerido.">
+                        <f:selectItem itemValue="" itemLabel="" /> 
+                        <f:selectItems value="#{viabilidadSegmentoEstratoBean.listaEstratos}" var="li"
+                                       itemValue="#{li.value}"
+                                       itemLabel="#{li.label}"/>
+                    </h:selectOneMenu>   
+
+                    <h:panelGroup>
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl" value="Viable"  />
+                    </h:panelGroup>
+                    <h:selectOneMenu  id="selOneMenuOpcViab" 
+                                      styleClass="ListaConsulta" style="width: 50%"
+                                      value="#{viabilidadSegmentoEstratoBean.viabilidadSelected.viable}"
+                                      required="true" requiredMessage="El campo Viable es requerido.">
+                        <f:selectItem itemValue="" itemLabel="" /> 
+                        <f:selectItems value="#{viabilidadSegmentoEstratoBean.listaOpcionesViabilidad}" var="li"
+                                       itemValue="#{li.value}"
+                                       itemLabel="#{li.label}"/>
+                    </h:selectOneMenu> 
+
+
+
+                    <h:panelGroup>
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl" value="Mensaje"  />
+                    </h:panelGroup>
+                    <h:inputTextarea id="textMensaje"  style="width: 50%" 
+                                     required="true" requiredMessage="Campo Mensaje es requerido"
+                                     validatorMessage="Campo Mensaje N&uacute;mero m&aacute;ximo de caracteres es 500"
+                                     value="#{viabilidadSegmentoEstratoBean.viabilidadSelected.mensaje}">
+                        <f:validateLength maximum="500" />                
+                    </h:inputTextarea>
+
+                </h:panelGrid>
+                <h:panelGrid id="panelBotonesDetalle" columns="3">
+                    <h:commandButton action="#{viabilidadSegmentoEstratoBean.crearViabilidad()}" 
+                                     rendered="#{viabilidadSegmentoEstratoBean.viabilidadSelected.reglaId == null}"
+                                     value="Crear" styleClass="btn"/>
+                    <h:commandButton action="#{viabilidadSegmentoEstratoBean.actualizarViabilidad()}" 
+                                     rendered="#{viabilidadSegmentoEstratoBean.viabilidadSelected.reglaId != null}"
+                                     value="Modificar" styleClass="btn"/>
+                    <h:commandButton action="#{viabilidadSegmentoEstratoBean.volver()}" 
+                                     immediate="true"
+                                     value="Volver" styleClass="btn"/>
+                </h:panelGrid>
+            </h:panelGroup>
+        </div>
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,275 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Track Solicitud</span></ui:define>
+    <ui:define name="content">
+
+        <h:commandButton  id="regresarButton" 
+                          class="btn2 btn2Active" 
+                          value="Regresar" 
+                          action="#{cmtEstadoSolicitudBean.regresarAConsulta()}"
+                          immediate="true" />    
+
+        <h:panelGroup id="panelGroupSolicitudTitle" style="width: 100%">
+            <h2 id="SolicitudTitle">SOLICITUD #{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudObj.nombreTipo}</h2>
+        </h:panelGroup>
+
+        <h:panelGrid columns="4" id="notasMgl" class="formulario3"  style="width:100%;"  > 
+
+            <h:outputText value="Número de Solicitud:" class="EtiquetaConsulta"/>
+            <h:outputText id="ccmsTxt" value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId}"  style="width: 100px;font-size: 14.5px;color:red;font-weight: bold; "/> 
+
+            <h:outputText value="Estado de la Solicitud:" class="EtiquetaConsulta"/>
+            <h:inputText id="esmsTxt" value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.estadoSolicitudObj.nombreBasica}"   disabled="true" style="width: 100px"/> 
+
+        </h:panelGrid> 
+
+        <h:panelGrid  class="formulario3"  columns="4">
+            <h:commandButton  id="irSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'SOLICITUD' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Solicitud" 
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('SOLICITUD')}"
+                              immediate="true" />
+            <h:commandButton  id="irEstadoSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'TRACK' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Track" 
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('TRACK')}" 
+                              immediate="true" />
+            <h:commandButton  id="irNotasSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Notas"
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('NOTAS')}"
+                              immediate="true" />
+            <h:commandButton  id="irHorarioSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'HORARIO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Horario de Atención"
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('HORARIO')}"
+                              rendered="#{cmtEstadoSolicitudBean.showHorario}"
+                              immediate="true" />
+
+        </h:panelGrid>
+        <BR/><BR/>
+
+        <h:panelGroup  rendered="#{cmtEstadoSolicitudBean.modifica}">
+            <h2>TIPO MODIFICACIÓN</h2> 
+            <h:panelGrid  class="formulario3" columns="9"  >
+                <h:outputLabel value="Datos CM" for="iMD" />
+                <h:selectBooleanCheckbox id="iMD" immediate="true"
+                                         value="#{cmtEstadoSolicitudBean.activoCheckModDatosCM}"
+                                         disabled="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId != null}">
+                </h:selectBooleanCheckbox>
+
+                <h:outputLabel value="Dirección" for="iMDir" />
+                <h:selectBooleanCheckbox id="iMDir" immediate="true"
+                                         value="#{cmtEstadoSolicitudBean.activoCheckModDireccion}"
+                                         disabled="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId != null}">
+                </h:selectBooleanCheckbox>
+
+                <h:outputLabel value="Subedificios" for="iMS" />
+                <h:selectBooleanCheckbox id="iMS" immediate="true"
+                                         value="#{cmtEstadoSolicitudBean.activoCheckModSubedificios}"
+                                         disabled="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId != null}">
+                </h:selectBooleanCheckbox>
+
+                <h:outputLabel value="Cobertura" for="iMC"/>
+                <h:selectBooleanCheckbox id="iMC" immediate="true"
+                                         value="#{cmtEstadoSolicitudBean.activoCheckModCobertura}"
+                                         disabled="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId != null}">
+                </h:selectBooleanCheckbox>
+
+            </h:panelGrid>
+        </h:panelGroup>
+
+        <BR/><BR/>
+
+        <h2>Track Solicitud</h2>
+
+        <h:dataTable id="dataTableTrackSolicitudes"
+                     styleClass="constructGTable2" headerClass="constructGTableHeader" style="width: 100%;" 
+                     value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl}"
+                     var="solicitud"
+                     rowClasses="constructGTableEvenRow, constructGTableOddRow">
+            <h:column> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Solicitud" />
+                </f:facet>
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoCreacionSolicitud eq null ?
+                                       '00:00:00' : cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoCreacionSolicitud}" />                  
+            </h:column> 
+            <h:column> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Espera" />
+                </f:facet>
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.ansSolicitud eq null ?
+                                       '00:00:00' : cmtEstadoSolicitudBean.cmtSolicitudCmMgl.ansSolicitud}" />                  
+            </h:column> 
+            <h:column rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudModificacionCreacionHhpp}"> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Gestión HHPP" />
+                </f:facet>
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoGestionHHPPSolicitud eq null ?
+                                       '00:00:00' : cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoGestionHHPPSolicitud}" />                  
+            </h:column> 
+            <h:column rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudModificacionCm}"> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Gestión Cobertura" />
+                </f:facet>
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoGestionCoberturaSolicitud eq null ?
+                                       '00:00:00' : cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoGestionCoberturaSolicitud}" />                  
+            </h:column> 
+            <h:column> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Gestión" />
+                </f:facet>
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoTotalGestionSolicitud eq null ? 
+                                       '00:00:00' : cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoTotalGestionSolicitud}" />                  
+            </h:column> 
+            <h:column> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo Total" />
+                </f:facet>
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoTotalSolicitud eq null ?
+                                       '00:00:00' : cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoTotalSolicitud}"/> 
+                <h:graphicImage value="/view/img/verde.gif"  
+                                rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.colorAlerta eq 'green'}" 
+                                style="float: right"/>
+                <h:graphicImage value="/view/img/amarillo.gif"  
+                                rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.colorAlerta eq 'yellow'}"
+                                style="float: right" />
+                <h:graphicImage value="/view/img/rojo.gif"  rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.colorAlerta eq 'red'}" 
+                                style="float: right" />
+            </h:column> 
+            <h:column> 
+                <f:facet name="header">
+                    <h:outputText value="Tiempo ANS" />
+                </f:facet>
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudObj.ans} Min" />                  
+            </h:column> 
+        </h:dataTable>
+
+        <h:panelGroup id="panelGroupTrackDetalleSolicitud">
+
+            <h2>Detalle Creación de la Solicitud</h2>
+            <h:panelGrid id="panelGridInfoTrackDetalleSolicitud" columns="2">
+                <h:outputText value="Fecha-Hora Inicio:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioCreacion}" >
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+                <h:outputText value="Fecha-Hora Finalización:" style="min-width: 150px; max-width: 150px;"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaCreacion}" >
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+                <h:outputText value="Usuario Solicitante:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.usuarioSolicitud.nombre}" /> 
+                <h:outputText value="Area:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.usuarioSolicitud.descripcionArea}" />                  
+                <h:outputText value="Correo:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.usuarioSolicitud.email}" />                  
+
+
+            </h:panelGrid>
+
+        </h:panelGroup>
+        <h:panelGroup id="panelGroupTrackDetalleGestion">
+
+            <h2>Detalle Gestión de la Solicitud</h2>
+
+            <h:panelGrid id="panelGridInfoTrackDetalleGestionSolicitud" columns="2">
+                <h:outputText value="Fecha-Hora Inicio:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.modCobertura == 1 ? '' : cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion}" >
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+
+                <h:outputText value="Fecha-Hora Inicio Gestión HHPP:"
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudModificacionCreacionHhpp}"
+                              style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp}"
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudModificacionCreacionHhpp}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+
+                <h:outputText value="Fecha-Hora Gestión HHPP:"
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudModificacionCreacionHhpp}"
+                              style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaGestionHhpp}" 
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudModificacionCreacionHhpp}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+
+                <h:outputText value="Fecha-Hora Inicio Gestión Cobertura:"
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudModificacionCm}"
+                              style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura}" 
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudModificacionCm}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+
+                <h:outputText value="Fecha-Hora Gestión Cobertura:"
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudModificacionCm}"
+                              style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaGestionCobertura}" 
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudModificacionCm}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+
+                <h:outputText value="Fecha-Hora Finalización:" style="min-width: 150px; max-width: 150px;"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.modCobertura == 1 ? '' : cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaGestion}" >
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                </h:outputText>                  
+
+                <h:outputText value="Usuario Solicitante:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.usuarioSolicitud.nombre}" 
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion != null or 
+                                          cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp != null or 
+                                          cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura != null}"/> 
+                <h:outputText value=" " rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion eq null and 
+                                                    cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp eq null and 
+                                                    cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura eq null }"/>
+                <h:outputText value="Área:" style="min-width: 150px; max-width: 150px;"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.usuarioSolicitud.descripcionArea}" 
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion != null or 
+                                          cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp != null or 
+                                          cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura != null}" />                  
+                <h:outputText value=" " rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion eq null and 
+                                                    cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp eq null and
+                                                    cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura eq null}"/>
+                <h:outputText value="Correo:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.usuarioSolicitud.email}" 
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion != null or 
+                                          cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp != null or 
+                                          cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura != null}" />                  
+                <h:outputText value=" " rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion eq null and 
+                                                    cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp eq null and 
+                                                    cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura eq null}"/>
+                <h:outputText value="Usuario Gestión:" style="min-width: 150px; max-width: 150px;"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.usuarioSolicitud.nombre}" 
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion != null or 
+                                          cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp != null or 
+                                          cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura != null}"/>                  
+                <h:outputText value=" " rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion eq null and 
+                                                    cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp eq null and 
+                                                    cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura eq null}"/>
+                <h:outputText value="Correo:" style="min-width: 150px; max-width: 150px;"/>                  
+                <h:outputText value="#{cmtEstadoSolicitudBean.usuarioSolicitud.email}"  
+                              rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion != null or 
+                                          cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp != null or 
+                                          cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura != null}"/>                  
+                <h:outputText value=" " rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestion eq null and 
+                                                    cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionHhpp eq null and 
+                                                    cmtEstadoSolicitudBean.cmtSolicitudCmMgl.fechaInicioGestionCobertura eq null}"/>
+
+
+            </h:panelGrid>
+
+        </h:panelGroup>
+
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,349 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"            
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"    
+                template="/view/MGL/template/solicitudCmCreateTemplate.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="content">
+
+        <h2 style="margin-top: -22px; margin-left: -12px">DATOS CUENTA MATRIZ</h2>
+        <h:panelGrid id="digitarDireccion" columns="6"
+                     styleClass="formularioSol" rendered="#{infoCreaCMBean.vistas.view eq 'LlenarDireccion'}">
+
+         <h:outputText escape="false" value="#{infoCreaCMBean.estiloObligatorio}Departamento:" styleClass="formColumn1"/>   
+
+                  <h:selectOneMenu id="selectDepartamento" 
+                                  value="#{infoCreaCMBean.departamento}"                        
+                                  style="width: 140px" disabled="#{infoCreaCMBean.habilitarCombo}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{infoCreaCMBean.departamentoList}" 
+                                       var="dpto"
+                                       itemValue="#{dpto.gpoId}"
+                                       itemLabel="#{dpto.gpoNombre}"/>    
+                        <f:ajax event="change" 
+                                execute="@this" 
+                                listener="#{infoCreaCMBean.consultarCiudades()}" 
+                                render="selectMunicipio"/>
+                    </h:selectOneMenu> 
+      
+          <h:outputText escape="false" value="#{infoCreaCMBean.estiloObligatorio}Ciudad:" styleClass="formColumn2"/> 
+                <h:selectOneMenu id="selectMunicipio" 
+                                      value="#{infoCreaCMBean.ciudad}"           
+                                      required="true"
+                                      requiredMessage="La ciudad es obligatoria"
+                                      style="width: 140px" disabled="#{infoCreaCMBean.habilitarCombo}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{infoCreaCMBean.ciudadList}" 
+                                       var="ciud"
+                                       itemValue="#{ciud.gpoId}"
+                                       itemLabel="#{ciud.gpoNombre}"/>
+                        <f:ajax event="change" 
+                                execute="@this" 
+                                listener="#{infoCreaCMBean.consultarCentroPoblado()}" 
+                                render="selectCentroPoblado"/>
+                    </h:selectOneMenu> 
+
+         
+            <h:outputText escape="false" value="#{infoCreaCMBean.estiloObligatorio}Centro Poblado" class="txtLabelsMgl"/>
+            <h:selectOneMenu id="selectCentroPoblado"  required="true"
+                             value="#{infoCreaCMBean.centroProblado}" 
+                             requiredMessage="El centro poblado es obligatorio" disabled="#{infoCreaCMBean.habilitarCombo}">
+                <f:selectItem itemValue="" itemLabel=""/>
+                <f:selectItems value="#{infoCreaCMBean.centroPobladoList}" 
+                               var="centroPob"
+                               itemValue="#{centroPob.gpoId}"
+                               itemLabel="#{centroPob.gpoNombre}">
+                </f:selectItems>
+                <f:ajax event="change" 
+                        execute="@this" 
+                        listener="#{infoCreaCMBean.obtenerCentroPoblado()}"/>
+            </h:selectOneMenu>
+            
+             <h:outputText escape="false" value="#{infoCreaCMBean.estiloObligatorio}Tecnología" styleClass="formColumn1"/>
+              <h:selectOneMenu id="tecnologiasList"  value="#{infoCreaCMBean.tecnologia}"
+                                style="width: 140px" required="true" disabled="#{infoCreaCMBean.habilitarCombo}"
+                                requiredMessage="Es necesaria la tecnología para la creación de la orden de trabajo"
+                                        >
+                   <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{infoCreaCMBean.listTablaBasicaTecnologias}" var="tec"
+                                           itemValue="#{tec.basicaId}"
+                                           itemLabel="#{tec.nombreBasica}"/>
+                           <f:ajax event="change" 
+                        execute="@this" 
+                        listener="#{infoCreaCMBean.obtenerTecnologia()}"/>
+              </h:selectOneMenu>
+             <h:outputText value="Dirección:"
+                                          style="display: inline-block; width: 80px; padding-left: 14px; margin-right: 10px;"/>
+           
+             <h:panelGroup>
+                <h:inputText class="onlyTextDir" id="idDireccionTextoAltern" value="#{infoCreaCMBean.direccion}" 
+                             maxlength="100"   validatorMessage="El campo dirección debe contener más de 2 caracteres" requiredMessage="La dirección es requerida">
+                   <!-- <f:validateRegex pattern="((\w|\s|#|-){2,})?"/> -->
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{infoCreaCMBean.avisaCambiaDireccion()}"  render="@form"/>
+
+                </h:inputText>
+                 <h:commandButton id="mostrarComponenteButtonSolCrea" 
+                                  action="#{infoCreaCMBean.irPopUpDireccion()}"
+                                  title="Validar dirección"
+                                  style="width: 13px; " disabled="#{!infoCreaCMBean.validarDirSolCm()}"
+                                  image="/view/img/home.gif">
+                 </h:commandButton>
+            </h:panelGroup>
+            <h:outputText escape="false" value="#{infoCreaCMBean.estiloObligatorio}Barrio" class="txtLabelsMgl" rendered="#{infoCreaCMBean.cmtSolicitudCmMgl.ciudadGpo.gpoMultiorigen eq '1' and infoCreaCMBean.cmtDireccionSolictudMgl.codTipoDir eq 'CK'}"/>
+            <h:panelGroup rendered="#{infoCreaCMBean.cmtSolicitudCmMgl.ciudadGpo.gpoMultiorigen eq '1' and infoCreaCMBean.cmtDireccionSolictudMgl.codTipoDir eq 'CK'}" >                                
+                <h:panelGroup id="gupBarrios"  >
+                    <h:selectOneMenu required="true" id="SelectorBarrios" value="#{infoCreaCMBean.selectedBarrio}" requiredMessage="El campo barrio es requerido" style="width: 100px;"
+                                     rendered="#{infoCreaCMBean.barrioslist.size()>0 and !infoCreaCMBean.otroBarrio}">
+                        <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                        <f:selectItems value="#{infoCreaCMBean.barrioslist}" var="lbar" itemLabel="#{lbar}" itemValue="#{lbar}" />       
+                    </h:selectOneMenu>
+                    <h:inputText required="true" style="width: 100px;" id="barriodigitado" value="#{infoCreaCMBean.selectedBarrio}" rendered="#{!(infoCreaCMBean.barrioslist.size()>0)  or infoCreaCMBean.otroBarrio}" requiredMessage="El campo barrio es requerido">
+                    </h:inputText>
+                    <h:commandButton style="width: 15px !important;" id="mostrarOtroBarrio" value="#{infoCreaCMBean.otroBarrio?'L':'O'}" rendered="#{infoCreaCMBean.barrioslist.size()>0}" styleClass="btng">
+                        <f:ajax render="@form" execute="@this" 
+                                event="click" listener="#{infoCreaCMBean.mostrarOtrobarrio()}" />
+                    </h:commandButton>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <h:commandButton id="aceptarDireccionChange"  
+                             title="Confirmar La dirección"
+                             rendered="#{infoCreaCMBean.direccionValidada}" 
+                             action="#{infoCreaCMBean.cambiaDatosSolicitud()}" 
+                             styleClass="btng" value="Continuar"/>
+
+            <h:commandLink immediate="true" action="#{infoCreaCMBean.irCuentaCMdir()}" rendered="#{infoCreaCMBean.mostrarLinkOtraDireccion}" value="Ir CM Existente" />
+
+
+        </h:panelGrid>
+        
+        
+        <h:panelGrid  columns="6" id="bloqueoDireccion"
+                      styleClass="formularioSol" rendered="#{infoCreaCMBean.vistas.view eq 'LlenarDatosSolicitud'}" >
+           
+            <h:outputText value="Departamento" class="txtLabelsMgl"/>
+            <h:outputText id="vistaDepartamento"   class="columnReadForm" value="#{infoCreaCMBean.cmtSolicitudCmMgl.departamentoGpo.gpoNombre}"/>
+
+
+            <h:outputText value="Ciudad" class="txtLabelsMgl"/>
+            <h:outputText id="vistaMunicipio"  class="columnReadForm" value="#{infoCreaCMBean.cmtSolicitudCmMgl.ciudadGpo.gpoNombre}"/>
+
+
+            <h:outputText value="Centro Poblado" class="txtLabelsMgl"/>
+            <h:outputText id="vistaCentroPoblado" class="columnReadForm" value="#{infoCreaCMBean.cmtSolicitudCmMgl.centroPobladoGpo.gpoNombre}"/> 
+
+             <h:outputText value="Tecnología" class="txtLabelsMgl"/>
+             <h:outputText class="columnReadForm" id="tecnologia" value="#{infoCreaCMBean.cmtSolicitudCmMgl.basicaIdTecnologia.nombreBasica}" />
+            
+            <h:outputText value="Dirección" class="txtLabelsMgl"/>
+            <h:outputText class="columnReadForm" id="vistaDireccionTextoAltern" value="#{infoCreaCMBean.direccion}" />
+
+
+            <h:outputText value="Barrio" class="txtLabelsMgl" rendered="#{infoCreaCMBean.cmtSolicitudCmMgl.ciudadGpo.gpoMultiorigen eq '1' and infoCreaCMBean.cmtDireccionSolictudMgl.codTipoDir eq 'CK'}"/>
+            <h:outputText value="#{not empty infoCreaCMBean.selectedBarrio ? infoCreaCMBean.selectedBarrio.toUpperCase() : ''}" class="columnReadForm" rendered="#{infoCreaCMBean.cmtSolicitudCmMgl.ciudadGpo.gpoMultiorigen eq '1' and infoCreaCMBean.cmtDireccionSolictudMgl.codTipoDir eq 'CK'}"/>
+
+            <h:commandButton id="botonVolverDireccion"  styleClass="btng"  rendered="#{infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null}"
+                             value="Mod.Dirección"  action="#{infoCreaCMBean.cambiaDatosDireccion()}" immediate="true"/>
+
+        </h:panelGrid>
+        
+        <h:panelGroup rendered="#{infoCreaCMBean.vistas.view eq 'LlenarDatosSolicitud'}">
+
+
+            <h:outputText class="txtLabelsMgl"  value="Nombre Cuenta matriz" style="margin-left: 7px"/>
+            <h:inputText id="nombreCm" styleClass="alinNomCm"  value="#{infoCreaCMBean.solicitudSubEdificioMgl.nombreSubedificio}" maxlength="100"  style="width: 420px;margin-left:51px;" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}"/>
+            <h:outputText class="txtLabelsMgl" escape="false" value="#{infoCreaCMBean.estiloObligatorio}Tipo Edificio" style="margin-left:11px;"/>
+            <h:selectOneMenu id="idTipoEdificio" value="#{infoCreaCMBean.solicitudSubEdificioMgl.tipoEdificioObj.basicaId}" style="width: 145px; margin-left: 94px;" required="true" requiredMessage="El tipo de edificio es requerido" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}">
+                <f:selectItem itemLabel="" itemValue=""/>
+                <f:selectItems value="#{infoCreaCMBean.basicasMglTipoEificioList}" var="tipSubEdi" itemLabel="#{tipSubEdi.nombreBasica}" itemValue="#{tipSubEdi.basicaId}"/>
+                <f:ajax event="change" 
+                        execute="@this" 
+                        listener="#{infoCreaCMBean.obtenerTipoEdificio()}"  
+                        />
+            </h:selectOneMenu>    
+            <h:outputText class="txtLabelsMgl" escape="false" value="Cantidad Torres" style="margin-left:12px;"/>
+            <h:inputText  value="#{infoCreaCMBean.cmtSolicitudCmMgl.cantidadTorres}" style="width: 145; margin-left: 81px;" maxlength="2" converterMessage="Número de torres es númerico" requiredMessage="el número de torres es obligatorio 1 para única torre" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}">
+                <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+            </h:inputText>
+
+            <h:panelGrid class="formularioSol"  columns="8">
+               
+              
+                <h:outputText class="txtLabelsMgl" escape="false" 
+                              value="#{infoCreaCMBean.estiloObligatorio}Cantidad Hhpp" />
+                <h:inputText required="true" value="#{infoCreaCMBean.solicitudSubEdificioMgl.unidades}"
+                             maxlength="4" converterMessage="Nuoacute;mero de HHPP es númerico"
+                             requiredMessage="El campo número HHPP es requerido" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}">
+                    <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                </h:inputText>
+
+                <h:outputText class="txtLabelsMgl" escape="false"
+                              value="Constructora" />
+                <h:selectOneMenu id="SelCpnstructoras" 
+                                 value="#{infoCreaCMBean.solicitudSubEdificioMgl.companiaConstructoraObj.companiaId}" 
+                                 disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{infoCreaCMBean.listcompaniaConstructoras}" var="itemCon" itemValue="#{itemCon.companiaId}" itemLabel="#{itemCon.nombreCompania}"/>
+                    <f:ajax event="change" 
+                            execute="@this" 
+                            listener="#{infoCreaCMBean.obtenerConstructora()}"  />
+                </h:selectOneMenu>
+
+                <h:outputText class="txtLabelsMgl" value="Contacto  constructora" />
+                <h:inputText id="contactoAdministracion" value="#{infoCreaCMBean.solicitudSubEdificioMgl.contactoConstructora}" maxlength="100" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}" validatorMessage="Contacto constructora: Los nombres solo aceptan letras y espacios">
+                    <f:validateRegex pattern="[a-zA-Z\s]*"/>                        
+                </h:inputText>
+
+                <h:outputText class="txtLabelsMgl" value="Administración" />
+                <h:selectOneMenu id="SelCpAdministracion" value="#{infoCreaCMBean.solicitudSubEdificioMgl.companiaAdministracionObj.companiaId}" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{infoCreaCMBean.listcompaniaAdministracion}" var="itemAdm" itemValue="#{itemAdm.companiaId}" itemLabel="#{itemAdm.nombreCompania}"/>
+                    <f:ajax event="change" 
+                            execute="@this" 
+                            listener="#{infoCreaCMBean.obtenerAdministracion()}"  />
+                </h:selectOneMenu>
+
+                <h:outputText class="txtLabelsMgl" value="Contacto Administración" />
+                <h:inputText id="contactoConstructora" value="#{infoCreaCMBean.solicitudSubEdificioMgl.administrador}" maxlength="100" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}" validatorMessage="Contacto adminisración: Los nombres solo aceptan letras y espacios">
+                    <f:validateRegex pattern="[a-zA-Z\s]*"/>                        
+                </h:inputText>
+
+
+                <h:outputText class="txtLabelsMgl" value="Ascensores" />
+                <h:selectOneMenu id="SelCpAscensores" value="#{infoCreaCMBean.solicitudSubEdificioMgl.companiaAscensorObj.companiaId}" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{infoCreaCMBean.listcompaniaAscensores}" var="itemAsc" itemValue="#{itemAsc.companiaId}" itemLabel="#{itemAsc.nombreCompania}" />
+                    <f:ajax event="change" 
+                            execute="@this" 
+                            listener="#{infoCreaCMBean.obtenerAscensores()}" />
+                </h:selectOneMenu>
+
+                <h:outputText class="txtLabelsMgl" value="Contacto  Ascensores" />
+                <h:inputText id="contactoAscensores" value="#{infoCreaCMBean.solicitudSubEdificioMgl.contactoAcsensores}" maxlength="100" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}" validatorMessage="Contacto ascensores: Los nombres solo aceptan letras y espacios">
+                    <f:validateRegex pattern="[a-zA-Z\s]*"/>                                            
+                </h:inputText>
+
+                <h:outputText class="txtLabelsMgl" value="Teléfono Portería" />
+                <h:inputText id="TelPorteria" value="#{infoCreaCMBean.solicitudSubEdificioMgl.telefonoPorteria}" 
+                             maxlength="10" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}" 
+                             converterMessage="El teléfono debe ser númerico">
+                    <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                </h:inputText>
+                
+                 <h:outputText class="txtLabelsMgl" value="Teléfono Portería 2" />
+                 <h:inputText id="TelPorteria2" value="#{infoCreaCMBean.solicitudSubEdificioMgl.telefonoPorteria2}" 
+                              maxlength="10" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}" 
+                              converterMessage="El teléfono debe ser númerico">
+                    <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                </h:inputText>
+           
+              <h:outputText class="txtLabelsMgl" escape="false"
+                              value="Fecha entrega" />
+
+              <h:panelGroup id="panelGruopFEntergaCm">
+                  <h:inputText label="Fecha entrega" id="FEntregaCm" style="width: 140px"
+                               value="#{infoCreaCMBean.fechaEntrega}"
+                               readonly="false"  disabled="false" styleClass="datepicker"
+                               validatorMessage="Formato de fecha incorrecto en el campo Fecha entrega">  <!--required="true" requiredMessage="Campo 'Fecha entrega' es requerido"-->
+                      <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                  </h:inputText>
+                </h:panelGroup> 
+              
+              <h:outputText class="txtLabelsMgl" value="" />
+              <h:outputText class="txtLabelsMgl" value="" />
+                
+            </h:panelGrid>
+        </h:panelGroup>
+        
+        <h:panelGroup rendered="#{infoCreaCMBean.vistas.view eq 'LlenarDatosSolicitud'}">
+            <h2 style="margin-top: 3px; margin-left: -12px">DATOS SOLICITANTE</h2>
+
+            <h:panelGrid class="formularioSol"  columns="8">
+                <h:outputText class="txtLabelsMgl" 
+                              id="tipoSolicLabel"
+                              escape="false" 
+                              value="#{infoCreaCMBean.estiloObligatorio}Tipo solicitud"/>                
+                <h:selectOneMenu value="#{infoCreaCMBean.cmtSolicitudCmMgl.origenSolicitud.basicaId}"
+                                 id="tipoSolicitudList"
+                                 required="true" requiredMessage="el tipo de solictud es requerido" 
+                                 disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{infoCreaCMBean.basicasMglOrigenSolictudList}" var="orSol" itemValue="#{orSol.basicaId}" itemLabel="#{orSol.nombreBasica}"/>
+                    <f:ajax event="change" 
+                            execute="@this" 
+                            listener="#{infoCreaCMBean.obtenerOrigen()}"/>
+                </h:selectOneMenu>
+                <h:outputText/>                
+                <h:outputText/>                
+                <h:outputText/>                
+                <h:outputText/>                
+                <h:outputText/>                
+                <h:outputText/>   
+                <h:outputText class="txtLabelsMgl" escape="false" value="#{infoCreaCMBean.estiloObligatorio}Asesor" />
+                <h:inputText id="txtAsesor" value="#{infoCreaCMBean.cmtSolicitudCmMgl.asesor}" maxlength="100" required="true" requiredMessage="El campo nombre asesor es requerido" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}"/>
+                <h:outputText class="txtLabelsMgl" escape="false" value="#{infoCreaCMBean.estiloObligatorio}Correo" />
+                <h:inputText id="txtAsesorCorreo" value="#{infoCreaCMBean.cmtSolicitudCmMgl.correoAsesor}" maxlength="100" required="true" 
+                             requiredMessage="El campo correo asesor es requerido" validatorMessage="El campo correo asesor no tiene el formato requerido" 
+                             disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}">
+                    <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>                
+                </h:inputText>
+                <h:outputText class="txtLabelsMgl" value="Área" />
+                <h:inputText id="txtAsesorArea" value="#{infoCreaCMBean.cmtSolicitudCmMgl.areaSolictud}" maxlength="100"  disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}" />
+                <h:outputText class="txtLabelsMgl" escape="false" value="#{infoCreaCMBean.estiloObligatorio}Teléfono" />
+                <h:inputText id="txtAsesorTelefono" value="#{infoCreaCMBean.cmtSolicitudCmMgl.telefonoAsesor}" maxlength="10" converterMessage="El teléfono es númerico" required="true" requiredMessage="El teléfono asesor es requerido" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}" validatorMessage="El teléfono debe tener 7 o 10 dígitos" >
+                    <f:validateLength minimum="7" maximum="10"/>                       
+                    <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                </h:inputText>
+                <h:outputText class="txtLabelsMgl" value="Copia a" />
+                <h:inputText id="txtAsesorCopiaA" value="#{infoCreaCMBean.cmtSolicitudCmMgl.correoCopiaSolicitud}" maxlength="100"  
+                             validatorMessage="El campo copia a  no tiene el formato requerido" 
+                             disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}">
+                    <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>                
+                </h:inputText>
+
+                <h:outputText/>                
+                <h:outputText/>                
+                <h:outputText/>                
+                <h:outputText/>                
+                <h:outputText/>                
+                <h:outputText/>   
+                <h:outputText value="Usuario" class="txtLabelsMgl"/>
+                <h:outputText id="vistaUsuario"  value="#{infoCreaCMBean.usuarioSolicitudCm.usuario}" class="columnReadForm" /> <!-- cmtSolicitudCmMgl.usuarioSolicitudObj.nombre -->
+                <h:outputText value="Correo usuario" class="txtLabelsMgl"/>
+                <h:outputText id="vistaCorreoUsuario" value="#{infoCreaCMBean.usuarioSolicitudCm.email}"  class="columnReadForm" /><!-- cmtSolicitudCmMgl.usuarioSolicitudObj.email -->
+            </h:panelGrid>
+            
+            <h:panelGroup>
+                <br/>
+                <h:outputText value="Notas(4000c)" class="txtLabelsMgl" style="margin-left: 5px;"/>
+                <br/>
+                <h:inputTextarea id="comentariosNota" value="#{infoCreaCMBean.cmtNotasSolicitudMgl.nota}" disabled="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}" style="margin-left: 5px; width: 100%;"></h:inputTextarea>
+                <br/>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <br/>
+                 <p:fileUpload  id="archivoCambioEstrato1"   
+                                label="Seleccionar Archivo:"  
+                                value="#{infoCreaCMBean.uploadedFile}" 
+                                 mode="simple" skinSimple="true"/>
+                 
+                <h:outputText value="Archivo soporte: #{infoCreaCMBean.cmtSolicitudCmMgl.nombreArchivo}" 
+                              rendered="#{!(infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null)}"/>
+                <br/>
+                <h:commandButton value="Crear"  styleClass="btn" action="#{infoCreaCMBean.crearSolicitud()}" 
+                                 rendered="#{infoCreaCMBean.cmtSolicitudCmMgl.solicitudCmId eq null}"/>
+            </h:panelGroup>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+        </h:panelGroup>
+
+    </ui:define>
+</ui:composition>

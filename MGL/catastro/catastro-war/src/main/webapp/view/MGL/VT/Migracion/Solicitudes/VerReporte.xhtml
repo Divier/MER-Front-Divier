@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<ui:composition
+        template="./../../../template/main.xhtml">
+
+    <ui:define name="content">
+        <div align = "center">
+            <h:panelGroup rendered="#{reporteBean.opcionPantalla eq 'C'}">
+                <h:panelGrid
+                        id="panel_solicitud_reporte" cellpadding = "10" cellspacing = "10" border = "1">
+                    <f:facet name="header">
+                        <h1>
+                            <h:outputLabel value = "Generación de reportes" />
+                        </h1>
+                        <br/>
+                    </f:facet>
+                    <h:panelGrid columns="6">
+                        <h:outputText escape="false" value="#{reporteBean.estiloObligatorio}"/>
+                        <h:outputLabel for="tipo_reporte" value = "Tipo de Reporte: " />
+                        <h:selectOneMenu
+                                id="tipo_reporte"
+                                value="#{reporteBean.tipoReporteSeleccionado}"
+                                styleClass="input">
+                            <f:selectItems value="#{reporteBean.tipoReportesMap}" />
+                        </h:selectOneMenu>
+
+                        <h:outputText value=""></h:outputText>
+                        <h:outputText value=""></h:outputText>
+                        <h:outputText value=""></h:outputText>
+
+                        <h:outputText escape="false" value="#{reporteBean.estiloObligatorio}"/>
+                        <h:outputLabel for="tipo_solicitud" value = "Tipo de solicitud " />
+                        <h:selectOneMenu
+                                id="tipo_solicitud"
+                                value="#{reporteBean.tipoSolicitud}"
+                                styleClass="input">
+                            <f:selectItems
+                                    value="#{reporteBean.tipoSolicitudesMap}"/>
+                        </h:selectOneMenu>
+
+                        <h:outputText value=""></h:outputText>
+                        <h:outputText value=""></h:outputText>
+                        <h:outputText value=""></h:outputText>
+
+                        <h:outputText escape="false" value="#{reporteBean.estiloObligatorio}"/>
+                        <h:outputLabel for="fecha_ingreso" value = "Fecha de Ingreso: " />
+                        <h:inputText
+                                label="Fecha de Ingreso requerido" id="fecha_ingreso" style = "width: 88%;"
+                                value="#{reporteBean.fechaInicial}" readonly="false" disabled="false"
+                                converterMessage="Fecha debe ser dd/MM/yyyy" styleClass="datepicker">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                        </h:inputText>
+
+                        <h:outputText escape="false" value="#{reporteBean.estiloObligatorio}"/>
+                        <h:outputLabel for="fecha_finalizacion" value = "Fecha de Finalización " />
+                        <h:inputText
+                                label="Fecha de Finalización" id="fecha_finalizacion" style = "width: 88%;"
+                                value="#{reporteBean.fechaFinalizacion}" readonly="false" disabled="false"
+                                converterMessage="Fecha debe ser dd/MM/yyyy" styleClass="datepicker">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                        </h:inputText>
+
+                        <h:outputText value=""></h:outputText>
+                        <h:outputLabel for="estado" value = "Estado: " />
+                        <h:selectOneMenu
+                                id="estado" value="#{reporteBean.estado}" styleClass="input">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItem itemValue="P" itemLabel="Pendiente" />
+                            <f:selectItem itemValue="F" itemLabel="Finalizado" />
+                            <f:selectItem itemValue="V" itemLabel="Verificado" />
+                            <f:selectItem itemValue="R" itemLabel="Rechazado"/>
+                        </h:selectOneMenu>
+                        <h:message for="estado" />
+                    </h:panelGrid>
+                    <br/>
+                </h:panelGrid>
+                    <h:panelGrid id="solicitarReporte">
+                        <h:panelGroup style = "display:block; text-align:center;">
+                            <h:commandButton disabled="#{!reporteBean.isValidarOpcionGenerarReporte()}" value="Generar Reporte"
+                                             action="#{reporteBean.solicitarReporte()}" styleClass="btn">
+                            </h:commandButton>
+                        </h:panelGroup>
+                    </h:panelGrid>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{reporteBean.opcionPantalla eq 'G'}">
+                <h1>Reporte general por regional</h1>
+                <br/>
+                <h:outputLabel
+                        style="color: red; font-size: 14px;"
+                        value="Número de registros Encontrados: #{reporteBean.countRegistros}"/>
+                <br/>
+                <br/>
+                <h:commandButton id="export_reporte_general" styleClass="btn unblockClaro"
+                                 rendered="#{reporteBean.puedeExportar}" value="Exportar" action="#{reporteBean.exportarReporteGeneralExcel()}"
+                />
+                <h:commandButton id="nuevoGeneral" styleClass="btn" immediate="true"
+                                 actionListener="#{reporteBean.clearScreen()}" value="Nuevo"
+                />
+                <br/>
+                <br/>
+                <div style="height: 300px; width: 600px; overflow-x: auto; overflow-y: auto ">
+                    <h:dataTable
+                            id="idtable"
+                            border="1"
+                            rendered="#{reporteBean.puedeExportar}"
+                            value="#{reporteBean.listReporteGeneral}" var="item"
+                            cellpadding="2"
+                            cellspacing="10"
+                            rowClasses="order-table-odd-row, order-table-even-row"
+                            columnClasses="order-table-odd-column, order-table-even-column"
+                            styleClass="order-table"
+                            headerClass="order-table-header"
+                            width="70%" dir="LTR">
+                        <f:facet name="header" >
+
+                        </f:facet>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Cantidad"/>
+                            </f:facet>
+                            <h:outputText value="#{item[0]}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Fecha de Ingreso"/>
+                            </f:facet>
+                            <h:outputText value="#{item[1]}">
+                                <f:convertDateTime type="date" pattern="dd/MM/yy"/>
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Estado"/>
+                            </f:facet>
+                            <h:outputText value="#{item[2]}"/>
+                        </h:column>
+                    </h:dataTable>
+                </div>
+                <br />
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{reporteBean.opcionPantalla eq 'D'}">
+                <h:panelGroup id="panel_reporte_detallado">
+
+                    <h1>Generar reportes detallado</h1>
+                    <br/>
+                    <h:outputLabel style="color: red; font-size: 14px;" value="Número de registros encontrados: #{reporteBean.countRegistros}"/>
+                    <br/>
+                    <br/>
+                    <h:panelGroup id="exportar" rendered="#{reporteBean.puedeExportar}">
+
+                        <h:commandButton
+                                id="exportarxls"
+                                styleClass="btn unblockClaro"
+                                onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);"
+                                action="#{reporteBean.exportarReporteDetalladoExcel()}"
+                                value="Exportar .xls"
+                                disabled="#{reporteBean.countRegistros gt 2000 or
+                            reporteBean.countRegistros eq 0
+                          }"
+                        />
+                        <h:commandButton id="exportarcsv" styleClass="btn unblockClaro"
+                                         action="#{reporteBean.exportarReporteDetalladoCsv()}" value="Exportar .csv"
+                                         onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" />
+                        <h:commandButton id="exportartxt" styleClass="btn unblockClaro"
+                                         action="#{reporteBean.exportarReporteDetalladoTxt()}" value="Exportar .txt" 
+                                         onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);" />
+                    </h:panelGroup >
+
+                    <h:commandButton
+                            id="nuevo"
+                            styleClass="btn unblockClaro"
+                            actionListener="#{reporteBean.clearScreen()}"
+                            value="Nuevo"
+                    />
+                    <br/>
+                    <br/>
+                    Nota:
+                    <br/>
+                    Numero Maximo de registros a procesar para archivo XLS: 2000
+                </h:panelGroup>
+            </h:panelGroup>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

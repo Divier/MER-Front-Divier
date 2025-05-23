@@ -1,0 +1,263 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="content">
+
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom:20px;">
+
+            <div style="padding-left:20px">
+                <h:outputText id="codDivisionalLabel" value="Filtro por Divisional:"/>
+                <h:selectOneMenu id="codDivisional"
+                                 value="#{nodoCuadranteGesSolBean.codDivisional}">
+                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                    <f:selectItems value="#{nodoCuadranteGesSolBean.listBasicaDivisional}"
+                                   var="divisional" itemLabel="#{divisional.nombreBasica}"
+                                   itemValue="#{divisional.basicaId}"/>
+                    <f:ajax event="change"
+                            execute="@this"
+                            render="solicitudList"
+                            listener="#{nodoCuadranteGesSolBean.filtrarDivisional()}"/>
+                </h:selectOneMenu>
+            </div>
+
+            <div style="padding-left:20px">
+                <h:outputText id="codCiudadLabel" value="Filtro por Ciudad:"/>
+                <h:selectOneMenu style="width: 120px;" value="#{nodoCuadranteGesSolBean.codCiudad}" id="codCiudad" >                            
+                    <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                    <f:selectItems value="#{nodoCuadranteGesSolBean.ciudadesList}" 
+                                   var="ciudad" itemLabel="#{ciudad.gpoNombre}" 
+                                   itemValue="#{ciudad.gpoId}"/>                    
+                    <f:ajax event="change" 
+                            execute="@this" 
+                            listener="#{nodoCuadranteGesSolBean.getPopulatedCenterList()}"
+                            render="codCentroPoblado solicitudList"/> 
+                </h:selectOneMenu>
+            </div>
+
+            <div style="padding-left:20px">
+                <h:outputText id="codCentroPobladoLabel" value="Filtro por Centro Poblado:"/>
+                <h:selectOneMenu id="codCentroPoblado" style="width: 120px;"           
+                                 value="#{nodoCuadranteGesSolBean.codCentroPoblado}" >
+                    <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                    <f:selectItems value="#{nodoCuadranteGesSolBean.centroPobladoList}" 
+                                   var="centroPoblado"
+                                   itemValue="#{centroPoblado.gpoId}"
+                                   itemLabel="#{centroPoblado.gpoNombre}">
+                    </f:selectItems>   
+                    <f:ajax event="change" 
+                            execute="@this" 
+                            render="solicitudList"
+                            listener="#{nodoCuadranteGesSolBean.filtrarCentroPoblado()}"/>                    
+                </h:selectOneMenu>
+            </div>
+
+            <div style="padding-left:20px">
+                <h:outputText id="codigoNodoLabel" value="Filtro por Nodo:"/>
+                <h:selectOneMenu id="codigoNodo" style="width: 120px;"           
+                                 value="#{nodoCuadranteGesSolBean.codigoNodo}" >
+                    <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                    <f:selectItems value="#{nodoCuadranteGesSolBean.lsNodes}" 
+                                   var="nodo"
+                                   itemValue="#{nodo}"
+                                   itemLabel="#{nodo}">
+                    </f:selectItems>   
+                    <f:ajax event="change" 
+                            execute="@this" 
+                            render="solicitudList"
+                            listener="#{nodoCuadranteGesSolBean.findSolicitudByCodigoNodo()}"/>                    
+                </h:selectOneMenu>
+            </div>
+
+            <div style="padding-left:20px">
+                <h:outputText id="codEstadoLabel" value="Filtro por Estado:"/>
+                <h:selectOneMenu style="width: 80px;"  id="codEstado" 
+                                 value="#{nodoCuadranteGesSolBean.codEstado}">                            
+                    <f:selectItem itemLabel="Pendiente" itemValue="0"/>
+                    <f:selectItem itemLabel="Finalizado" itemValue="1"/>
+                    <f:selectItem itemLabel="Rechazado" itemValue="2"/>
+                    <f:ajax event="change"
+                            execute="@this"
+                            render="solicitudList"
+                            listener="#{nodoCuadranteGesSolBean.filtrarPorEstado()}"/>
+                </h:selectOneMenu>  
+            </div>
+        </div>
+
+        <h:dataTable id="solicitudList"
+                     value="#{nodoCuadranteGesSolBean.lsCmtSolicitudNodoCuadranteDto}"
+                     var="solicitud" rows="#{nodoCuadranteGesSolBean.pageSize}"
+                     styleClass="solicitudesGTable" border="1"
+                     headerClass="solicitudesGTableHeader"
+                     rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"
+                     style="width: 100%">
+            <f:facet name="headerButtoon">
+
+            </f:facet>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Gestionar"/>
+                </f:facet>
+                <div style="text-align: center;">
+
+                    <h:commandButton action="#{nodoCuadranteGesSolBean.gestionarSolicitud(solicitud)}"
+                                     rendered="#{solicitud.disponibilidadGestion eq null}"
+                                     value="Gestionar" styleClass="btn">
+                    </h:commandButton>
+                    <h:commandButton disabled="true" rendered="#{solicitud.disponibilidadGestion ne null}"
+                                     value="Gestionando..." styleClass="btn">
+                    </h:commandButton>
+                </div>
+            </h:column>
+
+            <h:column headerClass="columnIdSolicitud">
+                <f:facet name="header">
+                    <h:commandLink>
+                        <h:outputText value="Id Solicitud"/>
+                        <f:ajax event="click" render="solicitudList"
+                                listener="#{nodoCuadranteGesSolBean.cambiarOrdenMayorMenorListado()}"/>
+                    </h:commandLink>
+                </f:facet>
+                <h:outputText value="#{solicitud.solicitudId}"/>
+            </h:column>
+
+            <h:column headerClass="columnFecha">
+                <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                </f:facet>
+                <h:outputText value="#{solicitud.fechaCreacion}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                </h:outputText>
+            </h:column>
+
+            <h:column headerClass="columnTipoSolicitud">
+                <f:facet name="header">
+                    <h:outputText value="Tipo Solicitud"/>
+                </f:facet>
+                <div style="text-align: center;">
+                    <h:outputText value="#{solicitud.tipoSolicitud}"/>
+                </div>
+            </h:column>
+
+            <h:column headerClass="columnCiudad">
+                <f:facet name="header">
+                    <h:outputText value="Ciudad"/>
+                </f:facet>
+                <div style="text-align: center;">
+                    <h:outputText value="#{solicitud.ciudad}"/>
+                </div>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Centro Poblado"/>
+                </f:facet>
+                <div style="text-align: center;">
+                    <h:outputText value="#{solicitud.centroPoblado}"/>
+                </div>
+            </h:column>
+
+            <h:column headerClass="columnSolicitante">
+                <f:facet name="header">
+                    <h:outputText value="Estado"/>
+                </f:facet>
+                <h:outputText value="#{solicitud.estado}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Nodo"/>
+                </f:facet>
+                <h:outputText value="#{solicitud.codigoNodo}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Divisional"/>
+                </f:facet>
+                <h:outputText value="#{solicitud.divisional}"/>
+            </h:column>
+
+            <h:column headerClass="columnBloqueo">
+                <f:facet name="header">
+                    <h:outputText value="Bloqueada"/>
+                </f:facet>
+                <h:commandLink style="font-style: italic; font-weight: bold;" value="Desbloquear"
+                               action="#{nodoCuadranteGesSolBean.desbloquearDisponibilidadGestion(solicitud)}"
+                               rendered="#{solicitud.disponibilidadGestion ne null}"/>
+            </h:column>
+
+            <h:column headerClass="columnUsuario">
+                <f:facet name="header">
+                    <h:outputText value="Usuario Bloqueo"/>
+                </f:facet>
+                <h:outputText value="Sin bloqueo"
+                              rendered="#{solicitud.disponibilidadGestion eq null}"/>
+                <h:outputText value="#{solicitud.usuarioBloqueo}"
+                              rendered="#{solicitud.disponibilidadGestion ne null}"/>
+            </h:column>
+
+            <h:column>               
+                <f:facet name="header">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <div>
+                            <h:outputText value="Seleccionar Todo" />
+                        </div>
+                        <div style="padding-left:5px">
+                            <h:selectBooleanCheckbox id="selAll" title="Seleccionar Todo" label="Seleccionar Todo" value="#{nodoCuadranteGesSolBean.selAllSol}">
+                                <f:ajax event="change" execute="@this" render="solicitudList" listener="#{nodoCuadranteGesSolBean.selectAllSol()}"/>                                    
+                            </h:selectBooleanCheckbox>
+                        </div>
+                    </div>
+                </f:facet>
+                <h:selectBooleanCheckbox id="selSol" value="#{solicitud.selected}" disabled="#{nodoCuadranteGesSolBean.selAllSol}">
+
+                </h:selectBooleanCheckbox>             
+            </h:column>
+
+            <f:facet name="footer">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <h:panelGroup rendered="#{nodoCuadranteGesSolBean.lsCmtSolicitudNodoCuadranteDto != null and not empty nodoCuadranteGesSolBean.lsCmtSolicitudNodoCuadranteDto}">
+                        <h:commandButton title="Primera Página" value="#{nodoCuadranteGesSolBean.inicioPagina}"
+                                         action="#{nodoCuadranteGesSolBean.pageFirst}"
+                                         class="btn"/>
+                        <h:commandButton title="Página Anterior" value="#{nodoCuadranteGesSolBean.anteriorPagina}"
+                                         action="#{nodoCuadranteGesSolBean.pagePrevious}"
+                                         class="btn"/>
+                        <h:commandButton title="Número Páginas" value="#{nodoCuadranteGesSolBean.pageActual}"
+                                         styleClass="botonTPagInicio"/>
+                        <h:selectOneMenu id="listTabla" value="#{nodoCuadranteGesSolBean.numPagina}"
+                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                            <f:selectItems value="#{nodoCuadranteGesSolBean.paginaList}" var="pag"
+                                           itemValue="#{pag}"
+                                           itemLabel="#{pag}"/>
+                            <f:ajax render="@form" event="change"
+                                    listener="#{nodoCuadranteGesSolBean.irPagina()}"
+                                    execute="@this"/>
+                        </h:selectOneMenu>
+                        <h:commandButton title="Página Siguiente" value="#{nodoCuadranteGesSolBean.siguientePagina}"
+                                         action="#{nodoCuadranteGesSolBean.pageNext}"
+                                         class="btn"/>
+                        <h:commandButton title="Última Página" value="#{nodoCuadranteGesSolBean.finPagina}"
+                                         action="#{nodoCuadranteGesSolBean.pageLast}"
+                                         class="btn"/>
+                    </h:panelGroup>
+                </div>
+            </f:facet>
+        </h:dataTable>
+
+        <!--<div style="display: flex; align-items: center; justify-content: center;">
+            <h:commandButton id="procesar" value="Procesar"
+                             action=""
+                             styleClass="btn"/>
+        </div>-->
+
+    </ui:define>
+
+</ui:composition>

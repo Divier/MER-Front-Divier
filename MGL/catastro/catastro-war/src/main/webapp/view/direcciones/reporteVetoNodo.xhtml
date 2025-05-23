@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/template/home.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title"><span class="TituloSeccion">Reporte de Veto de Nodos</span></ui:define>
+    <ui:define name="message"><span class="error"> </span></ui:define>
+
+    <ui:define name="content"> 
+        <link  rel="stylesheet" type="text/css" href="/Visitas_Tecnicas/resources/stylesheet.css"/>
+        <h:form id="formDatosConsulta"> 
+            <h:panelGrid id="panelDatosConsulta" columns="2">
+                <div class="EtiquetaConsulta">Número de Política:</div>
+                <h:inputText id="listPoliticas" value="#{reporteVetoNodoBean.numPolitica}" >                                  
+                </h:inputText>
+
+                <div class="EtiquetaConsulta">Fecha Inicial Veto:</div>            
+                <p:calendar id="initDate" 
+                            value="#{reporteVetoNodoBean.initDate}"
+                            readonly="true" 
+                            showOn="both">
+                </p:calendar>        
+
+                <div class="EtiquetaConsulta">Fecha Final Veto:</div>
+                <p:calendar id="endDate" 
+                            value="#{reporteVetoNodoBean.endDate}"
+                            readonly="true" 
+                            showOn="both">
+                </p:calendar>        
+
+            </h:panelGrid>
+
+            <h:panelGrid id="panelDivisional" columns="2">
+
+                <div class="EtiquetaConsulta">Departamento:</div>
+                <h:selectOneMenu id="listDeptos" value="#{reporteVetoNodoBean.departamento}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{reporteVetoNodoBean.listDptos}" var="ld"
+                                   itemValue="#{ld.gpoId}"
+                                   itemLabel="#{ld.gpoNombre}"/> 
+                    <f:ajax event="change" execute="listDeptos" 
+                            listener="#{reporteVetoNodoBean.listDeptosChange}" render="listCiudades"/>
+                </h:selectOneMenu>  
+
+                <div class="EtiquetaConsulta">Ciudad:</div>
+                <h:selectOneMenu id="listCiudades" value="#{reporteVetoNodoBean.ciudad}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{reporteVetoNodoBean.listCiudades}" var="lc"
+                                   itemValue="#{lc.gpoId}"
+                                   itemLabel="#{lc.gpoNombre}"/> 
+                </h:selectOneMenu>    
+
+                <div class="EtiquetaConsulta">Tipo de Veto:</div>
+                <h:selectOneMenu id="listArea" value="#{reporteVetoNodoBean.tipoVeto}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{reporteVetoNodoBean.listTipoVeto}" var="lv"
+                                   itemValue="#{lv.mulValor}"
+                                   itemLabel="#{lv.mulDescripcion}"/>   
+
+                </h:selectOneMenu> 
+
+
+            </h:panelGrid>
+
+            <h:commandButton id="buttonMostrarComunidades" 
+                             value="Generar Reporte" 
+                             action="#{reporteVetoNodoBean.generarReporte}" styleClass="buttonLarge" style="color:#FFFFFF;">                
+            </h:commandButton>
+            <hr size="5" width="100%" align="LEFT"/>
+
+            <h:dataTable id="comunidadesTable" binding="#{reporteVetoNodoBean.vetosTable}"
+                         value="#{reporteVetoNodoBean.vetoNodoList}" var="vetoNodo" style="width: 500px;"
+                         styleClass="solicitudesGTable"
+                         headerClass="solicitudesGTableHeader"
+                         rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow" 
+                         rows="30">
+                <f:facet name="header">
+                    <h:outputText value="Reporte de Veto de Nodos" />
+                </f:facet> 
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Ciudad" />
+                    </f:facet>
+                    <h:outputText value="#{vetoNodo.gpoId}"/>  
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Nodo" />
+                    </f:facet>
+                    <h:outputText value="#{vetoNodo.nodId.nodCodigo}" />
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Politica" />
+                    </f:facet>
+                    <h:outputText value="#{vetoNodo.vetPolitica}" />
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Tipo Veto" />
+                    </f:facet>
+                    <h:outputText value="#{vetoNodo.vetArea}" />
+                </h:column>               
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Fecha Inicio" />
+                    </f:facet>
+                    <h:outputText value="#{vetoNodo.vetFechaInicio}" />
+                </h:column>               
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Fecha Fin" />
+                    </f:facet>
+                    <h:outputText value="#{vetoNodo.vetFechaFin}" />
+                </h:column> 
+
+                <f:facet name="footer">
+                    <h:panelGroup>
+                        <h:commandButton value="Primera" action="#{reporteVetoNodoBean.pageFirst}"
+                                         disabled="#{reporteVetoNodoBean.vetosTable.first == 0}" styleClass="buttonl" style="color:#FFFFFF;"/>
+
+                        <h:commandButton value="Anterior" action="#{reporteVetoNodoBean.pagePrevious}"
+                                         disabled="#{reporteVetoNodoBean.vetosTable.first == 0}" styleClass="buttonl" style="color:#FFFFFF;"/>
+
+                        <h:commandButton value="Siguiente" action="#{reporteVetoNodoBean.pageNext}"
+                                         disabled="#{reporteVetoNodoBean.vetosTable.first + reporteVetoNodoBean.vetosTable.rows
+                                                     >= reporteVetoNodoBean.vetosTable.rowCount}" styleClass="buttonl" style="color:#FFFFFF;"/>
+
+                        <h:commandButton value="Última" action="#{reporteVetoNodoBean.pageLast}"
+                                         disabled="#{reporteVetoNodoBean.vetosTable.first + reporteVetoNodoBean.vetosTable.rows
+                                                     >= reporteVetoNodoBean.vetosTable.rowCount}" styleClass="buttonl" style="color:#FFFFFF;"/>
+                    </h:panelGroup>
+                </f:facet>
+
+            </h:dataTable>
+
+            <h:commandButton id="buttonExportExcel" 
+                             action="#{reporteVetoNodoBean.exportExcel}" 
+                             value="Exportar a Excel" styleClass="buttonLarge" style="color:#FFFFFF;">
+            </h:commandButton>
+            <hr size="5" width="100%" align="LEFT"/>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,1972 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/VT/homeSolicitudes.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" >
+    <ui:define name="title">Crear Solicitud</ui:define>
+    <ui:define name="content">
+        <script language="javascript" type="text/javascript">
+            /* validar que sea alfanumerico*/
+            function validarAlfanumerico(){
+                var inp = String.fromCharCode(event.keyCode);
+                return (/[0-9]/.test(inp));
+            }
+        </script>
+        <h:inputHidden id="inicio"
+                       value="#{crearSolicitudDthBean.tmpInicio}"  />
+        <h:inputHidden id="fin"
+                       value="#{crearSolicitudDthBean.tmpFin}"  />
+        <h:panelGrid columns="10"
+                     id="encabezadoMgl"
+                     class="formulario3"
+                     style="width:100%;" >
+            <h:outputText style="font-weight:bold"
+                          id="numeroSolicitudLabel"
+                          value="Número Solicitud:"/>
+            <h:inputText value="#{crearSolicitudDthBean.solicitudCreated.idSolicitud}"
+                         id="numeroSolicitudIn"
+                         maxlength="200"
+                         disabled="true"  />
+            <h:outputText style="font-weight:bold"
+                          id="estadoSolicitud"
+                          value="Estado Solicitud:" />
+            <h:inputText value="#{crearSolicitudDthBean.solicitudCreated.estado}"
+                         disabled="true"
+                         id="estadoSolicitudInput" />
+            <h:outputText  id="inicioSolicitud"
+                           value="Inicio Solicitud:" />
+            <h:inputText id="eimsTxt" style="width: 100px"
+                         value="#{crearSolicitudDthBean.timeSol}"
+                         rendered="#{crearSolicitudDthBean.solicitudCreated.idSolicitud == null}" />
+            <h:inputText id="eimsTxt2"
+                         style="width: 100px"
+                         value="#{crearSolicitudDthBean.cmtTiempoSolicitudDth.tiempoSolicitud}"
+                         rendered="#{crearSolicitudDthBean.solicitudCreated.idSolicitud != null}" />
+
+            <h:outputText style="font-weight:bold"
+                          id="fechaSol"
+                          value="Fecha:" />
+            <h:inputText maxlength="200"
+                         disabled="true"
+                         id="fechaInput"
+                         value="#{crearSolicitudDthBean.dateInicioCreacion}" />
+            <h:outputText style="font-weight:bold"
+                          id="fechaFinSol"
+                          value="Fecha Fin:" />
+            <h:inputText maxlength="200"
+                         disabled="true"
+                         id="fechaFinInput"
+                         value="#{crearSolicitudDthBean.fechaFin}" />
+        </h:panelGrid>
+        <h:panelGrid id="panelTabs"
+                     class="formulario3"
+                     columns="3" >
+            <h:commandButton  id="irSolicitudDth"
+                              class="#{crearSolicitudDthBean.selectedTab == 'SOLICITUD' ? 'btn2 btn2Active':'btn2'}"
+                              value="Solicitud"
+                              disabled="#{!crearSolicitudDthBean.selectedTab eq 'SOLICITUD'}" >
+                <f:ajax event="click"
+                        execute="@this"
+                        listener="#{crearSolicitudDthBean.cambiarTab('SOLICITUD')}"
+                        render="tabsWrap panelTabs" />
+            </h:commandButton>
+            <h:commandButton  id="irTrackSolicitudDth"
+                              class="#{crearSolicitudDthBean.selectedTab == 'TRACK' ? 'btn2 btn2Active':'btn2'}"
+                              value="Track"
+                              disabled="#{!crearSolicitudDthBean.selectedTab eq 'TRACK' or !crearSolicitudDthBean.enableTabs}" >
+                <f:ajax event="click"
+                        execute="@this"
+                        listener="#{crearSolicitudDthBean.cambiarTab('TRACK')}"
+                        render="tabsWrap panelTabs"/>
+            </h:commandButton>
+            <h:commandButton  id="irNotasSolicitudDth"
+                              class="#{crearSolicitudDthBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}"
+                              value="Notas"
+                              disabled="#{!crearSolicitudDthBean.selectedTab eq 'NOTAS' or !crearSolicitudDthBean.enableTabs}" >
+                <f:ajax event="click"
+                        execute="@this"
+                        listener="#{crearSolicitudDthBean.cambiarTab('NOTAS')}"
+                        render="tabsWrap panelTabs" />
+            </h:commandButton>
+
+        </h:panelGrid>
+        <br/>
+        <h:panelGrid style="width: 100%"
+                     columns="3"
+                     id="tabsWrap" >
+            <h:panelGroup style="width: 100%"
+                          id="SolicitudDthTab"
+                          rendered="#{crearSolicitudDthBean.showSolicitud}" >
+                <table style="width: 100%">
+                    <tr>
+                        <td style="width:9.5%;" />
+                        <td style="width:16.5%;" />
+                        <td style="width:8.5%;" />
+                        <td style="width:16.5%;" />
+                        <td style="width:8.5%;" />
+                        <td style="width:16.5%;" />
+                        <td style="width:8.5%;" />
+                        <td style="width:15.5%;" />
+                    </tr>
+                    <tr> <td> <br/> </td>  </tr>
+                    <tr>
+                        <td colspan="8">
+                            <h2 style="margin-top: -22px; margin-left: -12px">DATOS HHPP</h2> </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="tipoSol" value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoAccion"
+                                          value="Tipo Solicitud:" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu style="width: 90%" id="selectTipoAccion" disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             value="#{crearSolicitudDthBean.tipoAccionSolicitud}" >
+                                <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                <f:selectItems value="#{crearSolicitudDthBean.tipoAccionSolicitudBasicaList}"
+                                               var="tipoAccion"
+                                               itemValue="#{tipoAccion.codigoBasica}"
+                                               itemLabel="#{tipoAccion.nombreBasica}">
+                                </f:selectItems>
+                                <f:ajax event="change"
+                                        execute="@this"
+                                        listener="#{crearSolicitudDthBean.resetTecnologia()}"
+                                        render="tabsWrap TipoViv TipoViviendaLabel lstTipoVivienda contact contactoLabel contacto"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="tipoReg" value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoRegional"
+                                          value="Departamento:"/>
+                        </td>
+                        <td>
+                            <h:selectOneMenu style="width: 140px;"
+                                             value="#{crearSolicitudDthBean.departamento}"
+                                             id="departamento"
+                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}" >
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue="" />
+                                <f:selectItems value="#{crearSolicitudDthBean.departamentoList}"
+                                               var="departamento"
+                                               itemLabel="#{departamento.gpoNombre}"
+                                               itemValue="#{departamento.gpoId}"/>
+                                <f:ajax  event="change"
+                                         execute="@form"
+                                         listener="#{crearSolicitudDthBean.obtenerCiudadesList()}"
+                                         render="ciudad centroPoblado"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="city"
+                                          value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="ciudadMgl"
+                                          value="Ciudad:" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu style="width: 140px;"
+                                             value="#{crearSolicitudDthBean.ciudad}"
+                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             id="ciudad" >
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                <f:selectItems value="#{crearSolicitudDthBean.ciudadesList}"
+                                               var="ciudad"
+                                               itemLabel="#{ciudad.gpoNombre}"
+                                               itemValue="#{ciudad.gpoId}" />
+                                <f:ajax event="change"
+                                        execute="@this"
+                                        listener="#{crearSolicitudDthBean.obtenerCentroPobladoList()}"
+                                        render="centroPoblado pnNoRefence" />
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="centroP"
+                                          value="*" />
+                            <h:outputText style="font-weight:bold"
+                                          value="Centro Poblado"
+                                          class="txtLabelsMgl" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="centroPoblado"
+                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             value="#{crearSolicitudDthBean.idCentroPoblado}" >
+                                <f:selectItem itemValue=""
+                                              itemLabel="Seleccione Uno" />
+                                <f:selectItems value="#{crearSolicitudDthBean.centroPobladoList}"
+                                               var="centroPob"
+                                               itemValue="#{centroPob.gpoId}"
+                                               itemLabel="#{centroPob.gpoNombre}">
+                                </f:selectItems>
+                                <f:ajax  event="change"
+                                         execute="centroPoblado"
+                                         listener="#{crearSolicitudDthBean.obtenerCentroPobladoSeleccionado()}" />
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td/>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td colspan="8">
+                            <hr size="5" width="100%" align="LEFT"/>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="tipoTec"
+                                          value="*"  />
+                            <h:outputText style="font-weight:bold"
+                                          id="solicitud"
+                                          value="Tipo de Tecnología " />
+                        </td>
+                        <td>
+                            <h:selectOneMenu disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             style="width:90%"
+                                             id="tipoRed"
+                                             value="#{crearSolicitudDthBean.tipoTecnologia}" >
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue="" />
+                                <f:selectItems value="#{crearSolicitudDthBean.tipoTecnologiaBasicaList}"
+                                               var="tipoRed"
+                                               itemLabel="#{tipoRed.nombreBasica}"
+                                               itemValue="#{tipoRed.basicaId}"/>
+                                <f:ajax event="change"
+                                        execute="@this"
+                                        listener="#{crearSolicitudDthBean.validarTecnologiaSeleccionada()}"
+                                        render="tipoApartamentoComboBox tipoComplementoComboBox panelSoporte " />
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="tipoDir"
+                                          value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoDireccion"
+                                          value="Tipo Dirección:" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu style="width: 90%"
+                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             required="true"
+                                             requiredMessage="Seleccione TIPO DE DIRECCIÓN por favor."
+                                             id="tipoDireccionComboBox"
+                                             value="#{crearSolicitudDthBean.tipoDireccion}">
+                                <f:selectItem itemLabel="CALLE - CARRERA"
+                                              itemValue="CK" />
+                                <f:selectItem itemLabel="BARRIO - MANZANA"
+                                              itemValue="BM" />
+                                <f:selectItem itemLabel="INTRADUCIBLE"
+                                              itemValue="IT" />
+                                <f:ajax  event="change" execute="tipoDireccionComboBox"
+                                         listener="#{crearSolicitudDthBean.validarTipoDireccion()}"
+                                         render="panelWrapper direccionStrLabel barrioStr @this" />
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="areaCanal"
+                                          value="*" />
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoSolicitudContacto"
+                                          value="Área" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             style="width: 90%"
+                                             id="tipoSolicitudContactoComboBox"
+                                             value="#{crearSolicitudDthBean.solicitud.tipoSol}" >
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue=""/>
+                                <f:selectItems value="#{crearSolicitudDthBean.areaCanalList}"
+                                               var="area"
+                                               itemValue="#{area.idParametro}"
+                                               itemLabel="#{area.descripcion}" />
+                                <f:ajax event="change"
+                                        execute="@this"
+                                        listener="#{crearSolicitudDthBean.validarSoporteRequeridoArea()}"
+                                        render="panelSoporte"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="tipoHHPPReq"
+                                          rendered="#{!crearSolicitudDthBean.showContacto}"
+                                          value="*"  />
+                            <h:outputText rendered="#{!crearSolicitudDthBean.showContacto}"
+                                          style="font-weight:bold"
+                                          id="tipoHHPP"
+                                          value="Tipo" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu rendered="#{!crearSolicitudDthBean.showContacto}"
+                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             style="width: 90%"
+                                             id="idTipoHHPP"
+                                             value="#{crearSolicitudDthBean.tipoHHPP}" >
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue=""/>
+                                <f:selectItem itemLabel="Individual"
+                                              itemValue="Individual"/>
+                                <f:selectItem itemLabel="Masiva"
+                                              itemValue="Masiva"/>
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr><td><br/></td></tr>
+                </table>
+                <hr size="5" width="100%" align="LEFT"/>
+                <div style="padding:15px">
+                    <h:panelGroup id="panelWrapper" >
+                        <h:panelGroup id="ckPanel"
+                                      rendered="#{crearSolicitudDthBean.showCKPanel}" >
+                            <h:panelGrid columns="6" >
+                                <h:panelGroup  >
+                                    <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                  id="dir"
+                                                  value="*" />
+                                    <h:outputText id="direccionLabel"
+                                                  value="Ingrese la dirección:" />
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:inputText disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                 value="#{crearSolicitudDthBean.direccionCk}"
+                                                 id="direccion"
+                                                 style="width: 490px; margin-right: 10px;"
+                                                 maxlength="49" />
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:commandButton value="Guardar"
+                                                     styleClass="btn"
+                                                     disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                     title="Construir Direccion"
+                                                     action="#{crearSolicitudDthBean.construirDireccionCk(false)}"
+                                                     id="agregarDireccionCkButton" />
+                                </h:panelGroup>
+                                <h:panelGroup ></h:panelGroup>
+                                <h:panelGroup ></h:panelGroup>
+                            </h:panelGrid>
+                            <!--STAR-->
+                            <h:panelGroup rendered="#{!crearSolicitudDthBean.notGeoReferenciado}"
+                                          id="pnNoRefence">
+                                <table style="padding:5px 5px;" cellspacing="2" cellpadding="2">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; vertical-align: middle;height: 20px;">
+                                            <h:outputText id="compDircc4" value="Calle" style=" text-decoration: underline;font-weight: bold; text-align: center; vertical-align: middle;" ></h:outputText>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:130px;margin: 5px 5px;">
+                                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                          id="tipoRegVia"
+                                                          value="*"/><h:outputText
+                                                          id="compDircc5"
+                                                          style="font-weight: bold;margin: 5px 5px;"
+                                                          value="Vía principal:"/>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegNum" value="*"/><h:outputText id="compDircc6" style="font-weight: bold;margin: 5px 5px;" value="Núm:" />
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:outputText id="compDircc7" style="font-weight: bold;margin: 5px 5px;" value="Letra:"/>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:outputText id="compDircc8" style="font-weight: bold;margin: 5px 5px;" value="Letra 2:"/>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:outputText id="compDircc9" style="font-weight: bold;margin: 5px 5px;" value="Bis:"/>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:outputText  id="compDircc10" style="font-weight: bold;margin: 5px 5px;" value="Cardinales:"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:130px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="viaPrincipal"
+                                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                             value="#{crearSolicitudDthBean.drDireccion.tipoViaPrincipal}"
+                                                             style="width:120px;margin: 5px 5px;" >
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems   value="#{crearSolicitudDthBean.obtenerListadoTipoSolicitudList('CALLES_DIR')}"
+                                                                 var="ppal"
+                                                                 itemLabel="#{ppal.descripcion}"
+                                                                 itemValue="#{ppal.descripcion}" />
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:inputText  id="compDircc12" disabled="#{crearSolicitudDthBean.crearSolicitudButton}" value="#{crearSolicitudDthBean.drDireccion.numViaPrincipal}" style="width:105px;" >
+                                                <f:ajax event="change" listener="#{crearSolicitudDthBean.buildDireccion()}" render="createDireccion direccionStrLabel"/>
+                                            </h:inputText>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="letraUnoPrincipal"  disabled="#{crearSolicitudDthBean.crearSolicitudButton}" value="#{crearSolicitudDthBean.drDireccion.ltViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems  value="#{crearSolicitudDthBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                                <f:ajax event="change" listener="#{crearSolicitudDthBean.buildDireccion()}" render="createDireccion direccionStrLabel"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="letraDosPrincipal"
+                                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                             value="#{crearSolicitudDthBean.drDireccion.nlPostViaP}"
+                                                             style="width:60px;margin: 5px 5px;" >
+                                                <f:selectItem itemValue=""
+                                                              itemLabel=""/>
+                                                <f:selectItems  value="#{crearSolicitudDthBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}"
+                                                                var="ppal"
+                                                                itemLabel="#{ppal.descripcion}"
+                                                                itemValue="#{ppal.descripcion}" />
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel" />
+                                            </h:selectOneMenu>
+                                        </td>
+
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="bisPrincipal"
+                                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                             value="#{crearSolicitudDthBean.drDireccion.bisViaPrincipal}"
+                                                             style="width:60px;margin: 5px 5px;" >
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems value="#{crearSolicitudDthBean.optionBisDir('DIR_ALFANUMERICO')}"
+                                                               var="ppal"
+                                                               itemLabel="#{ppal.descripcion}"
+                                                               itemValue="#{ppal.descripcion}" />
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="cuadrantePrincipal"
+                                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                             value="#{crearSolicitudDthBean.drDireccion.cuadViaPrincipal}"
+                                                             style="width:100px;margin: 5px 5px;" >
+                                                <f:selectItem itemValue=""
+                                                              itemLabel=""/>
+                                                <f:selectItems value="#{crearSolicitudDthBean.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}"
+                                                               var="ppal"
+                                                               itemLabel="#{ppal.descripcion}"
+                                                               itemValue="#{ppal.descripcion}" />
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">
+                                            <h:outputText  id="compDircc17"
+                                                           value="#"
+                                                           style=" font-size: 25px; text-align: center;margin:5px 5px;" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table id="calleCarrera_9" style="padding:5px 5px;" cellpadding="2" cellspacing="2">
+                                    <tr>
+                                        <td style="text-align:center;" colspan="9">
+                                            <h:outputText id="compDircc18"
+                                                          value="Placa"
+                                                          style="text-decoration:underline;font-weight:bold;text-align:center;vertical-align: middle;" >
+                                            </h:outputText>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:130px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc20"
+                                                           style="font-weight:bold;margin:5px 5px;"
+                                                           value="Cruce"/>
+                                        </td>
+                                        <td style="width:120px;margin:5px 5px;">
+                                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                          id="tipoRegNumGen"
+                                                          value="*"/>
+                                            <h:outputText  id="compDircc21"
+                                                           style="font-weight:bold;margin:5px 5px;"
+                                                           value="Núm:" />
+                                        </td>
+                                        <td style="width:70px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc22"
+                                                           style="font-weight:bold;margin:5px 5px;"
+                                                           value="Letra:"/>
+                                        </td>
+                                        <td style="width:70px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc23"
+                                                           style="font-weight:bold;margin:5px 5px;"
+                                                           value="Letra 2:"/>
+                                        </td>
+                                        <td style="width:70px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc24"
+                                                           style="font-weight:bold;margin:5px 5px;"
+                                                           value="Letra 3:"/>
+                                        </td>
+                                        <td style="width:120px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc25"
+                                                           style="font-weight:bold;margin:5px 5px;"
+                                                           value="Bis:"/>
+                                        </td>
+                                        <td style="width:120px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc26"
+                                                           style="font-weight:bold;margin:5px 5px;"
+                                                           value="Cardinales:"/>
+                                        </td>
+                                        <td>
+                                            <h:outputText></h:outputText>
+                                        </td>
+                                        <td style="width:120px;margin:5px 5px;">
+                                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                          id="tipoRegPla"
+                                                          value="*" />
+                                            <h:outputText  id="compDircc27"
+                                                           value="No. Placa:"
+                                                           style="font-weight:bold;margin:5px 5px;" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:130px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="viaGeneradora"
+                                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                             value="#{crearSolicitudDthBean.drDireccion.tipoViaGeneradora}"
+                                                             style="width:120px;margin: 5px 5px;" >
+                                                <f:selectItem itemValue=""
+                                                              itemLabel=""/>
+                                                <f:selectItems value="#{crearSolicitudDthBean.obtenerListadoTipoSolicitudList('CALLES_DIR_GEN')}"
+                                                               var="gen"
+                                                               itemLabel="#{gen.descripcion}"
+                                                               itemValue="#{gen.descripcion}"/>
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:inputText id="compDircc261"
+                                                         disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                         value="#{crearSolicitudDthBean.drDireccion.numViaGeneradora}"
+                                                         style="width:105px;margin: 5px 5px;" >
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel"/>
+                                            </h:inputText>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:selectOneMenu  id="letraUnoGeneradora"
+                                                              disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                              value="#{crearSolicitudDthBean.drDireccion.ltViaGeneradora}"
+                                                              style="width:60px;margin: 5px 5px;" >
+                                                <f:selectItem itemValue="" itemLabel="" />
+                                                <f:selectItems value="#{crearSolicitudDthBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}"
+                                                               var="gen"
+                                                               itemLabel="#{gen.descripcion}"
+                                                               itemValue="#{gen.descripcion}"/>
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="letraDosGeneradora"
+                                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                             value="#{crearSolicitudDthBean.drDireccion.nlPostViaG}"
+                                                             style="width:60px;margin: 5px 5px;" >
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems value="#{crearSolicitudDthBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}"
+                                                               var="gen"
+                                                               itemLabel="#{gen.descripcion}"
+                                                               itemValue="#{gen.descripcion}" />
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="letraTresGeneradora" disabled="#{crearSolicitudDthBean.crearSolicitudButton}" value="#{crearSolicitudDthBean.drDireccion.letra3G}" style="width:60px;margin: 5px 5px;">
+                                                <f:selectItem itemValue=""
+                                                              itemLabel=""/>
+                                                <f:selectItems value="#{crearSolicitudDthBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}"
+                                                               var="gen"
+                                                               itemLabel="#{gen.descripcion}"
+                                                               itemValue="#{gen.descripcion}"/>
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="bisGeneradora"
+                                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                             value="#{crearSolicitudDthBean.drDireccion.bisViaGeneradora}"
+                                                             style="width:100px;margin: 5px 5px;" >
+                                                <f:selectItem itemValue=""
+                                                              itemLabel="" />
+                                                <f:selectItems value="#{crearSolicitudDthBean.optionBisDir('DIR_ALFANUMERICO')}"
+                                                               var="gen"
+                                                               itemLabel="#{gen.descripcion}"
+                                                               itemValue="#{gen.descripcion}" />
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="cuadranteGeneradora"
+                                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                             value="#{crearSolicitudDthBean.drDireccion.cuadViaGeneradora}"
+                                                             style="width:100px;margin: 5px 5px;" >
+                                                <f:selectItem itemValue=""
+                                                              itemLabel=""/>
+                                                <f:selectItems value="#{crearSolicitudDthBean.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}"
+                                                               var="gen"
+                                                               itemLabel="#{gen.descripcion}"
+                                                               itemValue="#{gen.descripcion}" />
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td>
+                                            <h:outputText  id="compDircc34"
+                                                           value="#{' '}-#{' '}"
+                                                           style="font-size: 25px; font-weight:bold">
+                                            </h:outputText>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:inputText id="compDircc351"
+                                                         disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                         value="#{crearSolicitudDthBean.drDireccion.placaDireccion}"
+                                                         style="width:90px;margin:5px 5px;" >
+                                                <f:ajax event="change"
+                                                        listener="#{crearSolicitudDthBean.buildDireccion()}"
+                                                        render="createDireccion direccionStrLabel compDircc351"/>
+                                            </h:inputText>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;" colspan="9">
+                                            <h:outputText value="#{crearSolicitudDthBean.createDireccion}"
+                                                          style="font-weight:bold;color:red;"
+                                                          id="createDireccion"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </h:panelGroup>
+
+                            <!--END-->
+                        </h:panelGroup>
+                        <h:panelGroup id="bmPanel" rendered="#{crearSolicitudDthBean.showBMPanel}">
+                            <h:panelGrid columns="6" >
+                                <h:panelGroup >
+                                    <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                  id="bm"
+                                                  value="*" />
+                                    <h:outputText id="addInfo"
+                                                  value="Ingrese la dirección:" />
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:selectOneMenu  disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                      style="width: 100%"
+                                                      id="tipoDireccionBMComboBox"
+                                                      value="#{crearSolicitudDthBean.tipoNivelBm}" >
+                                        <f:selectItem itemLabel="Seleccione Uno"
+                                                      itemValue="" />
+                                        <f:selectItems value="#{crearSolicitudDthBean.bmList}"
+                                                       var="barriomanzana"
+                                                       itemValue="#{barriomanzana.idParametro}"
+                                                       itemLabel="#{barriomanzana.descripcion}" />
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:inputText disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                 value="#{crearSolicitudDthBean.nivelValorBm}"
+                                                 id="tipoDireccionBM"
+                                                 style="width: 100%; margin-right: 10px;"
+                                                 maxlength="250"  />
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:commandButton disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                     title="Construir Direccion"
+                                                     value="Guardar"
+                                                     styleClass="btn"
+                                                     action="#{crearSolicitudDthBean.construirDireccionBm()}"
+                                                     id="agregarInfoBMButton" />
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <h:panelGroup id="itPanel"
+                                      rendered="#{crearSolicitudDthBean.showITPanel}">
+                            <h:panelGrid columns="6" >
+                                <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                              id="it" value="*"/>
+                                    <h:outputText id="addInfoIt"
+                                                  value="Ingrese la dirección:" />
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:selectOneMenu disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                     style="width: 100%"
+                                                     id="tipoDireccionITComboBox"
+                                                     value="#{crearSolicitudDthBean.tipoNivelIt}" >
+                                        <f:selectItem itemLabel="Seleccione Uno"
+                                                      itemValue="" />
+                                        <f:selectItems value="#{crearSolicitudDthBean.itList}"
+                                                       var="intraducible"
+                                                       itemValue="#{intraducible.idParametro}"
+                                                       itemLabel="#{intraducible.descripcion}" />
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:inputText disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                 value="#{crearSolicitudDthBean.nivelValorIt}"
+                                                 id="tipoDireccionIt"
+                                                 style="width: 100%;margin-right: 10px;"
+                                                 maxlength="250"  />
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:commandButton disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                     title="Construir Direccion"
+                                                     styleClass="btn"
+                                                     value="Guardar"
+                                                     action="#{crearSolicitudDthBean.construirDireccionIt()}"
+                                                     id="agregarInfoItButton"  />
+                                </h:panelGroup>
+                                <h:panelGroup ></h:panelGroup>
+                                <h:panelGroup ></h:panelGroup>
+                            </h:panelGrid>
+                        </h:panelGroup>
+
+
+                    </h:panelGroup>
+                </div>
+
+                <table id="detalleTable" style="width: 100%;">
+
+                    <tr>
+                        <td colspan="8"> <hr size="5" width="100%" align="LEFT"/></td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td colspan="7">
+                            <span class="TituloSeccion">Detalle Dirección</span>  </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputText style="font-weight:bold"
+                                          id="complementoLabel"
+                                          value="Complemento:" />
+                        </td>
+                        <td style="display: #{!crearSolicitudDthBean.showContacto ? 'none' : ''}">
+                            <h:selectOneMenu disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             style="width: 90%"
+                                             id="tipoComplementoComboBox"
+                                             value="#{crearSolicitudDthBean.tipoNivelComplemento}">
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue=""/>
+                                <f:selectItems value="#{crearSolicitudDthBean.complementoList}"
+                                               var="complemento"
+                                               itemValue="#{complemento.idParametro}"
+                                               itemLabel="#{complemento.descripcion}" />
+                            </h:selectOneMenu>
+                        </td>
+                        <td colspan="2"> <h:inputText disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                          maxlength="50"
+                                          style="margin-right: 10px;width: 59%"
+                                          id="complementoParametro"
+                                          value="#{crearSolicitudDthBean.complemento}" />
+                        </td>
+                        <td>
+                            <h:commandButton disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             title="Construir Direccion"
+                                             action="#{crearSolicitudDthBean.construirDireccionComplemento()}"
+                                             id="agregarComplementoButton"
+                                             styleClass="btn"
+                                             value="Guardar" >
+                                <f:ajax event="change"
+                                        execute="@this"
+                                        render="barriosSugeridospanelWrapper"/>
+                            </h:commandButton>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          rendered="#{!crearSolicitudDthBean.solicitudCambioEstrato and !crearSolicitudDthBean.showContacto}"
+                                          id="apart"
+                                          value="*" />
+                            <h:outputText style="font-weight:bold"
+                                          id="apartamentoLabel"
+                                          value="Apartamento:" />
+                        </td>
+                        <td> <h:selectOneMenu disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                              style="width: 90%"
+                                              id="tipoApartamentoComboBox"
+                                              value="#{crearSolicitudDthBean.tipoNivelApartamento}" >
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue="" />
+                                <f:selectItems value="#{crearSolicitudDthBean.aptoList}"
+                                               var="apartamento"
+                                               itemValue="#{apartamento.idParametro}"
+                                               itemLabel="#{apartamento.descripcion}"/>
+                            </h:selectOneMenu> </td>
+
+                        <td colspan="2"> <h:inputText disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                      maxlength="10" style="margin-right: 10px;width: 45%"
+                                                      id="apartamentoParametro"
+                                                      value="#{crearSolicitudDthBean.apartamento}" />
+                        </td>
+                        <td>
+                            <h:commandButton disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             title="Construir Direccion"
+                                             action="#{crearSolicitudDthBean.construirDireccionApartamento()}"
+                                             id="agregarApartamentoButton"
+                                             styleClass="btn"
+                                             value="Guardar"/>
+                        </td>
+                    </tr>
+                    <!--  Brief 57762 HHPP Virtual -->
+                    <tr>
+                        <td colspan="2"><h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          rendered="#{crearSolicitudDthBean.tipoAccionSolicitud eq 5}"
+                                          id="ctTrasladar"
+                                          value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="cuentaTrasladar"
+                                          rendered="#{crearSolicitudDthBean.tipoAccionSolicitud eq 5}"
+                                          value="Número de cuenta cliente a trasladar:"/>
+                        </td>
+                        <td >
+                            <h:inputText disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                         rendered="#{crearSolicitudDthBean.tipoAccionSolicitud eq 5}"
+                                         value="#{crearSolicitudDthBean.numCuentaClienteTraslado}"
+                                         maxlength="25" id="idCuentaTraslado" style="width: 83%;"
+                                         onkeypress="return validarAlfanumerico(event)">
+                            </h:inputText>
+                        </td>
+                    </tr>
+                    <!--  Cierre: Brief 57762 HHPP Virtual -->
+                    <tr>
+                        <td>
+                            <h:outputText rendered="#{crearSolicitudDthBean.tipoAccionSolicitud eq 0}"
+                                          style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="TipoViv" value="*"/>
+                            <h:outputText rendered="#{crearSolicitudDthBean.tipoAccionSolicitud eq 0}"
+                                          style="font-weight:bold"
+                                          id="TipoViviendaLabel"
+                                          value="Tipo de Vivienda" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="lstTipoVivienda" rendered="#{crearSolicitudDthBean.tipoAccionSolicitud eq 0}"
+                                             value="#{crearSolicitudDthBean.tipoViviendaSeleccionada}"
+                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             style=" width: 90%">
+                                <f:selectItem itemValue="" itemLabel="Seleccione Uno" />
+                                <f:selectItems value="#{crearSolicitudDthBean.listaTipoHhpp}" var="tipoVivienda"
+                                               itemValue="#{tipoVivienda.thhID}"
+                                               itemLabel="#{tipoVivienda.thhID.concat(' - ').concat(tipoVivienda.thhValor)}"/>
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+                    <tr><td colspan="7"><br/></td></tr>
+                    <tr>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          rendered="#{crearSolicitudDthBean.mostrarCampoTipoDocumento}"
+                                          id="tipoDocumentoCliente"
+                                          value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          rendered="#{crearSolicitudDthBean.mostrarCampoTipoDocumento}"
+                                          id="tipoDocumentoLabel"
+                                          value="Tipo Documento:"/>
+                        </td>
+                        <td>
+                            <h:selectOneMenu style="width: 90%"
+                                             disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             rendered="#{crearSolicitudDthBean.mostrarCampoTipoDocumento}"
+                                             requiredMessage="Seleccione TIPO DE DOCUMENTO por favor."
+                                             id="tipoDocumentoComboBox"
+                                             value="#{crearSolicitudDthBean.solicitud.tipoDoc}">
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue=""/>
+                                <f:selectItems value="#{crearSolicitudDthBean.documentoList}"
+                                               var="tipDocumento"
+                                               itemValue="#{tipDocumento.value}"
+                                               itemLabel="#{tipDocumento.label}"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;" id="documentCliente"
+                                          rendered="#{crearSolicitudDthBean.mostrarCampoTipoDocumento}"
+                                          value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="numDocumentoLabel"
+                                          rendered="#{crearSolicitudDthBean.mostrarCampoTipoDocumento}"
+                                          value="Numero documento cliente:"/>
+                        </td>
+                        <td colspan="2">
+                            <h:inputText disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                         maxlength="10" style="margin-right: 10px;width: 90%"
+                                         id="inputBox"
+                                         rendered="#{crearSolicitudDthBean.mostrarCampoTipoDocumento}"
+                                         value="#{crearSolicitudDthBean.solicitud.numDocCliente}"
+                                         onkeypress="return validarAlfanumerico(event)">
+                            </h:inputText>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> <br/></td>
+                    </tr>
+                    <tr>  <td colspan="10">
+                            <h:panelGroup id="direccionAmbiguapanelWrapper" >
+                                <h:panelGroup id="ambiguaPanel" rendered="#{crearSolicitudDthBean.direccionAmbiguaPanel}" >
+                                    <div style="border: 2px groove #f70808; margin: 9px;padding: 8px;">
+                                        <h2 >* Seleccione ÚNICAMENTE la Malla Vial en la que se encuentra la dirección con la que desea realizar la solicitud. </h2>
+                                        <table style="width: 50%">
+                                            <tr>
+                                                <td style="width:10%;" />
+                                                <td style="width:10%;" />
+                                                <td style="width:10%;" />
+                                                <td style="width:10%;" />
+                                                <td style="width:10%;" />
+                                                <td style="width:10%;" />
+                                                <td style="width:10%;" />
+                                            </tr>
+                                            <tr>
+                                                <td colspan="5">
+                                                    <h:outputText style="font-size: 15px; font-weight: bold;" id="ambiguaAntiguaLabel" value="MALLA ANTIGUA" />
+                                                </td>
+                                                <td>
+                                                    <h:selectBooleanCheckbox disabled="#{crearSolicitudDthBean.crearSolicitudButton or crearSolicitudDthBean.bloquearCambioAmbigua}"
+                                                                             value="#{crearSolicitudDthBean.ambiguaAntigua}"
+                                                                             id="antiguaAmbigua" >
+                                                        <f:ajax event="click"
+                                                                execute="@this"
+                                                                listener="#{crearSolicitudDthBean.validarCambioDireccionAmbigua()}"
+                                                                render="direccion direccionStrLabel antiguaAmbigua nuevaAmbigua" />
+                                                    </h:selectBooleanCheckbox>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="5">
+                                                    <h:outputText style="font-size: 15px; font-weight: bold;"
+                                                                  id="ambiguaNuevaLabel"
+                                                                  value="MALLA NUEVA" />
+                                                </td>
+                                                <td>
+                                                    <h:selectBooleanCheckbox  disabled="#{crearSolicitudDthBean.crearSolicitudButton or crearSolicitudDthBean.bloquearCambioAmbigua}"
+                                                                              value="#{crearSolicitudDthBean.ambiguaNueva}"
+                                                                              id="nuevaAmbigua"  >
+                                                        <f:ajax event="click"
+                                                                execute="@this"
+                                                                listener="#{crearSolicitudDthBean.validarCambioDireccionAmbigua()}"
+                                                                render="direccion direccionStrLabel antiguaAmbigua nuevaAmbigua" />
+                                                    </h:selectBooleanCheckbox>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </h:panelGroup>
+                            </h:panelGroup>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> <br/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="10" style="text-align: center; ">
+                            <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;"
+                                          id="direccionStrLabel"
+                                          value="#{crearSolicitudDthBean.direccionLabel}" />
+                            <h:outputText escape="false"
+                                          id="espaciobarrio"
+                                          value="#{crearSolicitudDthBean.espacio}" />
+                            <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;"
+                                          id="barrioStr"
+                                          value="#{crearSolicitudDthBean.barrioSugeridoStr}" />
+                        </td>
+                    </tr>
+                </table>
+                <h:panelGroup id="cambioDirWrap" >
+                    <h:panelGroup id="cambioDireccionPanel"
+                                  rendered="#{crearSolicitudDthBean.cambioDireccionPanel}" >
+                        <table id="cambioDirTable"
+                               style="width: 100%" >
+                            <tr>
+                                <td style="width:10%;" />
+                                <td style="width:10%;" />
+                                <td style="width:8%;" />
+                                <td style="width:10%;" />
+                                <td style="width:7%;" />
+                                <td style="width:10%;" />
+                                <td style="width:16%;" />
+                                <td style="width:10%;" />
+                            </tr>
+                            <tr>
+                                <td colspan="8"> <hr size="5" width="100%" align="LEFT"/></td>
+                            </tr>
+                            <tr><td><br/></td></tr>
+                            <tr>
+                                <td colspan="7">
+                                    <span class="TituloSeccion">Cambio Dirección</span>  </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputText style="font-weight:bold"
+                                                  id="calleLabel"
+                                                  value="Calle:" />
+                                </td>
+                                <td><h:inputText disabled="true"
+                                                 maxlength="50"
+                                                 style="margin-right: 10px;width: 80%"
+                                                 id="calleParametro"
+                                                 value="#{crearSolicitudDthBean.solicitud.streetName}" />
+                                </td>
+                                <td>
+                                    <h:outputText style="font-weight:bold"
+                                                  id="placasLabel"
+                                                  value="Placa:" />
+                                </td>
+                                <td> <h:inputText  disabled="true"
+                                                   maxlength="50" style="margin-right: 10px;width: 80%"
+                                                   id="placaParametro"
+                                                   value="#{crearSolicitudDthBean.solicitud.houseNumber}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><h:outputText id="apartaAnti"
+                                                  value="Apartamento Antiguo:"/>
+                                </td>
+                                <td> <h:inputText  disabled="true"
+                                                   maxlength="50" style="margin-right: 10px;width: 80%"
+                                                   id="antiguoApartamentoParametro"
+                                                   value="#{crearSolicitudDthBean.solicitud.aparmentNumber}" />
+                                </td>
+                                <td><h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                  id="calles"
+                                                  value="*"/>
+                                    <h:outputText id="apartaNew"
+                                                  value="Apartamento Nuevo:"/>
+                                </td>
+                                <td> <h:inputText  disabled="true"
+                                                   maxlength="10"
+                                                   style="margin-right: 10px;width: 80%"
+                                                   id="nApartamentoParametro"
+                                                   value="#{crearSolicitudDthBean.nuevoApartamentoRr}" />
+                                </td>
+                                <td>
+                                    <h:outputText id="apartaAntiLabel"
+                                                  value="Apartamento:"/>
+                                </td>
+                                <td>
+                                    <h:selectOneMenu
+                                        style="width: 90%"  id="tipoNuevoApartamentoComboBox"
+                                        value="#{crearSolicitudDthBean.tipoNivelNuevoApartamento}">
+                                        <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                        <f:selectItems value="#{crearSolicitudDthBean.aptoList}"
+                                                       var="apartamento"  itemValue="#{apartamento.idParametro}"
+                                                       itemLabel="#{apartamento.descripcion}"/>
+                                    </h:selectOneMenu>
+                                </td>    <td colspan="2"> <h:inputText
+                                        maxlength="10" style="margin-right: 10px;width: 45%" id="nuevoApartamentoParametro"
+                                        value="#{crearSolicitudDthBean.nuevoApartamento}" />
+
+                                    <h:commandButton rendered="#{crearSolicitudDthBean.enableApto}"
+                                                     title="Construir Direccion"
+                                                     action="#{crearSolicitudDthBean.construirDireccionNuevoApartamento()}"
+                                                     id="NuevoAgregarApartamentoButton" styleClass="btn" value="Guardar"/>
+
+                                    <h:commandButton rendered="#{crearSolicitudDthBean.enableApto}"
+                                                     title="Limpiar nuevo apartamento"
+                                                     action="#{crearSolicitudDthBean.limpiarNuevoApartamento()}"
+                                                     id="limpiarNuevoApartamentoButton" styleClass="btn" value="Limpiar"/>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td> <br/></td>
+                            </tr>
+
+                        </table>
+                    </h:panelGroup>
+                </h:panelGroup>
+
+                <h:panelGroup id="unidadesPredioWrap" >
+
+                    <h:panelGroup id="unidadesPredioPanel" rendered="#{crearSolicitudDthBean.unidadesPredio}" >
+                        <hr size="5" width="100%" align="LEFT"/>
+                        <span class="TituloSeccion"> Unidades en el Predio</span>
+                        <br/>
+
+                        <h:dataTable id="unidadesTable"
+                                     value="#{crearSolicitudDthBean.unidadList}"
+                                     var="unidad" style="width:100%; margin-right: auto; margin-left: auto;"
+                                     rows="5"
+                                     styleClass="solicitudesGTableMgl"
+                                     headerClass="solicitudesGTableHeaderMgl"
+                                     rowClasses="solicitudesGTableOddRowMgl,solicitudesGTableEvenRowMgl">
+                            <f:facet name="header">
+                                <h:outputText value="Unidades en el Predio" />
+                            </f:facet>
+
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Calle" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{unidad.calleUnidad}"/>
+                                </div>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Placa" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{unidad.casaUnidad}"/>
+                                </div>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Apartamento" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{unidad.aptoUnidad}"/>
+                                </div>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Estado" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{unidad.estadUnidadad}"/>
+                                </div>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Estrato" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{unidad.estratoUnidad}"/>
+                                </div>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Nodo" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{unidad.nodUnidad}"/>
+                                </div>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText value="Tecnología" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{unidad.nombreTecnologia}"/>
+                                </div>
+                            </h:column>
+
+                            <h:column headerClass="columnNuevoApartamento" >
+                                <f:facet name="header">
+                                    <h:outputText value="Nuevo Apartamento" />
+                                </f:facet>
+                                <h:selectOneMenu value="#{unidad.tipoNivel5}" disabled="#{unidad.unidadRepetida}"
+                                                 styleClass="ListaConsulta"
+                                                 style="width: 105px;" >
+                                    <f:selectItem itemValue="" itemLabel="Seleccione Uno" />
+                                    <f:selectItems value="#{crearSolicitudDthBean.listNivel5}"
+                                                   var="nivel5"  itemValue="#{nivel5.descripcion}"
+                                                   itemLabel="#{nivel5.descripcion}" />
+                                </h:selectOneMenu>
+
+                                <h:inputText value="#{unidad.valorNivel5}" disabled="#{unidad.unidadRepetida}"
+                                             style="width: 70px; margin-left: 8px; margin-right: 8px;"/>
+
+                                <h:selectOneMenu value="#{unidad.tipoNivel6}" disabled="#{unidad.unidadRepetida}"
+                                                 styleClass="ListaConsulta"
+                                                 style="width: 105px;">
+                                    <f:selectItem itemValue="" itemLabel="Seleccione Uno" />
+                                    <f:selectItems value="#{crearSolicitudDthBean.listNivel6}"
+                                                   var="nivel6"  itemValue="#{nivel6.descripcion}"
+                                                   itemLabel="#{nivel6.descripcion}" />
+                                </h:selectOneMenu>
+
+                                <h:inputText value="#{unidad.valorNivel6}" disabled="#{unidad.unidadRepetida}"
+                                             style="width: 70px; margin-left: 8px; margin-right: 8px;"/>
+                            </h:column>
+                            <h:column>
+                                <h:outputText style="color: Red;" value="#{unidad.errorValidator}"/>
+                            </h:column>
+                            <f:facet name="footer" >
+                                <h:panelGroup>
+                                    <br/><br/>
+                                    <div style="text-align: center;">
+                                        <h:commandButton title="Primera Página" value="#{crearSolicitudDthBean.inicioPagina}" action="#{crearSolicitudDthBean.pageFirst}"
+                                                         class="btn"/>
+                                        <h:commandButton title="Página Anterior" value="#{crearSolicitudDthBean.anteriorPagina}" action="#{crearSolicitudDthBean.pagePrevious}"
+                                                         class="btn"/>
+                                        <h:commandButton title="Número Páginas" value="#{crearSolicitudDthBean.pageActual}" styleClass="botonTPagInicio"    />
+                                        <h:selectOneMenu id="listTabla" value="#{crearSolicitudDthBean.numPagina}"
+                                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                            <f:selectItems value="#{crearSolicitudDthBean.paginaList}" var="pag"
+                                                           itemValue="#{pag}"
+                                                           itemLabel="#{pag}"/>
+                                            <f:ajax render="@form"  event="change"
+                                                    listener="#{crearSolicitudDthBean.irPagina()}"
+                                                    execute="@form" />
+                                        </h:selectOneMenu>
+                                        <h:commandButton title="Página Siguiente" value="#{crearSolicitudDthBean.siguientePagina}" action="#{crearSolicitudDthBean.pageNext}"
+                                                         class="btn"/>
+                                        <h:commandButton title="Última Página" value="#{crearSolicitudDthBean.finPagina}" action="#{crearSolicitudDthBean.pageLast}"
+                                                         class="btn"/>
+                                    </div>
+                                </h:panelGroup>
+                            </f:facet>
+                        </h:dataTable>
+                    </h:panelGroup>
+                </h:panelGroup>
+
+
+
+                <h:panelGroup id="barriosSugeridospanelWrapper" >
+                    <h:panelGroup id="barriosSugeridosPanel" rendered="#{crearSolicitudDthBean.barrioSugeridoPanel}" >
+                        <hr size="5" width="100%" align="LEFT"/>
+                        <div style="border: 2px groove #f70808; margin: 9px;padding: 8px;">
+
+                            <span class="TituloSeccion"> <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="barriospan" value="BARRIO SUGERIDO"/></span>
+                            <br/>
+                            <h:panelGrid columns="6" >
+
+                                <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="barrioSug" value="*"/> <h:outputText id="barrioSugeridoLabel"
+                                                                                                                                                              value="Seleccione barrio sugerido:" /> </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:selectOneMenu disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                     style="width: 100%"  id="barrioSugeridoComboBox"
+                                                     value="#{crearSolicitudDthBean.barrioSugerido}">
+                                        <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                        <f:selectItems value="#{crearSolicitudDthBean.barrioSugeridoList}" var="barriomanzana"  itemValue="#{barriomanzana.neighborhood}" itemLabel="#{barriomanzana.neighborhood}" />
+                                        <f:ajax event="change" execute="barrioSugeridoComboBox"
+                                                listener="#{crearSolicitudDthBean.validarBarrioSugeridoSeleccionado()}"
+                                                render="barriosSugeridospanelWrapper barrioStr"/>
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:outputText id="barrioText" rendered="#{crearSolicitudDthBean.barrioSugeridoField}"
+                                                  value="Ingrese barrio:" /></h:panelGroup>
+                                <h:panelGroup >
+                                    <h:inputText disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                 id="barrioField" rendered="#{crearSolicitudDthBean.barrioSugeridoField}"  value="#{crearSolicitudDthBean.barrioSugeridoStr}"/></h:panelGroup>
+                                <h:panelGroup >
+                                    <h:commandButton disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                                     rendered="#{crearSolicitudDthBean.barrioSugeridoField}"
+                                                     action="#{crearSolicitudDthBean.agregarBarrioSugerido}"
+                                                     id="agregarBarrioButton" value="Agregar Barrio"
+                                                     styleClass="btn" >
+                                        <f:ajax event="change" execute="@this" render="barrioStr"/>
+                                    </h:commandButton></h:panelGroup>
+                                <h:panelGroup ></h:panelGroup>
+
+                            </h:panelGrid>
+                        </div>
+                    </h:panelGroup>
+
+                </h:panelGroup>
+
+                <table id="datosEscalamientoHHPP" style="width: 100%; display: #{crearSolicitudDthBean.showContacto?'none':''}">
+                    <tr>
+                        <td colspan="10">
+                            <hr size="5" width="100%" align="LEFT"/>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td nowrap="nowrap">
+                            <h:outputText style="font-weight:bold"
+                                          id="ccmmLabel"
+                                          value="# CCMM/Cta Suc:" />
+                        </td>
+                        <td>
+                            <h:inputText  id="ccmm" style="width: 80%"
+                                          value="#{crearSolicitudDthBean.ccmm}" />
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold"
+                                          id="solOTLabel"
+                                          value="# Solicitud/OT:" />
+                        </td>
+                        <td>
+                            <h:inputText  id="solTO" style="width: 80%"
+                                          value="#{crearSolicitudDthBean.solicitudOT}" />
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoGestionReq" value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoGestionLabel"
+                                          value="Tipo Gestión:" />
+                        </td>
+                        <td colspan="6">
+                            <h:selectOneMenu id="selectTipoGestion" style="width: 90%"
+                                             value="#{crearSolicitudDthBean.tipoGestion}" >
+                                <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                <f:selectItems value="#{crearSolicitudDthBean.tablasBasicasMglList}" var="tipo"
+                                               itemValue="#{tipo.nombreBasica}"
+                                               itemLabel="#{tipo.nombreBasica}"/>
+
+                            </h:selectOneMenu>
+                        </td>
+
+                    </tr>
+                </table>
+
+                <table id="contactoTable" style="width: 100%">
+
+                    <tr>
+                        <td style="width:5%;" />
+                        <td style="width:10%;" />
+                        <td style="width:5%;" />
+                        <td style="width:10%;" />
+                        <td style="width:5%;" />
+                        <td style="width:10%;" />
+                        <td style="width:5%;" />
+                        <td style="width:10%;" />
+                        <td style="width:5%;" />
+                        <td style="width:10%;" />
+                    </tr>
+
+                    <tr>
+                        <td colspan="10"> <hr size="5" width="100%" align="LEFT"/></td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+
+                    <tr>
+                        <td style="display: #{!crearSolicitudDthBean.showContacto?'none':''}">
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="contact" value="*"/>
+                            <h:outputText style="font-weight:bold" id="contactoLabel" value="Contacto:"/>
+                        </td>
+                        <td style="display: #{!crearSolicitudDthBean.showContacto?'none':''}">
+                            <h:inputText disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                         value="#{crearSolicitudDthBean.solicitud.contacto}"
+                                         maxlength="499" id="contacto" style="width: 80%"
+                                         validatorMessage="El campo de Contacto debe contener solo LETRAS.">
+                                <f:validateRegex pattern="[a-zA-Z\s]*"/>
+                            </h:inputText>
+                        </td>
+
+
+                        <td style="display: #{!crearSolicitudDthBean.showContacto?'none':''}">
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="phone" value="*"/>
+                            <h:outputText style="font-weight:bold" id="contactoTelefonoLabel" value="Teléfono:"/>
+                        </td>
+                        <td style="display: #{!crearSolicitudDthBean.showContacto?'none':''}">
+                            <h:inputText  disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                          maxlength="10" value="#{crearSolicitudDthBean.solicitud.telContacto}"
+                                          id="telefono" style="width: 80%"
+                                          validatorMessage="El teléfono Contacto debe tener 7 o 10 digitos"
+                                          converterMessage="El teléfono Contacto debe ser númerico.">
+                                <f:validateLength minimum="7" maximum="10"/>
+                                <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                            </h:inputText>
+
+                        </td>
+
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="solicitant" value="*"/>  <h:outputText style="font-weight:bold" id="solicitanteLabel" value="Solicitante:"/>
+                        </td>
+                        <td>
+                            <h:inputText maxlength="250" disabled="true"
+                                         value="#{crearSolicitudDthBean.solicitud.solicitante}"
+                                         id="solicitante" style="width: 80%"/>
+                        </td>
+
+
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="telephone" value="*"/>
+                            <h:outputText style="font-weight:bold" id="telefonoSolicitanteLabel" value="Teléfono:"/>
+                        </td>
+                        <td>
+                            <h:inputText  disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                          maxlength="10"  value="#{crearSolicitudDthBean.solicitud.telSolicitante}"
+                                          id="telefonoSolicitante"  style="width: 80%"
+                                          validatorMessage="El teléfono Solicitante debe tener 7 o 10 digitos"
+                                          converterMessage="El teléfono Solicitante debe ser númerico.">
+                                <f:validateLength minimum="7" maximum="10"/>
+                                <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                            </h:inputText>
+                        </td>
+
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="email" value="*"/>     <h:outputText style="font-weight:bold" id="correoLabel" value="Correo:"/>
+                        </td>
+                        <td>
+                            <h:inputText value="#{crearSolicitudDthBean.solicitud.correo}"
+                                         id="correoSolicitante" disabled="true" style="width: 100%"/>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+
+                    <tr>
+
+                        <td >
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="observations" value="*"/>    <h:outputText style="font-weight:bold" id="observacionesLabel" value="Observaciones:"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="10">
+                            <h:inputTextarea disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             rendered="#{!crearSolicitudDthBean.tipoAccionSolicitud.equals('13')}"
+                                             value="#{crearSolicitudDthBean.solicitud.motivo}" validatorMessage="El campo de OBSERVACIONES no puede contener más de 400 caractéres."
+                                             id="observacionesTextArea" style="width: 100%; height: 66px; " cols="4" rows="12">
+                                <f:validateLength maximum="400" />
+                            </h:inputTextarea>
+                            <h:inputTextarea disabled="#{crearSolicitudDthBean.crearSolicitudButton}"
+                                             rendered="#{crearSolicitudDthBean.tipoAccionSolicitud.equals('13')}"
+                                             value="#{crearSolicitudDthBean.solicitud.motivo}" validatorMessage="El campo de Observaciones no puede contener más de 2000 caractéres."
+                                             id="observacionesTextAreaEscala" style="width: 100%; height: 66px; " cols="4" rows="12">
+                                <f:validateLength maximum="2000" />
+                            </h:inputTextarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="10">
+                            <h:panelGroup id="panelSoporte">
+                                <h:panelGroup id="soporteRequeried"  rendered="#{crearSolicitudDthBean.soporteRequerido}">
+                                    <h:panelGroup id="panelArchivo">
+
+                                        <p:fileUpload
+                                            id="archivoSoporte"  mode="simple" skinSimple="true"
+                                            label="Seleccionar Archivo"
+                                            value="#{crearSolicitudDthBean.uploadedFile}"
+                                            rendered="#{crearSolicitudDthBean.solicitudCreated.idSolicitud eq null and crearSolicitudDthBean.crearSolicitudButton}"/>
+                                        <h:outputText
+                                            value="Archivo soporte: #{crearSolicitudDthBean.solicitudCreated.tiempoSolicitudMgl.archivoSoporte}"
+                                            rendered="#{!(crearSolicitudDthBean.solicitudCreated.idSolicitud eq null)}"/>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                            </h:panelGroup>
+                        </td>
+                    </tr>
+
+                   <tr><td><br/></td></tr>
+                    <tr>
+                        <td colspan="10"> <hr size="5" width="100%" align="LEFT"/></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="10" style="text-align: center;">
+
+                            <h:commandLink id="cuentaMatrizActivalink" style="font-size: 17px;"
+                                           rendered="#{crearSolicitudDthBean.cuentaMatrizActiva}"
+                                           value="IR Cuenta Matriz Existente"
+                                           action="#{crearSolicitudDthBean.irCuentaCMdir()}"/>
+
+                            <h:commandLink id="hhppExistentelink" style="font-size: 17px;"
+                                           rendered="#{crearSolicitudDthBean.hhppExiste}"
+                                           value="IR Hhpp"
+                                           action="#{crearSolicitudDthBean.irModeloHhpp()}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="10">
+                            <h:outputText rendered="#{crearSolicitudDthBean.direccionesCambioEstrato}"   style="font-weight: bold" value="Seleccione la dirección a la que le desea realizar la solicitud de cambio de estrato"/>
+                            <br/> <br/>
+                            <h:dataTable id="hhppTable"  rendered="#{crearSolicitudDthBean.direccionesCambioEstrato}"
+                                         value="#{crearSolicitudDthBean.hhppList}"
+                                         var="hhpp" style="width:50%; margin-right: auto; margin-left: auto;"
+                                         styleClass="solicitudesGTableMgl"
+                                         headerClass="solicitudesGTableHeaderMgl"
+                                         rowClasses="solicitudesGTableOddRowMgl,solicitudesGTableEvenRowMgl">
+                                <f:facet name="header">
+                                    <h:outputText value="Direcciones asociadas" />
+                                </f:facet>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Selecciona Dirección" />
+                                    </f:facet>
+                                    <h:selectBooleanCheckbox value="#{hhpp.selected}" />
+                                </h:column>
+
+                                <h:column >
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <div style="text-align: left;">
+                                        <h:outputText value="#{hhpp.barrioHhpp}"/>
+                                    </div>
+                                </h:column>
+
+                                <h:column >
+                                    <f:facet name="header">
+                                        <h:outputText value="Dirección" />
+                                    </f:facet>
+                                    <div style="text-align: left;">
+                                        <h:outputText value="#{hhpp.direccionDetalladaHhpp}"/>
+                                    </div>
+                                </h:column>
+
+                                <h:column >
+                                    <f:facet name="header">
+                                        <h:outputText value="Estrato Actual" />
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{hhpp.estratoActual}"/>
+                                    </div>
+                                </h:column>
+
+
+                                <f:facet name="footer" >
+                                    <h:panelGroup rendered="#{crearSolicitudDthBean.getTotalPaginasHhpp() > 1}">
+                                        <br/><br/>
+                                        <div style="text-align: center;">
+                                            <h:commandButton title="Primera Página" value="#{crearSolicitudDthBean.inicioPagina}" action="#{crearSolicitudDthBean.pageFirstHhpp}"
+                                                             class="btn"/>
+                                            <h:commandButton title="Página Anterior" value="#{crearSolicitudDthBean.anteriorPagina}" action="#{crearSolicitudDthBean.pagePreviousHhpp}"
+                                                             class="btn"/>
+                                            <h:commandButton title="Número Páginas" value="#{crearSolicitudDthBean.pageActualHhpp}" styleClass="botonTPagInicio"    />
+                                            <h:selectOneMenu id="listTabla" value="#{crearSolicitudDthBean.numPaginaHhpp}"
+                                                             styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                                <f:selectItems value="#{crearSolicitudDthBean.paginaListHhpp}" var="pag"
+                                                               itemValue="#{pag}"
+                                                               itemLabel="#{pag}"/>
+                                                <f:ajax render="@form" event="change"
+                                                        listener="#{crearSolicitudDthBean.irPaginaHhpp()}"
+                                                        execute="@this" />
+                                            </h:selectOneMenu>
+                                            <h:commandButton title="Página Siguiente" value="#{crearSolicitudDthBean.siguientePagina}" action="#{crearSolicitudDthBean.pageNextHhpp}"
+                                                             class="btn"/>
+                                            <h:commandButton title="Última Página" value="#{crearSolicitudDthBean.finPagina}" action="#{crearSolicitudDthBean.pageLastHhppHhpp}"
+                                                             class="btn"/>
+                                        </div>
+                                    </h:panelGroup>
+                                </f:facet>
+                            </h:dataTable>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="10">
+                            <h:outputText rendered="#{crearSolicitudDthBean.direccionesCambioEstrato}"   style="font-weight: bold" value="Seleccione el estrato nuevo que sea le desea realizar cambio a la dirección seleccionada:"/>
+                            <br/> <br/>
+                            <h:selectOneMenu  rendered="#{crearSolicitudDthBean.direccionesCambioEstrato}"
+                                              style="width: 16%" id="estratoNuevo"
+                                              value="#{crearSolicitudDthBean.nuevoEstratoHhpp}" >
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                <f:selectItems value="#{crearSolicitudDthBean.estratoHhppList}"
+                                               var="estrato" itemValue="#{estrato.codigoBasica}"
+                                               itemLabel="#{estrato.nombreBasica}">
+                                </f:selectItems>
+                            </h:selectOneMenu>
+
+                        </td>
+                    </tr>
+                    <br/>
+                    <br/>
+
+                    <tr>
+                        <td colspan="10">
+                            <h:panelGroup id="cambioEstrato" rendered="#{crearSolicitudDthBean.direccionesCambioEstrato}">
+
+                                <hr size="5" width="100%" align="LEFT"/>
+
+                                <span class="TituloSeccion">Adjuntar Documentos</span>
+                                <br/>
+                                <br/>
+                                <h:panelGrid columns="2" rendered="#{crearSolicitudDthBean.soporteRequeridoTecnologia() and crearSolicitudDthBean.solicitudCreated.idSolicitud eq null}">
+                                    <p:fileUpload id="idArchivo" label="Seleccionar Documento:"  mode="simple" skinSimple="true"
+                                                       value="#{crearSolicitudDthBean.fileCambioEstrato}" style="display:block;"/>
+
+                                    <br/>
+
+                                    <h:commandButton value="Guardar Documento" id="btnEditarCostos" rendered="true"
+                                                     styleClass="btn"  action="#{crearSolicitudDthBean.guardarArchivo()}">
+                                    </h:commandButton>
+
+                                    <h:dataTable id="tableCargaArchivo"
+                                                 rendered="#{crearSolicitudDthBean.lstFilesCambiosEstrato != null
+                                                             and crearSolicitudDthBean.lstFilesCambiosEstrato.size() > 0
+                                                             and crearSolicitudDthBean.solicitudCreated.idSolicitud eq null}"
+                                                 styleClass="constructGTable2"
+                                                 headerClass="constructGTableHeader"
+                                                 value="#{crearSolicitudDthBean.lstFilesCambiosEstrato}" var="archivosLst"
+                                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Nombre Archivo"/>
+                                            </f:facet>
+                                             <h:outputText value="#{crearSolicitudDthBean.nombreArchivo(archivosLst)}"/>
+                                        </h:column>
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Acción"/>
+                                            </f:facet>
+                                            <h:commandLink id="lnkCancelar"
+                                                           value="" title="Eliminar"
+                                                           actionListener="#{crearSolicitudDthBean.eliminarArchivo(archivosLst)}"
+                                                           styleClass="btnIconEliminar"
+                                                           onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"/>
+                                        </h:column>
+                                    </h:dataTable>
+                                    <ui:repeat  var="ar"  rendered="#{crearSolicitudDthBean.solicitudCreated.idSolicitud != null}"
+                                                value="#{crearSolicitudDthBean.tecArchivosCambioEstratos}">
+                                        <div style="text-align: left;">
+
+                                            <a href="#{ar.urlArchivoSoporte}"
+                                               target="blank" id="linkDescarga2" >
+                                        #{ar.nombreArchivo}
+                                            </a>
+                                        </div>
+                                     </ui:repeat>
+                                </h:panelGrid>
+                            </h:panelGroup>
+
+                        </td>
+                    </tr>
+
+                    <!-- Inicio sección adjuntar archivos Escalamientos HHPP -->
+
+                    <tr>
+                        <td colspan="10">
+                            <h:panelGroup id="escalamientoHHPP" rendered="#{crearSolicitudDthBean.showAdjuntoEscalamiento}">
+
+                                <hr size="5" width="100%" align="LEFT"/>
+
+                                <span class="TituloSeccion">Adjuntar Documentos</span>
+                                <br/>
+                                <br/>
+                                <h:panelGrid columns="2">
+                                    <p:fileUpload id="idArchivoEscalamiento" label="Seleccionar Documento:"  mode="simple" skinSimple="true"
+                                                  value="#{crearSolicitudDthBean.fileEscalamientoHHPP}" style="display:block;"/>
+
+                                    <br/>
+
+                                    <h:commandButton value="Guardar Documento" id="btnEscalamientoHHPP" rendered="true"
+                                                     styleClass="btn"  action="#{crearSolicitudDthBean.guardarArchivoEscalamientoHHPP()}">
+                                    </h:commandButton>
+
+                                    <h:dataTable id="tableCargaArchivoEscalamientoHHPP"
+                                                 rendered="#{crearSolicitudDthBean.lstFilesEscalamientoHHPP != null
+                                                             and crearSolicitudDthBean.lstFilesEscalamientoHHPP.size() > 0
+                                                             and crearSolicitudDthBean.solicitudCreated.idSolicitud eq null}"
+                                                 styleClass="constructGTable2"
+                                                 headerClass="constructGTableHeader"
+                                                 value="#{crearSolicitudDthBean.lstFilesEscalamientoHHPP}" var="archivosLst"
+                                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Nombre Archivo"/>
+                                            </f:facet>
+                                            <h:outputText value="#{crearSolicitudDthBean.nombreArchivo(archivosLst)}"/>
+                                        </h:column>
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Acción"/>
+                                            </f:facet>
+                                            <h:commandLink id="lnkCancelarEscalamientoHHPP"
+                                                           value="" title="Eliminar"
+                                                           actionListener="#{crearSolicitudDthBean.eliminarArchivoEscalamientoHHPP(archivosLst)}"
+                                                           styleClass="btnIconEliminar"
+                                                           onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"/>
+                                        </h:column>
+                                    </h:dataTable>
+                                    <ui:repeat  var="ar"  rendered="#{crearSolicitudDthBean.solicitudCreated.idSolicitud != null}"
+                                                value="#{crearSolicitudDthBean.tecArchivosEscalamientosHHPP}">
+                                        <div style="text-align: left;">
+
+                                            <a href="#{ar.urlArchivoSoporte}"
+                                               target="blank" id="linkDescargaEscalamientoHHPP" >
+                                                #{ar.nombreArchivo}
+                                            </a>
+                                        </div>
+                                    </ui:repeat>
+                                </h:panelGrid>
+                            </h:panelGroup>
+
+                        </td>
+                    </tr>
+
+                    <!-- Fin sección adjuntar archivos Escalamiento HHPP -->
+
+                    <tr>
+                        <td colspan="10"> <hr  size="5" width="100%" align="LEFT"/></td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td/>
+                        <td colspan="4" style="text-align: right">
+                            <h:commandButton rendered="#{!crearSolicitudDthBean.crearSolicitudButton and !crearSolicitudDthBean.showAdjuntoEscalamiento}"
+                                             action="#{crearSolicitudDthBean.validarDireccion()}"
+                                             disabled="#{crearSolicitudDthBean.deshabilitarValidar or !crearSolicitudDthBean.validarOpcionValidarDir()}"
+                                             id="validarDireccionButton" value="Validar Dirección"
+                                             styleClass="btn" >
+                                <f:ajax event="change"
+                                        execute="@this tabsWrap"
+                                        render="barriosSugeridospanelWrapper panelSoporte"/>
+
+                            </h:commandButton>
+
+                            <h:commandButton rendered="#{crearSolicitudDthBean.crearSolicitudButton or !crearSolicitudDthBean.showContacto}"
+                                             disabled="#{crearSolicitudDthBean.deshabilitarCreacion}"
+                                             action="#{crearSolicitudDthBean.crearSolicitud()}"
+                                             id="crearSolicitudButton" type="submit" value="Crear Solicitud"
+                                             styleClass="btn" />
+                        </td>
+                        <td>
+                            <h:commandButton action="#{crearSolicitudDthBean.iniciarNuevaSolicitud()}"
+                                             id="limpiarFormularioButton" value="Limpiar Formulario"
+                                             styleClass="btn"/>  </td>
+
+                        <td>
+                            <h:commandButton
+                                disabled="#{crearSolicitudDthBean.deshabilitarCreacion}"
+                                action="#{crearSolicitudDthBean.limpiarDireccion()}"
+                                id="limpiarDireccionButton" value="Limpiar Dirección"
+                                styleClass="btn"/>  </td>
+
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;" colspan="10">
+
+                            <h:commandButton rendered="#{crearSolicitudDthBean.goGestion and crearSolicitudDthBean.showContacto}"
+                                             disabled="#{!crearSolicitudDthBean.goGestion}"
+                                             id="irGestionButton" value="Gestionar Solicitud"
+                                             action="#{crearSolicitudDthBean.goGestionarSolicitudDth()}"
+                                             styleClass="btn"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="10"> <hr size="5" width="100%" align="LEFT"/></td>
+                    </tr>
+                </table>
+            </h:panelGroup>
+
+            <h:panelGroup style="width: 100%"  id="TrackSolicitudTab" rendered="#{crearSolicitudDthBean.showTrack}">
+
+                <h:dataTable id="tableTrackSolicitud" value="#{crearSolicitudDthBean.cmtTiempoSolicitudMglToCreate}"
+                             var="track"  styleClass="constructGTable2"
+                             headerClass="constructGTableHeader"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                    <h:column>
+                        <f:facet name="header" >
+                            <h:outputText value="Tiempo Solicitud"  />
+                        </f:facet>
+                        <div align="center"  >
+                            <h:outputText value="#{crearSolicitudDthBean.cmtTiempoSolicitudMglToCreate.tiempoSolicitud eq null ?
+                                                   '00:00:00' : crearSolicitudDthBean.cmtTiempoSolicitudMglToCreate.tiempoSolicitud}" />
+
+                        </div>
+                    </h:column>
+
+                    <h:column  >
+                        <f:facet name="header">
+                            <h:outputText value="Tiempo Espera" />
+                        </f:facet>
+                        <div align="center"  >
+                            <h:outputText value="#{crearSolicitudDthBean.cmtTiempoSolicitudMglToCreate.tiempoEspera eq null ?
+                                                   '00:00:00' : crearSolicitudDthBean.cmtTiempoSolicitudMglToCreate.tiempoEspera}" />
+                        </div>
+                    </h:column>
+
+                    <h:column >
+                        <f:facet name="header">
+                            <h:outputText value="Tiempo Gestión" />
+                        </f:facet>
+                        <div align="center" >
+                            <h:outputText value="00:00:00" />
+                        </div>
+                    </h:column>
+
+                    <h:column >
+                        <f:facet name="header">
+                            <h:outputText value="Tiempo Total" />
+                        </f:facet>
+                        <div align="center" >
+                            <h:outputText value="#{crearSolicitudDthBean.cmtTiempoSolicitudMglToCreate.tiempoTotal eq null ?
+                                                   '00:00:00' : crearSolicitudDthBean.cmtTiempoSolicitudMglToCreate.tiempoTotal}" />
+                        </div>
+                    </h:column>
+
+                    <h:column  >
+                        <f:facet name="header">
+                            <h:outputText value="Tiempo ANS" />
+                        </f:facet>
+
+                        <div align="center" >
+                            <h:outputText value="#{crearSolicitudDthBean.cmtTipoSolicitudMgl.ans eq null ?
+                                                   'No Configurado' : crearSolicitudDthBean.cmtTipoSolicitudMgl.ans}" />
+                        </div>
+
+                    </h:column>
+                </h:dataTable>
+                <br/>
+
+                <h:panelGroup id="panelTrackDetalleSolicitud">
+                    <h2>Detalle Creación de la Solicitud</h2>
+                    <h:panelGrid id="panelInfoTrackDetalleSolicitud" columns="2">
+                        <h:outputText value="Fecha-Hora Inicio:" style="min-width: 150px; max-width: 150px;"/>
+                        <h:outputText value="#{crearSolicitudDthBean.solicitudCreated.fechaIngreso}" >
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>
+                        <h:outputText value="Fecha-Hora Finalización:" style="min-width: 150px; max-width: 150px;"/>
+                        <h:outputText id ="finalSolicitud" value="#{crearSolicitudDthBean.tiempoFinalSolicitud}" >
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>
+                        <h:outputText value="Usuario Solicitante:" style="min-width: 150px; max-width: 150px;"/>
+                        <h:outputText value="#{crearSolicitudDthBean.solicitudCreated.usuario}"  />
+                        <h:outputText value="Correo:" style="min-width: 150px; max-width: 150px;"/>
+                        <h:outputText  value="#{crearSolicitudDthBean.solicitudCreated.correo}"/>
+                    </h:panelGrid>
+
+                </h:panelGroup>
+
+
+                <table id="tableButton" style="width: 766px; ">
+                    <tr>
+                        <td style="width:6%;" />
+                        <td style="width:19%;" />
+                        <td style="width:18%;" />
+                        <td style="width:6%;" />
+                        <td style="width:19%;" />
+                        <td style="width:18%;" />
+                        <td style="width:6%;" />
+                    </tr>
+
+
+                </table>
+            </h:panelGroup>
+
+
+
+            <h:panelGroup style="width: 100%"  id="notasSolicitudTab" rendered="#{crearSolicitudDthBean.showNotas}">
+
+                <h:panelGroup id="panelGroupDetalleNota"  rendered="true">
+                    <h:panelGrid id="panelNotaInfo" columns="4" style="width: 100%;">
+
+                        <h:outputText value="Descripcion" id="DescripcionNotaOtLabel"/>
+                        <h:inputText label="Descripcion" id="DescripcionNotaOtInput"
+                                     maxlength="200"
+                                     value="#{crearSolicitudDthBean.cmtNotasSolicitudVtMgl.descripcion}"
+                                     readonly="#{crearSolicitudDthBean.cmtNotasSolicitudVtMgl.notasId != null}" />
+
+                        <h:outputText value="Tipo Nota" id="TipoNotaOtLabel"/>
+                        <h:selectOneMenu id="TipoMotaOtList"  value="#{crearSolicitudDthBean.tipoNotaSelected.basicaId}"
+                                         styleClass="ListaConsulta"
+                                         disabled="#{crearSolicitudDthBean.cmtNotasSolicitudVtMgl.notasId  != null}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{crearSolicitudDthBean.tipoNotaList}" var="ld"
+                                           itemValue="#{ld.basicaId}"
+                                           itemLabel="#{ld.nombreBasica}"/>
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid id="panelDescNotaInfo" columns="1" style="width: 100%;">
+                        <h:outputText value="Nota (4000 Caracteres)" id="NotaOtLabel"/>
+
+                        <h:inputTextarea label="Nota" id="NotaOtInput"
+                                         style="width: 100%; resize: none; overflow-y: scroll;" rows="2"
+                                         value="#{crearSolicitudDthBean.cmtNotasSolicitudVtMgl.nota}"
+                                         readonly="#{crearSolicitudDthBean.cmtNotasSolicitudVtMgl.notasId != null}"
+                                         validatorMessage="'Nota' Numero maximo de caracteres es 4000">
+                            <f:validateLength maximum="4000" />
+                        </h:inputTextarea>
+                    </h:panelGrid>
+
+                    <h:panelGrid id="panelComentarioNota"
+                                 rendered="#{crearSolicitudDthBean.cmtNotasSolicitudVtMgl.notasId != null}"
+                                 columns="1" style="width: 100%;" >
+                        <h:outputText value="Comentario (4000 Caracteres)" id="ComentarioNotaOtLabel"/>
+
+                        <h:inputTextarea label="Comentario" id="ComentarioNotaOtInput"
+                                         style="width: 100%; resize: none; overflow-y: scroll;" rows="1"
+                                         value="#{crearSolicitudDthBean.notaComentarioStr}"
+                                         required="true" requiredMessage="Campo 'Comentario' es requerido"
+                                         validatorMessage="'Comentario' Numero maximo de caracteres es 4000">
+                            <f:validateLength maximum="4000" />
+                        </h:inputTextarea>
+                    </h:panelGrid>
+                    <h:panelGrid id="panelBotonesNotaInfo" columns="3" style="width: 100%; margin: 0 auto;">
+                        <h:commandButton value="Guardar Nota" id="CrearNotaOtButton"
+                                         rendered="#{crearSolicitudDthBean.cmtNotasSolicitudVtMgl.notasId == null}" styleClass="btn"
+                                         action="#{crearSolicitudDthBean.guardarNota()}"/>
+                        <h:commandButton value="Guardar Comentario" id="CrearComentarioNotaButton"
+                                         rendered="#{crearSolicitudDthBean.cmtNotasSolicitudVtMgl.notasId != null}" styleClass="btn"
+                                         action="#{crearSolicitudDthBean.guardarComentarioNota()}"/>
+                        <h:commandButton value="Limpiar Campos" id="limpiarButton"
+                                         rendered="true" styleClass="btn" immediate="true">
+                            <f:ajax render="@form" execute="@this"
+                                    event="click" listener="#{crearSolicitudDthBean.limpiarCamposNota()}"/>
+                        </h:commandButton>
+                    </h:panelGrid>
+
+                </h:panelGroup>
+
+                <h:panelGroup id="panelGroupHitorialNotas" style="width: 100%;" rendered="true">
+                    <div style="width: 100%; height: 200px; overflow-y: scroll;">
+
+                        <h:dataTable class="AligSpan" id="HitorialNotasTable" style="width:100%;margin:0 auto;"
+                                     var="ntSol"
+                                     value="#{crearSolicitudDthBean.notasSolicitudList}"
+                                     headerClass="solicitudesGTableHeader" >
+                            <f:facet name="header">
+                                <h:outputText value="Historial Notas" />
+                            </f:facet>
+                            <h:column>
+                                <h:panelGroup >
+                                    <h:panelGrid columns="8" style="width: 100%; border: none;">
+                                        <h:outputText value="Tipo Nota:" style="font-weight: bold;" />
+                                        <h:outputText value="#{ntSol.tipoNotaObj.nombreBasica}" class="labelnotastipo" />
+
+                                        <h:outputText value="Usuario:" style="font-weight: bold"/>
+                                        <h:outputText value="#{ntSol.usuarioCreacion}" class="labelnotasuser"/>
+
+                                        <h:outputText value="Fecha Creación:" style="font-weight: bold"/>
+                                        <h:outputText value="#{ntSol.fechaCreacion}">
+                                            <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+                                        </h:outputText>
+                                        <h:commandLink value=""
+                                                       action="#{crearSolicitudDthBean.mostarComentario(ntSol)}"
+                                                       immediate="true">
+                                            <h:graphicImage value="../../../images/icon_plus_red.png" />
+                                        </h:commandLink>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="1" style="width: 100%">
+                                        <h:outputText value="#{ntSol.nota}"/>
+                                    </h:panelGrid>
+
+                                    <h:dataTable  rendered="#{ntSol.comentarioList != null
+                                                              and ntSol.comentarioList.size() >0}"
+                                                  style="width:100%"
+                                                  value="#{ntSol.comentarioList}" var="cmNtSol">
+
+                                        <h:column>
+                                            <h:outputText value="#{cmNtSol.nota}" style="width: 100%;"/>
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:panelGroup>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

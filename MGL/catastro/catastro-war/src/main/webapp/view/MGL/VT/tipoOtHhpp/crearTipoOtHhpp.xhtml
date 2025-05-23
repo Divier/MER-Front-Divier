@@ -1,0 +1,294 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:t="http://myfaces.apache.org/tomahawk"              
+                template="/view/MGL/template/VT/moduloHhppTemplate.xhtml"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" >
+    <ui:define name="title"><span class="TituloSeccion">Crear Tipo Ot</span></ui:define>        
+    <ui:define name="content">
+        <h2 style="margin-top: -15px; 
+            margin-left: -12px;text-align: center;">CREAR TIPO OT</h2>
+        <h:panelGrid columns="8" cellspacing="10px" id="prueba" class="EtiquetaConsulta" style="width: 100%" > 
+
+            <h:outputText style="font-weight:bold" id="nombreTipoOtTxt"
+                          value="* Nombre Sub Tipo Ot:"/>   
+            <h:inputText value="#{crearTipoOtHhppBean.nombreTipoOt}"
+                         id="nombreTipoOt" maxlength="50" 
+                         validatorMessage="El nombre de tipo de ot debe contener solo LETRAS.">
+                <f:validateRegex pattern="[a-zA-Z\s]*"/> 
+            </h:inputText>
+            <h:outputText  value="" /> 
+            <h:outputText  value="" /> 
+
+            <h:outputText style="font-weight:bold"  id="agendable" value="Agendable:" /> 
+            <h:selectBooleanCheckbox id="agendableCheck" value="#{crearTipoOtHhppBean.agendable}" /> 
+            <h:outputText  value="" /> 
+            <h:outputText  value="" /> 
+
+            <h:outputText style="font-weight:bold"  id="ampliacion" value="Genera Ampliación de Tab:" /> 
+            <h:selectBooleanCheckbox id="ampliacionCheck" value="#{crearTipoOtHhppBean.ampliacionDeTab}" >
+                <f:ajax event="change" listener="#{crearTipoOtHhppBean.obtenerTipoOtParaAmpliacionDeTab()}" render="tipoOtparaAmpliacionTab"/>
+            </h:selectBooleanCheckbox> 
+
+            <h:panelGrid id="tipoOtparaAmpliacionTab" >
+
+                <h:outputText  rendered="#{crearTipoOtHhppBean.showTipoOtParaAmpliacionDeTab}" value="Orden que generara 
+                               si hay ampliacion de tab:" /> 
+                <h:panelGroup  rendered="#{crearTipoOtHhppBean.showTipoOtParaAmpliacionDeTab}">
+                    <div  style="width:145px;">
+                        <h:selectOneMenu  
+                            style="width:145px" id="listadoTipoOt" 
+                            value="#{crearTipoOtHhppBean.tipoOtDeAmpliacionDeTabSeleccionada}" >
+                            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                            <f:selectItems value="#{crearTipoOtHhppBean.tipoOtList}" 
+                                           var="tipoOt" itemLabel="#{tipoOt.nombreTipoOt}" 
+                                           itemValue="#{tipoOt.tipoOtId}"/>                     
+
+                        </h:selectOneMenu> 
+                    </div>
+                </h:panelGroup>
+            </h:panelGrid>
+
+            <h:outputText   value="" /> 
+
+            <h:outputText style="font-weight:bold"  id="manejaTecnologias" value="Crea Tecnologías?:" /> 
+            <h:selectBooleanCheckbox id="manejaTecnologiasCheck" value="#{crearTipoOtHhppBean.manejaTecnologias}" /> 
+            <h:outputText style="width: 100px" value="" />
+            <h:outputText style="width: 100px" value="" />
+
+            <h:outputText style="font-weight:bold"  id="manejaVisitaDomiciliaria" value="Maneja visita domiciliaria: " /> 
+            <h:selectBooleanCheckbox id="manejaVisitaDomiciliariaCheck" value="#{crearTipoOtHhppBean.manejaVisitaDomiciliaria}" />
+            <h:outputText   value="" /> 
+
+            <h:outputText   value="" /> 
+
+            <h:outputText  id="tipoTrabajoId" value="* Tipo de Trabajo:" /> 
+            <h:selectOneMenu 
+                style="width:145px" id="tipoTrabajo" 
+                value="#{crearTipoOtHhppBean.tipoTrabajoSeleccionado}" >
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                <f:selectItems value="#{crearTipoOtHhppBean.tipoTrabajoList}" 
+                               var="tipoTrabajo" itemLabel="#{tipoTrabajo.nombreBasica}" 
+                               itemValue="#{tipoTrabajo.basicaId}"/>                     
+            </h:selectOneMenu> 
+
+            <h:outputText   value="" /> 
+            <h:outputText   value="" /> 
+
+
+            <h:outputText  id="subTipoTrabajoId" value="* Sub Tipo de OFSC:" /> 
+            <h:selectOneMenu 
+                style="width:145px" id="subTipoTrabajo" 
+                value="#{crearTipoOtHhppBean.subTipoTrabajoSeleccionado}" >
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                <f:selectItems value="#{crearTipoOtHhppBean.subTipoTrabajoList}" 
+                               var="subTipoTrabajo" itemLabel="#{subTipoTrabajo.nombreBasica}" 
+                               itemValue="#{subTipoTrabajo.basicaId}"/>                     
+            </h:selectOneMenu> 
+
+            <h:outputText   value="" /> 
+
+            <h:outputText  id="estadoCreacionInternoTxt" value="" />
+
+            <h:outputText  id="ansTxt" value="* Ans (minutos):" /> 
+            <h:inputText id="ans" maxlength="50"                         
+                         value="#{crearTipoOtHhppBean.ans}" >
+
+            </h:inputText>
+
+            <h:outputText  id="space1" value="" />
+            <h:outputText  id="space2" value="" />
+
+            <h:outputText id="ansAvisoTxt" value="* Ans Aviso (minutos):" /> 
+            <h:inputText id="ansAviso" 
+                         maxlength="50" value="#{crearTipoOtHhppBean.ansAviso}" >
+            </h:inputText>
+            <h:outputText  value="" /> 
+            <h:outputText  value="" />
+
+            <h:outputText value="Requiere Onyx"/>
+            <h:selectBooleanCheckbox value="#{crearTipoOtHhppBean.requiereOnyx}"/>
+
+            <h:outputText   value="" />
+            <h:outputText   value="" />
+
+            <h:outputText  value="* Es Multiagenda:" />
+            <h:selectOneRadio id="isMulti"   value="#{crearTipoOtHhppBean.isMultiagenda}" 
+                              class="radioB">
+                <f:selectItem itemLabel="Si" itemValue="S"/>
+                <f:selectItem itemLabel="No" itemValue="N"/>
+                <f:ajax render="idPanelOtRr"/>             
+            </h:selectOneRadio>
+
+            <h:outputText   value="" />
+            <h:outputText   value="" />
+
+            <h:outputText  value="* Comporamiento de Verificacion?:" />
+            <h:selectOneRadio id="isTipoVerificacion"   value="#{crearTipoOtHhppBean.isTipoVerificacion}" 
+                              class="radioB">
+                <f:selectItem itemLabel="Si" itemValue="1"/>
+                <f:selectItem itemLabel="No" itemValue="0"/>
+            </h:selectOneRadio>
+            
+            
+        </h:panelGrid>
+
+
+        <h:panelGrid id="idPanelOtRr" columns="8"  cellspacing="10px"  class="EtiquetaConsulta" style="width: 100%" >
+
+
+            <h:outputText   value="* Tipo OT RR:" id="idTipoOtRr"
+                            rendered="#{crearTipoOtHhppBean.isMultiagenda eq 'S'}"/>
+
+            <h:selectOneMenu  id="tipoTrabajoRR" style="width:250px" 
+                              value="#{crearTipoOtHhppBean.tipoTrabajoRRSelect}" 
+                              rendered="#{crearTipoOtHhppBean.isMultiagenda eq 'S'}" >
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{crearTipoOtHhppBean.listadoTipodeTrabajo}" var="tipoot" 
+                               itemValue="#{tipoot.basicaId}" itemLabel="#{tipoot.nombreBasica}" />
+            </h:selectOneMenu>
+
+            <h:outputText  value="" /> 
+            <h:outputText  value="" />
+
+
+            <h:outputText  value="* Estado Inicial RR:" 
+                           rendered="#{crearTipoOtHhppBean.isMultiagenda eq 'S'}"/>
+            <h:selectOneMenu id="estadoIniRR"   value="#{crearTipoOtHhppBean.estadoResultadoInicialRRSelect}" 
+                             rendered="#{crearTipoOtHhppBean.isMultiagenda eq 'S'}" styleClass="ListaConsulta" 
+                             style="width:250px">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{crearTipoOtHhppBean.listadoEstadoInicial}" 
+                               var="estadoInicial" itemValue="#{estadoInicial.basicaId}" 
+                               itemLabel="#{estadoInicial.descripcion}" />
+            </h:selectOneMenu>
+
+            <h:outputText  value="" /> 
+            <h:outputText  value="" />
+
+            <h:outputText  value="* Estado Cierre RR:" 
+                           rendered="#{crearTipoOtHhppBean.isMultiagenda eq 'S'}" />
+
+            <h:selectOneMenu id="estadoCierreRR" 
+                             value="#{crearTipoOtHhppBean.estadoResultadoCierreRRSelect}" 
+                             rendered="#{crearTipoOtHhppBean.isMultiagenda eq 'S'}" style="width:250px">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{crearTipoOtHhppBean.listadoEstadoCierre}" 
+                               var="estadoCierre" itemValue="#{estadoCierre.basicaId}" itemLabel="#{estadoCierre.descripcion}" />
+            </h:selectOneMenu>   
+
+            <h:outputText  value="" /> 
+            <h:outputText  value="" />
+
+        </h:panelGrid>
+
+
+
+        <h2 style="
+            margin-left: -12px;text-align: center;">ADMINISTRACION DE RAZONES</h2>
+
+        <h:panelGrid columns="2" id="configEstados" class="EtiquetaConsulta" style="width: 100%" > 
+
+
+            <h:outputText  id="estadoCreacionTxt" value="Estado:" /> 
+            <h:selectOneMenu 
+                style="width:145px" id="estadoCreacion" 
+                value="#{crearTipoOtHhppBean.estadoCreacion}" >
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                <f:selectItems value="#{crearTipoOtHhppBean.estadoGeneralList}" 
+                               var="estadoCreacionInterno" itemLabel="#{estadoCreacionInterno.nombreBasica}" 
+                               itemValue="#{estadoCreacionInterno.identificadorInternoApp}"/>                     
+                <f:ajax event="change" execute="estadoCreacion"
+                        listener="#{crearTipoOtHhppBean.obtenerEstadoCreacionInternoList()}"
+                        render="configEstados"/>
+            </h:selectOneMenu> 
+
+
+            <h:outputText  id="razones" value="Razón:" /> 
+            <h:selectOneMenu 
+                style="width:145px" id="estadoCreacionInterno" 
+                value="#{crearTipoOtHhppBean.razonSeleccionada}" >
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                <f:selectItems value="#{crearTipoOtHhppBean.estadoCreacionInternoList}" 
+                               var="estadoCreacionInterno" itemLabel="#{estadoCreacionInterno.nombreBasica}" 
+                               itemValue="#{estadoCreacionInterno.basicaId}"/>                     
+
+            </h:selectOneMenu> 
+
+
+            <h:outputText  id="roles" rendered="#{crearTipoOtHhppBean.showRoles}" value="Rol" /> 
+            <h:selectOneMenu 
+                rendered="#{crearTipoOtHhppBean.showRoles}"
+                style="width:145px" id="rol" 
+                value="#{crearTipoOtHhppBean.rolSeleccionado}" >
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                <f:selectItems value="#{crearTipoOtHhppBean.rolesList}" 
+                               var="roles" itemLabel="#{roles}" 
+                               itemValue="#{roles}"/>                     
+
+            </h:selectOneMenu> 
+            <h:outputText value="" /> 
+
+            <h:commandButton styleClass="btn" id="crearRazon" 
+                             value="Agregar Razon" 
+                             action="#{crearTipoOtHhppBean.agregarRazon()}"  />
+            <h:outputText rendered="#{!crearTipoOtHhppBean.showRoles}" value="" />
+            <h:outputText value="" /> 
+
+
+        </h:panelGrid>
+        <h:dataTable id="subTable" styleClass="constructGTable2"
+                     var="gestionRoles" 
+                     value="#{crearTipoOtHhppBean.gestionRolesOtDireccionesList}"     
+                     headerClass="constructGTableHeader" 
+                     rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+            <h:column>
+                <f:facet name="header" >
+                    <h:outputText value="Estado"  />
+                </f:facet>
+                <h:outputText value="#{gestionRoles.estadoGeneral.nombreBasica}"/>
+
+            </h:column>
+
+            <h:column>
+                <f:facet name="header" >
+                    <h:outputText value="Razón"  />
+                </f:facet>
+                <h:outputText value="#{gestionRoles.razon.nombreBasica}"/>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header" >
+                    <h:outputText value="Rol"  />
+                </f:facet>
+                <h:outputText value="#{gestionRoles.rol}"/>
+            </h:column>
+
+            <h:column >   
+                <f:facet name="header">  
+                    <h:outputText value="Accion" />                                 
+                </f:facet>
+
+                <h:commandLink >
+                    <h:outputText value="Eliminar"/>  
+                    <f:ajax event="click" render="@form"
+                            listener="#{crearTipoOtHhppBean.eliminarRazonOtDirecciones(gestionRoles)}" />  
+                </h:commandLink> 
+
+            </h:column>
+        </h:dataTable>
+
+        <div style="text-align: center;">
+            <h:commandButton styleClass="btn" id="crearTipoOtButton" value="Guardar" action="#{crearTipoOtHhppBean.crearTipoOtHhpp()}"  />
+            <h:commandButton styleClass="btn" id="limpiarTipoOtButton" value="Limpiar" action="#{crearTipoOtHhppBean.limpiarTipoOtHhpp()}"  />
+            <h:commandButton styleClass="btn" id="backTipoOtButton" value="Atrás" action="#{crearTipoOtHhppBean.volverListadoTipoOt()}"  />
+
+        </div>
+
+    </ui:define>
+
+</ui:composition>

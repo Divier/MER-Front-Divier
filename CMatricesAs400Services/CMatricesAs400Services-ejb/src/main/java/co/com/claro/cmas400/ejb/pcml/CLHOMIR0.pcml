@@ -1,0 +1,29 @@
+<pcml version="4.0">                                                            
+   <!-- RPG module: CLHOMIR0  -->                                              
+   <!-- created: 2019-04-16-09.06.54 -->
+   <!-- old source: JSEGURA/QDSCLARO(INSHOMOLO) -->
+   <!-- source: JSEGURA/QDSCLARO(CLHOMIR0) -->                                 
+   <!-- 3200 -->                                                                
+   <program name="CLHOMIR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CLHOMIR0.PGM">                          
+      <data name="IDPRC" type="char" length="1" usage="inputoutput" />          
+      <data name="IDUSER" type="char" length="10" usage="inputoutput" />        
+      <data name="CODDIV" type="char" length="3" usage="inputoutput" />         
+      <data name="CODCOM" type="char" length="3" usage="inputoutput" />         
+      <data name="NOMREG" type="char" length="30" usage="inputoutput" />        
+      <data name="NOMDEP" type="char" length="30" usage="inputoutput" />        
+      <data name="NOMMUN" type="char" length="30" usage="inputoutput" />        
+      <data name="ISMUNI" type="char" length="2" usage="inputoutput" />         
+      <data name="HOMDEP" type="char" length="30" usage="inputoutput" />        
+      <data name="HOMMUN" type="char" length="30" usage="inputoutput" />        
+      <data name="CODDAN" type="char" length="8" usage="inputoutput" />         
+      <data name="CODUBI" type="char" length="1" usage="inputoutput" />             
+      <data name="ESTREG" type="char" length="1" usage="inputoutput" />    
+      <data name="IDENDM" type="char" length="7" usage="inputoutput" />    
+      <data name="ENDMSG" type="char" length="200" usage="inputoutput" />  
+   </program>  
+                                                            
+</pcml> 
+
+
+
+ 

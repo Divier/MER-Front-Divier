@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/otTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Historial Acometidas</span></ui:define>
+    <ui:define name="content">
+        <h1>Listado Acometidas</h1>   
+        <h:panelGroup style="margin: 0 auto;" id="panelVisitasTecnicas">
+            <h:dataTable id="VisitasTecnicasTable" style="width:50%;margin:0 auto;"
+                         rendered="#{OtMglBean.ordenTrabajo.visitaTecnicaMglList != null 
+                                     and OtMglBean.ordenTrabajo.visitaTecnicaMglList.size() > 0}"
+                                     value="#{OtMglBean.ordenTrabajo.visitaTecnicaMglList}" var="acoOt"
+                         styleClass="constructGTable" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow " >
+                <f:facet name="header">
+                    <h:outputText value="Historial Acometidas" />
+                </f:facet>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Número Acometida" />
+                    </f:facet>  
+                    <h:commandLink value="#{acoOt.idVt}" immediate="true"
+                                   disabled="#{!OtMglBean.validarEdicionVT()}"
+                                   action="#{visitaTecnicaBean.ingresarGestionVtAco(acoOt)}">
+                    </h:commandLink>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Fecha Creación" />
+                    </f:facet>  
+                    <h:outputText value="#{acoOt.fechaCreacion}">
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                    </h:outputText>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Estado Acometida" />
+                    </f:facet>  
+                    <h:outputText value="Inactivo" rendered="#{acoOt.estadoVisitaTecnica == 0}"/>
+                    <h:outputText value="Activo" rendered="#{acoOt.estadoVisitaTecnica == 1}"/>
+                </h:column>
+            </h:dataTable>
+        </h:panelGroup>
+        <h:panelGroup id="panelBotones" style="margin: 0 auto;" >
+            <h:commandButton value="Nuevo" id="LimpiarCamposOtButton" 
+                             styleClass="btn" immediate="true"
+                             rendered="#{OtMglBean.ordenTrabajo.visitaTecnicaMglList.size()==0}"
+                             action="#{visitaTecnicaBean.ingresarAcometidaNueva()}"/>
+        </h:panelGroup>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/MGL/template/main.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Administrador Regional</span></ui:define>
+    <ui:define name="message"><span class="error"> #{regionalMglBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <fieldset>
+            <legend>ADMINISTRACIÓN NODOS</legend>
+            <br></br>
+
+            <h:panelGrid columns="4" id="regionalMgl" class="EtiquetaConsulta" width="100%">
+                <h:outputText value="Id Regional" id="reg_idlb"  />
+                <h:inputText id="IdSqlTxt" value="#{regionalMglBean.regionalMgl.regionalRrId}" disabled="true" /> 
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio}Nombre Regional" id="reg_nom"/>
+                <h:inputText id="reg_nombreTxt" value="#{regionalMglBean.regionalMgl.nombreRegional}" maxlength="50"
+                              requiredMessage="Campo Nombre regional es requerido" required="true"/>
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio}Código Regional" id="reg_cod"/>
+                <h:inputText id="nod_codigoTxt" value="#{regionalMglBean.regionalMgl.codigoRr}" maxlength="3"
+                             requiredMessage="Campo Código regional es requerido" required="true"/>
+
+
+
+                <div style="width: 150px" >
+                    <h:inputHidden id="nodHid" value="hid" ></h:inputHidden>
+                </div>
+                <div style="width: 150px" ></div>
+
+            </h:panelGrid>
+            <br></br><br></br>
+            <h:panelGrid columns="4" id="regionalMgl2" styleClass="panelInfo">
+
+                <h:commandButton value="Actualizar" action="#{regionalMglBean.actualizarRegionalMgl()}"
+                                 styleClass="buttonl" rendered="#{!(regionalMglBean.regionalMgl.regionalRrId eq 0)}"
+                                 style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+                <h:commandButton value="Guardar" action="#{regionalMglBean.crearRegionalMgl()}"
+                                 styleClass="buttonl" rendered="#{(regionalMglBean.regionalMgl.regionalRrId  eq 0)}"
+                                 disabled="#{(regionalMglBean.guardado)}" style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+                <h:commandButton value="Eliminar"
+                                 styleClass="buttonl" immediate="true"
+                                 action="#{regionalMglBean.eliminarRegionalMgl()}"
+                                 style="text-align: center; color:#FFFFFF;"
+                                 rendered="#{!(regionalMglBean.regionalMgl.regionalRrId eq 0)}">
+                </h:commandButton>
+                <h:commandButton value="Volver" action="regionalMglListView" immediate="true"
+                                 styleClass="buttonl" style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+
+            </h:panelGrid>
+
+        </fieldset>
+    </ui:define>
+
+</ui:composition>

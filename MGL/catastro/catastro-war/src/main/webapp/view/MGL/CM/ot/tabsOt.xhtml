@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ul id="tabs">
+        <li><h:commandLink class="#{OtMglBean.selectedTab == 'GENERAL' ? 'current':'tabDefault'}"
+                           action="#{OtMglBean.cambiarTab('GENERAL')}" immediate="true"
+                           rendered="#{OtMglBean.validarPestanaGeneral()}"
+                           title="General" value="General" />
+        </li>
+        <li><h:commandLink class="#{OtMglBean.selectedTab == 'FVT' ? 'current':'tabDefault'}"
+                           action="#{OtMglBean.cambiarTab('FVT')}" immediate="true"
+                           rendered="#{OtMglBean.validarPestanaVT()}"
+                           title="Visita Técnica" value="Visita Técnica" />
+        </li>
+        <li><h:commandLink class="#{OtMglBean.selectedTab == 'FAC' ? 'current':'tabDefault'}"
+                           action="#{OtMglBean.cambiarTab('FAC')}" immediate="true"
+                           rendered="#{OtMglBean.validarPestanaAC()and OtMglBean.habilitaFormAC}"
+                           title="Acometida" value="Acometida" />
+        </li>
+        <li><h:commandLink class="#{OtMglBean.selectedTab == 'NOTAS' ? 'current':'tabDefault'}"
+                           action="#{OtMglBean.cambiarTab('NOTAS')}" immediate="true"
+                           rendered="#{OtMglBean.validarPestanaNotas()}"
+                           title="Notas" value="Notas" />
+        </li>
+        <li><h:commandLink class="#{OtMglBean.selectedTab == 'INVENTARIOS_OT' ? 'current':'tabDefault'}" 
+                           action="#{OtMglBean.cambiarTab('INVENTARIOS_OT')}" immediate="true"
+                           rendered="#{OtMglBean.isVisible}" id="inventario_ot"
+                           title="Inventarios" value="Inventarios"/>
+        </li>
+        <li><h:commandLink immediate="true" value="Contactos"
+                           id="detalleOtContactos" title="Contactos"
+                           rendered="#{OtMglBean.validarPestanaOTContactos()}"
+                           action="#{OtMglBean.cambiarTab('CONTACTOS')}"
+                           class="#{OtMglBean.selectedTab == 'CONTACTOS' ? 'current':'tabs5'}" />
+        </li>
+
+        <li><h:commandLink immediate="true" value="Bitácora"
+                           id="detalleOtBitacora" title="Bitácora"
+                           rendered="#{OtMglBean.validarPestanaOTBitacora()}"
+                           action="#{OtMglBean.cambiarTab('BITACORA')}"
+                           class="#{OtMglBean.selectedTab == 'BITACORA' ? 'current':'tabs6'}" />
+        </li>
+        <li><h:commandLink immediate="true" value="Backlog"
+                           id="backlogId" title="Backlog"
+                           rendered="#{OtMglBean.validarPestanaOTBacklog()}"
+                           action="#{OtMglBean.cambiarTab('BACKLOG')}"
+                           class="#{OtMglBean.selectedTab == 'BACKLOG' ? 'current':'tabs7'}" />
+        </li>
+
+        <li><h:commandLink class="#{OtMglBean.selectedTab == 'AGENDAMIENTO' ? 'current' : 'tabs8'}"
+                           action="#{OtMglBean.cambiarTab('AGENDAMIENTO')}"
+                           rendered="#{OtMglBean.validarPestanaOTAgendamientos() and OtMglBean.validarReglasPestaniaAgenda()}"
+                           title="Agendar visita" value="Agendar visita" immediate="true"/> 
+
+        </li>
+        
+        <li><h:commandLink class="#{OtMglBean.selectedTab == 'OT Onyx' ? 'current' : 'tabs9'}"
+                           action="#{OtMglBean.cambiarTab('OTONYX')}"
+                           rendered="#{OtMglBean.ordenTrabajo.tipoOtObj.requiereOnyx eq 'Y'}"
+                           title="OT Onyx" value="OT Onyx" immediate="true"/> 
+        </li>
+        
+           <li><h:commandLink class="#{OtMglBean.selectedTab == 'HISTORICO_AGENDAS' ? 'current' : 'tabs10'}"
+                           action="#{OtMglBean.cambiarTab('HISTORICO_AGENDAS')}"
+                           rendered="#{OtMglBean.validarPestanaHistoricoAgendas()}"
+                           title="Histórico agendas" value="Histórico agendas" immediate="true"/>
+
+        </li>
+    </ul>
+    <br/>
+    <h:panelGroup id="Rcmt" rendered="#{!cmtHistoricoAgendasOtMglBean.showLogEstado}">
+        <h:commandLink value="Regresar CM"
+                   id="RegresarCmBtn" immediate="true"
+
+                   action="#{OtMglBean.ingresarGestionCm()}"/>
+    </h:panelGroup>
+</ui:composition>

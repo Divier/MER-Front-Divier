@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml"
+    >
+
+    <ui:define name="title"><span class="TituloSeccion">Estados x Flujos Ot</span></ui:define>
+
+    <ui:define name="content">
+
+        <h:panelGroup >
+            <br></br>
+
+            <br></br>
+
+            <fieldset>
+                <legend>Estados x Tecnologías</legend>
+                
+                <br />  
+                <h:panelGrid columns="2">
+                    <h:outputText value="Filtrar Estados Cm" />
+                    <h:inputText  maxlength="50" id="estadoCCmmId" 
+                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{estadoxTecnologiaBean.filtroEstadoCcmm}">
+                        <f:ajax listener="#{estadoxTecnologiaBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="tablabasicaEstadosCm"/>
+                    </h:inputText>
+                </h:panelGrid>
+
+
+                <h:dataTable id="tablabasicaEstadosCm" 
+                             value="#{estadoxTecnologiaBean.selectedDataList}" 
+                             var="listCm" 
+                             styleClass="constructGTable2"
+                             headerClass="constructGTableHeader" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Estados Cm" />
+                        </f:facet>
+                        <h:outputText value="#{listCm.estadosCm.nombreBasica}"/>
+
+
+                    </h:column>
+                    <h:column>   
+                        <f:facet name="header">
+                            <table class="header" >
+                                <tr><td></td>
+                                    <ui:repeat var="tec" value="#{estadoxTecnologiaBean.listTablaBasicaTecnologias}"> 
+                                        <td>
+                                            <h:outputText value="#{tec.nombreBasica}"/>
+                                            <div class="floating-box-tec"></div>
+                                        </td>
+                                    </ui:repeat>
+                                </tr>
+                            </table>
+                        </f:facet>
+                        <table class="header" >
+                            <tr><td></td>
+                                <ui:repeat var="tec" value="#{estadoxTecnologiaBean.listTablaBasicaTecnologias}"> 
+                                    <td>
+                                        <div class="floating-box"></div>
+                                    </td>
+                                </ui:repeat>
+                            </tr>
+                            <tr><td></td>
+
+                                <ui:repeat var="tec" value="#{listCm.innerlistTec}"> 
+                                    <th>
+                                        <h:selectBooleanCheckbox class="columnReadForm" value="#{tec.activacion}" id = "chkAprobacion" /> 
+
+                                    </th>
+                                </ui:repeat>
+                            </tr>
+                        </table>
+
+
+                    </h:column>
+                </h:dataTable>
+
+
+            </fieldset>
+            <h:panelGrid columns="4" id="tablasBasicasMgl2" styleClass="panelInfo">
+                <h:panelGroup id="botonesAcciones">
+                    <h:commandButton value="Guardar" styleClass="btn"
+                                     action="#{estadoxTecnologiaBean.createEstadosxTecnologias()}"
+                                     disabled="#{!estadoxTecnologiaBean.validarGuardarRol()}"/>
+
+                </h:panelGroup>
+
+            </h:panelGrid>
+
+
+            <br></br>
+
+
+            <br></br>
+
+
+        </h:panelGroup>
+
+
+    </ui:define>
+</ui:composition>
+

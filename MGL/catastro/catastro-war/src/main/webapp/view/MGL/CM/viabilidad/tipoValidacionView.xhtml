@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Administrador tipoValidacion</span></ui:define>
+    <ui:define name="message"><span class="error"> #{tipoValidacionMglBean.message}</span></ui:define>
+    <ui:define name="content">
+        <h2>Tipos Validación [#{tipoValidacionBean.tipoBasicaDescripcion}]</h2>
+        <h:form id="form1">
+
+            <h:panelGrid columns="4" id="tipoValidacionMgl" class="formulario"  width="100%">
+
+                <h:outputText value="Id" id="asc_idlb"    />
+                <h:outputText id="IdSqlTxt" value="#{tipoValidacionBean.tipoValidacionMgl.idTipoValidacion}" />    
+
+                <h:outputText value="Tipo de tabla b&aacute;sica" id="geo_nombrelb"/>
+                <h:selectOneMenu id="listtipotablabasicaMgl" 
+                                 value="#{tipoValidacionBean.tablaTipoBasicaMgl}" 
+                                 styleClass="ListaConsulta" style="width: 100%;" >
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{tipoValidacionBean.tablasTipoBasicasMglList}" var="lttb"
+                                   itemValue="#{lttb.tipoBasicaId}"
+                                   itemLabel="#{lttb.nombreTipo}">
+                    </f:selectItems>   
+                    <f:ajax listener="#{tipoValidacionBean.consultarByTipoTablaBasica}" event="change" execute="@this" render="tablasBasicasMglTable"/>
+                </h:selectOneMenu> 
+
+                <h:outputText escape="false" value="#{tipoValidacionBean.estiloObligatorio}Estado" id="asc_campo_adicional2lb"/>
+
+                <h:selectOneMenu id="listEstadoBasica" value="#{tipoValidacionBean.tipoValidacionMgl.estadoRegistro}" rendered="#{tipoValidacionBean.tipoValidacionMgl.estadoRegistro eq 1}" 
+                                 disabled="#{(tipoValidacionBean.tipoValidacionMgl.idTipoValidacion  eq 0)}"
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="Y" itemLabel="Activo" />
+                    <f:selectItem itemValue="N" itemLabel="Inactivo" />
+                </h:selectOneMenu>  
+                <h:outputText id="estEliminado" value="Eliminado" rendered="#{tipoValidacionBean.tipoValidacionMgl.estadoRegistro eq 0}"></h:outputText>                    
+                
+            </h:panelGrid>
+            <br></br><br></br>   
+            <h:panelGrid columns="4" id="tablasBasicasMgl2" styleClass="panelInfo">
+                <h:panelGroup id="botonesAcciones" rendered="#{tipoValidacionBean.tipoValidacionMgl.estadoRegistro eq 1}">
+                    <h:commandButton value="Actualizar" action="#{tipoValidacionBean.actualizarTipoValidacionMgl()}"  styleClass="btn" rendered="#{!(tipoValidacionBean.tipoValidacionMgl.idTipoValidacion  eq 0)}"  ></h:commandButton>
+                    <h:commandButton value="Crear" action="#{tipoValidacionBean.irCrearTipoValidacionMgl()}" styleClass="btn" ></h:commandButton>
+                    <h:commandButton value="Eliminar" action="#{tipoValidacionBean.eliminarTipoValidacionMgl()}" styleClass="btn" rendered="#{!(tipoValidacionBean.tipoValidacionMgl.idTipoValidacion  eq 0)}" onclick="return confirm('¿Está seguro que desea Eliminar el registro?');" ></h:commandButton>
+                </h:panelGroup>
+                <h:commandButton value="Volver" action="#{tipoValidacionBean.volverList}" styleClass="btn" immediate="true"></h:commandButton>
+            </h:panelGrid>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

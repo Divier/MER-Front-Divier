@@ -1,0 +1,659 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+       
+    <!-- INTERFACE -->
+    <cc:interface componentType="co.com.claro.mgl.mbeans.cm.componente.DirComponentControlerMgl">
+        <cc:attribute name="address" 
+                      type="co.com.claro.mgl.jpa.entities.DrDireccion" 
+                      shortDescription="Direccion a manipular en el componente" 
+                      required="true" />
+        <cc:attribute name="configurationAddressComponent" 
+                      type="co.com.claro.mgl.jpa.entities.ConfigurationAddressComponent" 
+                      shortDescription="Carga las configuraciones y listados de tipo de dirección" 
+                      required="true" />
+        <cc:attribute name="esMultiorigen"
+                      type="java.lang.Boolean" 
+                      shortDescription="Indica al componente si la ciudad es multiorigen" 
+                      required="true"/>
+        <cc:attribute name="barriosMultiorigen" 
+                      type="java.util.ArrayList" 
+                      shortDescription="Contiene los barrios de la dirreción Multiorigen" 
+                      required="false"/>
+        <cc:attribute name="esConsulta" 
+                      type="java.lang.Boolean" 
+                      shortDescription="Indica si el el componente se esta utilizando para una consulta" 
+                      required="false"/>
+
+    </cc:interface> 
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation> 
+        <!-- Javascipt -->
+        <script type="text/javascript">
+            function cambioSelectBarrio(myObjSelect, nombreTexto) {
+                var myObjTexto = document.getElementById(
+                        myObjSelect.id.substring(0, myObjSelect.id.lastIndexOf(":")) + ":" + nombreTexto);
+                if (myObjSelect.value === "OTRO" || myObjSelect.value.trim() === "") {
+                    myObjTexto.readOnly = false;
+                    myObjTexto.value = "";
+                } else {
+                    myObjTexto.readOnly = true;
+                    myObjTexto.value = myObjSelect.value;
+                }
+            }
+            function cambioTextoBarrio(myEvento, myObjText, nombreSelect) {
+                var myObjSelect = document.getElementById(
+                        myObjText.id.substring(0, myObjText.id.lastIndexOf(":")) + ":" + nombreSelect);
+                if (myObjSelect.value.trim() === "") {
+                    //myObjText.value = "";
+                    return false;
+                } else {
+                    if (myObjSelect.value.trim() !== "OTRO") {
+                        myObjText.value = myObjSelect.value.trim();
+                    }
+                }
+            }
+            function cambioPorCero(myObjSelect, nombreTexto) {
+                var myObjTexto = document.getElementById(
+                        myObjSelect.id.substring(0, myObjSelect.id.lastIndexOf(":")) + ":" + nombreTexto);
+                if (myObjSelect.value === "V" || myObjSelect.value.trim() === "") {
+                    myObjTexto.value = "0";
+                } else {
+                    myObjTexto.value = "";
+                }
+            }
+            function cambioPorCero2(myObjSelect, nombreTexto) {
+                var myObjTexto = document.getElementById(
+                        myObjSelect.id.substring(0, myObjSelect.id.lastIndexOf(":")) + ":" + nombreTexto);
+                if (myObjSelect.value === "BM") {
+                    myObjTexto.value = "0";
+                } else {
+                    myObjTexto.value = "";
+                }
+            }
+
+            function cambioSelect(myObjSelect, nombreTexto) {
+                var myObjTexto = document.getElementById(
+                        myObjSelect.id.substring(0, myObjSelect.id.lastIndexOf(":")) + ":" + nombreTexto);
+                if (myObjSelect.value === "V" || myObjSelect.value.trim() === "") {
+                    myObjTexto.readOnly = true;
+                    myObjTexto.value = "";
+                } else {
+                    myObjTexto.readOnly = false;
+
+                }
+            }
+
+            function cambioTexto(myEvento, myObjText, nombreSelect) {
+                var myObjSelect = document.getElementById(
+                        myObjText.id.substring(0, myObjText.id.lastIndexOf(":")) + ":" + nombreSelect);
+                if (myObjSelect.value.trim() === "V" || myObjSelect.value.trim() === "") {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            function cambioSelectViaPrincipalIt(myObjSelect, nombreSelect, nombreTexto) {
+                
+                var myObjSelect2 = document.getElementById(
+                        myObjSelect.id.substring(0, myObjSelect.id.lastIndexOf(":")) + ":" + nombreSelect);
+                var myObjTexto = document.getElementById(
+                        myObjSelect.id.substring(0, myObjSelect.id.lastIndexOf(":")) + ":" + nombreTexto);
+                if (myObjSelect.value === "CORREGIMIENTO") {
+                    myObjSelect2.disabled = true;
+                    myObjSelect2.value = "";
+                    myObjTexto.readOnly = true;
+                    myObjTexto.value = "";
+                } else {
+                    myObjSelect2.disabled = false;
+                    myObjTexto.readOnly = false;
+                }
+            }
+            function cambioSelectPlaca(myObjSelect, nombreTexto) {
+                var myObjTexto = document.getElementById(
+                        myObjSelect.id.substring(0, myObjSelect.id.lastIndexOf(":")) + ":" + nombreTexto);
+                myObjTexto.value = "";
+            }
+            function cambioSelectComplemento(myObjSelect, nombreTexto) {
+                var myObjTexto = document.getElementById(
+                        myObjSelect.id.substring(0, myObjSelect.id.lastIndexOf(":")) + ":" + nombreTexto);
+                switch (myObjSelect.value) {
+                    case "CASA":
+                        myObjTexto.value = "C";
+                        break;
+                    case "LOTE":
+                        myObjTexto.value = "L";
+                        break;
+                    default:
+                        myObjTexto.value = "";
+                        break;
+                }
+            }
+             
+        </script>
+        <h:panelGrid id="dirForm"
+                     style="width: 100%;padding: 5px" >
+            <h:panelGrid id="panelTipoDireccion" columns="2">
+                <h:outputText value="Tipo Dirección"
+                              styleClass="formColumn1"/>
+                <h:selectOneMenu id="idTipoDireccion"  
+                                 value="#{cc.attrs.address.idTipoDireccion}"  
+                                 style="width: 150px" 
+                                 immediate="true"> 
+                    <c:if test="#{cc.attrs.esConsulta}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                    </c:if>
+                    <f:selectItems value="#{cc.attrs.configurationAddressComponent.tiposDireccion}"
+                                   var="itTd" 
+                                   itemLabel="#{itTd.descTipoDir}" 
+                                   itemValue="#{itTd.codTipoDir}"
+                                   />
+                    <f:ajax execute="@this" render="dirForm" event="change" />
+                </h:selectOneMenu>
+            </h:panelGrid>
+            <h:panelGrid id="panelCK"
+                         styleClass="formulario2"
+                         rendered="#{cc.attrs.address.idTipoDireccion.equalsIgnoreCase('CK')}"
+                         style="width: 100%; padding: 5px; font-size: 11px">
+
+                <h:outputText value="Barrio"
+                              rendered="#{cc.attrs.esMultiorigen}"/>
+                <h:inputText  value="#{cc.attrs.address.barrio}"
+                              rendered="#{cc.attrs.esMultiorigen}"
+                              style="width: 150px;"/>
+                <h:panelGrid id="subPanelCalle"
+                             columns="9">
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText value="Calle" style=" font-size: 13px; text-decoration: underline;"/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+
+                    <h:outputText value="#{cc.attrs.esConsulta?'':cc.estiloObligatorio}Vía Principal" escape="false"/>
+                    <h:outputText value="#{cc.attrs.esConsulta?'':cc.estiloObligatorio}Núm" escape="false"/>
+                    <h:outputText value="Letra"/>
+                    <h:outputText value="Letra2"/>
+                    <h:outputText/>
+                    <h:outputText value="Bis"/>
+                    <h:outputText value="Cardinales"/>
+                    <h:outputText/>
+                    <h:outputText/>
+
+                    <h:selectOneMenu id="selectViaPrincipalCk"  
+                                     value="#{cc.attrs.address.tipoViaPrincipal}"
+                                     style="width: 150px"
+                                     required="#{cc.attrs.esConsulta?false:true}" requiredMessage="El tipo de via principal es Obligatorio">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.tiposDeViaPrinCK}"
+                                       var="iterVpCk"
+                                       itemValue="#{iterVpCk.idParametro}"
+                                       itemLabel="#{iterVpCk.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:inputText id="numViaPrincipalCk" 
+                                 value="#{cc.attrs.address.numViaPrincipal}"
+                                 required="#{cc.attrs.esConsulta?false:true}" requiredMessage="El numero via principal es Obligatorio"
+                                 >
+
+                        <f:ajax event="keyup" render="dirPrintCK" />
+                    </h:inputText>
+                    <h:selectOneMenu id="selectLetra"
+                                     value="#{cc.attrs.address.ltViaPrincipal}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.letrasCK}"
+                                       var="iterLCk"  
+                                       itemValue="#{iterLCk.idParametro}"
+                                       itemLabel="#{iterLCk.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="selectLetra2"
+                                     value="#{cc.attrs.address.nlPostViaP}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.letrasCK}"
+                                       var="iterL2Ck"
+                                       itemValue="#{iterL2Ck.idParametro}"
+                                       itemLabel="#{iterL2Ck.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:outputText/>
+                    <h:selectOneMenu id="selectBis"
+                                     value="#{cc.attrs.address.bisViaPrincipal}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.bisCK}"
+                                       var="iterBCk"
+                                       itemValue="#{iterBCk.idParametro}"
+                                       itemLabel="#{iterBCk.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="selectCardinales"
+                                     value="#{cc.attrs.address.cuadViaPrincipal}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.cardinalesCK}"
+                                       var="iterCardCk"
+                                       itemValue="#{iterCardCk.idParametro}"
+                                       itemLabel="#{iterCardCk.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:outputText/>
+                </h:panelGrid>
+                <h:panelGrid id="subPanelPlaca"
+                             columns="9">
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText value="Placa" style=" font-size: 13px; text-decoration: underline;"/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+
+                    <h:outputText value="Cruce"/>
+                    <h:outputText value="#{cc.attrs.esConsulta?'':cc.estiloObligatorio}Núm" escape="false"/>
+                    <h:outputText value="Letra"/>
+                    <h:outputText value="Letra2"/>
+                    <h:outputText value="Letra3"/>
+                    <h:outputText value="Bis"/>
+                    <h:outputText value="Cardinales"/>
+                    <h:outputText />
+                    <h:outputText value="#{cc.attrs.esConsulta?'':cc.estiloObligatorio}Núm Placa" escape="false"/>
+
+                    <h:selectOneMenu id="selectCruce"
+                                     value="#{cc.attrs.address.tipoViaGeneradora}"
+                                     style="width: 150px">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.cruceCK}"
+                                       var="iterCruceCk"
+                                       itemValue="#{iterCruceCk.idParametro}"
+                                       itemLabel="#{iterCruceCk.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:inputText id="num2"
+                                 value="#{cc.attrs.address.numViaGeneradora}"
+                                 required="#{cc.attrs.esConsulta?false:true}" requiredMessage="El numero via generadora es Obligatorio">
+                        <f:ajax event="keyup" render="dirPrintCK" />
+                    </h:inputText>
+                    <h:selectOneMenu id="selectLet"
+                                     value="#{cc.attrs.address.ltViaGeneradora}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.letrasCK}"
+                                       var="iterNum2Ck"  
+                                       itemValue="#{iterNum2Ck.idParametro}"
+                                       itemLabel="#{iterNum2Ck.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="selectLet2"
+                                     value="#{cc.attrs.address.nlPostViaG}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.letrasCK}"
+                                       var="iterL2Ck"  
+                                       itemValue="#{iterL2Ck.idParametro}"
+                                       itemLabel="#{iterL2Ck.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="selectLet3"
+                                     value="#{cc.attrs.address.letra3G}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.letrasCK}"
+                                       var="iterL3Ck"  
+                                       itemValue="#{iterL3Ck.idParametro}"
+                                       itemLabel="#{iterL3Ck.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="selectBis2"
+                                     value="#{cc.attrs.address.bisViaGeneradora}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.bisCK}"
+                                       var="iterB2Ck"
+                                       itemValue="#{iterB2Ck.idParametro}"
+                                       itemLabel="#{iterB2Ck.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="selectCardinales2"
+                                     value="#{cc.attrs.address.cuadViaGeneradora}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.ckValues.cardinalesCK}"
+                                       var="iterCard2Ck"
+                                       itemValue="#{iterCard2Ck.idParametro}"
+                                       itemLabel="#{iterCard2Ck.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintCK" />
+                    </h:selectOneMenu>
+                    <h:outputText  id="line" 
+                                   value="-" 
+                                   style="display: block; width: 5px"/>
+                    <h:inputText id="numPlaca"
+                                 value="#{cc.attrs.address.placaDireccion}"
+                                 required="#{cc.attrs.esConsulta?false:true}" requiredMessage="El numero de placa es Obligatorio">
+                        <f:ajax event="keyup" render="dirPrintCK" />
+                    </h:inputText>
+                </h:panelGrid>
+                <h:outputText id="dirPrintCK"
+                              style="display: block; 
+                              font-weight: bold; 
+                              text-align: center; 
+                              text-transform: uppercase; "
+                              value="#{cc.attrs.address.tipoViaPrincipal}
+                              #{cc.attrs.address.numViaPrincipal}
+                              #{cc.attrs.address.ltViaPrincipal}
+                              #{cc.attrs.address.nlPostViaP}
+                              #{cc.attrs.address.bisViaPrincipal}
+                              #{cc.attrs.address.cuadViaPrincipal}
+                              #{cc.attrs.address.tipoViaGeneradora}
+                              #{cc.attrs.address.numViaGeneradora == null ? null : (' # '.concat(cc.attrs.address.numViaGeneradora))}
+                              #{cc.attrs.address.ltViaGeneradora}
+                              #{cc.attrs.address.nlPostViaG}
+                              #{cc.attrs.address.letra3G}
+                              #{cc.attrs.address.bisViaGeneradora}
+                              #{cc.attrs.address.cuadViaGeneradora}
+                              #{cc.attrs.address.placaDireccion == null ? null : (' - '.concat(cc.attrs.address.placaDireccion))}">
+                </h:outputText>
+            </h:panelGrid>
+
+            <h:panelGrid id="panelBM"
+                         styleClass="formulario2"
+                         rendered="#{cc.attrs.address.idTipoDireccion.equalsIgnoreCase('BM')}"
+                         style="width: 100%; padding: 5px; font-size: 11px">
+                <h:panelGrid columns="4">
+                    <h:outputText/>
+                    <h:outputText escape="false" value="#{cc.attrs.esConsulta?'':cc.estiloObligatorio}Nombre Barrio"/>
+                    <h:outputText value="Tipo Conjunto"/>
+                    <h:outputText value="Nombre"/>
+
+                    <h:outputText/>
+                    <h:inputText id="nombreBarrio" 
+                                 value="#{cc.attrs.address.barrio}" 
+                                 required="#{cc.attrs.esConsulta?false:true}" requiredMessage="El barrio es obligatorio">
+                        <f:ajax event="keyup" render="dirPrintBM" />
+                    </h:inputText>
+
+                    <h:selectOneMenu id="selectTipoConjunto" 
+                                     value="#{cc.attrs.address.mzTipoNivel1}"
+                                     onchange="cambioSelect(this, 'nombreConjunto');">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.bmValues.tipoConjuntoBm}"
+                                       var="iterTcBm"
+                                       itemValue="#{iterTcBm.idParametro}"
+                                       itemLabel="#{iterTcBm.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintBM" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nombreConjunto" 
+                                 value="#{cc.attrs.address.mzValorNivel1}"
+                                 onkeypress="return cambioTexto(event, this, 'selectTipoConjunto');">
+                        <f:ajax event="keyup" render="dirPrintBM" />
+                    </h:inputText>
+
+                    <h:outputText value="Subdivisión1"/>
+                    <h:outputText value="Nombre"/>
+                    <h:outputText value="Subdivisión2"/>
+                    <h:outputText value="Nombre"/>
+
+                    <h:selectOneMenu id="selectSubdivision1"
+                                     value="#{cc.attrs.address.mzTipoNivel2}"
+                                     onchange="cambioSelect(this, 'nombreSubdivision1');">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.bmValues.subdivision1Bm}"
+                                       var="iterSub1Bm"
+                                       itemValue="#{iterSub1Bm.idParametro}"
+                                       itemLabel="#{iterSub1Bm.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintBM" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nombreSubdivision1"
+                                 value="#{cc.attrs.address.mzValorNivel2}"
+                                 onkeypress="return cambioTexto(event, this, 'selectSubdivision1');">
+                        <f:ajax event="keyup" render="dirPrintBM" />
+                    </h:inputText>
+                    <h:selectOneMenu id="selectSubdivision2"
+                                     value="#{cc.attrs.address.mzTipoNivel3}"
+                                     onchange="cambioSelect(this, 'nombreSubdivision2');">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.bmValues.subdivision2Bm}"
+                                       var="iterSub2Bm"
+                                       itemValue="#{iterSub2Bm.idParametro}"
+                                       itemLabel="#{iterSub2Bm.descripcion}">
+
+                        </f:selectItems>
+                        <f:ajax render="dirPrintBM" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nombreSubdivision2"
+                                 value="#{cc.attrs.address.mzValorNivel3}"
+                                 onkeypress="return cambioTexto(event, this, 'selectSubdivision2');">
+                        <f:ajax event="keyup" render="dirPrintBM" />
+                    </h:inputText>
+
+                    <h:outputText escape="false" value="Subdivisión3"/>
+                    <h:outputText escape="false" value="#{cc.attrs.esConsulta?'':cc.estiloObligatorio}Nombre"/>
+                    <h:outputText value="Subdivisión4"/>
+                    <h:outputText value="Nombre"/>
+
+                    <h:selectOneMenu id="selectSubdivision3"
+                                     value="#{cc.attrs.address.mzTipoNivel4}"
+                                     onchange="cambioPorCero(this, 'nombreSubdivision3');"
+                                     >
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.bmValues.subdivision3Bm}"
+                                       var="iterSub3Bm"
+                                       itemValue="#{iterSub3Bm.idParametro}"
+                                       itemLabel="#{iterSub3Bm.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintBM" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nombreSubdivision3" required="#{cc.attrs.esConsulta?false:true}" requiredMessage="El campo nombre subdivicion es obligatorio"
+                                 value="#{cc.attrs.address.mzValorNivel4}">
+                        <f:ajax event="keyup" render="dirPrintBM" />
+                    </h:inputText>
+                    <h:selectOneMenu id="selectSubdivision4"
+                                     value="#{cc.attrs.address.mzTipoNivel5}"
+                                     onchange="cambioSelect(this, 'nombreSubdivision4');">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.bmValues.subdivision4Bm}"
+                                       var="iterSub4Bm"
+                                       itemValue="#{iterSub4Bm.idParametro}"
+                                       itemLabel="#{iterSub4Bm.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintBM" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nombreSubdivision4" 
+                                 value="#{cc.attrs.address.mzValorNivel5}"
+                                 onkeypress="return cambioTexto(event, this, 'selectSubdivision4');">
+                        <f:ajax event="keyup" render="dirPrintBM" />
+                    </h:inputText>
+                </h:panelGrid>
+                <h:outputText id="dirPrintBM"
+                              style="display: block; 
+                              font-weight: bold; 
+                              text-align: center; 
+                              text-transform: uppercase; "
+                              value="#{cc.attrs.address.barrio}
+                              #{cc.attrs.address.mzTipoNivel1}
+                              #{cc.attrs.address.mzValorNivel1}
+                              #{cc.attrs.address.mzTipoNivel2}
+                              #{cc.attrs.address.mzValorNivel2}
+                              #{cc.attrs.address.mzTipoNivel3}
+                              #{cc.attrs.address.mzValorNivel3}
+                              #{cc.attrs.address.mzTipoNivel4}
+                              #{cc.attrs.address.mzValorNivel4}
+                              #{cc.attrs.address.mzTipoNivel5}
+                              #{cc.attrs.address.mzValorNivel5}">
+                </h:outputText>
+            </h:panelGrid>
+            <h:panelGrid id="panelIT"
+                         styleClass="formulario2"
+                         rendered="#{cc.attrs.address.idTipoDireccion.equalsIgnoreCase('IT')}"
+                         style="width: 100%; padding: 5px; font-size: 11px">
+                <h:panelGrid columns="6">
+                    <h:outputText value="Vía Principal"/>
+                    <h:outputText value="Nombre Via"/>
+                    <h:outputText value="Complemento Vía"/>
+                    <h:outputText value="#KM"/>
+                    <h:outputText value="Zona Rural"/>
+                    <h:outputText value="Nombre Zona"/>
+
+                    <h:selectOneMenu id="selectViaPrincipalIt"
+                                     value="#{cc.attrs.address.mzTipoNivel1}"
+                                     onchange="cambioSelectViaPrincipalIt(this, 'selectComplementoVia', 'nKm');">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.itValues.intr1It}"
+                                       var="iterVpIt"
+                                       itemValue="#{iterVpIt.idParametro}"
+                                       itemLabel="#{iterVpIt.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintIT" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nombreViaPrincipal"
+                                 value="#{cc.attrs.address.mzValorNivel1}">
+                        <f:ajax event="keyup" render="dirPrintIT" />
+                    </h:inputText>  
+                    <h:selectOneMenu id="selectComplementoVia"
+                                     value="#{cc.attrs.address.mzTipoNivel2}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.itValues.intr2It}"
+                                       var="iterCvIt"
+                                       itemValue="#{iterCvIt.idParametro}"
+                                       itemLabel="#{iterCvIt.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintIT" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nKm"
+                                 value="#{cc.attrs.address.mzValorNivel2}">
+                        <f:ajax event="keyup" render="dirPrintIT" />
+                    </h:inputText>
+                    <h:selectOneMenu id="selectZonaRural"
+                                     value="#{cc.attrs.address.mzTipoNivel3}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.itValues.intr3It}"
+                                       var="iterZrIt"
+                                       itemValue="#{iterZrIt.idParametro}"
+                                       itemLabel="#{iterZrIt.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintIT" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nombreZonaRural"
+                                 value="#{cc.attrs.address.mzValorNivel3}">
+                        <f:ajax event="keyup" render="dirPrintIT" />
+                    </h:inputText>
+
+                    <h:outputText value="Subdivisión"/>
+                    <h:outputText value="Nombre"/>
+                    <h:outputText value="Subdivisión 1"/>
+                    <h:outputText value="Nombre"/>
+                    <h:outputText value="Tipo"/>
+                    <h:outputText value="Nombre"/>
+
+                    <h:selectOneMenu id="selectSubdivisionIt"
+                                     value="#{cc.attrs.address.mzTipoNivel4}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.itValues.intr4It}"
+                                       var="iterSubIt"
+                                       itemValue="#{iterSubIt.idParametro}"
+                                       itemLabel="#{iterSubIt.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintIT" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nombreSubdivisionIt"
+                                 value="#{cc.attrs.address.mzValorNivel4}">
+                        <f:ajax event="keyup" render="dirPrintIT" />
+                    </h:inputText>
+                    <h:selectOneMenu id="selectSubdivision1It"
+                                     value="#{cc.attrs.address.mzTipoNivel5}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.itValues.intr5It}"
+                                       var="iterSub1It"
+                                       itemValue="#{iterSub1It.idParametro}"
+                                       itemLabel="#{iterSub1It.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintIT" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nombreSubdivision1It"
+                                 value="#{cc.attrs.address.mzValorNivel5}">
+                        <f:ajax event="keyup" render="dirPrintIT" />
+                    </h:inputText>
+                    <h:selectOneMenu id="selectTipo"
+                                     value="#{cc.attrs.address.mzTipoNivel6}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.itValues.intr6It}"
+                                       var="iterTit"
+                                       itemValue="#{iterTit.idParametro}"
+                                       itemLabel="#{iterTit.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintIT" />
+                    </h:selectOneMenu>
+                    <h:inputText id="nombreTipo"
+                                 value="#{cc.attrs.address.mzValorNivel6}">
+                        <f:ajax event="keyup" render="dirPrintIT" />
+                    </h:inputText>    
+
+                    <h:outputText value="Placa"/>
+                    <h:outputText value="Id Placa"/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+
+                    <h:selectOneMenu id="selectPlaca"
+                                     value="#{cc.attrs.address.itTipoPlaca}"
+                                     onchange="cambioSelectPlaca(this, 'idPlaca');">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems value="#{cc.attrs.configurationAddressComponent.itValues.placaIt}"
+                                       var="iterPlIt"
+                                       itemValue="#{iterPlIt.idParametro}"
+                                       itemLabel="#{iterPlIt.descripcion}">
+                        </f:selectItems>
+                        <f:ajax render="dirPrintIT" />
+                    </h:selectOneMenu>
+                    <h:inputText id="idPlaca"
+                                 value="#{cc.attrs.address.itValorPlaca}">
+                        <f:ajax event="keyup" render="dirPrintIT" />
+                    </h:inputText>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+                    <h:outputText/>
+                </h:panelGrid>
+                <h:outputText id="dirPrintIT"
+                              style="display: block; 
+                              font-weight: bold; 
+                              text-align: center; 
+                              text-transform: uppercase; "
+                              value="#{cc.attrs.address.mzTipoNivel1}
+                              #{cc.attrs.address.mzValorNivel1}
+                              #{cc.attrs.address.mzTipoNivel2}
+                              #{cc.attrs.address.mzValorNivel2}
+                              #{cc.attrs.address.mzValorNivel2}
+                              #{cc.attrs.address.mzTipoNivel3}
+                              #{cc.attrs.address.mzValorNivel3}
+                              #{cc.attrs.address.mzTipoNivel4}
+                              #{cc.attrs.address.mzValorNivel4}
+                              #{cc.attrs.address.mzTipoNivel5}
+                              #{cc.attrs.address.mzValorNivel5}
+                              #{cc.attrs.address.mzTipoNivel6}
+                              #{cc.attrs.address.mzValorNivel6}
+                              #{cc.attrs.address.itTipoPlaca}
+                              #{cc.attrs.address.itValorPlaca}">
+                </h:outputText>
+            </h:panelGrid>
+        </h:panelGrid>
+    </cc:implementation> 
+</html>

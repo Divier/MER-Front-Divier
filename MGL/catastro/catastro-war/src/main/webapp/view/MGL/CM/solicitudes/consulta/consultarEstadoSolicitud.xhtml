@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Consultar Estado Solicitud</span></ui:define>
+    <ui:define name="content">
+        
+        <script language="javascript" type="text/javascript">
+    //*** Este Codigo permite Validar que sea un campo Numerico
+    function Solo_Numerico(variable) {
+        Numer = parseInt(variable);
+        if (isNaN(Numer)) {
+            return "";
+        }
+        return Numer;
+    }
+    function ValNumero(Control) {
+        Control.value = Solo_Numerico(Control.value);
+    }
+    //*** Fin del Codigo para Validar que sea un campo Numerico
+        </script>
+        
+        
+<h2>INGRESE EL NÚMERO DE LA SOLICITUD. ESTE NÚMERO FUE ASIGNADO Y ENVIADO POR CORREO ELECTRÓNICO AL MOMENTO DE SER CREADA LA SOLICITUD</h2>
+
+        <h:panelGrid id="busquedaSolicitudes" columns="3" style="width: 30%">
+            <h:outputText value="Número Solicitud:" />
+            <h:inputText value="#{cmtConsultarEstadoSolBean.idSolicitudToFind}"
+                         onkeyup="return ValNumero(this);"
+                         required="true" 
+                         requiredMessage="Debe ingresar un valor en el campo Número Solicitud"/>
+            <h:commandButton  id="busquedaSolicitudButton" 
+                              class="btn" 
+                              value="Consultar" 
+                              disabled="#{!cmtConsultarEstadoSolBean.validarOpcionConsultar()}"
+                              action="#{cmtConsultarEstadoSolBean.findById()}"
+                              styleClass="btn"
+                              immediate="false"/>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

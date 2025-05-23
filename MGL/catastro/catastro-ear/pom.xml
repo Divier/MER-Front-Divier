@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>catastro</artifactId>
+        <groupId>co.com.claro.mgl</groupId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>catastro-ear</artifactId>
+    <version>1.0</version>
+    <packaging>ear</packaging>
+
+    <name>catastro-ear</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <root.directory>${basedir}/../../..</root.directory>
+        <output.lib.directory>${basedir}/target/${project.artifactId}-${project.version}/lib</output.lib.directory>
+        
+        <mgl.version>1.0</mgl.version>
+        <poi.version>3.10.1</poi.version>
+        <httpclient.version>4.5.7</httpclient.version>
+        <axis.version>1.4</axis.version>
+        <jsf.version>2.2.18</jsf.version>
+    </properties>
+  
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-my-jar</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Conjunto de Librerías a copiar, que no se encuentran en el repositorio Maven. -->
+                            <fileSets>
+                            </fileSets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <version>6</version>
+                    <generatedDescriptorLocation>${basedir}/src/main/application/META-INF</generatedDescriptorLocation>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    
+                    <modules>
+                        <webModule>
+                            <groupId>co.com.claro.mgl</groupId>
+                            <artifactId>catastro-war</artifactId>
+                            <uri>${project.parent.artifactId}-war-${project.version}.war</uri>
+                            <bundleDir>lib</bundleDir>
+                            <!-- CONTEXTO DEL APLICATIVO -->
+                            <contextRoot>/catastro-warIns</contextRoot>
+                        </webModule>
+                    </modules>
+                </configuration>
+                
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>co.com.claro.mgl</groupId>
+            <artifactId>catastro-ejb</artifactId>
+            <version>1.0</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>co.com.claro.mgl</groupId>
+            <artifactId>catastro-war</artifactId>
+            <version>1.0</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+</project>

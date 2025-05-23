@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/main.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="title"><span class="TituloSeccion">Administrador Eliminacion HHPP masivo</span></ui:define>
+    <ui:define name="message"><span class="error"> #{dirLogEliminacionMasivaMglBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <link  rel="stylesheet" type="text/css" href="/Visitas_Tecnicas/resources/stylesheet.css"/>    
+
+        <h:form id="form1">
+
+
+            <h:panelGrid columns="2">
+                <h:outputText value="Fecha inicial:" id="inicial_lb"  style=" font-size: 12px"   />
+
+                <p:calendar id="inicialDate" 
+                            value="#{dirLogEliminacionMasivaMglBean.fechaInicial}"
+                            readonly="true" 
+                            showOn="both">
+                </p:calendar>        
+
+                <h:outputText value="Fecha fin:" id="fin_lb"  style=" font-size: 12px"  />
+
+                <p:calendar id="finalDate" 
+                            value="#{dirLogEliminacionMasivaMglBean.fechaFinal}"
+                            readonly="true" 
+                            showOn="both">
+                </p:calendar>        
+
+                <h:commandButton value="Nuevo" action="eliminarHHPPMasivo" styleClass="buttonl" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+                <h:commandButton value="Filtrar" action="#{dirLogEliminacionMasivaMglBean.buscarByFechas()}" styleClass="buttonl" 
+                                 style="text-align: center; color:#FFFFFF; z-index: 1000;   "/>
+
+            </h:panelGrid>
+
+            <br></br>
+            <div style=" width: 766px; overflow:scroll;" >
+                <h:dataTable id="dirLogEliminacionMasivaMglTable"                                                           
+                             binding="#{dirLogEliminacionMasivaMglBean.dataTable}"  value="#{dirLogEliminacionMasivaMglBean.getdirLogEliminacionMasivaMglList()}" var="dirLogEliminacionMasivaMgl" rows="15"                         
+                             styleClass="solicitudesGTable"  border="1" 
+                             headerClass="solicitudesGTableHeader"
+                             rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"    >
+
+                    <h:column >   
+                        <f:facet name="header">
+                            <h:outputText value="Ir" />
+                        </f:facet>
+                        <h:commandLink value="Ir" action="#{dirLogEliminacionMasivaMglBean.goActualizar()}" >
+
+                            <f:setPropertyActionListener target="#{dirLogEliminacionMasivaMglBean.idSqlSelected}" value="#{dirLogEliminacionMasivaMgl.lemID}" />                                    
+                        </h:commandLink>
+                    </h:column>
+
+
+
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Operación" />
+                            </f:facet>
+                            <h:outputText value="#{dirLogEliminacionMasivaMgl.lemID}" />      </div>                                  
+                    </h:column>
+
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Archivo" />
+                            </f:facet>
+                            <h:outputText value="#{dirLogEliminacionMasivaMgl.lemArchivo}" />      </div>                                  
+                    </h:column>
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Fecha" />
+                            </f:facet>
+                            <h:outputText value="#{dirLogEliminacionMasivaMgl.lemFechaOperacion}" />      </div>                                  
+                    </h:column>
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Filtros" />
+                            </f:facet>
+                            <h:outputText value="#{dirLogEliminacionMasivaMgl.lemFiltros}" />      </div>                                  
+                    </h:column>
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Observaciones" />
+                            </f:facet>
+                            <h:outputText value="#{dirLogEliminacionMasivaMgl.lemObservaciones}" />      </div>                                  
+                    </h:column>
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Usuario" />
+                            </f:facet>
+                            <h:outputText value="#{dirLogEliminacionMasivaMgl.lemUsuarioOperacion}" />      </div>                                  
+                    </h:column>
+
+
+                    <f:facet name="footer">
+                        <h:panelGroup>
+                            <h:commandButton value="Ini" action="#{dirLogEliminacionMasivaMglBean.pageFirst}"
+                                             disabled="#{dirLogEliminacionMasivaMglBean.dataTable.first == 0}" styleClass="buttonl" style="color:#FFFFFF;"/>
+                            <h:commandButton value="Ant" action="#{dirLogEliminacionMasivaMglBean.pagePrevious}"
+                                             disabled="#{dirLogEliminacionMasivaMglBean.dataTable.first == 0}" styleClass="buttonl" style="color:#FFFFFF;"/>
+
+
+                            <h:commandButton value="#{dirLogEliminacionMasivaMglBean.pageActual}" styleClass="botonTPagInicio"    />
+
+                            <h:selectOneMenu id="listTabla" value="#{dirLogEliminacionMasivaMglBean.numPagina}" 
+                                             styleClass="ListaConsulta" style="width: 40px; height:19px;"
+                                             valueChangeListener="#{dirLogEliminacionMasivaMglBean.irPagina}"    >
+                                <f:selectItems value="#{dirLogEliminacionMasivaMglBean.paginaList}" var="pag"
+                                               itemValue="#{pag}"
+                                               itemLabel="#{pag}"/>    
+                                <a4j:ajax event="change" render="form1" execute="@this" />                                         
+                            </h:selectOneMenu>  
+
+
+                            <h:commandButton value="Sig" action="#{dirLogEliminacionMasivaMglBean.pageNext}"
+                                             disabled="#{dirLogEliminacionMasivaMglBean.dataTable.first + dirLogEliminacionMasivaMglBean.dataTable.rows
+                                                         >= dirLogEliminacionMasivaMglBean.dataTable.rowCount}" styleClass="buttonl" style="color:#FFFFFF;"/>
+                            <h:commandButton value="Fin" action="#{dirLogEliminacionMasivaMglBean.pageLast}"
+                                             disabled="#{dirLogEliminacionMasivaMglBean.dataTable.first + dirLogEliminacionMasivaMglBean.dataTable.rows
+                                                         >= dirLogEliminacionMasivaMglBean.dataTable.rowCount}" styleClass="buttonl" style="color:#FFFFFF;"/>
+                        </h:panelGroup>
+                    </f:facet>
+
+                </h:dataTable>  
+
+            </div>
+
+            <div  id="botnss" style="position: absolute;  align:right;top:250px; height:30px;"    >
+                <h:outputText value="Departamento:" id="geoGpo_idlb"  style="position: absolute;left:10px;align:right;  font-size: 12px"   rendered="false" />                   
+                <h:selectOneMenu  
+                    id="geoGpo_idselect" value="#{dirLogEliminacionMasivaMglBean.geoPolitico}"   rendered="false"
+                    styleClass="ListaConsulta"  style="position: absolute; left:139px; z-index: 5000; "  >
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{dirLogEliminacionMasivaMglBean.dptoList}" var="dpto"
+                                   itemValue="#{dpto.gpoId}"
+                                   itemLabel="#{dpto.gpoNombre}"/>   
+                    <f:ajax event="change" render="form1" listener="#{dirLogEliminacionMasivaMglBean.consultarCiudades()}"/>
+                </h:selectOneMenu>
+
+                <h:outputText value="Ciudad:" id="ciudad_lb"  style="position: absolute;align:right; left:410px; font-size: 12px"  rendered="false" />
+                <h:selectOneMenu   
+                    id="ciudad_select" value="#{dirLogEliminacionMasivaMglBean.geoPoliticoCiudad}"   rendered="false"
+                    styleClass="ListaConsulta"  style="position: absolute; z-index: 5000;left:470px; "  >
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{dirLogEliminacionMasivaMglBean.ciudadList}" var="ciudad"
+                                   itemValue="#{ciudad.gpoId}"
+                                   itemLabel="#{ciudad.gpoNombre}"/>                
+                </h:selectOneMenu> 
+
+            </div>
+
+            <h:outputText value="Buscar por Direccion:" id="geo_nombrelb"  style="align:right; position: absolute;top:285px;left:10px; font-size: 12px"  rendered="false"  />
+            <h:inputText  id="direccionNombre" value="#{dirLogEliminacionMasivaMglBean.direccion}"  rendered="false"                          
+                          style="align:right; position: absolute;top:280px;left:140px; z-index: 1000;"  >                
+            </h:inputText>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>
+

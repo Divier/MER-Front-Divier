@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+        xmlns:p="http://primefaces.org/ui">
+
+        <ui:composition template="/view/MGL/template/main.xhtml">
+            <ui:define name="title"><span class="TituloSeccion">Cargues Masivos</span></ui:define>
+            <ui:define name="message"><span class="error"> #{carguemasivo.message}</span></ui:define>
+            <ui:define name="content">
+
+                <script language="javascript" type="text/javascript">
+                    /* validar que sea alfanumerico*/
+                    function validarAlfanumerico(){
+                        var inp = String.fromCharCode(event.keyCode);
+                        return (/[0-9]/.test(inp));
+                    }
+                </script>
+
+                <style type="text/css">
+                    .ui-tabs .ui-tabs-nav li a {
+                        float: left;
+                        padding: 0.5em 1em;
+                        text-decoration: none;
+                        outline: 0;
+                        background-color: #d52b1e;
+                        color: white;
+                        font-size: 12px;
+                    }
+                    .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+                        border: 1px solid #c5c5c5;
+                        background: #fff;
+                        color: #454545;
+                    }
+                    .ui-widget .ui-widget {
+                        font-size: 1em;
+                        margin-top: 5px;
+                    }
+                    .custom-calendar button{
+                        margin-top: 0 !important;
+                    }
+                </style>
+                <br></br>
+                <br></br>
+                <h:panelGroup id="pnlTiposCargues">
+                    <p:fieldset legend="Cargue Masivos" style="margin-bottom:20px;background-color: white;color: black">
+                        <h:panelGrid id="formulariogenerararchivoscsv" styleClass="panelInfo" style="text-align:left; width: 450px;" columns="1" rendered="true">
+                            <h:outputLabel value="Tipo de carga:"/>
+                            <h:selectOneMenu value="#{carguemasivo.tipoCarga}" style="width: 60%" id="lstTipoCargue" >
+                                <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                <c:forEach items="#{carguemasivo.listaTiposCarga}" var="item">
+                                    <f:selectItem itemLabel="#{item.nombreCargue}" itemValue="#{item.nombreCargue}" />
+                                </c:forEach>
+                                <f:ajax event="change" listener="#{carguemasivo.consultaInformacionInicial()}" execute="lstTipoCargue"
+                                        render="pnlDescargue pnlCargue @form" />
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+
+                        <br></br>
+                        <br></br>
+
+                        <h:panelGroup id="pnlDescargue">
+                            <p:fieldset legend="Descargue por Filtros" id="fieldFiltros" rendered="#{carguemasivo.puedeCosultar}">
+
+                                <h:panelGrid id="panelgrid" styleClass="panelInfo" style="text-align:left; width: 650px;" columns="4" rendered="true" >
+                                    <c:forEach items="#{carguemasivo.listaInfoFiltros}" var="filtro">
+                                        <c:if test="#{filtro.html_e == 'SELECT'}">
+                                            <p:outputLabel for="#{filtro.columna}">
+                                                <h:outputText value="#{filtro.nombreColumna} " />
+                                                <h:outputText value="#{filtro.indicadorOblitoriedad}" style="color: red;" />
+                                            </p:outputLabel>
+                                            <h:selectOneMenu id="#{filtro.columna}" value="#{filtro.valor}" >
+                                                <f:selectItem itemLabel="Seleccionar..." itemValue="" />
+                                                <c:forEach items="#{filtro.listaItemsFIltro}" var="item">
+                                                    <f:selectItem itemLabel="#{item.nombreItem}" itemValue="#{item.idItem}" />
+                                                </c:forEach>
+                                                <f:ajax listener="#{carguemasivo.consultaLista(filtro)}" event="change" execute="@this" render="panelgrid" />
+                                            </h:selectOneMenu>
+                                        </c:if>
+
+                                        <c:if test="#{filtro.html_e == 'TEXT'}">
+
+                                            <p:outputLabel  for="#{filtro.columna}" >
+                                                <h:outputText value="#{filtro.nombreColumna} " />
+                                                <h:outputText value="#{filtro.indicadorOblitoriedad}" style="color: red;" />
+                                            </p:outputLabel>
+                                            <p:inputText id="#{filtro.columna}" value="#{filtro.valor}" maxlength="#{filtro.longitud}" style="width: 90px"
+                                                         rendered="#{filtro.tipo eq 'N'}" onkeypress="return validarAlfanumerico(event)">
+                                               <f:ajax listener="#{carguemasivo.consultaLista(filtro)}" event="change" execute="@this" render="panelgrid" />
+                                            </p:inputText>
+
+                                            <p:inputText id="idFtxt#{filtro.columna}" value="#{filtro.valor}" maxlength="#{filtro.longitud}" style="width: 90px"
+                                                         rendered="#{filtro.tipo eq 'A'}">
+                                                <f:ajax listener="#{carguemasivo.consultaLista(filtro)}" event="change" execute="@this" render="panelgrid" />
+                                            </p:inputText>
+
+                                        </c:if>
+
+                                        <c:if test="#{filtro.html_e == 'DATE'}">
+
+                                            <p:outputLabel for="datePicker_#{filtro.idColumna}" >
+                                                <h:outputText value="#{filtro.nombreColumna} " />
+                                                <h:outputText value="#{filtro.indicadorOblitoriedad}" style="color: red;" />
+                                            </p:outputLabel>
+                                            <p:calendar
+                                                    id="datePicker_#{filtro.idColumna}"
+                                                    value="#{filtro.fecha}"
+                                                    mode="popup"
+                                                    navigator="true"
+                                                    pattern="dd/MM/yyyy"
+                                                    showOn="button"
+                                                    styleClass="custom-calendar">
+                                                <f:convertDateTime
+                                                        type="date"
+                                                        pattern="dd/MM/yyyy"/>
+                                                <f:ajax listener="#{carguemasivo.consultaLista(filtro)}" event="dateSelect" execute="datePicker_#{filtro.idColumna}" render="panelgrid" />
+                                            </p:calendar>
+                                        </c:if>
+
+                                    </c:forEach>
+                                </h:panelGrid>
+
+
+
+                                <p:commandButton value="Programar Consulta" actionListener="#{carguemasivo.programarConsulta()}" styleClass="btn unblockClaro"
+                                                 update="tablaconsultamasivos fieldFiltros fieldCargueMasivo"/>
+
+                                <br></br>
+                                <p:dataTable id="tablaconsultamasivos" var="con" value="#{carguemasivo.registrosFiltro}" emptyMessage="No hay consulta Programada"
+                                             style="text-align: center">
+
+                                    <p:column headerText="Nombre Archivo" style="text-align: center" >
+                                        <h:outputText value="#{con.arc}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Fecha" style="text-align: center" >
+                                        <h:outputText value="#{con.fechaReg}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Filtro" style="text-align: center" >
+                                        <h:outputText value="#{con.filtro}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Estado" style="text-align: center">
+                                        <p:commandLink value="#{con.estado}" ajax="false"
+                                                       action="#{carguemasivo.ConsumirServicioOdi(con.estado,usuarioLogueado.usuarioLogueado,con.filtro, con) }"
+                                                       styleClass="unblockClaro"
+                                                       style="#{con.estado eq 'PROCESADO'? 'color:green' : 'color:red' or con.estado eq 'POR PROCESAR'? 'color:blue' : 'color:red' or con.estado eq 'EN PROCESO'? 'color:blue' : 'color:red' or con.estado eq 'ODI EN PROCESO'? 'color:blue' : 'color:red' or con.estado eq 'ODI PROCESADO'? 'color:blue' : 'color:red' or con.estado eq 'ERROR INTERNO'? 'color:red' : 'color:red'}"
+                                                       update="tablaconsultamasivos">
+                                        </p:commandLink>
+                                    </p:column>
+
+
+                                    <p:column headerText="Archivo" style="text-align: center" >
+                                        <p:commandLink
+                                                ajax="false"
+                                                action="#{carguemasivo.descargarArchivo(con.linMasivoId, carguemasivo.rutaOutConsulta, con.arcOut, con,carguemasivo.getPBaseConsulta(), carguemasivo.getEncabezadoConsulta()) }"
+                                                styleClass="unblockClaro"
+                                                update="@form"
+                                                rendered="#{con.estado.toString() eq 'PROCESADO'}">
+                                            <h:graphicImage value="/view/images/csvpositivo.png" style="width: 30px;height: 30px;" />
+                                        </p:commandLink>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:fieldset>
+                        </h:panelGroup>
+
+                        <br></br>
+                        <br></br>
+
+                        <h:panelGroup id="pnlCargue">
+                            <p:fieldset legend="Cargar Archivo" id="fieldCargueMasivo" rendered="#{carguemasivo.puedeCargar}">
+                                <p:fileUpload update="nombrearchivo" value="#{carguemasivo.cargaFile}"
+                                              label="Seleccionar..."
+                                              mode="simple" skinSimple="true"/>
+
+                                <p:commandButton update="tablacarguemasivos nombrearchivo" value="Procesar Archivo"
+                                                 styleClass="btn unblockClaro"
+                                                 actionListener="#{carguemasivo.procesarArchivo(usuarioLogueado.usuarioLogueado) }"/>
+
+                                <p:commandButton id="botongenerar" value="Generar Plantilla Base"
+                                                 actionListener="#{carguemasivo.generarCsv()}" styleClass="btn unblockClaro"
+                                                 update="tablacarguemasivos fieldFiltros fieldCargueMasivo"/>
+                                <br></br>
+                                <h:outputText style="font-weight: bold" value="Nombre del Archivo"/>
+                                <br></br>
+                                <h:outputText style="font-weight: bold" value="#{carguemasivo.cargaFile.fileName}" id="nombrearchivo"/>
+                                <br></br>
+
+                                <p:dataTable id="tablacarguemasivos" var="doc" value="#{carguemasivo.registrosCargue}" emptyMessage="No hay consulta Programada"
+                                             style="text-align: center" >
+
+                                    <p:column headerText="Nombre Archivo" style="text-align: center" >
+                                        <h:outputText value="#{doc.arc}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Fecha" style="text-align: center" >
+                                        <h:outputText value="#{doc.fechaReg}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Estado" style="text-align: center">
+                                        <p:commandLink value="#{doc.estado}" ajax="false" action="#{carguemasivo.consultarRegistrosSegunEstado('CARGUE') }" styleClass="unblockClaro" style="#{doc.estado eq 'PROCESADO'? 'color:green' : 'color:red' or doc.estado eq 'POR PROCESAR'? 'color:blue' : 'color:red' or doc.estado eq 'EN PROCESO'? 'color:blue' : 'color:red' or doc.estado eq 'ODI EN PROCESO'? 'color:blue' : 'color:red' or doc.estado eq 'ODI PROCESADO'? 'color:blue' : 'color:red' or doc.estado eq 'ERROR INTERNO'? 'color:red' : 'color:red'}" update="tablacarguemasivos">
+                                            <f:setPropertyActionListener value="#{doc}" target="#{carguemasivo.selectedRegistro}" />
+                                        </p:commandLink>
+                                    </p:column>
+
+                                    <p:column headerText="Archivo Exitoso" style="text-align: center" >
+                                        <p:commandLink styleClass="unblockClaro"
+                                                       action="#{carguemasivo.descargarArchivo(doc.linMasivoId, carguemasivo.rutaInCargue, doc.arc, doc, carguemasivo.getPBaseCargue(), carguemasivo.getEncabezadoCargue()) }"
+                                                       ajax="false"  update="tablacarguemasivos @form"
+                                                       rendered="#{doc.estado.toString() eq 'PROCESADO'}">
+                                            <h:graphicImage value="/view/images/csvpositivo.png" style="width: 30px;height: 30px;" />
+                                        </p:commandLink>
+                                    </p:column>
+
+                                    <p:column headerText="Archivo Con Errores" style="text-align: center">
+                                        <p:commandLink  ajax="false" action="#{carguemasivo.procesadoConErrores(doc.linMasivoId,doc.arcOut) }" styleClass="unblockClaro"
+                                                        update="tablacarguemasivos fieldFiltros fieldCargueMasivo"
+                                                        rendered="#{doc.estado.toString() eq 'PROCESADO CON ERRORES'}">
+                                            <h:graphicImage value="/view/images/csvnegativo.png" style="width: 30px;height: 30px" />
+                                        </p:commandLink>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </p:fieldset>
+                        </h:panelGroup>
+                    </p:fieldset>
+                </h:panelGroup>
+            </ui:define>
+        </ui:composition>
+</html>

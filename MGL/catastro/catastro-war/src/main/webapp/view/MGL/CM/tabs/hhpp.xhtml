@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"  
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                template="/view/MGL/template/hhppTemplate.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Administrador UnidadesHHPPs</span></ui:define>
+    <ui:define name="content"> 
+        <div align="justify">
+            <h2 id="myhMmData">HHPP [#{unidadesHHPPMglBean.cmtSubEdificioMgl.nombreSubedificio}]</h2>
+            <h:panelGrid   style="width: 100%"> 
+                <h:panelGrid id="listaHhpp"  style="width: 100%" >
+                    <h:dataTable id="UnidadesHHPPsMglTable" 
+                                 value="#{unidadesHHPPMglBean.cmtPestaniaHhppDto.listaPestaniaHhppDet}" 
+                                 var="unidadesHHPPsMgl"  rows="8"                       
+                                 style="width: 100%;" class="tablefeel"
+                                 >
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Dirección" /><BR/>
+                                <h:inputText maxlength="50" id="direccionConsulta" style="width: 180px" 
+                                             value="#{unidadesHHPPMglBean.filtroBusquedaDirecccionDto.direccion}" accesskey="" alt=""
+                                              >
+                                    
+                                    <f:ajax listener="#{unidadesHHPPMglBean.findByFiltro}" event="change" execute="@this" render="UnidadesHHPPsMglTable"/>
+
+                                </h:inputText>
+                                
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.hhppMglLista.sdiId == null ? unidadesHHPPsMgl.hhppMglLista.direccionObj.dirFormatoIgac : unidadesHHPPsMgl.hhppMglLista.subDireccionObj.sdiFormatoIgac}"  />      
+                            </div>                                  
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Torre" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.torre}"  />      
+                            </div>                                  
+                        </h:column>
+                            <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="DTH" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.dth}"  />      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Estado" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.estadoDth}" styleClass="cell #{unidadesHHPPsMgl.estadoDth eq 'CS' ? 'pintar' : ''}"  /> 
+                                 
+                            </div>                                  
+                        </h:column>
+                        
+                            <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="FTT" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.ftt}"  />      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Estado" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.estadoFtt}" styleClass="cell #{unidadesHHPPsMgl.estadoFtt eq 'CS' ? 'pintar' : ''}" />      
+                            </div>                                  
+                        </h:column>
+                          <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="FOG" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.fog}"  />      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Estado" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.estadoFog}" styleClass="cell #{unidadesHHPPsMgl.estadoFog eq 'CS' ? 'pintar' : ''}" />      
+                            </div>                                  
+                        </h:column>
+                          <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="FOU" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.fou}"  />      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Estado" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.estadoFou}" styleClass="cell #{unidadesHHPPsMgl.estadoFou eq 'CS' ? 'pintar' : ''}" />      
+                            </div>                                  
+                        </h:column>
+                          <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="BID" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.bid}"  />      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Estado" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.estadoBid}" styleClass="cell #{unidadesHHPPsMgl.estadoBid eq 'CS' ? 'pintar' : ''}" />      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="UNI" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.uni}"  />      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Estado" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.estadoUni}" styleClass="cell #{unidadesHHPPsMgl.estadoUni eq 'CS' ? 'pintar' : ''}" />      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="LTE" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.lte}"  />      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Estado" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.estadoLte}"  styleClass="cell #{unidadesHHPPsMgl.estadoLte eq 'CS' ? 'pintar' : ''}"/>      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="MOV" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.mov}"  />      
+                            </div>                                  
+                        </h:column>
+                           <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Estado" /><BR/>
+
+                            </f:facet>
+                           
+                                <h:outputText value="#{unidadesHHPPsMgl.estadoMov}"  styleClass="cell #{unidadesHHPPsMgl.estadoMov eq 'CS' ? 'pintar' : ''}" />      
+                                                         
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Estrato" /><BR/>
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.estrato eq -1?'NG':
+                                                    (unidadesHHPPsMgl.estrato eq 0?'NR':unidadesHHPPsMgl.estrato)}"/>      
+                            </div>                                  
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Suscriptor" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText value="#{unidadesHHPPsMgl.suscriptor}"  />      
+                            </div>                                  
+                        </h:column>
+                          <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="IR a" /><BR/>
+
+                            </f:facet>
+                            <div align="left"  >                          
+                        <h:commandLink value="Ver Detalle" 
+                                       actionListener="#{unidadesHHPPMglBean.verDetalleHhpp(unidadesHHPPsMgl)}">
+                        </h:commandLink>
+                            </div>                                  
+                        </h:column>
+                        <f:facet name="footer">
+                            <h:panelGroup>
+                                <div class="pagination2">
+                                    <h:commandButton  value= "&#171;" action="#{unidadesHHPPMglBean.pageFirst}" />
+                                    <h:commandButton  value= "&#60;"  action="#{unidadesHHPPMglBean.pagePrevious}" />
+                                    <h:commandButton value="#{unidadesHHPPMglBean.pageActual}" />
+                                    <h:selectOneMenu id="listTabla" value="#{unidadesHHPPMglBean.numPagina}"  >
+                                        <f:selectItems value="#{unidadesHHPPMglBean.paginaList}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>    
+                                        <f:ajax render="@form"  event="change"  listener="#{unidadesHHPPMglBean.irPagina()}"  execute="@this" />                                         
+                                    </h:selectOneMenu>  
+                                    <h:commandButton  value= "&#62;"   action="#{unidadesHHPPMglBean.pageNext}" />
+                                    <h:commandButton  value= "&#187;"   action="#{unidadesHHPPMglBean.pageLast}" />
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>        
+                    </h:dataTable>
+                </h:panelGrid>
+
+
+            </h:panelGrid>
+        </div>
+
+    </ui:define>
+</ui:composition>

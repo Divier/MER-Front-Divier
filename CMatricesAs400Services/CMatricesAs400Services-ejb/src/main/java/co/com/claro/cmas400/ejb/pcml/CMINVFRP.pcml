@@ -1,0 +1,18 @@
+<pcml version="4.0">
+   <!-- RPG program: CMINVFRP  -->
+   <!-- created: 2014-09-18-17.10.17 -->
+   <!-- source: CMWEBF0/QRPGLESRC(CMINVFRP) -->
+   <!-- 49 -->
+   <program name="CMINVFRP" path="/QSYS.LIB/TVCABLEEXE.LIB/CMINVFRP.PGM">
+      <data name="PAEDIF" type="char" length="9" usage="inputoutput" />
+      <data name="PNESTA" type="char" length="7" usage="inputoutput" />
+      <data name="PNNIED" type="char" length="50" usage="inputoutput" />
+      <data name="PNCALL" type="char" length="50" usage="inputoutput" />
+      <data name="XNCCLL" type="char" length="6" usage="inputoutput" />
+      <data name="PNNOTI" type="char" length="30" usage="inputoutput" />
+      <data name="PNHOME" type="char" length="7" usage="inputoutput" />
+      <data name="PMSJTYP" type="char" length="1" usage="inputoutput" />
+      <data name="PMSJERR" type="char" length="20" usage="inputoutput" />
+      <data name="WRESPTA" type="char" length="65" count="500" usage="inputoutput" />
+   </program>
+</pcml>

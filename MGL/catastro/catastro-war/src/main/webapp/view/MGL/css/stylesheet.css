@@ -1,0 +1,337 @@
+/*
+ * After modifying this style sheet, refresh the page being designed to see the effect of the modification.
+ * Click the Refresh button in the Visual Designer toolbar to refresh the page.
+*/ 
+
+/* Style rules to make Java Server faces Standarad data tables look better */
+
+/* cuerpo de la pagina */
+
+body,td,th {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #666;
+}
+
+.list-headerBtn2_sun4 {
+    background-color: #eeeeee;
+    font-size: larger;
+    font-weight: bold;
+}
+
+.list-paging-header {
+    background-color: white;
+}
+
+.list-paging-footer {
+    background-color: white;
+}
+
+.list-row-even { 
+}
+
+.list-row-odd { 
+    background-color: #eeeeee;
+}
+
+/* Style rules for message severity levels */
+
+.infoMessage {
+    color: black;
+}
+
+.warnMessage {
+    color: orange;
+    font-weight: bold;
+}
+
+.errorMessage {
+    color: #0189b4;
+    font-size: 12px;
+    font-family: 'Times New Roman',Times,serif;
+}
+
+.fatalMessage {
+    color: blue;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.label {
+    color: #000000;
+    font-style: normal;
+    font-weight: bold;
+    font-family: 'Times New Roman',Times,serif;
+    font-size: 14px;
+}
+
+.layoutfondoAzul {
+    background-color: #d0e9f2;
+}
+
+.radioButton {
+    color: #000000;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.rich-panel-body { 
+
+    padding-right:0;
+    padding-top:10px;
+    padding-bottom:10px;
+    margin-bottom:7px;
+    color: #666;
+    font-family: Arial,Verdana,sans-serif;
+    font-size: 12px;
+    background-image:url(../../img/lineafondo.png);
+    background-position:bottom;
+    background-repeat:repeat-x;
+    margin-right:5px;
+    width: auto;
+}
+
+.titulo {
+    background-repeat:no-repeat;
+    height:23px;
+    width:100%;
+    text-align:center;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:12px;
+    font-weight:bold;
+    color:#333;
+    padding-top:10px;
+
+}
+
+.subtitulo{ 
+    height:23px;
+    width:100%;
+    padding-top:10px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:14px;
+    color:#333;
+    background-image: url(../../img/rihc-header_02.png);
+    background-repeat:no-repeat;
+    border-collapse:collapse;
+    text-align:center;
+    font-weight:bold;  
+}
+.itemMainMenuPoliedro2 {
+    background-image: url(../../img/backMenuHomePoliedro-3.gif);
+    background-repeat: no-repeat;
+    border: 1px solid #D8DDE3;
+    margin-top: -1px;
+    padding: 7px 0 10px 12px;
+    white-space: normal;
+    width: 168px;
+    color: #666
+
+}
+.subtitulo-final{ width:auto; padding: 5px; height:auto; font-family:Arial, Helvetica, sans-serif; font-size:14px; color:#333; background-color:#EFEFEF; border-collapse:collapse;	border-bottom:1px solid #dcdfe6;border-left: 1px solid #adafaf; border-right: 1px solid #adafaf; border-bottom:1px solid #adafaf; text-align:center; font-weight:bold; }
+.contenido-tabla{
+    width:auto;
+    padding: 6px;
+    height:auto;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:12px;
+    color:#333;
+    text-align:center;
+    border-bottom: dotted;
+    border-width: 1px;
+    border-color: #660033;
+    background-color: #F8F8F8;
+}
+
+.copy {
+    background-color:#d52b1e;
+    color:#FFF;
+    padding:10px;
+    border: 1px solid #d52b1e;
+    font-weight: bold;
+    text-align: center;
+    width: 766px;
+}
+
+input[type="text"] {
+    background-color: #FFFFFF;
+    border: 1px solid #A5ACB2;
+    color: #000000;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 11px;
+    height: 19px;
+    padding: 0;
+    text-decoration: none;
+    /*width: 174px;*/
+}
+
+.botonTPagInicio {
+    background-image: url(../../img/botonInicio.png);
+    background-repeat: no-repeat;
+    height: 20px;
+    width: 80px;
+    background-color:transparent;
+    border:none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    color: #FFF;
+    z-index: 10000;
+}
+
+.botonTPagAnterior {
+    background-image: url(../../img/botonAnterior.png);
+    background-repeat: no-repeat;
+    height: 20px;
+    width: 80px;
+    background-color:transparent;
+    border:none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    color: #FFF;
+    z-index: 10000;
+}
+
+.botonTPagSiguiente {
+    background-image: url(../../img/botonSiguiente.png);
+    background-repeat: no-repeat;
+    height: 20px;
+    width: 80px;
+    background-color:transparent;
+    border:none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    color: #FFF;
+    z-index: 10000;
+}
+.botonTPagFin {
+    background-image: url(../../img/botonFin.png);
+    background-repeat: no-repeat;
+    height: 20px;
+    width: 80px;
+    background-color:transparent;
+    border:none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    color: #FFF;
+    z-index: 10000;
+}
+
+/* ------ links -------*/
+a:link {
+    color:#069;
+    text-decoration:none;
+}
+
+a:visited {
+    color:#069;
+    text-decoration:none;
+}
+
+a:hover {
+    color:#069;
+    text-decoration:none;
+}
+
+a:active {
+    color: #069;
+    text-decoration: none;
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+select {
+    color:#d52b1e;
+    font-size:13px;
+}
+
+table.Tbl_sun4 caption.TblTtlTxt_sun4{
+    /*background: url(../images/fondotabla.gif);*/
+    background-repeat:repeat-x;
+    width:100%;
+    text-align:center;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:12px;
+    font-weight:bold;
+    color:#666;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+table.Tbl_sun4{
+    border-style: none;
+    border-width: 0;
+    padding: 0;
+}
+
+.DirComponenteHHPPUni{
+    width: 100%;
+    padding-top: 25px;
+}
+
+.DirComponenteCambioE{
+    width: 100%;
+    padding-top: 45px;
+}
+
+.DirComponenteVerificaCasa{
+    width: 100%;
+    padding-top: 40px;
+}
+
+.DirComponenteViabilidadInternet{
+    width: 100%;
+    padding-top: 30px;
+}
+
+.DirComponenteGestionViabilidadInternet{
+    width: 100%;
+    padding-top: 25px;
+}
+.DirComponenteGestionVerificaCasas{
+    width: 100%;
+    padding-top: 60px;
+}
+
+.DirComponenteGestionCambioEstado{
+    width: 100%;
+    padding-top: 485px;
+}
+
+.solicitudesGTable{   
+   border-collapse:collapse;
+}
+
+.solicitudesGTableHeader{
+   text-align:center;
+   background:none repeat scroll 0 0 #F0F0F0;
+   border-bottom:1px solid #000000;  
+   padding:2px;
+}
+
+.solicitudesGTableOddRow{
+   text-align:center;
+   background:none repeat scroll 0 0 #FFFFFF;
+}
+
+.solicitudesGTableEvenRow{
+   text-align:center;
+   background:none repeat scroll 0 0 #F0F0F0;
+}
+
+textarea[disabled], input[type="text"][disabled], input[type="password"][disabled], select[disabled] {
+	color: #777 !important;
+	cursor: default !important;
+        background:-o-linear-gradient(bottom, #e5e5e5 5%, #ffffff 100%) !important;	
+        background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #e5e5e5), color-stop(1, #ffffff) ) !important;
+	background:-moz-linear-gradient( to bottom, #e5e5e5 5%, #ffffff 100%) !important;
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#e5e5e5", endColorstr="#ffffff") !important;	
+        background: -o-linear-gradient(top,#e5e5e5,#ffffff) !important;
+
+	background-color:#e5e5e5 !important;
+}

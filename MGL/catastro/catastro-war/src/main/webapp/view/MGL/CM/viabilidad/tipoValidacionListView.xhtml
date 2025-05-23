@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml">
+    <ui:define name="content">  
+        <h2>Tipos Validación</h2> 
+        <h:panelGroup rendered="#{!tipoValidacionBean.crearRegistro}">     
+            <div align="left">
+                <h:form>
+                    <h:panelGrid columns="3" id="tipoValidacionMgl"
+                                 width="50%" style="alignment-adjust: central;"
+                                 rendered="#{tipoValidacionBean.validarCreacion()}">
+                        <h:outputText  escape="false" value="#{tipoValidacionBean.estiloObligatorio}Tipo de Validaci&oacute;n" id="geo_nombrelb_insert"/>
+                        <h:selectOneMenu id="listtipotablabasicaMgl_insert" 
+                                         value="#{tipoValidacionBean.tipoValidacionMgl.tipoBasicaObj.tipoBasicaId}" 
+                                         styleClass="ListaConsulta" style="width: 60%;">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{tipoValidacionBean.tablasTipoBasicasMglList}" var="lttb"
+                                           itemValue="#{lttb.tipoBasicaId}"
+                                           itemLabel="#{lttb.nombreTipo}"
+                                           >
+                            </f:selectItems>   
+                        </h:selectOneMenu> 
+                        <h:commandButton value="Crear" styleClass="btn"
+                                         disabled="#{!tipoValidacionBean.validarOpcionCrearTabla()}"
+                                         action="#{tipoValidacionBean.crearTipoValidacionMgl()}" />
+
+                    </h:panelGrid>
+                </h:form>
+            </div>
+            <div class="tableContent" >
+                <h:dataTable id="tablasBasicasMglTable" 
+                             value="#{tipoValidacionBean.tipoValidacionMglList}" 
+                             var="tipoValidacionMgl"                         
+                             styleClass="constructGTable"
+                             headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>    
+                        <div align="left" >
+                            <f:facet name="header">
+                                <h:outputText value="Id" />
+                            </f:facet>
+                            <h:outputText value="#{tipoValidacionMgl.idTipoValidacion}" />   
+                        </div>                                    
+                    </h:column>
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Tipo Validaci&oacute;n" /><BR/>
+                            </f:facet>
+                            <h:outputText value="#{tipoValidacionMgl.tipoBasicaObj.nombreTipo}" />     
+                        </div>                                  
+                    </h:column>
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Acción" />
+                        </f:facet>
+                        <h:commandLink id="Eliminar" title="Eliminar"
+                                       immediate="true" styleClass="btnIconEliminar"
+                                       action="#{tipoValidacionBean.eliminarTipoValFromTable(tipoValidacionMgl)}"
+                                       disabled="#{!tipoValidacionBean.validarOpcionEliminar()}"
+                                       onclick="return confirm('¿Est&aacute; seguro de eliminar el registro seleccionado ${tipoValidacionMgl.tipoBasicaObj.nombreTipo} ?');" />
+                    </h:column>
+                    <f:facet name="footer">
+                        <h:panelGroup>
+                            <h:commandButton value="" action="#{tipoValidacionBean.actualizarTablaMensajes(tipoValidacionBean.primera)}"
+                                             disabled="#{tipoValidacionBean.paginaActual == 1}" 
+                                             class="botonTPagInicioCm botonBaselista"/>
+                            <h:commandButton value="" action="#{tipoValidacionBean.actualizarTablaMensajes(tipoValidacionBean.atras)}"
+                                             disabled="#{tipoValidacionBean.paginaActual == 1}" 
+                                             class="botonTPagAnteriorCm botonBaselista"/>
+
+                            <h:inputText id="pagina" value="#{tipoValidacionBean.paginaActual}" required="true" requiredMessage="El numero de la pagina no puede ir vacio">
+                                <f:ajax listener="#{tipoValidacionBean.actualizarTablaMensajes(tipoValidacionBean.irA)}" 
+                                        event="blur" 
+                                        execute="@this" 
+                                        render="tablasBasicasMglTable"/>
+                            </h:inputText>
+                            <h:outputLabel value="#{tipoValidacionBean.paginaActual}...#{tipoValidacionBean.totalPaginas}"/>
+
+                            <h:commandButton value="" action="#{tipoValidacionBean.actualizarTablaMensajes(tipoValidacionBean.siguiente)}"
+                                             disabled="#{tipoValidacionBean.ultimaPagina}" 
+                                             class="botonTPagSiguienteCm botonBaselista" />
+                            <h:commandButton value="" action="#{tipoValidacionBean.actualizarTablaMensajes(tipoValidacionBean.ultima)}"
+                                             disabled="#{tipoValidacionBean.ultimaPagina}" 
+                                             class="botonTPagFinCm botonBaselista"/>
+                        </h:panelGroup>
+                    </f:facet>
+                </h:dataTable>  
+            </div>
+        </h:panelGroup>  
+        <f:view>
+            <h:form>
+            </h:form>
+        </f:view>
+
+    </ui:define>
+</ui:composition>

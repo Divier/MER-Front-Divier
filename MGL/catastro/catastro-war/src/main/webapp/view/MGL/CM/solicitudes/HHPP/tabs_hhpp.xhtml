@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+   
+    
+   <!-- ***********************************************************
+        ***********SECCION TIPO MODIFICACIÓN PARA HHPP********
+        **************************************************************-->
+   <h:panelGroup rendered="#{encabezadoSolicitudModificacionCMBean.solicitudCreacionModificacionHHPP}" >
+       <h:panelGrid  class="formulario3" columns="7"  >
+           <h:outputLabel style="font-weight: bold;" value="Creación HHPP" />
+           <h:commandLink action="#{encabezadoSolicitudModificacionCMBean.cambiarTabHhpp('CREACION_HHPP')}" immediate="true"  >
+               <h:selectBooleanCheckbox  id="iHC" value="#{encabezadoSolicitudModificacionCMBean.activoCheckCreacionHHPP}" >
+                   <f:ajax event="change" render=":formSolicitud"  />
+               </h:selectBooleanCheckbox>
+
+           </h:commandLink>
+           <h:outputLabel style="font-weight: bold; padding-left: 5px" value="Modificación HHPP" />
+           <h:commandLink action="#{encabezadoSolicitudModificacionCMBean.cambiarTabHhpp('MODIFICACION_HHPP')}" immediate="true" >
+               <h:selectBooleanCheckbox id="iHM" value="#{encabezadoSolicitudModificacionCMBean.activoCheckModificacionHHPP}"  >
+                   <f:ajax event="change" render=":formSolicitud"  />
+               </h:selectBooleanCheckbox>
+           </h:commandLink>
+           <!-- Brief 57762 Creación HHPP Virtual-->
+           <h:outputLabel style="font-weight: bold; padding-left: 5px" value="Traslado HHPPs Bloqueado"
+                          rendered="#{encabezadoSolicitudModificacionCMBean.activeCcmmTrasladoHhppBloqueado}"/>
+           <h:commandLink rendered="#{encabezadoSolicitudModificacionCMBean.activeCcmmTrasladoHhppBloqueado}"
+                          action="#{encabezadoSolicitudModificacionCMBean.cambiarTabHhpp('TRASLADO_HHPP_BLOQUEADO')}"
+                          immediate="true">
+               <h:selectBooleanCheckbox id="iHT"
+                                        value="#{encabezadoSolicitudModificacionCMBean.activoCheckTrasladoHhppBloqueado}">
+                   <f:ajax event="change" render=":formSolicitud"/>
+               </h:selectBooleanCheckbox>
+           </h:commandLink>
+           <!-- Cierre Brief 57762-->
+
+       </h:panelGrid>
+    </h:panelGroup>
+
+
+    <!-- ***********************************************************
+    *********FIN SECCION TIPO MODIFICACIÓN PARA HHPP****************
+    **************************************************************--> 
+
+
+
+    <ul id="tabs" >
+        <li><h:commandLink  action="#{encabezadoSolicitudModificacionCMBean.cambiarTabHhpp('CREACION_HHPP')}"
+                           class="#{encabezadoSolicitudModificacionCMBean.selectedTab == 'CREACION_HHPP' ? 'current':'tab1'}"  
+                           title="Creación" value="Creación"
+                           rendered="#{encabezadoSolicitudModificacionCMBean.activoCheckCreacionHHPP}"
+                           id="tabCreacion"/></li>
+        <li><h:commandLink action="#{encabezadoSolicitudModificacionCMBean.cambiarTabHhpp('MODIFICACION_HHPP')}"
+                           class="#{encabezadoSolicitudModificacionCMBean.selectedTab == 'MODIFICACION_HHPP' ? 'current':'tab2'}"  
+                           title="Modificación" value="Modificación"
+                           rendered="#{encabezadoSolicitudModificacionCMBean.activoCheckModificacionHHPP}"
+                           id="tabModificacion"/></li>
+        <!-- Brief 57762 Crear HHPP Virtual -->
+        <li><h:commandLink action="#{encabezadoSolicitudModificacionCMBean.cambiarTabHhpp('TRASLADO_HHPP_BLOQUEADO')}"
+                           class="#{encabezadoSolicitudModificacionCMBean.selectedTab == 'TRASLADO_HHPP_BLOQUEADO' ? 'current':'tab3'}"
+                           title="Traslado HHPP Bloqueado" value="Traslado HHPP Bloqueado"
+                           rendered="#{encabezadoSolicitudModificacionCMBean.activoCheckTrasladoHhppBloqueado}"
+                           id="tabTrasladoHhppBloqueado">
+        </h:commandLink>
+
+        </li>
+        <!-- Cierre Brief 57762 -->
+
+        <!--            <li><h:commandLink class="{encabezadoSolicitudModificacionCMBean.selectedTab == 'ELIMINACION_HHPP' ? 'current':'tab3'}" action="{encabezadoSolicitudModificacionCMBean.cambiarTabHhpp('ELIMINACION_HHPP')}"  title="Eliminación" value="Eliminación" immediate="true"/></li>-->
+    </ul>
+</ui:composition>

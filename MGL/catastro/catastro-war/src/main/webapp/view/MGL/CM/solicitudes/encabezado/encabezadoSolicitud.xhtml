@@ -1,0 +1,350 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:commandButton  id="regresarButton" 
+                      class="btn2 btn2Active" 
+                      value="Regresar" 
+                      action="#{encabezadoSolicitudModificacionCMBean.regresar(encabezadoSolicitudModificacionCMBean.solicitudModCM)}"
+                      immediate="true" />
+
+    <h:panelGroup id="panelGroupSolicitudTitle" style="width: 100%" 
+                  rendered="#{!encabezadoSolicitudModificacionCMBean.modoGestion}">
+        <h2 id="SolicitudTitle">SOLICITUD #{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudObj.nombreTipo}</h2>
+    </h:panelGroup>
+    <h:panelGroup id="panelGroupGestionTitle" style="width: 100%" 
+                  rendered="#{encabezadoSolicitudModificacionCMBean.modoGestion}">
+        <h2 id="GestionTitle">GESTIÓN #{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudObj.nombreTipo}</h2>
+    </h:panelGroup>
+
+    <h:panelGrid columns="6" id="notasMgl" class="formulario3"  style="width:100%;"  > 
+
+        <h:outputText value="Número de Solicitud" class="EtiquetaConsulta"/>
+        <h:outputText id="ccmsTxt" value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId}"  style="width: 100px;font-size: 14.5px;color:red;font-weight: bold;"   /> 
+
+        <h:outputText value="Estado de la Solicitud" class="EtiquetaConsulta"/>
+        <h:inputText id="esmsTxt" value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.estadoSolicitudObj.nombreBasica}"   disabled="true" style="width: 100px"   /> 
+
+        <h:outputText value="Inicio Solicitud" class="EtiquetaConsulta"
+                      rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null}"/>
+
+
+        <h:inputText id="eimsTxt" 
+                     style="width: 100px" 
+                     value="#{encabezadoSolicitudModificacionCMBean.timeSol}" 
+                     rendered="#{ (encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)
+                                  or (encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null 
+                                  and encabezadoSolicitudModificacionCMBean.modoGestion
+                                  and encabezadoSolicitudModificacionCMBean.solicitudModCM.estadoSolicitudObj.nombreBasica eq 'PENDIENTE')}"/> 
+        <h:inputText id="eimsTxtPendiente" style="width: 100px" value="#{solicitudSolicitudCMBean.cmtSolicitudCmMgl.tempSolicitud}" disabled="true"   
+                     rendered="#{!encabezadoSolicitudModificacionCMBean.solicitudModCM.estadoSolicitudObj.nombreBasica eq 'PENDIENTE'}"  /> 
+
+        <h:inputHidden id="inicio"  value="#{encabezadoSolicitudModificacionCMBean.tmpInicio}"  /> 
+        <h:inputHidden id="fin"  value="#{encabezadoSolicitudModificacionCMBean.tmpFin}"  /> 
+
+    </h:panelGrid> 
+
+    <h:panelGrid  class="formulario3"  columns="4">
+        <h:commandButton  id="irSolicitudCM" 
+                          class="#{encabezadoSolicitudModificacionCMBean.selectedTab == 'SOLICITUD' ? 'btn2 btn2Active':'btn2'}" 
+                          value="Solicitud" 
+                          action="#{encabezadoSolicitudModificacionCMBean.cambiarTab('SOLICITUD')}"
+                          disabled="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'SOLICITUD' or encabezadoSolicitudModificacionCMBean.selectedTab eq 'DATOSCM'}"
+                          immediate="true" />
+        <h:commandButton  id="irEstadoSolicitudCM" 
+                          class="#{encabezadoSolicitudModificacionCMBean.selectedTab == 'TRACK' ? 'btn2 btn2Active':'btn2'}" 
+                          value="Track" 
+                          action="#{encabezadoSolicitudModificacionCMBean.cambiarTab('TRACK')}" 
+                          disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null
+                                      or encabezadoSolicitudModificacionCMBean.selectedTab eq 'TRACK'}"
+                          immediate="true" />
+        <h:commandButton  id="irNotasSolicitudCM" 
+                          class="#{encabezadoSolicitudModificacionCMBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                          value="Notas"
+                          action="#{encabezadoSolicitudModificacionCMBean.cambiarTab('NOTAS')}"
+                          disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null
+                                      or encabezadoSolicitudModificacionCMBean.selectedTab eq 'NOTAS'}"
+                          immediate="true" />
+        <h:commandButton  id="irHorarioSolicitudCM" 
+                          class="#{encabezadoSolicitudModificacionCMBean.selectedTab == 'HORARIO' ? 'btn2 btn2Active':'btn2'}" 
+                          value="Horario de Atención"
+                          action="#{encabezadoSolicitudModificacionCMBean.cambiarTab('HORARIO')}"
+                          disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null
+                                      or encabezadoSolicitudModificacionCMBean.selectedTab eq 'HORARIO'}"
+                          rendered="#{encabezadoSolicitudModificacionCMBean.showHorario}"
+                          immediate="true" />
+    </h:panelGrid>
+
+
+    <h:panelGroup style="width: 100%" 
+                  rendered="#{!encabezadoSolicitudModificacionCMBean.showNotas}">
+        <!-- ***********************************************************
+        **************************SECCION ENCABEZADO******************
+        **************************************************************-->
+
+        <h2 id="hMmData">CUENTA MATRIZ</h2>
+        <h:panelGrid  class="formulario2" columns="8" >
+            <h:outputText class="txtLabelsMgl"  value="No. Cuenta RR"/>
+            <h:outputText class="columnReadFormNumero"  style="color: red;font-weight: bold;" value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.numeroCuenta}" />
+            <h:outputText class="txtLabelsMgl" value="Tipo"/>
+            <h:outputText class="columnReadForm"  value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.subEdificioGeneral.tipoEdificioObj.nombreBasica}" />
+            <h:outputText class="txtLabelsMgl" value="Nombre Edificio"/>
+            <h:outputText class="columnReadForm"  value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.nombreCuenta}" />
+            <h:outputText class="txtLabelsMgl" value="Estado"/>
+            <h:outputText class="columnReadForm"  style="color: red; font-weight: bold;"  value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.subEdificioGeneral.estadoSubEdificioObj.nombreBasica}" />
+            
+            <h:outputText class="txtLabelsMgl" value="Departamento"/>
+            <h:outputText class="columnReadForm"  value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.departamento.gpoNombre}" />
+            <h:outputText class="txtLabelsMgl" value="Municipio"/>
+            <h:outputText class="columnReadForm"  value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.municipio.gpoNombre}" />
+            <h:outputText class="txtLabelsMgl" value="Centro Poblado"/>
+            <h:outputText class="columnReadForm"  value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.centroPoblado.gpoNombre}" />
+            <h:outputText class="txtLabelsMgl" value="Barrio"/>
+            <h:outputText class="columnReadForm" value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.direccionPrincipal.barrio}" />
+            <h:outputText class="txtLabelsMgl" value="Dirección"/>
+            <h:outputText class="columnReadForm" value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.direccionPrincipal.direccionObj.dirFormatoIgac}" />
+            <h:outputText class="txtLabelsMgl" value="Dirección Antigua"/>
+            <h:outputText class="columnReadForm" value="" style="color: pink;font-weight: bold;" />
+            <h:outputText class="txtLabelsMgl" value="Teléfono Portería 1"/>
+            <h:outputText class="columnReadForm" value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.subEdificioGeneral.telefonoPorteria}" />
+            <h:outputText class="txtLabelsMgl" value="Teléfono Portería 2"/>
+            <h:outputText class="columnReadForm" value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.subEdificioGeneral.telefonoPorteria2}" />
+            <h:outputText class="txtLabelsMgl"  value="No. Cuenta MGL"/>
+            <h:outputText class="columnReadFormNumero"  style="color: red;font-weight: bold;" value="#{encabezadoSolicitudModificacionCMBean.cuentaMatriz.cuentaMatrizId}" />
+            <!--espinosadiea insercion de nuemro de cuenta matriz de MGL 09/06/2018-->
+        </h:panelGrid>
+
+
+        <!-- ***********************************************************
+        **************************SECCION ENCABEZADO******************
+        **************************************************************-->
+
+        <!-- ***********************************************************
+         *******************SECCION SOLICITANTE*********************
+         **************************************************************-->
+
+
+        <table style="width: 100%" >
+            <td style="width:100%" > <h2 id="solModData" >DATOS SOLICITANTE </h2> </td>
+            <td style="width:5%">
+                <h:commandButton  id="mostrarComponenteButton" image="../../../../img/ocultar.png" 
+                                  style="margin:0px 0 11px 0; " 
+                                  rendered="#{encabezadoSolicitudModificacionCMBean.modoGestion}">
+                    <f:ajax render="groupInfoSolicitante" 
+                            event="click" listener="#{encabezadoSolicitudModificacionCMBean.cambiarVisibleDatosSolicitud()}"  />
+                </h:commandButton>
+            </td>
+        </table>
+
+        <h:panelGroup id="groupInfoSolicitante" style="width: 100%" >
+            <h:panelGroup id="groupSolicitante" style="width: 100%" 
+                          rendered="#{encabezadoSolicitudModificacionCMBean.visibleDatosSolicitud}" >
+                <h:panelGrid   class="formulario3" columns="8"  style="width: 100%"  >
+                    <h:panelGroup>
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl" value="Tipo de solicitud"  />
+                    </h:panelGroup>
+                    <h:selectOneMenu id="listtipoSolModCM" 
+                                     value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.origenSolicitud.basicaId}" 
+                                     accesskey="" style="width:150px;"
+                                     styleClass="ListaConsulta" 
+                                     disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"
+                                     required="true"
+                                     requiredMessage="Campo 'Tipo de solicitud' es requerido">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.origenSolicitudList}" var="ltm"
+                                       itemValue="#{ltm.basicaId}"
+                                       itemLabel="#{ltm.nombreBasica}"/>  
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:selectOneMenu>  
+
+                    <h:panelGroup>
+                        <h:outputText value="" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl"   value="Usuario"/> 
+                    </h:panelGroup>
+                    <h:inputText  id="usuarioModCM" 
+                                  value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitudCreador.usuario}" 
+                                  readonly="true" 
+                                  rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null}"
+                                  disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"
+                                  style="font-weight: bold;"  />
+                    <h:inputText  id="usuarioSolCM" 
+                                  value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitud.usuario}" 
+                                  readonly="true" 
+                                  rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"
+                                  disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"
+                                  style="font-weight: bold;"  />
+
+                    <h:panelGroup>
+                        <h:outputText value=" " class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl"  value="Correo Usuario"/>
+                    </h:panelGroup>
+                    <h:inputText   id="correoUsuarioModCM"  
+                                   value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitudCreador.email}" 
+                                   readonly="true" 
+                                   rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null}"
+                                   disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"
+                                   style="font-weight: bold;" />
+                    <h:inputText   id="correoUsuarioSolCM"  
+                                   value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitud.email}" 
+                                   readonly="true" 
+                                   rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"
+                                   disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"
+                                   style="font-weight: bold;" />
+                    <h:outputText class="txtLabelsMgl"  value="Copia a"/>
+                    <h:inputText   id="copiaModCM" 
+                                   value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.correoCopiaSolicitud}"  
+                                   required="false" requiredMessage="Campo Copia  es requerido"
+                                   validatorMessage="El campo copia no tiene el formato requerido" 
+                                   disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                        <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?" />
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:inputText>
+
+
+                    <h:panelGroup>
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl" value="Asesor"/>
+                    </h:panelGroup>
+                    <h:inputText  id="codAsesorModCM"  
+                                  value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.asesor}" 
+                                  maxlength="100"
+                                  required="true" requiredMessage="Campo 'Asesor' es requerido"
+                                  validatorMessage="Asesor: Solo se aceptan letras y espacios" 
+                                  disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                        <f:validateRegex pattern="[a-zA-Z\s]*"/>          
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:inputText>
+
+
+                    <h:panelGroup>
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl"  value="Correo Asesor" />
+                    </h:panelGroup>
+                    <h:inputText  id="correoAsesorModCM"  
+                                  value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.correoAsesor}"   
+                                  required="true" requiredMessage="Campo 'Correo Asesor' es requerido"
+                                  validatorMessage="El campo correo asesor no tiene el formato requerido"
+                                  disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                        <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:inputText>
+
+
+                    <h:panelGroup>
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl"  value="Teléfono Asesor"/>
+                    </h:panelGroup>
+                    <h:inputText  id="telAsesorModCM"  
+                                  value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.telefonoAsesor}" 
+                                  maxlength="10"
+                                  required="true" requiredMessage="Campo 'Teléfono Asesor' es requerido"
+                                  validatorMessage="'Teléfono Asesor' Solo se acepta 7 o 10 dígitos."
+                                  disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                        <f:validateRegex pattern="[0-9]{7,10}"  />
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:inputText>
+
+                    <h:panelGroup rendered="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'CREACION_HHPP' 
+                                              || encabezadoSolicitudModificacionCMBean.selectedTab eq 'GESTION_HHPP'
+                                              || encabezadoSolicitudModificacionCMBean.selectedTab eq 'TRASLADO_HHPP_BLOQUEADO'}">
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl" value="Tecnología"  />
+                    </h:panelGroup>
+
+                    <h:selectOneMenu id="listaTecnmologia" 
+                                     value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.basicaIdTecnologia.basicaId}"
+                                     accesskey="" style="width:150px;"
+                                     styleClass="ListaConsulta"
+                                     disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"
+                                     required="true"
+                                     requiredMessage="Campo 'Tecnología' es requerido"
+                                     rendered="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'CREACION_HHPP' 
+                                                 || encabezadoSolicitudModificacionCMBean.selectedTab eq 'GESTION_HHPP'
+                                                 || encabezadoSolicitudModificacionCMBean.selectedTab eq 'TRASLADO_HHPP_BLOQUEADO'}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{SolicitudHhppCMBean.listBasicaTecnologia}" var="t"
+                                       itemValue="#{t.basicaId}"
+                                       itemLabel="#{t.nombreBasica}"/>
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:selectOneMenu>
+                </h:panelGrid>
+
+                <h:panelGrid class="formulario3" columns="2"  style="width: 100%">
+                    <h:panelGroup>
+                        <h:outputText value="*" class="txtCamposReqMgl" />
+                        <h:outputText class="txtLabelsMgl"  value="Observaciones (4000 Caracteres)" />
+                    </h:panelGroup>
+                    <h:inputTextarea id="ObservacionesModCM"  style="width:900px; height: 20px;" 
+                                     required="true" requiredMessage="Campo 'Observaciones' es requerido"
+                                     validatorMessage="'Observaciones' Número máximo de caracteres es 4000"
+                                     value="#{encabezadoSolicitudModificacionCMBean.cmtNotasSolicitudMgl.nota }" 
+                                     disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                        <f:validateLength maximum="4000" />   
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:inputTextarea>
+                </h:panelGrid>
+            </h:panelGroup>
+        </h:panelGroup>
+        <!-- ***********************************************************
+        *******************FIN SECCION DATOS SOLICITANTE****************
+        **************************************************************-->
+    </h:panelGroup>
+
+
+
+
+    <!-- ***********************************************************
+        ***********SECCION TIPO MODIFICACIÓN PARA CUENTA MATRIZ********
+        **************************************************************-->
+    <h:panelGroup rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM}" >
+        <h2>TIPO MODIFICACIÓN</h2> 
+        <h:panelGrid  class="formulario3" columns="9"  >
+            <h:outputLabel value="Datos CM" for="iMD" />
+            <h:selectBooleanCheckbox id="iMD" immediate="true"
+                                     value="#{encabezadoSolicitudModificacionCMBean.activoCheckModDatosCM}"
+                                     rendered="#{encabezadoSolicitudModificacionCMBean.validarTabModificacionCMDatos()}"
+                                     disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null or solicitudModificacionCMBean.hayCambioDatosCm}">
+                <f:ajax event="change" render=":formSolicitud:groupModCm" />
+            </h:selectBooleanCheckbox>
+
+            <h:outputLabel value="Dirección" for="iMDir" />
+            <h:selectBooleanCheckbox id="iMDir" immediate="true"
+                                     value="#{encabezadoSolicitudModificacionCMBean.activoCheckModDireccion}"
+                                     rendered="#{encabezadoSolicitudModificacionCMBean.validarTabModificacionCMDireccion()}"
+                                     disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null or solicitudModificacionCMBean.hayCambioDireccion}">
+                <f:ajax event="change" render=":formSolicitud:groupModCm" />
+            </h:selectBooleanCheckbox>
+
+            <h:outputLabel value="Subedificios" for="iMS" />
+            <h:selectBooleanCheckbox id="iMS" immediate="true"
+                                     value="#{encabezadoSolicitudModificacionCMBean.activoCheckModSubedificios}"
+                                     rendered="#{encabezadoSolicitudModificacionCMBean.validarTabModificacionCMSubEdificios()}"
+                                     disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null or solicitudModificacionCMBean.hayCambioSubEdificios}">
+                <f:ajax event="change"  render=":formSolicitud:groupModCm" />
+            </h:selectBooleanCheckbox>
+
+            <h:outputLabel value="Cobertura" for="iMC"/>
+            <h:selectBooleanCheckbox id="iMC" immediate="true"
+                                     value="#{encabezadoSolicitudModificacionCMBean.activoCheckModCobertura}"
+                                     rendered="#{encabezadoSolicitudModificacionCMBean.validarTabModificacionCMCobertura()}"
+                                     disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null or solicitudModificacionCMBean.hayCambioCobertura}">
+                <f:ajax event="change" render=":formSolicitud:groupModCm" />
+            </h:selectBooleanCheckbox>
+
+            <h:commandButton styleClass="btn" id="crearSolModSol" value="Crear Solicitud"
+                             action="#{solicitudModificacionCMBean.crearSolicitud}" disabled="#{!solicitudModificacionCMBean.validarCrearSolModCm()}"
+                             rendered="#{!solicitudModificacionCMBean.creacionExitosa
+                                         and !solicitudModificacionCMBean.modoGestion}">
+            </h:commandButton>
+
+        </h:panelGrid>
+    </h:panelGroup>
+
+    <!-- ***********************************************************
+    *******************FIN SECCION TIPO MODIFICACIÓN****************
+    **************************************************************-->  
+
+</html>

@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <body>
+        <ui:composition template="reporteTemplate.xhtml">
+            <ui:define name="titleprocesomasivo">
+                Crear reporte masivo HHPP
+            </ui:define>
+            <ui:define name="TitleReporte">
+                <h1>Solicitar Reporte General o Detallado...</h1>
+            </ui:define>
+            <ui:define name="procesar">
+
+
+                <script type="text/javascript">
+
+                    function controlDeGeneracionDeReporte() {
+                        document.getElementById("page-wrap").style.display = "block";
+                        document.getElementById("formReporte:buttonReporteGeneral").disabled = true;
+                        document.getElementById("formReporte:btnhidden").click();
+                        document.getElementById("formReporte:idtipotecnologia").disabled = true;
+                        document.getElementById("formReporte:iddepartamento").disabled = true;
+                        document.getElementById("formReporte:idciudad").disabled = true;
+                        document.getElementById("formReporte:idcentropoblado").disabled = true;
+                        document.getElementById("formReporte:idnodo").disabled = true;
+                        document.getElementById("formReporte:idEtiquetas").disabled = true;
+                        document.getElementById("formReporte:idtiporeporte:0").disabled = true;
+                        document.getElementById("formReporte:idtiporeporte:1").disabled = true;
+                         document.getElementById("formReporte:idtiporeporte:1").disabled = true;
+                    }
+
+                </script>
+
+                <div id="page-wrap">
+                    <span class="procesandoReporte">Solicitando Reporte, Espere...</span>
+                    <div class="meter red">
+                        <span style="width: 100%"></span>
+                    </div>
+                </div>
+                <h:commandButton
+                    id = "buttonReporteGeneral"
+                    rendered="#{proReporteBean.puedeProcesar}"
+                    styleClass="btn unblockClaro"                    
+                    value = "Procesar Reporte"
+                    disabled="#{proReporteBean.procesarReporteBtn or !proReporteBean.validarOpcionGenerarReporte()}"
+                    onclick="controlDeGeneracionDeReporte();">
+                </h:commandButton>
+                <h:commandButton
+                        id="btnhidden"
+                        actionListener="#{proReporteBean.procesarReporteMasivo(false, usuarioLogueado.usuarioLogueado)}">
+                </h:commandButton>
+
+            </ui:define>
+        </ui:composition>
+        Solicitar normal
+    </body>
+</html>

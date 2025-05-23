@@ -1,0 +1,413 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition
+        template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Actualización Estructura Comercial</span></ui:define>
+    <ui:define name="message"><span class="error"> #{actEstComercialMglBean.message}</span></ui:define>
+
+    <ui:define name="content">
+        <h:panelGroup id="tblConsulta">
+            <fieldset>
+                <legend>Actualización Estructura Comercial</legend>
+
+                <br/>
+                <table style="width: 90%">
+                    <tr>
+                        <td style="width:2%;"/>
+                        <td style="width:8%;"/>
+                        <td style="width:10%;"/>
+                        <td style="width:2%;"/>
+                        <td style="width:8%;"/>
+                        <td style="width:10%;"/>
+                        <td style="width:2%;"/>
+                        <td style="width:8%;"/>
+                        <td style="width:10%;"/>
+                        <td style="width:2%;"/>
+                        <td style="width:8%;"/>
+                        <td style="width:10%;"/>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <h:outputText escape="false"
+                                          value="#{actEstComercialMglBean.estiloObligatorio}Tecnolog&iacute;a"
+                                          styleClass="formColumn1"/>
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="selectTecnocologia" disabled="#{actEstComercialMglBean.disabled}"
+                                             value="#{actEstComercialMglBean.tecnologia}"
+                                             style="width: 140px">
+                                <f:selectItem itemValue="" itemLabel=""/>
+                                <f:selectItems value="#{actEstComercialMglBean.listTablaBasicaTecnologias}"
+                                               var="tec"
+                                               itemValue="#{tec.nombre}"
+                                               itemLabel="#{tec.nombre}"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td><h:outputText value="Departamento:" style="display: inline-block; width: 85px;"/></td>
+                        <td><h:selectOneMenu id="selectDepartamento" disabled="#{actEstComercialMglBean.disabled}"
+                                             value="#{actEstComercialMglBean.departamento}"
+                                             style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{actEstComercialMglBean.departamentoList}"
+                                           var="departamento"
+                                           itemValue="#{departamento.nombre}"
+                                           itemLabel="#{departamento.nombre}"/>
+                            <f:ajax event="change"
+                                    execute="@this"
+                                    listener="#{actEstComercialMglBean.consultarCiudades()}"
+                                    render="selectMunicipio selectCentroPoblado"/>
+                        </h:selectOneMenu></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><h:outputText value="Ciudad:" styleClass="formColumn2"/></td>
+                        <td><h:selectOneMenu id="selectMunicipio" disabled="#{actEstComercialMglBean.disabled}"
+                                             value="#{actEstComercialMglBean.municipio}"
+                                             style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{actEstComercialMglBean.ciudadList}"
+                                           var="ciud"
+                                           itemValue="#{ciud.nombre}"
+                                           itemLabel="#{ciud.nombre}"/>
+                            <f:ajax event="change"
+                                    execute="@this"
+                                    listener="#{actEstComercialMglBean.consultarCentroPoblado()}"
+                                    render="selectCentroPoblado"/>
+                        </h:selectOneMenu></td>
+                        <td/>
+                        <td/>
+                        <td><h:outputText value="Centro Poblado:" style="display: inline-block; width: 85px;"/></td>
+                        <td><h:selectOneMenu id="selectCentroPoblado" disabled="#{actEstComercialMglBean.disabled}"
+                                             value="#{actEstComercialMglBean.centroProblado}"
+                                             style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{actEstComercialMglBean.centroPobladoList}"
+                                           var="centroPob"
+                                           itemValue="#{centroPob.nombre}"
+                                           itemLabel="#{centroPob.nombre}">
+                            </f:selectItems>
+                            <f:ajax event="change"
+                                    execute="@this"
+                                    listener="#{actEstComercialMglBean.consultarDivisional()}"
+                                    render="selectDivisional"/>
+                        </h:selectOneMenu></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><h:outputText value="Divisional:" styleClass="formColumn2"/></td>
+                        <td><h:selectOneMenu id="selectDivisional" disabled="#{actEstComercialMglBean.disabled}"
+                                             value="#{actEstComercialMglBean.divisional}"
+                                             style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{actEstComercialMglBean.divisionalList}"
+                                           var="divi"
+                                           itemValue="#{divi.nombre}"
+                                           itemLabel="#{divi.nombre}"/>
+                        </h:selectOneMenu></td>
+                        <td/>
+                        <td/>
+                        <td><h:outputText value="Estado de Nodo:" style="display: inline-block; width: 85px;"/></td>
+                        <td><h:selectOneMenu id="selectEstadoNodo" disabled="#{actEstComercialMglBean.disabled}"
+                                             value="#{actEstComercialMglBean.estadoNodo}"
+                                             style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{actEstComercialMglBean.nodoEstadoDTOList}"
+                                           var="nodo"
+                                           itemValue="#{nodo.nombre}"
+                                           itemLabel="#{nodo.nombre}">
+                            </f:selectItems>
+                        </h:selectOneMenu></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><h:outputText value="Ancho Banda Reto:" styleClass="formColumn3"/></td>
+                        <td><h:selectOneMenu id="selectAnchoBandReto" disabled="#{actEstComercialMglBean.disabled}"
+                                             value="#{actEstComercialMglBean.anchoBandReto}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{actEstComercialMglBean.anchoBanRetoList}"
+                                           var="anchoBR"
+                                           itemValue="#{anchoBR.nombre}"
+                                           itemLabel="#{anchoBR.nombre}">
+                            </f:selectItems>
+                        </h:selectOneMenu></td>
+                    </tr>
+                </table>
+
+                <h:panelGrid id="programarConsulta" columns="2">
+                    <h:column>
+                        <h:panelGroup id="panelGroupBotonesProgramar">
+                            <h:commandButton disabled="#{actEstComercialMglBean.disabled}" value="Programar Consulta"
+                                             action="#{actEstComercialMglBean.programarConsulta()}" rendered="#{actEstComercialMglBean.isRolConsultar()}"
+                                             styleClass="btn"/>
+                        </h:panelGroup>
+                    </h:column>
+                    <h:column>
+                        <h:panelGroup id="panelGroupBotonesProgramarNuevaConsulta">
+                            <h:commandButton value="Nueva Consulta" rendered="#{!actEstComercialMglBean.disabled and actEstComercialMglBean.isRolConsultar()}"
+                                             action="#{actEstComercialMglBean.nuevaConsulta()}"
+                                             styleClass="btn"/>
+                        </h:panelGroup>
+                    </h:column>
+                    <h:column>
+                        <h:commandLink id="alert" value="El reporte no se encuentra disponible para generación."
+                                       rendered="#{actEstComercialMglBean.disabled}"
+                                       styleClass="mensaje alerta unblockClaro"
+                                       actionListener="#{actEstComercialMglBean.verificarEstado}"/>
+                        <p:tooltip for="alert" showEffect="blind" hideEffect="explode"
+                                   value="Haga click para verificar disponibilidad."/>
+                    </h:column>
+                </h:panelGrid>
+
+                <h:panelGrid id="panelListaArchivosConsulta" columns="5" style="width:100%; margin:0 auto;">
+                    <h:dataTable class="AligSpan" id="archivosConsulta"
+                                 style="width:90%; margin:0 auto; text-align: center;"
+                                 var="archCon"
+                                 value="#{actEstComercialMglBean.archivoConsultaPag}"
+                                 headerClass="constructGTableHeader"
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText style="height: 24px;" value="Nombre de Archivo"/>
+                            </f:facet>
+                            <div align="left">
+                                <h:outputText value="#{archCon.nombreArchivo}"/>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText style="height: 24px;" value="Fecha"/>
+                            </f:facet>
+                            <div align="left">
+                                <h:outputText value="#{archCon.fechaRegistro}"/>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText style="height: 24px;" value="Filtro"/>
+                            </f:facet>
+                            <div align="left">
+                                <h:outputText value="#{archCon.filtro}"/>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText style="height: 22px;" value="Estado"/>
+                            </f:facet>
+                            <div align="left">
+                                <h:commandLink value="#{archCon.estado}"
+                                               rendered="#{!archCon.estado.equals(actEstComercialMglBean.estateProcess)}"
+                                               styleClass="percentage #{actEstComercialMglBean.retColor(archCon.estado)} unblockClaro"
+                                               actionListener="#{actEstComercialMglBean.actualizarListas}"/>
+                                <h:outputText value="#{archCon.estado}"
+                                              rendered="#{archCon.estado.equals(actEstComercialMglBean.estateProcess)}"
+                                              styleClass="percentage #{actEstComercialMglBean.retColor(archCon.estado)}"/>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText style="height: 22px;" value="Archivo"/>
+                            </f:facet>
+                            <div align="center">
+                                <h:panelGroup id="botonDescargarAr">
+                                    <h:commandButton disabled="false" image="/view/MGL/images/csv.png"
+                                                     rendered="#{archCon.estado.equals(actEstComercialMglBean.estateProcess) and archCon.totalReg>0}"
+                                                     action="#{actEstComercialMglBean.descargarArchivoCsv(archCon.ruta, archCon.nombreArchivo)}"
+                                                     styleClass="unblockClaro"/>
+                                    <p:graphicImage id="stage1" value="/view/MGL/images/resp.png" alt="xxxx"
+                                                    rendered="#{archCon.estado.equals(actEstComercialMglBean.estateProcess) and archCon.totalReg==0}"/>
+                                    <p:tooltip for="stage1" showEffect="blind" hideEffect="explode"
+                                               value="No se encontraron registros"/>
+                                </h:panelGroup>
+                            </div>
+                        </h:column>
+                        <f:facet name="footer">
+                            <div class="pagination2">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <h:commandButton image="/view/MGL/images/primera.png"
+                                                             action="#{actEstComercialMglBean.pageFirst}"/>
+                                        </td>
+                                        <td>
+                                            <h:commandButton image="/view/MGL/images/atras.png"
+                                                             action="#{actEstComercialMglBean.pagePrevious}"/>
+                                        </td>
+                                        <td>
+                                            <h:commandButton value="#{actEstComercialMglBean.pageActualConsulta}"/>
+                                        </td>
+                                        <td>
+                                            <h:selectOneMenu id="listTabla"
+                                                             value="#{actEstComercialMglBean.numPaginaConsulta}">
+                                                <f:selectItems value="#{actEstComercialMglBean.paginaListConsulta}"
+                                                               var="pag" itemValue="#{pag}" itemLabel="#{pag}"/>
+                                                <f:ajax render="@form" event="change"
+                                                        listener="#{actEstComercialMglBean.irPagina()}"
+                                                        execute="@this"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td>
+                                            <h:commandButton image="/view/MGL/images/adelante.png"
+                                                             action="#{actEstComercialMglBean.pageNext}"/>
+                                        </td>
+                                        <td>
+                                            <h:commandButton image="/view/MGL/images/ultima.png"
+                                                             action="#{actEstComercialMglBean.pageLast}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </f:facet>
+                    </h:dataTable>
+                </h:panelGrid>
+            </fieldset>
+        </h:panelGroup>
+        <br/>
+        <hr size="5" width="100%" align="LEFT"/>
+        <br/>
+        <h:panelGroup id="tblCargue">
+            <fieldset>
+                <legend>Cargue de Archivo Actualización Estructura Comercial</legend>
+                <br/>
+                <h:panelGrid id="CargueArchivos" columns="2">
+                    <h:column>
+                        <p:fileUpload id="idArchivoEscalamiento" label="Seleccionar Documento:" style="display:block;"
+                                      value="#{actEstComercialMglBean.cargueArchivo}" rendered="#{actEstComercialMglBean.isRolEditar()}"
+                                      mode="simple" skinSimple="true"/>
+                    </h:column>
+                    <h:column>
+                        <h:commandButton value="Procesar Archivo" id="btnProcesarArchivo" rendered="#{actEstComercialMglBean.isRolEditar()}"
+                                         styleClass="btn" action="#{actEstComercialMglBean.cargueArchivoCsv()}"/>
+                    </h:column>
+                </h:panelGrid>
+                <br/>
+                <h:panelGrid id="panelListaArchivosCargue" columns="5" style="width:100%; margin:0 auto;">
+                    <h:dataTable class="AligSpan" id="archivosCargue"
+                                 style="width:90%; margin:0 auto; text-align: center;"
+                                 var="archCar"
+                                 value="#{actEstComercialMglBean.archivoCargaPag}"
+                                 headerClass="constructGTableHeader"
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText style="height: 24px;" value="Nombre de Archivo"/>
+                            </f:facet>
+                            <div align="left">
+                                <h:outputText value="#{archCar.nombreArchivo}"/>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText style="height: 24px;" value="Fecha"/>
+                            </f:facet>
+                            <div align="left">
+                                <h:outputText value="#{archCar.fechaRegistro}"/>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText style="height: 24px;" value="Estado"/>
+                            </f:facet>
+                            <div align="left">
+                                <h:commandLink value="#{archCar.estado}"
+                                               rendered="#{!archCar.estado.equals(actEstComercialMglBean.estateProcess)}"
+                                               styleClass="percentage #{actEstComercialMglBean.retColor(archCar.estado)} unblockClaro"
+                                               actionListener="#{actEstComercialMglBean.actualizarListas}"/>
+                                <h:outputText value="#{archCar.estado}"
+                                              rendered="#{archCar.estado.equals(actEstComercialMglBean.estateProcess)}"
+                                              styleClass="percentage #{actEstComercialMglBean.retColor(archCar.estado)}"/>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText style="height: 22px;" value="Archivo Exitoso"/>
+                            </f:facet>
+                            <div align="center">
+                                <h:panelGroup id="botonDescargar">
+                                    <h:commandButton disabled="false" image="/view/MGL/images/csv.png"
+                                                     rendered="#{archCar.estado.equals(actEstComercialMglBean.estateProcess)}"
+                                                     action="#{actEstComercialMglBean.descargarArchivoCsv(archCar.ruta, archCar.nombreArchivo)}"
+                                                     styleClass="unblockClaro"/>
+                                </h:panelGroup>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText style="height: 22px;" value="Archivo con Errores"/>
+                            </f:facet>
+                            <div align="center">
+                                <h:panelGroup id="botonDescargarEr">
+                                    <h:commandButton disabled="false" image="/view/MGL/images/csv_red.png"
+                                                     rendered="#{archCar.estado.equals(actEstComercialMglBean.estateProcessError)}"
+                                                     action="#{actEstComercialMglBean.descargarArchivoCsv(archCar.ruta, archCar.nombreArchivo)}"
+                                                     styleClass="unblockClaro"/>
+                                </h:panelGroup>
+                            </div>
+                        </h:column>
+                        <f:facet name="footer">
+                            <div class="pagination2">
+                                <h:panelGroup rendered="#{actEstComercialMglBean.pintarPaginado}">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <h:commandButton image="/view/MGL/images/primera.png"
+                                                                 action="#{actEstComercialMglBean.pageFirstCargue}"/>
+                                            </td>
+                                            <td>
+                                                <h:commandButton image="/view/MGL/images/atras.png"
+                                                                 action="#{actEstComercialMglBean.pagePreviousCargue}"/>
+                                            </td>
+                                            <td>
+                                                <h:commandButton value="#{actEstComercialMglBean.pageActualCargue}"/>
+                                            </td>
+                                            <td>
+                                                <h:selectOneMenu id="listTabla2"
+                                                                 value="#{actEstComercialMglBean.numPaginaCargue}">
+                                                    <f:selectItems value="#{actEstComercialMglBean.paginaListCargue}"
+                                                                   var="pag2" itemValue="#{pag2}" itemLabel="#{pag2}"/>
+                                                    <f:ajax render="@form" event="change"
+                                                            listener="#{actEstComercialMglBean.irPaginaCargue()}"
+                                                            execute="@this"/>
+                                                </h:selectOneMenu>
+                                            </td>
+                                            <td>
+                                                <h:commandButton image="/view/MGL/images/adelante.png"
+                                                                 action="#{actEstComercialMglBean.pageNextCargue}"/>
+                                            </td>
+                                            <td>
+                                                <h:commandButton image="/view/MGL/images/ultima.png"
+                                                                 action="#{actEstComercialMglBean.pageLastCargue}"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </h:panelGroup>
+                            </div>
+                        </f:facet>
+                    </h:dataTable>
+                </h:panelGrid>
+            </fieldset>
+            <br/>
+            <br/>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ 
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:rich="http://richfaces.org/rich">
+ 
+ 
+<ui:composition template="/view/template/home.xhtml">
+<ui:define name="title">Multivalores</ui:define>
+<ui:define name="message"> #{multivalueMBean.message}</ui:define>
+<ui:define name="content">
+    <h:form>
+        <h:panelGrid id="principal" columns="1" styleClass="login">
+            <h:panelGrid id="contenedor" columns="2" styleClass="smallPanelInfo">
+                <h:outputText value="Grupo" styleClass="contenidoIzquierdo" />
+                <h:selectOneMenu value="#{multivalueMBean.groupselected}" styleClass="onemenu" required="true">
+                    <f:selectItems value="#{multivalueMBean.listGroup}" />
+                </h:selectOneMenu>
+                <h:outputLabel value="Valor" styleClass="contenidoIzquierdo"/>
+                <h:inputText value="#{multivalueMBean.value}" maxlength="40" styleClass="contenidoDerecho"/>
+                <h:outputLabel value="Descripción" styleClass="contenidoIzquierdo"/>
+                <h:inputText value="#{multivalueMBean.description}" maxlength="40" styleClass="contenidoDerecho"/>
+            </h:panelGrid>
+            <h:panelGrid columns="3" styleClass="panelButton">
+                <h:commandButton value="Modificar" styleClass="button"
+                                   action="#{multivalueMBean.update}" 
+                                   rendered="#{multivalueMBean.showQuery}">
+                    <f:param name="val" id="multivalue" value="#{multi.mulValor}" />
+                    <f:param name="val" id="multides" value="#{multi.descripcion}" />
+                </h:commandButton>
+                <h:commandButton value="Eliminar" styleClass="button" 
+                                 action="#{multivalueMBean.onDelete}"
+                                 actionListener="#{multivalueMBean.delete}"
+                                 rendered="#{multivalueMBean.showQuery}">
+                    <f:param name="val" id="multiid" value="#{multi.mulId}"/>
+                </h:commandButton>
+                <h:commandButton value="Guardar" styleClass="button" 
+                                 action="#{multivalueMBean.create}"
+                                 rendered="#{!multivalueMBean.showQuery}">
+                </h:commandButton>
+            </h:panelGrid>
+        </h:panelGrid> 
+    </h:form>
+</ui:define>    
+</ui:composition>
+</html>

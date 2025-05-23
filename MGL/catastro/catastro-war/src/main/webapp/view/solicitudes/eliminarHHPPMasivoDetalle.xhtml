@@ -1,0 +1,456 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/mainUpload.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">
+        <h:panelGroup styleClass="TituloSeccion">
+            <h:outputText value="Eliminacion HHPP Masivo" />
+        </h:panelGroup>
+    </ui:define>
+
+
+    <ui:define name="message"><span class="error"> #{eliminarHHPPMasivoBean.message}</span></ui:define>
+    <ui:define name="content">
+        <link rel="stylesheet" type="text/css" href="/Visitas_Tecnicas/resources/stylesheet.css"/>
+        <h:panelGrid  columns="4" id="EliminacionInd" class="EtiquetaConsulta"  width="100%" >
+            <h:form  id="formCambioEstratoMasivo2"  enctype="multipart/form-data">
+                <h:messages id="messges"  globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+                <h:inputHidden id="procesoHilo"  value="#{eliminarHHPPMasivoBean.procesoH}"  />
+                <h:graphicImage value="../img/anim.gif" rendered="#{eliminarHHPPMasivoBean.procesoH == 'A'}" style="position:absolute;top:200px;left:360px" />
+
+                <h:panelGrid binding="#{eliminarHHPPMasivoBean.eliminacionArch}" rendered="#{eliminarHHPPMasivoBean.renderFormCAM}" columns="4" id="EliminacionArch" class="EtiquetaConsulta"  width="100%" >
+                    <!--h:form prependId="false" id="formCambioEstratoMasivo1" enctype="multipart/form-data" -->
+                    <h:panelGrid columns="5">
+                        <h:outputText value="Archivo: "/>
+
+                        <p:fileUpload id="archivoCambioEstrato"
+                                        label="Seleccionar Archivo:"
+                                        disabled="#{eliminarHHPPMasivoBean.procesoH eq 'A'}"
+                                        value="#{eliminarHHPPMasivoBean.uploadedFile}"
+                                        validator="#{eliminarHHPPMasivoBean.validateFile}"
+                                        mode="simple" skinSimple="true"/>
+                        <h:commandButton id="botonCargarEstrato" value="Subir Archivo" styleClass="buttonLarge" style="color:#FFFFFF;" disabled="#{eliminarHHPPMasivoBean.procesoH eq 'A'}"
+                                         action="#{eliminarHHPPMasivoBean.cargarArchivo}"/>
+                        <h:commandButton id="buttoneliminarHHPP1" styleClass="buttonl"   style="color:#FFFFFF;" disabled="#{eliminarHHPPMasivoBean.procesoH eq 'A'}"
+                                         actionListener="#{eliminarHHPPMasivoBean.eliminarHHPPsMasivoArchivo()}" 
+                                         value="eliminar HHPP" >
+                        </h:commandButton>
+                        <h:commandButton id="botonVerEstado" 
+                                         value="Ver estado Actual" 
+                                         styleClass="buttonLarge" style="color:#FFFFFF;" 
+                                         rendered="#{eliminarHHPPMasivoBean.procesoH == 'A'}"
+                                         action="#{eliminarHHPPMasivoBean.summitPage()}"/>
+
+                    </h:panelGrid>
+
+                    <!--/h:form-->
+
+                </h:panelGrid>
+
+                <h:panelGrid rendered="#{!eliminarHHPPMasivoBean.renderFormCAM}" columns="4" id="panelInformacionGeneral2" width="100%" class="EtiquetaConsulta">
+
+                    <h:outputText value="Regional:" style="align:right" />
+
+                    <h:selectOneMenu required="true" id="division_unidad" styleClass="ListaConsulta" value="#{eliminarHHPPMasivoBean.geoPolitico.geoGpoId}">
+                        <f:selectItem itemValue="0" itemLabel="" /> 
+                        <f:selectItems value="#{eliminarHHPPMasivoBean.dptoList}" var="dpto"
+                                       itemValue="#{dpto.gpoId}"
+                                       itemLabel="#{dpto.gpoNombre}"/>
+
+                        <f:ajax event="change" execute="@this" 
+                                listener="#{eliminarHHPPMasivoBean.consultarCiudades()}" render="ciudad_unidad"/>                       
+
+                    </h:selectOneMenu>
+
+                    <h:outputText value="Ciudad:" style="align:right" />
+                    <h:selectOneMenu required="true" id="ciudad_unidad" value="#{eliminarHHPPMasivoBean.geoGpo}"  
+                                     styleClass="ListaConsulta">
+                        <f:selectItem itemValue="0" itemLabel="" /> 
+                        <f:selectItems value="#{eliminarHHPPMasivoBean.ciudadList}" var="ciudad"
+                                       itemValue="#{ciudad.gpoId}"
+                                       itemLabel="#{ciudad.gpoNombre}"/>             
+                    </h:selectOneMenu>
+
+                    <h:outputText value="Calle:" style="align:right" />
+                    <h:inputText id="num_CalleUnidad" value="#{eliminarHHPPMasivoBean.hhppMgl.hhpCalle}"/>
+
+                    <h:outputText value="Placa: "/>
+                    <h:inputText id="placa" value="#{eliminarHHPPMasivoBean.hhppMgl.hhpPlaca}" />
+
+                    <h:outputText value="Apartamento: "/>
+                    <h:inputText id="apartamento" value="#{eliminarHHPPMasivoBean.hhppMgl.hhpApart}" />
+
+                    <h:outputText value="Id HHPP: "/>
+                    <h:inputText id="id_Unidad"  value="#{eliminarHHPPMasivoBean.hhppMgl.hhpId}" />
+
+                    <h:outputText value="Tipo de unidad: "/>
+                    <h:selectOneMenu id="tipo_Unidad"  value="#{eliminarHHPPMasivoBean.tipoUnidad}" 
+                                     styleClass="ListaConsulta" >
+                        <f:selectItem itemValue="0" itemLabel="" /> 
+                        <f:selectItems value="#{eliminarHHPPMasivoBean.listTipoHhppMgl}" var="lth"
+                                       itemValue="#{lth.thhID}"
+                                       itemLabel="#{lth.thhValor}"/>   
+                    </h:selectOneMenu>
+
+                    <h:outputText value="Estado de HHPP: "/>
+                    <h:selectOneMenu id="estado_Unidad"   value="#{eliminarHHPPMasivoBean.estadoUnidad}" 
+                                     styleClass="ListaConsulta"  >
+                        <f:selectItem itemValue="0" itemLabel="" />                        
+                        <f:selectItems value="#{eliminarHHPPMasivoBean.listEstadoHhppMgl}" var="leh"
+                                       itemValue="#{leh.ehhID}"
+                                       itemLabel="#{leh.ehhNombre}"/>  
+                    </h:selectOneMenu>
+
+                    <h:outputText value="Nodo: "/>
+                    <h:selectOneMenu id="listNodo" value="#{eliminarHHPPMasivoBean.nodo}" 
+                                     styleClass="ListaConsulta" >
+                        <f:selectItem itemValue="0" itemLabel="" />
+                        <f:selectItems value="#{eliminarHHPPMasivoBean.listNodoMgl}" var="ln"
+                                       itemValue="#{ln.nodId}"
+                                       itemLabel="#{ln.nodNombre}"/>                
+                    </h:selectOneMenu> 
+
+                    <h:outputText value="Black List:" id="blackListlb"/>
+
+                    <h:selectOneMenu id="listMarcasMgl" value="#{eliminarHHPPMasivoBean.marcas}" 
+                                     styleClass="ListaConsulta">
+                        <f:selectItem itemValue="0" itemLabel="" />
+                        <f:selectItems value="#{eliminarHHPPMasivoBean.listMarcasMgl}" var="lm"
+                                       itemValue="#{lm.marId}"
+                                       itemLabel="#{lm.marCodigo} - #{lm.marNombre}"/>                
+                    </h:selectOneMenu> 
+
+                    <h:outputText value="Fecha activación" id="nod_fecha_activacionlb"/>
+
+                    <p:calendar id="initDate" 
+                                value="#{eliminarHHPPMasivoBean.hhppMgl.fechaCreacion}"
+                                readonly="true"  
+                                showOn="both">
+                    </p:calendar>        
+
+                    <div  style="width: 150px" ></div><div  style="width: 150px" ><h:inputHidden  id="nodHid2" value="hid" ></h:inputHidden> </div><div  style="width: 150px" ></div>
+                    <h:commandButton value="Validar"  action="#{eliminarHHPPMasivoBean.buscarHhppMgl}"  disabled="#{eliminarHHPPMasivoBean.procesoH eq 'A'}" styleClass="buttonl"  style="text-align: center; color:#FFFFFF;"/>
+                    <h:commandButton id="buttoneliminarHHPP" styleClass="buttonl"   style="color:#FFFFFF;" disabled="#{eliminarHHPPMasivoBean.procesoH eq 'A'}"
+                                     actionListener="#{eliminarHHPPMasivoBean.eliminarHHPPsMasivo()}" 
+                                     value="eliminar HHPP" >
+                    </h:commandButton>
+                    <h:commandButton id="botonVerEstadoManual" 
+                                     value="Ver estado Actual" 
+                                     styleClass="buttonLarge" style="color:#FFFFFF;" 
+                                     rendered="#{eliminarHHPPMasivoBean.procesoH == 'A'}"
+                                     action="#{eliminarHHPPMasivoBean.summitPage()}"/>
+                    <h:commandButton  rendered="false" value="800"  action="#{eliminarHHPPMasivoBean.crearHhppMgl800}" disabled="#{eliminarHHPPMasivoBean.procesoH eq 'A'}" styleClass="buttonl"  style="text-align: center; color:#FFFFFF;"/>
+                </h:panelGrid>
+                <br></br>
+                <br></br>
+                <h:outputText rendered="#{!eliminarHHPPMasivoBean.renderFormCAM}" value="HHPP's a eliminar "/>
+                <h:dataTable id="hhppMglTable" rendered="#{!eliminarHHPPMasivoBean.renderFormCAM}"
+                             binding="#{eliminarHHPPMasivoBean.dataTable}"  value="#{eliminarHHPPMasivoBean.hhppMglList}" var="hhppMgl" rows="10"                         
+                             styleClass="solicitudesGTable"  border="1" 
+                             headerClass="solicitudesGTableHeader"
+                             rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"    >
+
+                    <h:column >   
+                        <f:facet name="header">
+                            <h:commandButton value="Seleccionar Todo" styleClass="buttonLarge" style="color:#FFFFFF;"
+                                             action="#{eliminarHHPPMasivoBean.selectAllHHPP}"/>
+                        </f:facet>
+                        <h:selectBooleanCheckbox value="#{hhppMgl.selected}" />  
+                    </h:column>
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Dirección" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.dirId}" />      </div>                                  
+                    </h:column>
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Calle RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpCalle}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Unidad RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpPlaca}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Apto RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpApart}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Comunidad RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpComunidad}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Division RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpDivision}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Nodo" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpUltUbicacion}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Estado" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpEstadoUnit}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Tipo Unidad" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpTipoUnidad}" />      </div>                                  
+                    </h:column>
+
+
+
+
+                    <f:facet name="footer">
+                        <h:panelGroup>
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pageFirst}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTable.first == 0}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonInicio.png);" />
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pagePrevious}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTable.first == 0}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonAnterior.png);" />
+
+
+                            <h:commandButton value="#{eliminarHHPPMasivoBean.pageActual}" styleClass="botonTPagInicio"    />
+
+                            <h:selectOneMenu id="listTabla" value="#{eliminarHHPPMasivoBean.numPagina}" 
+                                             styleClass="ListaConsulta" style="width: 40px; height:19px;"
+                                             valueChangeListener="#{eliminarHHPPMasivoBean.irPagina}"    >
+
+
+                                <f:selectItems value="#{eliminarHHPPMasivoBean.paginaList}" var="pag"
+                                               itemValue="#{pag}"
+                                               itemLabel="#{pag}"/>    
+                                <a4j:ajax event="change" render="formCambioEstratoMasivo2" execute="@this" />                                         
+                            </h:selectOneMenu>  
+
+
+
+
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pageNext}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTable.first + eliminarHHPPMasivoBean.dataTable.rows
+                                                         >= eliminarHHPPMasivoBean.dataTable.rowCount}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonSiguiente.png);" />
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pageLast}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTable.first + eliminarHHPPMasivoBean.dataTable.rows
+                                                         >= eliminarHHPPMasivoBean.dataTable.rowCount}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonFin.png);" />
+                        </h:panelGroup>
+                    </f:facet>
+
+                </h:dataTable>  
+
+                <br></br>
+                <br></br>
+                <h:outputText value="HHPP's eliminados "/>
+                <h:dataTable id="hhppTableDele" 
+                             binding="#{eliminarHHPPMasivoBean.dataTableD}"  value="#{eliminarHHPPMasivoBean.hhppListDele}" var="hhppMgl" rows="10"                         
+                             styleClass="solicitudesGTable"  border="1" 
+                             headerClass="solicitudesGTableHeader"
+                             rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"    >
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Dirección" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.dirId}" />      </div>                                  
+                    </h:column>
+
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Calle RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpCalle}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Unidad RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpPlaca}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Apto RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpApart}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Comunidad RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpComunidad}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Division RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpDivision}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Resultado" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.resultado}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Descripcion" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.descripcion}" />      </div>                                  
+                    </h:column>
+
+
+                    <f:facet name="footer">
+                        <h:panelGroup>
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pageFirstD}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTableD.first == 0}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonInicio.png);" />
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pagePrevious}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTableD.first == 0}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonAnterior.png);" />
+
+
+                            <h:commandButton value="#{eliminarHHPPMasivoBean.pageActualD}" styleClass="botonTPagInicio"    />
+
+                            <h:selectOneMenu id="listTabla" value="#{eliminarHHPPMasivoBean.numPaginaD}" 
+                                             styleClass="ListaConsulta" style="width: 40px; height:19px;"
+                                             valueChangeListener="#{eliminarHHPPMasivoBean.irPaginaD}"    >
+
+
+                                <f:selectItems value="#{eliminarHHPPMasivoBean.paginaListD}" var="pagD"
+                                               itemValue="#{pagD}"
+                                               itemLabel="#{pagD}"/>    
+                                <a4j:ajax event="change" render="formCambioEstratoMasivo2" execute="@this" />                                         
+                            </h:selectOneMenu>  
+
+
+
+
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pageNextD}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTableD.first + eliminarHHPPMasivoBean.dataTableD.rows
+                                                         >= eliminarHHPPMasivoBean.dataTableD.rowCount}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonSiguiente.png);" />
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pageLastD}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTableD.first + eliminarHHPPMasivoBean.dataTableD.rows
+                                                         >= eliminarHHPPMasivoBean.dataTableD.rowCount}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonFin.png);" />
+                        </h:panelGroup>
+                    </f:facet>
+
+                </h:dataTable> 
+
+                <br></br>
+                <br></br>
+                <h:outputText value="HHPP's No eliminados "/>
+                <h:dataTable id="hhppTableNoDele" 
+                             binding="#{eliminarHHPPMasivoBean.dataTableND}"  value="#{eliminarHHPPMasivoBean.hhppListNoDele}" var="hhppMgl" rows="10"                         
+                             styleClass="solicitudesGTable"  border="1" 
+                             headerClass="solicitudesGTableHeader"
+                             rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"    >
+
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Dirección" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.dirId}" />      </div>                                  
+                    </h:column>
+
+
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Calle RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpCalle}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Unidad RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpPlaca}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Apto RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpApart}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Comunidad RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpComunidad}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Division RR" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.hhpDivision}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Resultado" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.resultado}" />      </div>                                  
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Descripcion" />
+                            </f:facet>
+                            <h:outputText value="#{hhppMgl.descripcion}" />      </div>                                  
+                    </h:column>
+
+
+
+                    <f:facet name="footer">
+                        <h:panelGroup>
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pageFirstND}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTableND.first == 0}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonInicio.png);" />
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pagePreviousND}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTableND.first == 0}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonAnterior.png);" />
+
+
+                            <h:commandButton value="#{eliminarHHPPMasivoBean.pageActualND}" styleClass="botonTPagInicio"    />
+
+                            <h:selectOneMenu id="listTabla" value="#{eliminarHHPPMasivoBean.numPaginaND}" 
+                                             styleClass="ListaConsulta" style="width: 40px; height:19px;"
+                                             valueChangeListener="#{eliminarHHPPMasivoBean.irPaginaND}"    >
+
+
+                                <f:selectItems value="#{eliminarHHPPMasivoBean.paginaListND}" var="pagND"
+                                               itemValue="#{pagND}"
+                                               itemLabel="#{pagND}"/>    
+                                <a4j:ajax event="change" render="formCambioEstratoMasivo2" execute="@this" />                                         
+                            </h:selectOneMenu>  
+
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pageNextND}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTableND.first + eliminarHHPPMasivoBean.dataTableND.rows
+                                                         >= eliminarHHPPMasivoBean.dataTableND.rowCount}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonSiguiente.png);" />
+                            <h:commandButton value="" action="#{eliminarHHPPMasivoBean.pageLastND}"
+                                             disabled="#{eliminarHHPPMasivoBean.dataTableND.first + eliminarHHPPMasivoBean.dataTableND.rows
+                                                         >= eliminarHHPPMasivoBean.dataTableND.rowCount}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonFin.png);" />
+                        </h:panelGroup>
+                    </f:facet>
+
+                </h:dataTable> 
+
+            </h:form>
+        </h:panelGrid>
+    </ui:define>
+
+</ui:composition> 

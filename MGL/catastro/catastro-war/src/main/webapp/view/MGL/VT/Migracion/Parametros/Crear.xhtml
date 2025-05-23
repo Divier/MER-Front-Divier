@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+  <ui:composition template="./../../../template/VT/migracionVtTemplate.xhtml">
+    <ui:define name="content">
+      <h:form id="form_create_parametros_calle">
+
+        <h1>
+          <h:outputText value="Administrador de parámetros (Direcciones)"/>
+          <br/>
+          <br/>
+          <h:outputLabel 
+            value="Insertar Tipo"
+            rendered="#{parametrosCallesController.createTipo}"/>
+          <h:outputLabel 
+            value="Insertar Dato"
+            rendered="#{not(parametrosCallesController.createTipo)}"/>
+        </h1>
+
+        <h:panelGrid columns="2">
+          <h:outputLabel 
+            value="Tipo" 
+            for="idTipo" />
+          <h:panelGrid rendered="#{parametrosCallesController.createTipo}">
+            <h:inputText 
+              id="idTipo"
+              required="true"
+              styleClass="input"
+              requiredMessage="Tipo es un dato requerido"
+              value="#{parametrosCallesController.selected.idTipo}" 
+              title="#{bundle.CreateParametrosCallesTitle_idTipo}" >
+              <f:ajax event="blur" render="msg_idtipo"/>
+            </h:inputText>
+            <h:message 
+              id="msg_idtipo" 
+              style="color: red;" 
+              for="idTipo" />
+          </h:panelGrid>
+          <h:panelGrid rendered="#{not(parametrosCallesController.createTipo)}">
+            <h:selectOneMenu 
+              id="idtiposelect" 
+              required="true"
+              requiredMessage="Tipo es un dato requerido"
+              value="#{parametrosCallesController.selected.idTipo}" 
+              valueChangeListener="#{parametrosCallesController.tipoCodeChanged}"
+              styleClass="input">
+              <f:selectItems value="#{parametrosCallesController.tipos}"/>
+              <f:ajax event="blur" render="msg_idtiposelect"/>
+            </h:selectOneMenu>
+            <h:message 
+              id="msg_idtiposelect" 
+              style="color: red;" 
+              for="idtiposelect" />
+          </h:panelGrid>
+          <h:outputLabel 
+            value="Identificador" 
+            for="idParametro" />
+          <h:panelGrid>
+            <h:inputText 
+              id="idParametro" 
+              required="true"
+              requiredMessage="Identificador es un dato requerido"
+              value="#{parametrosCallesController.selected.idParametro}" 
+              title="Identificador"
+              styleClass="input">
+              <f:ajax event="blur" render="msg_idparametro"/>
+            </h:inputText>
+            <h:message 
+              id="msg_idparametro" 
+              style="color: red;" 
+              for="idParametro" />
+          </h:panelGrid>
+          <h:outputLabel 
+            id="descripcion_out"
+            value="Descripción"
+            for="descripcion" />
+          <h:panelGrid>          
+            <h:inputText 
+              id="descripcion" 
+              required="true"
+              styleClass="input"
+              requiredMessage="Descripción es un dato requerido"
+              value="#{parametrosCallesController.selected.descripcion}" 
+              title="Descripción" >
+              <f:ajax event="blur" render="msg_descripcion"/>
+            </h:inputText>
+            <h:message 
+              id="msg_descripcion" 
+              style="color: red;" 
+              for="descripcion" />
+          </h:panelGrid>
+        </h:panelGrid>
+        <br />
+        <h:commandLink 
+          id="create"
+          styleClass="btn"
+          action="#{parametrosCallesController.create}" 
+          value="Realizar Acción" >
+        </h:commandLink>
+        <h:commandLink 
+          id="listar"
+          styleClass="btn"
+          action="#{parametrosCallesController.prepareList}" 
+          value="Administrar" 
+          immediate="true"/>
+      </h:form>
+    </ui:define>
+  </ui:composition>
+
+</html>

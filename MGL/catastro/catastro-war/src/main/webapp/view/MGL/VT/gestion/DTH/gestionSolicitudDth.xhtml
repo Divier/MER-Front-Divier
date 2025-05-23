@@ -1,0 +1,2522 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+
+    <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                    xmlns:h="http://xmlns.jcp.org/jsf/html"
+                    xmlns:f="http://xmlns.jcp.org/jsf/core"
+                    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                    template="/view/MGL/template/VT/homeGestionSolicitudes.xhtml"
+                    xmlns:p="http://primefaces.org/ui">
+
+        <ui:define name="content">
+            <script>
+
+                $("#cerrarMensajeErrorBtn").on("click", function () {
+                    if (#{gestionSolicitudBean.gestionarOt} == true
+                            )
+                    {
+                        var contextPath = window.location.href.substring(0, window.location.href.indexOf("/", 10));
+                        window.location.href = contextPath + "${facesContext.externalContext.requestContextPath}/view/MGL/VT/otHhpp/editarOtHhpp.jsf"
+                    }
+                });
+
+            </script>
+            <title>Gestión Solicitud</title>
+            <h:inputHidden id="inicio" value="#{gestionSolicitudBean.tmpInicio}"/>
+            <h:inputHidden id="fin" value="#{gestionSolicitudBean.tmpFin}"/>
+            #{solicitudSessionBean.init()}
+            <h2 style="margin-top: -22px; margin-left: -12px">
+                #{gestionSolicitudBean.solicitudDthSeleccionada.tipoAccionSolicitudStr} </h2>
+            <h:panelGrid columns="8" id="encabezadoMgl" class="formulario3" style="width:100%;">
+
+                <h:outputText style="font-weight:bold" id="numeroSolicitudLabel" value="Número Solicitud:"/>
+                <h:outputText style="width: 100%;font-size: 12px;color:red;" id="numeroSolicitudIn"
+                              value="#{gestionSolicitudBean.solicitudDthSeleccionada.idSolicitud}"/>
+
+                <h:outputText style="font-weight:bold" id="estadoSolicitud" value="Estado Solicitud:"/>
+                <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.estado}" disabled="true"
+                             id="estadoSolicitudInput"/>
+
+                <h:outputText id="inicioSolicitud" value="Inicio Gestión:"
+                              rendered="#{!gestionSolicitudBean.solicitudGestionada}"/>
+                <h:inputText id="eimsTxt" style="width: 100px" value="#{gestionSolicitudBean.timeSol}"
+                             rendered="#{!gestionSolicitudBean.solicitudGestionada}"/>
+                <h:outputText id="tiempoSolicitud" value="Tiempo Solicitud:"
+                              rendered="#{gestionSolicitudBean.solicitudGestionada}"/>
+                <h:inputText id="eimsTxt2" style="width: 100px"
+                             value="#{gestionSolicitudBean.cmtTiempoSolicitudMglToCreate.tiempoGestion}"
+                             rendered="#{gestionSolicitudBean.solicitudGestionada}"/>
+
+                <h:outputText style="font-weight:bold" id="fechaSol" value="Fecha:"/>
+                <h:inputText maxlength="200" disabled="true" id="fechaInput"
+                             value="#{gestionSolicitudBean.solicitudDthSeleccionada.fechaIngreso}"/>
+
+            </h:panelGrid>
+
+            <h:panelGrid id="panelTabs" class="formulario3" columns="3">
+
+                <h:commandButton id="irSolicitudDth"
+                                 class="#{gestionSolicitudBean.selectedTab == 'SOLICITUD' ? 'btn2 btn2Active':'btn2'}"
+                                 value="Solicitud"
+                                 disabled="#{!gestionSolicitudBean.selectedTab eq 'SOLICITUD'}">
+                    <f:ajax event="click" execute="@this" listener="#{gestionSolicitudBean.cambiarTab('SOLICITUD')}"
+                            render="tabsWrap panelTabs"/>
+                </h:commandButton>
+                <h:commandButton id="irTrackSolicitudDth"
+                                 class="#{gestionSolicitudBean.selectedTab == 'TRACK' ? 'btn2 btn2Active':'btn2'}"
+                                 value="Track">
+                    <f:ajax event="click" execute="@this" listener="#{gestionSolicitudBean.cambiarTab('TRACK')}"
+                            render="tabsWrap panelTabs"/>
+                </h:commandButton>
+
+                <h:commandButton id="irNotasSolicitudDth"
+                                 class="#{gestionSolicitudBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}"
+                                 value="Notas">
+                    <f:ajax event="click" execute="@this" listener="#{gestionSolicitudBean.cambiarTab('NOTAS')}"
+                            render="tabsWrap panelTabs"/>
+                </h:commandButton>
+
+            </h:panelGrid>
+
+            <br/>
+
+            <h:panelGrid columns="3" style="width: 100%" id="tabsWrap">
+
+                <h:panelGroup style="width: 100%" id="SolicitudDthTab" rendered="#{gestionSolicitudBean.showSolicitud}">
+
+                    <table id="gestionTable" style="width: 100%">
+                        <tr>
+                            <td style="width:9.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:15.5%;"/>
+                        </tr>
+                        <tr>
+
+                            <td><h:outputText style="font-weight:bold" id="tecnologia" value="Tipo de Tecnología "/></td>
+                            <td><h:selectOneMenu disabled="true"
+                                                 style="width:90%" id="tipoRed"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.tecnologiaId.basicaId}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{gestionSolicitudBean.tipoTecnologiaBasicaList}"
+                                                   var="tipoRed" itemLabel="#{tipoRed.descripcion}"
+                                                   itemValue="#{tipoRed.basicaId}"/>
+                                </h:selectOneMenu></td>
+
+                            <td><h:outputText style="font-weight:bold" id="tipoAccion" value="Tipo Solicitud:"/></td>
+                            <td><h:selectOneMenu style="width: 90%" id="selectTipoAccion" disabled="true"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir}">
+                                    <f:selectItems value="#{gestionSolicitudBean.tipoAccionSolicitudBasicaList}"
+                                                   var="tipoAccion" itemValue="#{tipoAccion.codigoBasica}"
+                                                   itemLabel="#{tipoAccion.nombreBasica}">
+                                    </f:selectItems>
+                                </h:selectOneMenu></td>
+
+                            <td><h:outputText style="font-weight:bold" id="tipoDireccion" value="Tipo Dirección:"/></td>
+                            <td><h:selectOneMenu style="width: 90%" disabled="true"
+                                                 id="tipoDireccionComboBox"
+                                                 value="#{gestionSolicitudBean.cmtDireccionDetalladaMgl.idTipoDireccion}">
+                                    <f:selectItem itemLabel="CALLE - CARRERA" itemValue="CK"/>
+                                    <f:selectItem itemLabel="BARRIO - MANZANA" itemValue="BM"/>
+                                    <f:selectItem itemLabel="INTRADUCIBLE" itemValue="IT"/>
+                                </h:selectOneMenu></td>
+                            <td style="text-align: center;">
+                                <h:outputText style="font-weight:bold" id="tipoSolicitudContacto" value="Área"/>
+                            </td>
+                            <td>
+                                <h:selectOneMenu disabled="true"
+                                                 style="width: 90%" id="tipoSolicitudContactoComboBox"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.tipoSol}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{gestionSolicitudBean.tipoSolicitudList}"
+                                                   var="tipoSolicitud" itemValue="#{tipoSolicitud.idParametro}"
+                                                   itemLabel="#{tipoSolicitud.descripcion}"/>
+                                </h:selectOneMenu>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="8">
+                                <h2 style="margin-top: -22px; margin-left: -12px">
+                                    #{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '1' ? 'NUEVA DIRECCIÓN o APARTAMENTO' : 'DATOS HHPP A CREAR'} </h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="8">
+                                <hr size="5" width="100%" align="LEFT"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td/>
+                            <td colspan="6" style="text-align: center;">
+                                <h:dataTable style="width: 100%" id="drDireccionTable"
+                                             var="direccion" value="#{gestionSolicitudBean.drDireccion}"
+                                             styleClass="solicitudesGTableMgl"
+                                             headerClass="solicitudesGTableHeaderMgl"
+                                             rowClasses="solicitudesGTableOddRowMgl,solicitudesGTableEvenRowMgl">
+
+                                    <f:facet name="headerButtoon">
+
+                                    </f:facet>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Calle"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.direccionRREntity.calle}"/>
+                                    </h:column>
+
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Placa"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.direccionRREntity.numeroUnidad}"/>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Apartamento"/>
+                                        </f:facet>
+                                        <h:outputText id="complementoDir"
+                                                      value="#{gestionSolicitudBean.complementoDireccion}"/>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Barrio"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.drDireccion.barrio}"/>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Departamento"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.departamentoGpo.gpoNombre}"/>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Ciudad"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.ciudadGpo.gpoNombre}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Centro Poblado"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.centroPobladoGpo.gpoNombre}"/>
+                                    </h:column>
+                                </h:dataTable>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                    </table>
+                    <table id="infoGeoTable" style="width: 100%">
+                        <tr>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                        </tr>
+                        <tr>
+                            <td colspan="10">
+                                <hr size="5" width="100%" align="LEFT"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <h2 style="margin-top: 0px; margin-left: -12px">DATOS DEL GEO</h2>
+                        </tr>
+                        <tr>
+
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="dirLabel" value="Dirección Traducida: "/></td>
+                            <td colspan="2"><h:outputText id="direccionStr"
+                                                          value=" #{gestionSolicitudBean.cmtDireccionDetalladaMgl.direccionTexto}"/>
+                            </td>
+                            <td style="text-align: left; width: 14%">
+                                <h:outputText style="font-weight:bold" id="fuente" value="Fuente: "/>
+                                <h:outputText id="fuenteTxt" value="#{gestionSolicitudBean.direccionMglActual.dirOrigen}"/>
+                            </td>
+                            <td style="text-align: left; width: 14%">
+                                <h:outputText style="font-weight:bold" id="direccionAntigua" value="Dirección Antigua: "/>
+                                <h:outputText id="direccionAnt" value="#{gestionSolicitudBean.dirAntiguaFormatoIgac}"/>
+                            </td>
+                            <td style="text-align: left; width: 14%">
+                                <h:outputText style="font-weight:bold" id="barrioGeo" value="Localidad: "/>
+                                <h:outputText id="barrioGeoTxt" value="#{gestionSolicitudBean.barrioGeo}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; width: 14%">
+                                <h:outputText style="font-weight:bold"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"
+                                              value="Nodo Bi:"/>
+                                <h:outputText value="#{gestionSolicitudBean.addressService.nodoUno}"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                            </td>
+                            <td style="text-align: left; width: 14%">
+                                <h:outputText style="font-weight:bold"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"
+                                              value="Nodo Uni:"/>
+                                <h:outputText value="#{gestionSolicitudBean.addressService.nodoDos}"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                            </td>
+                            <td style="text-align: left; width: 14%">
+                                <h:outputText style="font-weight:bold" value="Nodo GPON:"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                                <h:outputText value="#{gestionSolicitudBean.addressService.nodoTres}"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                            </td>
+                            <td style="text-align: left; width: 14%">
+                                <h:outputText style="font-weight:bold" value="Nodo Dth:"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                                <h:outputText value="#{gestionSolicitudBean.addressService.nodoDth}"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                            </td>
+                            <td style="text-align: left; width: 14%">
+                                <h:outputText style="font-weight:bold" value="Nodo Movil:"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                                <h:outputText value="#{gestionSolicitudBean.addressService.nodoMovil}"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                            </td>
+                            <td style="text-align: left;width: 14%">
+                                <h:outputText style="font-weight:bold" value="Nodo Ftth:"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                                <h:outputText value="#{gestionSolicitudBean.addressService.nodoFtth}"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                            </td>
+                            <td style="text-align: left; width: 14%">
+                                <h:outputText style="font-weight:bold" value="Nodo Wifi:"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                                <h:outputText value="#{gestionSolicitudBean.addressService.nodoWifi}"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                            </td>
+                            <td style="text-align: left; width: 14%">
+                                <h:outputText style="font-weight:bold" value="Nodo Unifilar:"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                                <h:outputText value="#{gestionSolicitudBean.addressService.nodoZonaUnifilar}"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq 0}"/>
+                            </td>
+
+
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="10">
+                                <hr size="5" width="100%" align="LEFT"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+
+                    </table>
+
+                    <h:panelGroup id="cambioDirWrap">
+
+                        <h:panelGroup id="cambioDireccionPanel" rendered="#{gestionSolicitudBean.cambioDireccionPanel}">
+
+                            <table id="cambioDirTable" style="width: 100%">
+
+                                <tr>
+                                    <td style="width:10%;"/>
+                                    <td style="width:10%;"/>
+                                    <td style="width:8%;"/>
+                                    <td style="width:10%;"/>
+                                    <td style="width:11%;"/>
+                                    <td style="width:10%;"/>
+                                    <td style="width:16%;"/>
+                                    <td style="width:10%;"/>
+
+
+                                </tr>
+
+                                <tr>
+                                    <td colspan="7">
+                                        <span class="TituloSeccion">DATOS HHPP EXISTENTE </span></td>
+                                </tr>
+                                <tr>
+
+                                    <td>
+                                        <h:outputText style="font-weight:bold" id="calleLabel" value="Calle:"/></td>
+                                    <td><h:inputText disabled="true"
+                                                     maxlength="50" style="margin-right: 10px;width: 80%"
+                                                     id="calleParametro"
+                                                     value="#{gestionSolicitudBean.solicitudDthSeleccionada.streetName}"/>
+                                    </td>
+
+                                    <td>
+                                        <h:outputText style="font-weight:bold" id="placasLabel" value="Placa:"/></td>
+                                    <td><h:inputText disabled="true"
+                                                     maxlength="50" style="margin-right: 10px;width: 80%"
+                                                     id="placaParametro"
+                                                     value="#{gestionSolicitudBean.solicitudDthSeleccionada.houseNumber}"/>
+                                    </td>
+
+                                    <td><h:outputText id="apartaAnti" value="Apartamento Antiguo:"/></td>
+                                    <td><h:inputText disabled="true"
+                                                     maxlength="50" style="margin-right: 10px;width: 80%"
+                                                     id="antiguoApartamentoParametro"
+                                                     value="#{gestionSolicitudBean.solicitudDthSeleccionada.aparmentNumber}"/>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td><br/></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="8">
+                                        <hr size="5" width="100%" align="LEFT"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><br/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><br/></td>
+                                </tr>
+
+                            </table>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+                    <table style="width: 100%">
+                        <tr>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <table style="width:90%;">
+
+                                    <tr>
+                                        <td style="text-align: left; width: 30%">
+                                            <h:outputText style="font-weight:bold" id="confi"
+                                                          value="Confiabilidad complemento: "/>
+                                            <h:outputText id="conf"
+                                                          value="#{gestionSolicitudBean.addressService.reliability}"/>
+                                        </td>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: left; width: 40%">
+                                            <h:outputText style="font-weight:bold" id="confiPlaca"
+                                                          value="Confiabilidad dirección: "/>
+                                            <h:outputText id="confPlaca"
+                                                          value="#{gestionSolicitudBean.addressService.reliabilityPlaca}"/>
+                                        </td>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:25%;">
+                                            <h:outputText style="font-weight:bold" id="estadoDir" value="Estado Dir: "/>
+                                        </td>
+                                        <td style="width:20%;">
+                                            <h:inputText id="estadorDirText" disabled="true" style="width: 90%"
+                                                         value="#{gestionSolicitudBean.cmtDireccionDetalladaMgl.estadoDirGeo}"/>
+                                        </td>
+
+                                        <td style="text-align: center; width:20%;">
+                                            <h:outputText style="font-weight:bold" id="estratoLabel" value="Estrato:"/>
+                                        </td>
+                                        <td style="width:35%;">
+                                            <h:selectOneMenu disabled="#{gestionSolicitudBean.solicitudGestionada
+                                                                         or gestionSolicitudBean.detalleSolicitud}"
+                                                             style="width: 110%" id="estrato"
+                                                             value="#{gestionSolicitudBean.drDireccion.estrato}">
+                                                <f:selectItems value="#{gestionSolicitudBean.estratoList}"
+                                                               var="estrato" itemValue="#{estrato.codigoBasica}"
+                                                               itemLabel="#{estrato.nombreBasica}">
+                                                </f:selectItems>
+                                            </h:selectOneMenu>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><br/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:30%;">
+                                            <h:outputText style="font-weight:bold" id="tipoViviendaSolLabel"
+                                                          value="Tipo de Vivienda Solicitud:"/>
+                                        </td>
+                                        <td colspan="2">
+                                            <h:inputText disabled="true"
+                                                         value="#{gestionSolicitudBean.tipoTecHabilitadaIdSol == null ? '' : gestionSolicitudBean.tipoTecHabilitadaIdSol.thhID.concat(' - ').concat(gestionSolicitudBean.tipoTecHabilitadaIdSol.thhValor) }"
+                                                         id="tipoViviendaSol" style="width: 90%"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><br/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:25%;">
+                                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                          rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '0' || gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '1'}"
+                                                          id="TipoViv" value="*"/>
+                                            <h:outputText style="font-weight:bold"
+                                                          rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '0' || gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '1'}"
+                                                          id="tipoVivienda" value="Tipo Vivienda:"/>
+                                        </td>
+
+                                        <td colspan="2">
+                                            <h:selectOneMenu
+                                                rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '0' || gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '1'}"
+                                                disabled="#{gestionSolicitudBean.solicitudGestionada
+                                                            or gestionSolicitudBean.detalleSolicitud}" style="width: 90%"
+                                                id="selectTipoVivienda"
+                                                value="#{gestionSolicitudBean.tipoViviendaSeleccionada}">
+                                                <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                                <f:selectItems value="#{gestionSolicitudBean.listaTipoHhpp}" var="tipoHHpp"
+                                                               itemValue="#{tipoHHpp.thhID}"
+                                                               itemLabel="#{tipoHHpp.thhID.concat(' - ').concat(tipoHHpp.thhValor)}"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><br/></td>
+                                    </tr>
+                                </table>
+                                <!--   datos de tipo y numero de documento del cliente-->
+                                <table  style="margin-left: -15px">
+                                    <tr>
+                                        <td style="width:25%;">
+                                            <h:outputText style="font-weight:bold"
+                                                          rendered="#{gestionSolicitudBean.mostrarCampoDocumento}"
+                                                          id="tipoDocumento" value="Tipo Documento: "/>
+                                        </td>
+                                        <td style="width:20%;">
+                                            <h:inputText id="tipoDocumentoText"
+                                                         rendered="#{gestionSolicitudBean.mostrarCampoDocumento}"
+                                                         disabled="true" style="width: 90%"
+                                                         value="#{gestionSolicitudBean.tipoDocumento}"/>
+                                        </td>
+                                        <td style="width:25%;" nowrap="nowrap">
+                                            <h:outputText style="font-weight:bold"
+                                                          rendered="#{gestionSolicitudBean.mostrarCampoDocumento}"
+                                                          id="numeroDoc" value="Numero Documento Cliente: "/>
+                                        </td>
+                                        <td style="width:20%;">
+                                            <h:inputText id="NumDocumentoText"
+                                                         rendered="#{gestionSolicitudBean.mostrarCampoDocumento}"
+                                                         disabled="true" style="width: 90%"
+                                                         value="#{gestionSolicitudBean.numDocCli}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td colspan="4">
+                                <table style="width:98%">
+                                    <tr>
+                                        <td colspan="6">
+                                            <h:panelGrid columns="1">
+                                                <h:dataTable id="subTable"
+                                                             var="tec"
+                                                             value="#{gestionSolicitudBean.tecnologiaBasicaList}"
+                                                             styleClass="constructGTable2"
+                                                             headerClass="constructGTableHeader"
+                                                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Tecnologia"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{tec.nombreBasica}"/>
+                                                    </h:column>
+
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Nodo Cobertura"/>
+                                                        </f:facet>
+                                                        <h:outputText
+                                                            value="#{gestionSolicitudBean.establecerNodoCoberturaSugerido(tec)}"/>
+                                                    </h:column>
+
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Nodo Cercano"/>
+                                                        </f:facet>
+                                                        <h:selectOneMenu id="idNodoCer" value="#{tec.nodoCercano}"
+                                                                         disabled="#{!gestionSolicitudBean.deshabilitarNodoCercano}">
+                                                            <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                                            <f:selectItems
+                                                                value="#{gestionSolicitudBean.obtenerNodosCercanosList(tec)}"
+                                                                var="nodo"
+                                                                itemValue="#{nodo.nodId}"
+                                                                itemLabel="Nodo: #{nodo.nodCodigo} : #{nodo.direccionStr}"/>
+                                                            <f:ajax event="change"
+                                                                    execute="@this"
+                                                                    listener="#{gestionSolicitudBean.seleccionaNodoCercano(tec)}"
+                                                                    render="subTable:idNodoGestion"/>
+                                                        </h:selectOneMenu>
+                                                    </h:column>
+
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Nodo Gestión"/>
+                                                        </f:facet>
+                                                        <h:inputText id="idNodoGestion" value="#{tec.nodoGestion}"
+                                                                     disabled="#{!gestionSolicitudBean.deshabilitarNodoCercano}"/>
+                                                    </h:column>
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="NAP Cercana"/>
+                                                        </f:facet>
+                                                        <h:selectOneMenu id="idNatCer" value="#{tec.napCercana}"
+                                                                         disabled="#{!tec.napFTTH}">
+                                                            <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                                            <f:selectItems
+                                                                value="#{gestionSolicitudBean.obtenerNapsList(tec)}"
+                                                                var="nodo"
+                                                                itemValue="#{nodo.nap}"
+                                                                itemLabel="Nap #{nodo.nap} : #{nodo.nodId.nodCodigo}/ #{nodo.hhpCalle} # #{nodo.hhpPlaca}"/>
+                                                        </h:selectOneMenu>
+                                                    </h:column>
+
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="NAP"/>
+                                                        </f:facet>
+                                                        <h:inputText id="idNat" value="#{tec.nap}" disabled="#{!tec.napFTTH}" validatorMessage="La Nap debe ser alfanumúrico sin espacios">
+                                                            <f:validateRegex  pattern="^[a-zA-Z\-0-9]*" />
+                                                        </h:inputText>
+                                                    </h:column>
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Enviar a RR"/>
+                                                        </f:facet>
+                                                        <div style="text-align: center;">
+                                                            <h:selectBooleanCheckbox value="#{tec.sincronizaRr}"
+                                                                                     id="sincroRr"
+                                                                                     disabled="#{!gestionSolicitudBean.deshabilitarNodoCercano or !tec.nodoTecnologia}"/>
+                                                        </div>
+                                                    </h:column>
+                                                </h:dataTable>
+
+                                            </h:panelGrid>
+                                        </td>
+
+                                        <td><br/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><h:outputText style="font-weight:bold"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '3'}"
+                                              id="nodoAnterior" value="Nodo Anterior:"/></td>
+
+                            <td>
+                                <h:selectOneMenu
+                                    rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '3'}"
+                                    style="width: 90%" id="selRrNodosAnterior"
+                                    disabled="#{gestionSolicitudBean.solicitudGestionada}"
+                                    value="#{gestionSolicitudBean.nodoAnterior}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{gestionSolicitudBean.nodoAnteriorList}" var="nodoAnterior"
+                                                   itemLabel="#{nodoAnterior.nodNombre}"
+                                                   itemValue="#{nodoAnterior}"/>
+                                    <f:ajax event="change"
+                                            execute="@this"
+                                            render=""
+                                            listener="#{gestionSolicitudBean.copiarAnterior()}"/>
+                                </h:selectOneMenu>
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                    </table>
+
+                    <h:panelGroup id="unidadesWrap">
+
+                        <h:panelGroup id="unidadesPanel" rendered="#{gestionSolicitudBean.unidadesPredio}">
+                            <hr size="5" width="100%" align="LEFT"/>
+                            <span class="TituloSeccion">UNIDADES ASOCIADAS AL PREDIO</span>
+                            <br/>
+
+                            <h:dataTable id="unidadesPreTable"
+                                         value="#{gestionSolicitudBean.unidadList}"
+                                         var="unidad" style="width:100%; margin-right: auto; margin-left: auto;"
+                                         rows="5"
+                                         styleClass="solicitudesGTableMgl"
+                                         headerClass="solicitudesGTableHeaderMgl"
+                                         rowClasses="solicitudesGTableOddRowMgl,solicitudesGTableEvenRowMgl">
+                                <f:facet name="header">
+                                    <h:outputText value="UNIDADES ASOCIADAS AL PREDIO"/>
+                                </f:facet>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Calle"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.calleUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.casaUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Apartamento"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.aptoUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Estado"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.estadUnidadad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Estrato"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.estratoUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Nodo"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.nodUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Tecnología"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.nombreTecnologia}"/>
+                                    </div>
+                                </h:column>
+                                <f:facet name="footer">
+                                    <h:panelGroup>
+                                        <br/><br/>
+                                        <div style="text-align: center;">
+                                            <h:commandButton title="Primera Página"
+                                                             value="#{gestionSolicitudBean.inicioPagina}"
+                                                             action="#{gestionSolicitudBean.pageFirst}"
+                                                             styleClass="btn"/>
+                                            <h:commandButton title="Página Anterior"
+                                                             value="#{gestionSolicitudBean.anteriorPagina}"
+                                                             action="#{gestionSolicitudBean.pagePrevious}"
+                                                             class="btn"/>
+                                            <h:commandButton title="Número Páginas"
+                                                             value="#{gestionSolicitudBean.pageActual}"
+                                                             styleClass="botonTPagInicio"/>
+                                            <h:selectOneMenu id="listTabla" value="#{gestionSolicitudBean.numPagina}"
+                                                             styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                                <f:selectItems value="#{gestionSolicitudBean.paginaList}" var="pag"
+                                                               itemValue="#{pag}"
+                                                               itemLabel="#{pag}"/>
+                                                <f:ajax render="@form" event="change"
+                                                        listener="#{gestionSolicitudBean.irPagina()}"
+                                                        execute="@this"/>
+                                            </h:selectOneMenu>
+                                            <h:commandButton title="Página Siguiente"
+                                                             value="#{gestionSolicitudBean.siguientePagina}"
+                                                             action="#{gestionSolicitudBean.pageNext}"
+                                                             class="btn"/>
+                                            <h:commandButton title="Última Página" value="#{gestionSolicitudBean.finPagina}"
+                                                             action="#{gestionSolicitudBean.pageLast}"
+                                                             class="btn"/>
+                                        </div>
+                                    </h:panelGroup>
+                                </f:facet>
+
+
+                            </h:dataTable>
+                            <br/>
+                            <br/>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+                    <h:panelGroup id="unidadesPredioWrap">
+
+                        <h:panelGroup id="unidadesPredioPanel" rendered="#{gestionSolicitudBean.unidadesPredioModificadas}">
+                            <hr size="5" width="100%" align="LEFT"/>
+                            <span class="TituloSeccion">UNIDADES EN EL PREDIO A MODIFICAR</span>
+                            <br/>
+
+                            <h:dataTable id="unidadesTable"
+                                         value="#{gestionSolicitudBean.unidadModificadaList}"
+                                         var="unidad"
+                                         style="max-width: 650px; min-width: 500px; margin-right: auto; margin-left: auto;"
+                                         styleClass="solicitudesGTableMgl"
+                                         headerClass="solicitudesGTableHeaderMgl"
+                                         rowClasses="solicitudesGTableOddRowMgl,solicitudesGTableEvenRowMgl">
+                                <f:facet name="header">
+                                    <h:outputText value="UNIDADES EN EL PREDIO A MODIFICAR"/>
+                                </f:facet>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Seleccionar Cambio"/>
+                                    </f:facet>
+                                    <h:selectBooleanCheckbox value="#{unidad.selected}"/>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Calle"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.calleUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.casaUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Apartamento"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.aptoUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Estado"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.estadUnidadad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Estrato"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.estratoUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Nodo"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.nodUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Nuevo Apartamento"/>
+                                    </f:facet>
+                                    <h:outputText value="#{unidad.newAparment}"/>
+                                </h:column>
+
+                            </h:dataTable>
+                            <br/>
+                            <br/>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+
+                    <h:panelGroup id="unidadesConflictoWrap">
+
+                        <h:panelGroup id="unidadesConflictoPanel" rendered="#{gestionSolicitudBean.unidadConflictoPanel}">
+                            <hr size="5" width="100%" align="LEFT"/>
+                            <span class="TituloSeccion">UNIDADES QUE PRESENTAN CONFLICTO</span>
+                            <br/>
+
+                            <h:dataTable id="unidadesConflictTable"
+                                         value="#{gestionSolicitudBean.unidadConflictoList}"
+                                         var="unidad"
+                                         style="max-width: 100%; min-width: 100%; margin-right: auto; margin-left: auto;"
+                                         styleClass="solicitudesGTableMgl"
+                                         headerClass="solicitudesGTableHeaderMgl"
+                                         rowClasses="solicitudesGTableOddRowMgl,solicitudesGTableEvenRowMgl">
+                                <f:facet name="header">
+                                    <h:outputText value="UNIDADES QUE PRESENTAN CONFLICTO"/>
+                                </f:facet>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Calle"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.calleUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.casaUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Apartamento"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.aptoUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Estado"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.estadUnidadad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Estrato"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.estratoUnidad}"/>
+                                    </div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Nodo"/>
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{unidad.nodUnidad}"/>
+                                    </div>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Nuevo Apto"/>
+                                    </f:facet>
+                                    <h:selectOneMenu value="#{unidad.tipoNivel5}"
+                                                     styleClass="ListaConsulta"
+                                                     style="width: 105px;">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                        <f:selectItems value="#{gestionSolicitudBean.listNivel5}"
+                                                       var="nivel5" itemValue="#{nivel5.descripcion}"
+                                                       itemLabel="#{nivel5.descripcion}"/>
+                                    </h:selectOneMenu>
+
+                                    <h:inputText value="#{unidad.valorNivel5}"
+                                                 style="width: 70px; margin-left: 8px; margin-right: 8px;"/>
+                                    <h:selectOneMenu value="#{unidad.tipoNivel6}"
+                                                     styleClass="ListaConsulta"
+                                                     style="width: 105px;">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                        <f:selectItems value="#{gestionSolicitudBean.listNivel6}"
+                                                       var="nivel6" itemValue="#{nivel6.descripcion}"
+                                                       itemLabel="#{nivel6.descripcion}"/>
+                                    </h:selectOneMenu>
+
+                                    <h:inputText value="#{unidad.valorNivel6}"
+                                                 style="width: 70px; margin-left: 8px; margin-right: 8px;"/>
+                                </h:column>
+                                <h:column>
+                                    <h:outputText style="color: Red;" value="#{unidad.errorValidator}"/>
+                                </h:column>
+
+                            </h:dataTable>
+                            <br/>
+                            <br/>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+                    <table id="contactoTable" style="width: 100%">
+
+                        <tr>
+                            <td style="width:5%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:5%;"/>
+                            <td style="width:13%;"/>
+                            <td style="width:5%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:5%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:5%;"/>
+                            <td style="width:10%;"/>
+                        </tr>
+
+                        <tr>
+                            <td colspan="10">
+                                <hr size="5" width="100%" align="LEFT"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <h:outputText style="font-weight:bold" id="contactoLabel" value="Contacto:"/>
+                            </td>
+                            <td>
+                                <h:inputText disabled="true"
+                                             value="#{gestionSolicitudBean.solicitudDthSeleccionada.contacto}"
+                                             id="contacto" style="width: 80%"/>
+
+                            </td>
+
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="contactoTelefonoLabel"
+                                              value="Teléfono Contacto:"/>
+                            </td>
+                            <td>
+                                <h:inputText disabled="true"
+                                             maxlength="10"
+                                             value="#{gestionSolicitudBean.solicitudDthSeleccionada.telContacto}"
+                                             id="telefono" style="width: 85%"
+                                             converterMessage="El teléfono contacto debe ser númerico.">
+                                    <f:convertNumber integerOnly="true" type="number" pattern="#0"/>
+                                </h:inputText>
+
+                            </td>
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="solicitanteLabel" value="Solicitante:"/>
+                            </td>
+                            <td>
+                                <h:inputText maxlength="250" disabled="true"
+                                             value="#{gestionSolicitudBean.solicitudDthSeleccionada.solicitante}"
+                                             id="solicitante" style="width: 90%"/>
+                            </td>
+
+                            <td style="text-align: center;" colspan="2">
+                                <h:outputText style="font-weight:bold" id="correoLabel" value="Correo Solicitante:"/>
+                            </td>
+                            <td colspan="2">
+                                <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.correo}"
+                                             id="correoSolicitante" disabled="true" style="width: 100%"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                        <tr>
+
+                            <td colspan="2">
+                                <h:outputText style="font-weight:bold" id="observacionesLabel"
+                                              value="Observaciones Especiales:"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="10">
+                                <h:inputTextarea disabled="true"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.motivo}"
+                                                 id="observacionesTextArea" style="width: 100%; height: 66px; " cols="4"
+                                                 rows="12">
+                                    <f:validateLength maximum="2000"/>
+                                </h:inputTextarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+
+                        <tr>
+                            <td colspan="2"><h:outputText style="font-weight:bold" id="usuarioVerificadorLabel"
+                                                          value="Usuario Gestion:"/></td>
+                            <td><h:inputText readonly="true" disabled="true"
+                                             value="#{gestionSolicitudBean.solicitudDthSeleccionada.usuarioGestionador}"
+                                             id="usuarioVerificador"/></td>
+
+                            <td style="text-align: right;">
+                                <h:outputText style="font-weight:bold;color: red;font-size: 16px" id="resultadoLabelReq"
+                                              value="*"/>
+                                <h:outputText style="font-weight:bold" id="resultadoLabel"
+                                              value="Resultado de la Gestión:"/></td>
+                            <td colspan="2"><h:selectOneMenu disabled="#{gestionSolicitudBean.solicitudGestionada
+                                                                         or gestionSolicitudBean.detalleSolicitud}" style="width: 90%"
+                                                             id="resultadoRespuesta"
+                                                             value="#{gestionSolicitudBean.solicitudDthSeleccionada.rptGestion}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{gestionSolicitudBean.resultGestionDth}"
+                                                   var="result" itemLabel="#{result.descripcion}"
+                                                   itemValue="#{result.descripcion}"/>
+
+                                    <f:ajax event="change" execute="@this" render="respuestaTextArea"
+                                            listener="#{gestionSolicitudBean.copiarMensajeRespuesta()}"/>
+                                </h:selectOneMenu></td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="10">
+                                <table style="width: 100%">
+                                    <td style="width:96%"><h2 id="Separador"
+                                                              style="margin-top: 0px; margin-left: -12px">ETIQUETAS </h2>
+                                    </td>
+                                    <td style="width:5%">
+                                        <h:commandButton style="margin:0px 0 11px 0; " id="mostrarEtComponenteButton"
+                                                         image="/view/img/ocultar.png">
+                                            <f:ajax render="panelWrapEtiquetasSol"
+                                                    event="click"
+                                                    listener="#{gestionSolicitudBean.mostrarOcultarEtiquetas()}"/>
+                                        </h:commandButton>
+                                    </td>
+                                </table>
+                                <h:panelGroup id="panelWrapEtiquetasSol">
+                                    <h:panelGroup id="panelEtiquetasSol" rendered="#{gestionSolicitudBean.showEtiquetas}">
+                                        <h:outputText style="font-weight: bold;" id="etiquetasSolEstrato"
+                                                      value="#{gestionSolicitudBean.etiquetasHhpp}"/>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <hr size="5" width="99%" align="LEFT"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><h:outputText style="font-weight:bold" id="etiquetasLabel"
+                                              value="Etiquetas:"/></td>
+
+                            <td><h:selectOneMenu style="width: 90%"
+                                                 id="etiquetasList" disabled="#{gestionSolicitudBean.solicitudGestionada 
+                                                                                or gestionSolicitudBean.detalleSolicitud}"
+                                                 value="#{gestionSolicitudBean.etiquetaAgregarSeleccionada}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{gestionSolicitudBean.marcasHhppList}"
+                                                   var="marca" itemLabel="#{marca.marCodigo} - #{marca.marNombre}"
+                                                   itemValue="#{marca.marId}"/>
+                                </h:selectOneMenu></td>
+
+                            <td><h:commandButton id="agregaMarcasButton"
+                                                 disabled="#{gestionSolicitudBean.solicitudGestionada or gestionSolicitudBean.detalleSolicitud}"
+                                                 action="#{gestionSolicitudBean.agregarEtiquetaSeleccionada()}"
+                                                 styleClass="btn" value="Agregar"/></td>
+
+                            <td><h:outputText style="font-weight:bold" id="etiquetasLabelDelete"
+                                              value="Etiquetas agregadas:"/></td>
+
+                            <td colspan="2"><h:selectOneMenu style="width: 90%"
+                                                             id="etiquetasAgregadasList"
+                                                             disabled="#{gestionSolicitudBean.solicitudGestionada or gestionSolicitudBean.detalleSolicitud}"
+                                                             value="#{gestionSolicitudBean.etiquetaEliminarSeleccionada}">
+
+                                    <f:selectItems value="#{gestionSolicitudBean.marcasAgregadasHhppList}"
+                                                   var="marca" itemLabel="#{marca.marCodigo} - #{marca.marNombre}"
+                                                   itemValue="#{marca.marId}"/>
+                                </h:selectOneMenu></td>
+
+                            <td><h:commandButton id="eliminarMarcasButton"
+                                                 disabled="#{gestionSolicitudBean.solicitudGestionada or gestionSolicitudBean.detalleSolicitud}"
+                                                 action="#{gestionSolicitudBean.eliminarEtiquetaSeleccionada()}"
+                                                 styleClass="btn" value="Borrar"/></td>
+                        </tr>
+
+
+                        <tr>
+
+                            <td colspan="2">
+
+                                <h:outputText style="font-weight:bold;color: red;font-size: 16px" id="respuestaTextReq"
+                                              value="*"/>
+                                <h:outputText style="font-weight:bold" id="respuestaText" value="Respuesta Actual:"/>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="10">
+                                <h:panelGroup id="mensajeRespuestaSolicitud">
+                                    <h:inputTextarea id="respuestaTextArea" disabled="#{gestionSolicitudBean.solicitudGestionada 
+                                                                                        or gestionSolicitudBean.detalleSolicitud}"
+                                                     value="#{gestionSolicitudBean.solicitudDthSeleccionada.respuesta}"
+                                                     style="width: 100%; height: 66px; " cols="4" rows="12">
+                                        <f:validateLength maximum="2000"/>
+                                    </h:inputTextarea>
+                                </h:panelGroup>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="10">
+                                <h:panelGroup style="width: 100%"
+                                              rendered="#{gestionSolicitudBean.archivosVtMgl ne null and 
+                                                          gestionSolicitudBean.archivosVtMgl.rutaArchivo ne null}">
+                                    <a href="#{gestionSolicitudBean.archivosVtMgl.rutaArchivo}"
+                                       target="blank" id="linkDescarga2">
+                                        #{gestionSolicitudBean.archivosVtMgl.nombreArchivo}
+                                    </a>
+                                </h:panelGroup>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td/>
+                            <td/>
+                            <td/>
+                            <td style="text-align: right;">
+                                <h:commandButton id="validarNodoButton"
+                                                 disabled="#{gestionSolicitudBean.solicitudGestionada}"
+                                                 action="#{gestionSolicitudBean.gestionarSolicitud()}"
+                                                 rendered="#{!gestionSolicitudBean.detalleSolicitud}"
+                                                 styleClass="btn" value="Gestionar Solicitud"/>
+
+                                <h:commandLink id="hhppExistLink" style="font-size: 17px;"
+                                               value="Ir al Detalle Hhpp"
+                                               rendered="#{gestionSolicitudBean.hhppExiste
+                                                           and gestionSolicitudBean.detalleSolicitud}"
+                                               action="#{gestionSolicitudBean.irModeloHhpp()}"/>
+
+                            </td>
+                            <td>
+
+                                <h:commandButton id="gestionarOt" rendered="#{gestionSolicitudBean.gestionarOt}"
+                                                 action="#{gestionSolicitudBean.irGestionOt()}"
+                                                 styleClass="btn" value="Gestionar Ot"/>
+
+
+                            </td>
+                            <td>
+                                <h:commandButton style="text-align: left;" id="goBack"
+                                                 styleClass="btn" value="Volver"
+                                                 rendered="#{!gestionSolicitudBean.detalleSolicitud}"
+                                                 action="#{gestionSolicitudBean.goBackSolicitudDthList()}"/>
+                                <h:commandButton style="text-align: left;" id="detalleSolBack"
+                                                 styleClass="btn" value="Volver"
+                                                 rendered="#{gestionSolicitudBean.detalleSolicitud}"
+                                                 action="#{gestionSolicitudBean.goBackEstadoSolicitud()}"/>
+
+                            </td>
+                        </tr>
+                        <tr>
+
+
+                        </tr>
+                    </table>
+
+                </h:panelGroup>
+
+
+                <!-- NUEVO PANEL PARA LA GESTION DE SOLICITUDES DE CAMBIO DE ESTRATO-->
+
+                <h:panelGroup style="width: 100%" id="gestionCambioEstrato"
+                              rendered="#{gestionSolicitudBean.showSolicitudCambioEstrato}">
+
+                    <table id="gestionTable" style="width: 100%">
+                        <tr>
+                            <td style="width:9.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:15.5%;"/>
+                        </tr>
+                        <tr>
+
+                            <td><h:outputText style="font-weight:bold" id="tipoAccionCamEst" value="Tipo Solicitud:"/></td>
+                            <td><h:selectOneMenu style="width: 90%" id="selectTipoAccionCamEst" disabled="true"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir}">
+                                    <f:selectItems value="#{gestionSolicitudBean.tipoAccionSolicitudBasicaList}"
+                                                   var="tipoAccion" itemValue="#{tipoAccion.codigoBasica}"
+                                                   itemLabel="#{tipoAccion.nombreBasica}">
+                                    </f:selectItems>
+                                </h:selectOneMenu></td>
+
+                            <td><h:outputText style="font-weight:bold" id="tipoDireccionCamEst" value="Tipo Dirección:"/>
+                            </td>
+                            <td><h:selectOneMenu style="width: 90%" disabled="true"
+                                                 id="tipoDireccionComboBoxCamEst"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.tipoVivienda}">
+                                    <f:selectItem itemLabel="CALLE - CARRERA" itemValue="CK"/>
+                                    <f:selectItem itemLabel="BARRIO - MANZANA" itemValue="BM"/>
+                                    <f:selectItem itemLabel="INTRADUCIBLE" itemValue="IT"/>
+                                </h:selectOneMenu></td>
+                            <td style="text-align: center;">
+                                <h:outputText style="font-weight:bold" id="tipoSolicitudContactoCamEst" value="Área"/>
+                            </td>
+                            <td>
+                                <h:selectOneMenu disabled="true"
+                                                 style="width: 90%" id="tipoSolicitudContactoComboBoxCamEst"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.tipoSol}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{gestionSolicitudBean.tipoSolicitudList}"
+                                                   var="tipoSolicitud" itemValue="#{tipoSolicitud.idParametro}"
+                                                   itemLabel="#{tipoSolicitud.descripcion}"/>
+                                </h:selectOneMenu>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="8">
+                                <h2 style="margin-top: -22px; margin-left: -12px">
+                                    DATOS CUENTA SUSCRIPTOR</h2></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h:outputText style="font-weight:bold" id="cuentaSusLabelCamEst"
+                                              value="Cuenta Suscriptor:"/>
+                            </td>
+                            <td>
+                                <h:inputText disabled="true"
+                                             value="#{gestionSolicitudBean.subscriptores}"
+                                             id="cuentaSusTexCamEst" style="width: 80%"/>
+
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                    </table>
+
+                    <table id="IngresadosTable" style="width: 100%">
+                        <tr>
+                            <td style="width:9.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:15.5%;"/>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8">
+                                <h2 style="margin-top: -22px; margin-left: -12px">
+                                    DATOS INGRESADOS</h2></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h:outputText style="font-weight:bold" id="depLabelCamEst" value="Departamento:"/>
+                            </td>
+                            <td>
+                                <h:inputText disabled="true"
+                                             maxlength="10" value="#{gestionSolicitudBean.departamentoGpo.gpoNombre}"
+                                             id="depTexCamEst" style="width: 85%">
+                                </h:inputText>
+
+                            </td>
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="ciudadLabelCamEst" value="Ciudad:"/>
+                            </td>
+                            <td>
+                                <h:inputText maxlength="250" disabled="true"
+                                             value="#{gestionSolicitudBean.ciudadGpo.gpoNombre}"
+                                             id="ciudadTexCamEst" style="width: 90%"/>
+                            </td>
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="cenPoLabelCamEst" value="Centro Poblado:"/>
+                            </td>
+                            <td>
+                                <h:inputText value="#{gestionSolicitudBean.centroPobladoGpo.gpoNombre}"
+                                             id="cenPoTexCamEst" disabled="true" style="width: 100%"/>
+                            </td>
+                            <td>
+                                <h:outputText style="font-weight:bold" id="direccionCambioLabelCamEst"
+                                              value="Dirección del Cambio:"/>
+                            </td>
+                            <td>
+                                <h:inputTextarea disabled="true"
+                                                 value="#{gestionSolicitudBean.cmtDireccionDetalladaMgl.direccionTexto}"
+                                                 id="direccionCambioTexCamEst" style="width: 100%"/>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h:outputText style="font-weight:bold" id="estAntLabelCamEst" value="Estrato Antiguo:"/>
+                            </td>
+                            <td>
+                                <h:inputText disabled="true"
+                                             maxlength="10" value="#{gestionSolicitudBean.estratoAntiguo.descripcion}"
+                                             id="estAntTexCamEst" style="width: 90%">
+                                </h:inputText>
+
+                            </td>
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="estNueLabelCamEst" value="Estrato Nuevo"/>
+                            </td>
+                            <td>
+                                <h:selectOneMenu disabled="#{gestionSolicitudBean.solicitudDthSeleccionada.getCambioDir()!='2' 
+                                                             or gestionSolicitudBean.detalleSolicitud}"
+                                                 value="#{gestionSolicitudBean.estratoNuevo.codigoBasica}">
+                                    <f:selectItems value="#{gestionSolicitudBean.listaEstratos}" var="estrato"
+                                                   itemValue="#{estrato.codigoBasica}"
+                                                   itemLabel="#{estrato.nombreBasica}">
+                                    </f:selectItems>
+                                    <f:ajax event="change" execute="@this" render="respuestaTextAreaCamEst"
+                                            listener="#{gestionSolicitudBean.actualizarMensajeCambioEstrato()}"/>
+                                </h:selectOneMenu>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                    </table>
+
+
+                    <h2 style="margin-top: -22px; margin-left: -12px">DATOS SOLICITANTE</h2>
+                    <h:panelGrid id="datosSolicitante" columns="6"
+                                 styleClass="formularioSol">
+
+                        <h:outputText style="font-weight:bold" id="contactoLabelCamEst" value="Contacto:"/>
+                        <h:inputText disabled="true"
+                                     value="#{gestionSolicitudBean.solicitudDthSeleccionada.contacto}"
+                                     id="contactoCamEst"/>
+
+                        <h:outputText style="font-weight:bold" id="contactoTelefonoLabelCamEst" value="Teléfono Contacto:"/>
+                        <h:inputText disabled="true"
+                                     maxlength="10" value="#{gestionSolicitudBean.solicitudDthSeleccionada.telContacto}"
+                                     id="telefonoCamEst">
+                        </h:inputText>
+
+
+                        <h:outputText style="font-weight:bold" id="solicitanteLabelCamEst" value="Solicitante:"/>
+                        <h:outputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.solicitante}"
+                                      id="solicitanteCamEst"/>
+
+
+                        <h:outputText style="font-weight:bold; width: 99% " id="correoLabelCamEst" value="Correo Solicitante:"/>
+                        <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.correo}"
+                                     id="correoSolicitanteCamEst" disabled="true"/>
+
+
+                        <h:outputText escape="false" style="font-weight:bold" id="estNueLabelDocSopObli"
+                                      value="#{gestionSolicitudBean.estiloObligatorio} Documento Soporte"
+                                      rendered="#{gestionSolicitudBean.tecArchivosCambioEstratos.size() > 0}"/>
+
+                        <h:outputText style="font-weight:bold" id="estNueLabelDocSop"
+                                      value="Documento Soporte"
+                                      rendered="#{gestionSolicitudBean.tecArchivosCambioEstratos.size() == 0}"/>
+
+                        <h:selectOneMenu value="#{gestionSolicitudBean.solicitudDthSeleccionada.tipoDocSoporteCamEstarto}"
+                                         disabled="#{gestionSolicitudBean.detalleSolicitud}">
+                            <f:selectItem itemLabel="Seleccione Uno" itemValue="Seleccione Uno"/>
+                            <f:selectItems value="#{gestionSolicitudBean.lstDocumentosSoporte}"
+                                           var="soporte" itemValue="#{soporte.idParametro}"
+                                           itemLabel="#{soporte.descripcion}"/>
+                        </h:selectOneMenu>
+
+
+                        <h:outputText style="font-weight:bold" id="usuarioVerificadorLabelCamEst1"
+                                      value="Usuario Verificador:"/>
+                        <h:outputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.usuarioVerificador}"
+                                      id="usuarioVerificadorCamEst1"/>
+
+                        <h:outputText style="font-weight:bold" id="tipoDoc"
+                                      value="Tipo de Documento"
+                                      rendered="#{gestionSolicitudBean.tecArchivosCambioEstratos.size() == 0}"/>
+
+                        <h:selectOneMenu value="#{gestionSolicitudBean.solicitudDthSeleccionada.tipoDoc}"
+                                         disabled="#{gestionSolicitudBean.detalleSolicitud}">
+                            <f:selectItem itemLabel="Seleccione Uno" itemValue="Seleccione Uno"/>
+                            <f:selectItems value="#{gestionSolicitudBean.documentoList}"
+                                           var="tipoDocumentoList" itemValue="#{tipoDocumentoList.value}"
+                                           itemLabel="#{tipoDocumentoList.label}"/>
+                        </h:selectOneMenu>
+                        <h:outputText style="font-weight:bold" id="numeroDocumentoClienteLabel" value="Numero Documento Cliente:"/>
+                        <h:inputText disabled="true"
+                                     maxlength="15" value="#{gestionSolicitudBean.solicitudDthSeleccionada.numDocCliente}"
+                                     id="numDocCliente"
+
+                                     >
+                        </h:inputText>
+
+                    </h:panelGrid>
+
+                    <tr>
+                        <td><br/></td>
+                    </tr>
+
+
+                    <table id="contactoTableCamEst" style="width: 100%">
+
+                        <tr>
+                            <td colspan="2">
+                                <h:outputText style="font-weight:bold" id="observacionesLabelCamEst"
+                                              value="Observaciones Especiales:"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="10">
+                                <h:inputTextarea disabled="true"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.motivo}"
+                                                 id="observacionesTextAreaCamEst" style="width: 100%; height: 66px; "
+                                                 cols="4" rows="12">
+                                    <f:validateLength maximum="1000"/>
+                                </h:inputTextarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                <h:outputText style="font-weight:bold" id="usuarioGestionadorLabelCamEst1"
+                                              value="Usuario Gestión:"/>
+                                <h:outputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.usuarioGestionador}"
+                                              id="usuarioGestionadorCamEst1"/>
+                            </td>
+
+                            <td style="text-align: right;" colspan="2">
+                                <h:outputText style="font-weight:bold;color: red;font-size: 16px"
+                                              id="resultadoLabelReqCamEst" value="*"/>
+                                <h:outputText style="font-weight:bold" id="resultadoLabelCamEst"
+                                              value="Resultado de la Gestión:"/></td>
+                            <td colspan="2">
+                                <h:selectOneMenu style="width: 70%" disabled="#{gestionSolicitudBean.detalleSolicitud}"
+                                                 id="resultadoRespuestaCamEst"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.rptGestion}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue="Seleccione Uno"/>
+                                    <f:selectItems value="#{gestionSolicitudBean.resultGestionCambioEs}"
+                                                   var="result" itemLabel="#{result.descripcion}"
+                                                   itemValue="#{result.descripcion}"/>
+                                    <f:ajax event="change" execute="@this" render="respuestaTextAreaCamEst"
+                                            listener="#{gestionSolicitudBean.copiarMensajeRespuestaCambioEstrato()}"/>
+                                </h:selectOneMenu></td>
+
+                            <td colspan="2"><h:outputText style="font-weight:bold" id="documentosAdjLabelCamEst"
+                                                          value="Documentos Adjuntos:"/></td>
+                            <td width="30%">
+                                <p:dataTable id="tableCargaArchivo"
+                                             var="lstArchi"
+                                             value="#{gestionSolicitudBean.tecArchivosCambioEstratos}"
+                                             rendered="#{gestionSolicitudBean.tecArchivosCambioEstratos != null
+                                                         and gestionSolicitudBean.tecArchivosCambioEstratos.size() > 0}"
+                                             styleClass="constructGTable2"
+                                             >
+                                    <p:column headerText="Documentos Adjuntos">
+                                        <a href="#{lstArchi.urlArchivoSoporte}"
+                                           target="blank" id="linkDescarga2">
+                                            #{lstArchi.nombreArchivo}
+                                        </a>
+                                    </p:column>
+                                </p:dataTable>
+                            </td>
+                            <td/>
+                            <td/>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="10">
+                                <table style="width: 100%">
+                                    <td style="width:96%"><h2 id="SeparadorEstratol"
+                                                              style="margin-top: 0px; margin-left: -12px">ETIQUETAS </h2>
+                                    </td>
+                                    <td style="width:5%">
+                                        <h:commandButton style="margin:0px 0 11px 0; " id="mostrarEtComponenteButtonEstrato"
+                                                         image="/view/img/ocultar.png"
+                                                         disabled="#{gestionSolicitudBean.detalleSolicitud}">
+                                            <f:ajax render="panelWrapEtiquetasSolEstrato"
+                                                    event="click"
+                                                    listener="#{gestionSolicitudBean.mostrarOcultarEtiquetas()}"/>
+                                        </h:commandButton>
+                                    </td>
+                                </table>
+                                <h:panelGroup id="panelWrapEtiquetasSolEstrato">
+                                    <h:panelGroup id="panelEtiquetasSolEstrato"
+                                                  rendered="#{gestionSolicitudBean.showEtiquetas}">
+                                        <h:outputText style="font-weight: bold;" id="etiquetasSol"
+                                                      value="#{gestionSolicitudBean.etiquetasHhpp}"/>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <hr size="5" width="99%" align="LEFT"/>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td><h:outputText
+                                    rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.estado eq 'VERIFICADO'}"
+                                    style="font-weight:bold" id="etiquetasEstratoLabel" value="Etiquetas:"/></td>
+
+                            <td><h:selectOneMenu style="width: 90%"
+                                                 rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.estado eq 'VERIFICADO'}"
+                                                 id="etiquetasEstratoList"
+                                                 disabled="#{gestionSolicitudBean.detalleSolicitud}"
+                                                 value="#{gestionSolicitudBean.etiquetaAgregarSeleccionada}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{gestionSolicitudBean.marcasHhppList}"
+                                                   var="marca" itemLabel="#{marca.marCodigo} - #{marca.marNombre}"
+                                                   itemValue="#{marca.marId}"/>
+                                </h:selectOneMenu></td>
+
+                            <td><h:commandButton id="agregaMarcasButtonEstrato"
+                                                 rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.estado eq 'VERIFICADO'}"
+                                                 disabled="#{gestionSolicitudBean.solicitudGestionada or gestionSolicitudBean.detalleSolicitud}"
+                                                 action="#{gestionSolicitudBean.agregarEtiquetaSeleccionada()}"
+                                                 styleClass="btn" value="Agregar"/></td>
+
+                            <td><h:outputText style="font-weight:bold" id="etiquetasLabelEstratoDelete"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.estado eq 'VERIFICADO'}"
+                                              value="Etiquetas agregadas:"/></td>
+
+                            <td colspan="2"><h:selectOneMenu style="width: 90%"
+                                                             rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.estado eq 'VERIFICADO' or gestionSolicitudBean.detalleSolicitud}"
+                                                             id="etiquetasAgregadasEstratoList"
+                                                             disabled="#{gestionSolicitudBean.detalleSolicitud}"
+                                                             value="#{gestionSolicitudBean.etiquetaEliminarSeleccionada}">
+                                    <f:selectItems value="#{gestionSolicitudBean.marcasAgregadasHhppList}"
+                                                   var="marca" itemLabel="#{marca.marCodigo} - #{marca.marNombre}"
+                                                   itemValue="#{marca.marId}"/>
+                                </h:selectOneMenu></td>
+
+                            <td><h:commandButton id="eliminarMarcasButtonEstrato"
+                                                 rendered="#{(gestionSolicitudBean.solicitudDthSeleccionada.estado eq 'VERIFICADO' ) and !gestionSolicitudBean.detalleSolicitud}"
+                                                 action="#{gestionSolicitudBean.eliminarEtiquetaSeleccionada()}"
+                                                 styleClass="btn" value="Borrar"/></td>
+                        </tr>
+
+                        <tr>
+
+                            <td colspan="2">
+                                <h:outputText style="font-weight:bold;color: red;font-size: 16px"
+                                              id="respuestaTextReqCamEst" value="*"/>
+                                <h:outputText style="font-weight:bold" id="respuestaTextCamEst" value="Respuesta Actual:"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="10">
+                                <h:inputTextarea id="respuestaTextAreaCamEst"
+                                                 disabled="#{(gestionSolicitudBean.solicitudDthSeleccionada.estado eq 'FINALIZADO') or gestionSolicitudBean.detalleSolicitud}"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.respuesta}"
+                                                 style="width: 100%; height: 66px; " cols="4" rows="12">
+                                    <f:validateLength maximum="2000"/>
+                                </h:inputTextarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="10">
+                                <h:panelGroup style="width: 100%"
+                                              rendered="#{gestionSolicitudBean.solicitudDthSeleccionada ne null and gestionSolicitudBean.solicitudDthSeleccionada.tiempoSolicitudMgl ne null and gestionSolicitudBean.solicitudDthSeleccionada.tiempoSolicitudMgl.archivoSoporte ne null and gestionSolicitudBean.solicitudDthSeleccionada.tiempoSolicitudMgl.archivoSoporte ne 'NA'}">
+                                    <a href="#{gestionSolicitudBean.linkDescarga}"
+                                       target="blank" id="linkDescarga2">
+                                        #{gestionSolicitudBean.solicitudDthSeleccionada.tiempoSolicitudMgl.archivoSoporte}
+                                    </a>
+                                </h:panelGroup>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td/>
+                            <td/>
+                            <td/>
+                            <td>
+                                <h:commandButton id="validarNodoButtonCamEst"
+                                                 rendered="#{(gestionSolicitudBean.solicitudDthSeleccionada.estado eq 'VERIFICADO') and !gestionSolicitudBean.detalleSolicitud}"
+                                                 disabled="#{gestionSolicitudBean.solicitudGestionada}"
+                                                 action="#{gestionSolicitudBean.gestionarSolicitudCambioEstrato()}"
+                                                 styleClass="btn" value="Gestionar Solicitud"/>
+                            </td>
+                            <td>
+                                <h:commandButton style="text-align: left;" id="aceptarButtonCamEst"
+                                                 rendered="#{(gestionSolicitudBean.solicitudDthSeleccionada.estado eq 'PENDIENTE') and !gestionSolicitudBean.detalleSolicitud}"
+                                                 action="#{gestionSolicitudBean.primeraVerificacion()}"
+                                                 styleClass="btn" value="Aceptar"/>
+                            </td>
+                            <!-- <td>
+                                 <h:commandButton id="rechazarButtonCamEst" rendered="# {(gestionSolicitudBean.solicitudDthSeleccionada.estado eq 'PENDIENTE')}"
+                                                  action="# {gestionSolicitudBean.primeraVerificacion('RECHAZADO')}" 
+                                                  styleClass="btn" value="Rechazar" /></td> -->
+                            <td>
+                                <h:commandButton style="text-align: left;" id="goBackCamEst"
+                                                 styleClass="btn" value="Volver"
+                                                 rendered="#{!gestionSolicitudBean.detalleSolicitud}"
+                                                 action="#{gestionSolicitudBean.goBackSolicitudDthList()}"/>
+                                <h:commandButton style="text-align: left;" id="detalleSolBackCamEstr"
+                                                 styleClass="btn" value="Volver"
+                                                 rendered="#{gestionSolicitudBean.detalleSolicitud}"
+                                                 action="#{gestionSolicitudBean.goBackEstadoSolicitud()}"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                </h:panelGroup>
+
+                <!-- NUEVO PANEL PARA LA GESTION DE SOLICITUDES DE VALIDACION DE COBERTURA -->
+                <h:panelGroup style="width: 100%" id="solicitudValCober"
+                              rendered="#{gestionSolicitudBean.showValidacionCobertura}">
+
+                    <table id="gestionTable" style="width: 100%">
+                        <tr>
+                            <td style="width:9.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:16.5%;"/>
+                            <td style="width:8.5%;"/>
+                            <td style="width:15.5%;"/>
+                        </tr>
+                        <tr>
+
+                            <td><h:outputText style="font-weight:bold" id="tecnologiaValCober" value="Tipo de Tecnología "/>
+                            </td>
+                            <td><h:selectOneMenu disabled="true"
+                                                 style="width:90%" id="tipoRedValCober"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.tecnologiaId.basicaId}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{gestionSolicitudBean.tipoTecnologiaBasicaList}"
+                                                   var="tipoRed" itemLabel="#{tipoRed.descripcion}"
+                                                   itemValue="#{tipoRed.basicaId}"/>
+                                </h:selectOneMenu></td>
+
+                            <td><h:outputText style="font-weight:bold" id="tipoAccionValCober" value="Tipo Solicitud:"/>
+                            </td>
+                            <td><h:selectOneMenu style="width: 90%" id="selectTipoAccionValCober" disabled="true"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir}">
+                                    <f:selectItems value="#{gestionSolicitudBean.tipoAccionSolicitudBasicaList}"
+                                                   var="tipoAccion" itemValue="#{tipoAccion.codigoBasica}"
+                                                   itemLabel="#{tipoAccion.nombreBasica}">
+                                    </f:selectItems>
+                                </h:selectOneMenu></td>
+
+                            <td><h:outputText style="font-weight:bold" id="tipoDireccionValCober" value="Tipo Dirección:"/>
+                            </td>
+                            <td><h:selectOneMenu style="width: 90%" disabled="true"
+                                                 id="tipoDireccionComboBoxValCober"
+                                                 value="#{gestionSolicitudBean.cmtDireccionDetalladaMgl.idTipoDireccion}">
+                                    <f:selectItem itemLabel="CALLE - CARRERA" itemValue="CK"/>
+                                    <f:selectItem itemLabel="BARRIO - MANZANA" itemValue="BM"/>
+                                    <f:selectItem itemLabel="INTRADUCIBLE" itemValue="IT"/>
+                                </h:selectOneMenu></td>
+                            <td style="text-align: center;">
+                                <h:outputText style="font-weight:bold" id="tipoSolicitudContactoValCober" value="Área"/>
+                            </td>
+                            <td>
+                                <h:selectOneMenu disabled="true"
+                                                 style="width: 90%" id="tipoSolicitudContactoComboBoxValCober"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.tipoSol}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{gestionSolicitudBean.tipoSolicitudList}"
+                                                   var="tipoSolicitud" itemValue="#{tipoSolicitud.idParametro}"
+                                                   itemLabel="#{tipoSolicitud.descripcion}"/>
+                                </h:selectOneMenu>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="8">
+                                <h2 style="margin-top: -22px; margin-left: -12px">
+                                    #{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '12' ? 'VALIDACION DE COBERTURA' : ''} </h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="8">
+                                <hr size="5" width="100%" align="LEFT"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td/>
+                            <td colspan="6" style="text-align: center;">
+                                <h:dataTable style="width: 100%" id="drDireccionTableValCober"
+                                             var="direccion" value="#{gestionSolicitudBean.drDireccion}"
+                                             styleClass="solicitudesGTableMgl"
+                                             headerClass="solicitudesGTableHeaderMgl"
+                                             rowClasses="solicitudesGTableOddRowMgl,solicitudesGTableEvenRowMgl">
+
+                                    <f:facet name="headerButtoon">
+
+                                    </f:facet>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Calle"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.direccionRREntity.calle}"/>
+                                    </h:column>
+
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Placa"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.direccionRREntity.numeroUnidad}"/>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Apartamento"/>
+                                        </f:facet>
+                                        <h:outputText id="complementoDir"
+                                                      value="#{gestionSolicitudBean.complementoDireccion}"/>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Barrio"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.drDireccion.barrio}"/>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Departamento"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.departamentoGpo.gpoNombre}"/>
+                                    </h:column>
+
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Ciudad"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.ciudadGpo.gpoNombre}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Centro Poblado"/>
+                                        </f:facet>
+                                        <h:outputText value="#{gestionSolicitudBean.centroPobladoGpo.gpoNombre}"/>
+                                    </h:column>
+                                </h:dataTable>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                    </table>
+
+
+                    <table style="width: 100%">
+                        <tr>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:10%;"/>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">
+                                <table style="width:90%;">
+                                    <tr>
+                                        <td style="text-align: left; width: 30%">
+                                            <h:outputText style="font-weight:bold" id="idFact" value="Id Factibilidad: "/>
+                                            <h:outputText id="idFcatText"
+                                                          value="#{gestionSolicitudBean.solicitudDthSeleccionada.idFactibilidad}"/>
+                                        </td>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: left; width: 30%">
+                                            <h:outputText style="font-weight:bold" id="confiValCober"
+                                                          value="Confiabilidad complemento: "/>
+                                            <h:outputText id="valueValCober"
+                                                          value="#{gestionSolicitudBean.addressService.reliability}"/>
+                                        </td>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: left; width: 40%">
+                                            <h:outputText style="font-weight:bold" id="confiPlacaValCober"
+                                                          value="Confiabilidad dirección: "/>
+                                            <h:outputText id="confPlacaValCober"
+                                                          value="#{gestionSolicitudBean.addressService.reliabilityPlaca}"/>
+                                        </td>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: left; width: 40%">
+                                            <h:outputText style="font-weight:bold" id="latitud" value="Latitud : "/>
+                                            <h:outputText id="latValCober"
+                                                          value="#{gestionSolicitudBean.solicitudDthSeleccionada.coordY}"/>
+                                        </td>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td><br/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:30%;">
+                                            <h:outputText style="font-weight:bold" id="longitud" value="Longitud : "/>
+                                            <h:outputText id="lonValCober"
+                                                          value="#{gestionSolicitudBean.solicitudDthSeleccionada.coordX}"/>
+                                        </td>
+                                        <td style="height:14px;"/>
+                                    </tr>
+                                    <tr>
+                                        <td><br/></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><br/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td colspan="4">
+                                <table style="width:98%">
+                                    <tr>
+                                        <td colspan="6">
+                                            <h:panelGrid columns="1">
+                                                <h:dataTable id="subTableFactValCober"
+                                                             var="tec"
+                                                             value="#{gestionSolicitudBean.listaDetalleFactibilidadMgl}"
+                                                             styleClass="constructGTable2"
+                                                             headerClass="constructGTableHeader"
+                                                             rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                                             rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '12'}">
+
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Tecnologia"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{tec.nombreTecnologia}"/>
+                                                    </h:column>
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="SDS"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{tec.sds}"/>
+                                                    </h:column>
+
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Cobertura"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{tec.codigoNodo}"/>
+                                                    </h:column>
+
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Factibilidad"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{tec.claseFactibilidad}"/>
+                                                    </h:column>
+
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Arrendatario"/>
+                                                        </f:facet>
+                                                        <h:outputText id="idNodoGestion" value="#{tec.nombreArrendatario}"
+                                                                      />
+                                                    </h:column>
+
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Tiempo"/>
+                                                        </f:facet>
+                                                        <h:outputText id="idNodoGestion2" value="#{tec.tiempoUltimaLilla}"
+                                                                      />
+                                                    </h:column>
+                                                    <h:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Estado Tecnlogia"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{tec.estadoTecnologia}"/>
+                                                    </h:column>
+
+                                                </h:dataTable>
+
+                                            </h:panelGrid>
+                                        </td>
+
+                                        <td><br/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                    </table>
+
+
+                    <table id="contactoTable" style="width: 100%">
+
+                        <tr>
+                            <td style="width:5%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:5%;"/>
+                            <td style="width:13%;"/>
+                            <td style="width:5%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:5%;"/>
+                            <td style="width:10%;"/>
+                            <td style="width:5%;"/>
+                            <td style="width:10%;"/>
+                        </tr>
+
+                        <tr>
+                            <td colspan="10">
+                                <hr size="5" width="100%" align="LEFT"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <h:outputText style="font-weight:bold" id="contactoLabelValCober" value="Contacto:"/>
+                            </td>
+                            <td>
+                                <h:inputText disabled="true"
+                                             value="#{gestionSolicitudBean.solicitudDthSeleccionada.contacto}"
+                                             id="contactoValCober" style="width: 80%"/>
+
+                            </td>
+
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="contactoTelefonoLabelValCober"
+                                              value="Teléfono Contacto:"/>
+                            </td>
+                            <td>
+                                <h:inputText disabled="true"
+                                             maxlength="10"
+                                             value="#{gestionSolicitudBean.solicitudDthSeleccionada.telContacto}"
+                                             id="telefonoValCober" style="width: 85%"
+                                             converterMessage="El teléfono contacto debe ser númerico.">
+                                    <f:convertNumber integerOnly="true" type="number" pattern="#0"/>
+                                </h:inputText>
+
+                            </td>
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="solicitanteLabelValCober" value="Solicitante:"/>
+                            </td>
+                            <td>
+                                <h:inputText maxlength="250" disabled="true"
+                                             value="#{gestionSolicitudBean.solicitudDthSeleccionada.solicitante}"
+                                             id="solicitanteValCober" style="width: 90%"/>
+                            </td>
+
+
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="correoLabelValCober" value="Correo :"/>
+                            </td>
+                            <td>
+                                <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.correo}"
+                                             id="correoValCober" disabled="true" style="width: 90%">
+
+                                </h:inputText>
+                            </td>
+                            <td>
+                                <h:outputText style="font-weight:bold" id="correoCopiaLabelValCober" value="Correo Copia:"/>
+                            </td>
+                            <td>
+                                <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.correoCopia}"
+                                             id="correoCopiaValCober" disabled="true" style="width: 95%">
+
+                                </h:inputText>
+                            </td>
+                            
+                            <td>
+                                <h:outputText style="font-weight:bold" id="divisionalLabelValCober" value="Divisional"/>
+                            </td>
+                            <td>
+                                <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.idBasicaDivi.nombreBasica}"
+                                             id="divisionalValCober" disabled="true" style="width: 100%">
+
+                                </h:inputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="tipoDeSolicitudLabelValCober" value="Tipo de Solicitud:"/>
+                            </td>
+                            <td>
+                                <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.tipoDeSolicitud}"
+                                             id="tipoDeSolicitudValCober" disabled="true" style="width: 90%">
+
+                                </h:inputText>
+                            </td>
+                            <td>
+                                <h:outputText style="font-weight:bold" id="tipoDeServicioLabelValCober" value="Tipo de Servicio:"/>
+                            </td>
+                            <td>
+                                <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.tipoDeServicio}"
+                                             id="tipoDeServicioValCober" disabled="true" style="width: 95%">
+
+                                </h:inputText>
+                            </td>
+                            
+                            <td>
+                                <h:outputText style="font-weight:bold" id="tipoDeValidacionLabelValCober" value="Tipo de Validacion"/>
+                            </td>
+                            <td>
+                                <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.tipoDeValidacion}"
+                                             id="tipoDeValidacionValCober" disabled="true" style="width: 100%">
+
+                                </h:inputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+                        <tr>
+
+
+                            <td>
+                                <h:outputText style="font-weight:bold" id="bwLabelValCober" value="BW:"/>
+                            </td>
+                            <td>
+                                <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.bw}"
+                                             id="bwValCober" disabled="true" style="width: 90%">
+
+                                </h:inputText>
+                            </td>
+                            <td>
+                                <h:outputText style="font-weight:bold" id="tipoDeSitioLabelValCober" value="Tipo de Sitio:"/>
+                            </td>
+                            <td>
+                                <h:inputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.tipoDeSitio}"
+                                             id="tipoDeSitioValCober" disabled="true" style="width: 95%">
+
+                                </h:inputText>
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>.
+                        <tr>
+
+                            <td colspan="2">
+                                <h:outputText style="font-weight:bold" id="observacionesLabelValCober"
+                                              value="Observaciones Especiales:"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="10">
+                                <h:inputTextarea disabled="true"
+                                                 value="#{gestionSolicitudBean.solicitudDthSeleccionada.motivo}"
+                                                 id="observacionesTextAreaValCober" style="width: 100%; height: 66px; "
+                                                 cols="4" rows="12">
+                                    <f:validateLength maximum="2000"/>
+                                </h:inputTextarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+
+                        <tr>
+                            <td colspan="2"><h:outputText style="font-weight:bold" id="usuarioVerificadorLabelValCober"
+                                                          value="Usuario Gestion:"/></td>
+                            <td><h:inputText readonly="true" disabled="true"
+                                             value="#{gestionSolicitudBean.solicitudDthSeleccionada.usuarioGestionador}"
+                                             id="usuarioVerificadorValCober"/></td>
+
+                            <td style="text-align: right;">
+                                <h:outputText style="font-weight:bold;color: red;font-size: 16px"
+                                              id="resultadoLabelReqValCober" value="*"/>
+                                <h:outputText style="font-weight:bold" id="resultadoLabelValCober"
+                                              value="Resultado de la Gestión:"/></td>
+                            <td colspan="2"><h:selectOneMenu
+                                    disabled="#{gestionSolicitudBean.solicitudGestionada or gestionSolicitudBean.detalleSolicitud}"
+                                    style="width: 90%"
+                                    id="resultadoRespuestaCober"
+                                    rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.cambioDir eq '12'}"
+                                    value="#{gestionSolicitudBean.solicitudDthSeleccionada.rptGestion}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{gestionSolicitudBean.resultGestionDth}"
+                                                   var="result" itemLabel="#{result.descripcion}"
+                                                   itemValue="#{result.descripcion}"/>
+
+                                    <f:ajax event="change" execute="@this" render="respuestaTextAreaValCober"
+                                            listener="#{gestionSolicitudBean.copiarMensajeRespuesta()}"/>
+                                </h:selectOneMenu></td>
+                        </tr>
+                        <tr>
+                            <td><br/></td>
+                        </tr>
+
+                        <tr>
+
+                            <td colspan="2">
+
+                                <h:outputText style="font-weight:bold;color: red;font-size: 16px"
+                                              id="respuestaTextReqValCober" value="*"/>
+                                <h:outputText style="font-weight:bold" id="respuestaTextValCober"
+                                              value="Respuesta Actual:"/>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="10">
+                                <h:panelGroup id="mensajeRespuestaSolicitudValCober">
+                                    <h:inputTextarea id="respuestaTextAreaValCober"
+                                                     disabled="#{gestionSolicitudBean.solicitudGestionada or gestionSolicitudBean.detalleSolicitud}"
+                                                     value="#{gestionSolicitudBean.solicitudDthSeleccionada.respuesta}"
+                                                     style="width: 100%; height: 66px; " cols="4" rows="12">
+                                        <f:validateLength maximum="2000"/>
+                                    </h:inputTextarea>
+                                </h:panelGroup>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="10">
+                                <h:panelGroup style="width: 100%"
+                                              rendered="#{gestionSolicitudBean.archivosVtMgl ne null and 
+                                                          gestionSolicitudBean.archivosVtMgl.rutaArchivo ne null}">
+                                    <a href="#{gestionSolicitudBean.archivosVtMgl.rutaArchivo}"
+                                       target="blank" id="linkDescarga2">
+                                        #{gestionSolicitudBean.archivosVtMgl.nombreArchivo}
+                                    </a>
+                                </h:panelGroup>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td/>
+                            <td/>
+                            <td/>
+                            <td style="text-align: right;">
+                                <h:commandButton id="validarNodoButtonValCober"
+                                                 disabled="#{gestionSolicitudBean.solicitudGestionada}"
+                                                 action="#{gestionSolicitudBean.gestionarSolicitud()}"
+                                                 rendered="#{gestionSolicitudBean.validarGestionValCobertura() and !gestionSolicitudBean.detalleSolicitud}"
+                                                 styleClass="btn" value="Gestionar Solicitud"/>
+                            </td>
+
+                            <td>
+                                <h:commandButton style="text-align: left;" id="goBackValCober"
+                                                 styleClass="btn" value="Volver"
+                                                 rendered="#{!gestionSolicitudBean.detalleSolicitud}"
+                                                 action="#{gestionSolicitudBean.goBackSolicitudDthList()}"/>
+
+
+                            </td>
+                        </tr>
+                        <tr>
+
+
+                        </tr>
+                    </table>
+
+                </h:panelGroup>
+
+                <h:panelGroup style="width: 100%" id="TrackSolicitudTab" rendered="#{gestionSolicitudBean.showTrack}">
+
+                    <h:dataTable id="tableTrackSolicitud" value="#{gestionSolicitudBean.cmtTiempoSolicitudMgl}"
+                                 styleClass="constructGTable2" var="track"
+                                 headerClass="constructGTableHeader"
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Tiempo Solicitud"/>
+                            </f:facet>
+                            <div align="center">
+                                <h:outputText value="#{gestionSolicitudBean.cmtTiempoSolicitudMgl.tiempoSolicitud eq null ?
+                                                       '00:00:00' : gestionSolicitudBean.cmtTiempoSolicitudMgl.tiempoSolicitud}"/>
+
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Tiempo Espera"/>
+                            </f:facet>
+                            <div align="center">
+                                <h:outputText value="#{gestionSolicitudBean.cmtTiempoSolicitudMgl.tiempoEspera eq null ?
+                                                       '00:00:00' : gestionSolicitudBean.cmtTiempoSolicitudMgl.tiempoEspera}"/>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Tiempo Gestión"/>
+                            </f:facet>
+                            <div align="center">
+                                <h:outputText value="#{gestionSolicitudBean.cmtTiempoSolicitudMgl.tiempoGestion eq null ?
+                                                       '00:00:00' : gestionSolicitudBean.cmtTiempoSolicitudMgl.tiempoGestion}"/>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Tiempo Total"/>
+                            </f:facet>
+                            <h:outputText value="#{gestionSolicitudBean.cmtTiempoSolicitudMgl.tiempoTotal eq null ?
+                                                   '00:00:00' : gestionSolicitudBean.cmtTiempoSolicitudMgl.tiempoTotal}"/>
+                            <h:graphicImage value="/view/img/verde.gif"
+                                            rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.colorAlerta eq 'green'}"
+                                            style="float: right"/>
+                            <h:graphicImage value="/view/img/amarillo.gif"
+                                            rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.colorAlerta eq 'yellow'}"
+                                            style="float: right"/>
+                            <h:graphicImage value="/view/img/rojo.gif"
+                                            rendered="#{gestionSolicitudBean.solicitudDthSeleccionada.colorAlerta eq 'red'}"
+                                            style="float: right"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Tiempo ANS"/>
+                            </f:facet>
+
+                            <div align="center">
+                                <h:outputText value="#{gestionSolicitudBean.cmtTipoSolicitudMgl.ans eq null ?
+                                                       'No Configurado' : gestionSolicitudBean.cmtTipoSolicitudMgl.ans}"/>
+                            </div>
+
+                        </h:column>
+                    </h:dataTable>
+                    <br/>
+
+                    <h:panelGroup id="panelTrackDetalleSolicitud">
+                        <h2>Detalle Creación de la Solicitud</h2>
+                        <h:panelGrid id="panelInfoTrackDetalleSolicitud" columns="2">
+                            <h:outputText value="Fecha-Hora Inicio:" style="min-width: 150px; max-width: 150px;"/>
+                            <h:outputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.fechaIngreso}">
+                                <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                            </h:outputText>
+                            <h:outputText value="Fecha-Hora Finalización:" style="min-width: 150px; max-width: 150px;"/>
+                            <h:outputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.fechaCancelacion eq null ?
+                                                   'Gestión sin finalizar' : gestionSolicitudBean.solicitudDthSeleccionada.fechaCancelacion}">
+                                <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                            </h:outputText>
+                            <h:outputText value="Usuario Solicitante:" style="min-width: 150px; max-width: 150px;"/>
+                            <h:outputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.usuario}"/>
+                            <h:outputText value="Correo:" style="min-width: 150px; max-width: 150px;"/>
+                            <h:outputText value="#{gestionSolicitudBean.solicitudDthSeleccionada.correo}"/>
+                        </h:panelGrid>
+
+                    </h:panelGroup>
+
+                </h:panelGroup>
+
+                <h:panelGroup style="width: 100%" id="notasSolicitudTab" rendered="#{gestionSolicitudBean.showNotas}">
+
+                    <h:panelGroup id="panelGroupDetalleNota" rendered="true">
+                        <h:panelGrid id="panelNotaInfo" columns="4" style="width: 100%;">
+
+                            <h:outputText value="Descripcion" id="DescripcionNotaOtLabel"/>
+                            <h:inputText label="Descripcion" id="DescripcionNotaOtInput"
+                                         maxlength="200"
+                                         value="#{gestionSolicitudBean.cmtNotasSolicitudVtMgl.descripcion}"
+                                         readonly="#{gestionSolicitudBean.cmtNotasSolicitudVtMgl.notasId != null}"/>
+
+                            <h:outputText value="Tipo Nota" id="TipoNotaOtLabel"/>
+                            <h:selectOneMenu id="TipoMotaOtList" value="#{gestionSolicitudBean.tipoNotaSelected.basicaId}"
+                                             styleClass="ListaConsulta"
+                                             disabled="#{gestionSolicitudBean.cmtNotasSolicitudVtMgl.notasId  != null}">
+                                <f:selectItem itemValue="" itemLabel=""/>
+                                <f:selectItems value="#{gestionSolicitudBean.tipoNotaList}" var="ld"
+                                               itemValue="#{ld.basicaId}"
+                                               itemLabel="#{ld.nombreBasica}"/>
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid id="panelDescNotaInfo" columns="1" style="width: 100%;">
+                            <h:outputText value="Nota (4000 Caracteres)" id="NotaOtLabel"/>
+
+                            <h:inputTextarea label="Nota" id="NotaOtInput"
+                                             style="width: 100%; resize: none; overflow-y: scroll;" rows="2"
+                                             value="#{gestionSolicitudBean.cmtNotasSolicitudVtMgl.nota}"
+                                             readonly="#{gestionSolicitudBean.cmtNotasSolicitudVtMgl.notasId != null}"
+                                             validatorMessage="'Nota' Numero maximo de caracteres es 4000">
+                                <f:validateLength maximum="4000"/>
+                            </h:inputTextarea>
+                        </h:panelGrid>
+
+                        <h:panelGrid id="panelComentarioNota"
+                                     rendered="#{gestionSolicitudBean.cmtNotasSolicitudVtMgl.notasId != null}"
+                                     columns="1" style="width: 100%;">
+                            <h:outputText value="Comentario (4000 Caracteres)" id="ComentarioNotaOtLabel"/>
+
+                            <h:inputTextarea label="Comentario" id="ComentarioNotaOtInput"
+                                             style="width: 100%; resize: none; overflow-y: scroll;" rows="1"
+                                             value="#{gestionSolicitudBean.notaComentarioStr}">
+                                <f:validateLength maximum="4000"/>
+                            </h:inputTextarea>
+                        </h:panelGrid>
+                        <h:panelGrid id="panelBotonesNotaInfo" columns="3" style="width: 100%; margin: 0 auto;">
+                            <h:commandButton value="Guardar Nota" id="CrearNotaOtButton"
+                                             rendered="#{gestionSolicitudBean.cmtNotasSolicitudVtMgl.notasId == null and !gestionSolicitudBean.detalleSolicitud}"
+                                             styleClass="btn"
+                                             action="#{gestionSolicitudBean.guardarNota()}"/>
+                            <h:commandButton value="Guardar Comentario" id="CrearComentarioNotaButton"
+                                             rendered="#{gestionSolicitudBean.cmtNotasSolicitudVtMgl.notasId != null and !gestionSolicitudBean.detalleSolicitud}"
+                                             styleClass="btn"
+                                             action="#{gestionSolicitudBean.guardarComentarioNota()}"/>
+                            <h:commandButton value="Limpiar Campos" id="limpiarButton"
+                                             rendered="true" styleClass="btn" immediate="true">
+                                <f:ajax render="@form" execute="@this"
+                                        event="click" listener="#{gestionSolicitudBean.limpiarCamposNota()}"/>
+                            </h:commandButton>
+                        </h:panelGrid>
+
+                    </h:panelGroup>
+
+                    <h:panelGroup id="panelGroupHitorialNotas" style="width: 100%;" rendered="true">
+                        <div style="width: 100%; height: 200px; overflow-y: scroll;">
+
+                            <h:dataTable class="AligSpan" id="HitorialNotasTable" style="width:100%;margin:0 auto;"
+                                         var="ntSol"
+                                         value="#{gestionSolicitudBean.notasSolicitudList}"
+                                         headerClass="solicitudesGTableHeader">
+                                <f:facet name="header">
+                                    <h:outputText value="Historial Notas"/>
+                                </f:facet>
+                                <h:column>
+                                    <h:panelGroup>
+                                        <h:panelGrid columns="8" style="width: 100%; border: none;">
+                                            <h:outputText value="Tipo Nota:" style="font-weight: bold;"/>
+                                            <h:outputText value="#{ntSol.tipoNotaObj.nombreBasica}" class="labelnotastipo"/>
+
+                                            <h:outputText value="Usuario:" style="font-weight: bold"/>
+                                            <h:outputText value="#{ntSol.usuarioCreacion}" class="labelnotasuser"/>
+
+                                            <h:outputText value="Fecha Creación:" style="font-weight: bold"/>
+                                            <h:outputText value="#{ntSol.fechaCreacion}">
+                                                <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                                            </h:outputText>
+                                            <h:commandLink value=""
+                                                           action="#{gestionSolicitudBean.mostarComentario(ntSol)}"
+                                                           immediate="true">
+                                                <h:graphicImage value="../../../images/icon_plus_red.png"/>
+                                            </h:commandLink>
+                                        </h:panelGrid>
+                                        <h:panelGrid columns="1" style="width: 100%">
+                                            <h:outputText value="#{ntSol.nota}"/>
+                                        </h:panelGrid>
+
+                                        <h:dataTable rendered="#{ntSol.comentarioList != null
+                                                                 and ntSol.comentarioList.size() >0}"
+                                                     style="width:100%"
+                                                     value="#{ntSol.comentarioList}" var="cmNtSol">
+
+                                            <h:column>
+                                                <h:outputText value="#{cmNtSol.nota}" style="width: 100%;"/>
+                                            </h:column>
+                                        </h:dataTable>
+                                    </h:panelGroup>
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:panelGrid>
+        </ui:define>
+    </ui:composition>
+</html>

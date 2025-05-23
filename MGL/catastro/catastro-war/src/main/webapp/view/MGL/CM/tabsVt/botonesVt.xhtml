@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:panelGroup style="width: 100%; margin: 0px auto">
+        <h:commandButton value="Regresar OT"
+                         id="RegresarOtBtn" immediate="true"
+                         styleClass="btn"
+                         rendered="#{!visitaTecnicaBean.nuevaAgenda }"
+                         action="#{visitaTecnicaBean.ingresarGestionOt()}"/>
+        <h:commandButton value="Regresar CM"
+                         id="RegresarCmBtn" immediate="true"
+                         styleClass="btn"
+                         action="#{visitaTecnicaBean.ingresarGestionCm()}"/>
+        <h:commandButton id="CrearVtBtn"
+                         styleClass="btn" value="Crear"
+                         actionListener="#{visitaTecnicaBean.crearVt()}"
+                         rendered="#{visitaTecnicaBean.validarCreacionCM()
+                                     and visitaTecnicaBean.vt.idVt == null 
+                                     and !visitaTecnicaBean.validarEstadoFlujoOT() }"/>
+        <h:commandButton id="EditarVtBtn"
+                         disabled="#{visitaTecnicaBean.deshabilitaFormVT}"
+                         styleClass="btn" value="Actualizar"
+                         actionListener="#{visitaTecnicaBean.editarVt()}"
+                         rendered="#{visitaTecnicaBean.vt.idVt != null
+                                     and ((visitaTecnicaBean.selectedTab eq 'CUENTA_MATRIZ'
+                                     and visitaTecnicaBean.validarEdicionCM())
+                                     or (visitaTecnicaBean.selectedTab eq 'ACOMETIDA'
+                                     and visitaTecnicaBean.validarEdicionAcometida())
+                                     or (visitaTecnicaBean.selectedTab eq 'AUTORIZACION'
+                                     and visitaTecnicaBean.validarEdicionModeloFinanciero()))
+                                     and !visitaTecnicaBean.validarEstadoFlujoOT()}"/>
+        <h:commandButton id="btnEditarVt"
+                         disabled="#{visitaTecnicaBean.deshabilitaFormVT}"
+                         styleClass="btn" value="Actualizar"
+                         rendered="#{visitaTecnicaBean.vt.idVt != null
+                                     and visitaTecnicaBean.selectedTab eq 'CONSTRUCTORA'
+                                     and visitaTecnicaBean.validarEdicionConstructora()
+                                     and !visitaTecnicaBean.validarEstadoFlujoOT()}"
+                         action="#{constructoraVtBean.editarVt()}"/>
+   
+        <h:commandButton value="#{!subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean ? 'A UnicoEdificio' : 'A  Multiedificio'}" 
+                         id="btnCambiarSubedifico"
+                         styleClass="btn"
+                         disabled="#{!visitaTecnicaBean.validarCrearMultiedificio()}"
+                         action="#{subEdificiosVtBean.cambiarTipoSubEdificio(!subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean ? 'A UnicoEdificio' : 'A  Multiedificio')}"
+                         rendered="#{visitaTecnicaBean.selectedTab eq 'MULTIEDIFICIO' }"/>
+
+        <h:commandButton value="Actualizar CCMM"
+                         disabled="#{visitaTecnicaBean.deshabilitaFormVT}"
+                         id="btnGenerarHhPp"
+                         title="Permite crear los Subedificion y HHPP sobre RR"
+                         class="btn"
+                         action="#{subEdificiosVtBean.consolidarSubEdi()}"
+                         rendered="#{visitaTecnicaBean.vt.idVt != null
+                                     and visitaTecnicaBean.selectedTab eq 'HHPP'
+                                     and subEdificiosVtBean.habilitaProcesoRr
+                                      and subEdificiosVtBean.nodoCargado
+                                     and !visitaTecnicaBean.validarEstadoFlujoOT()
+                                    and visitaTecnicaBean.validarBtnActCm()}"/>
+
+        <h:commandButton value="Guardar" id="btnEditarMO"
+                         disabled="#{visitaTecnicaBean.deshabilitaFormVT}"
+                         styleClass="btn"
+                         action="#{itemVtBean.editAllItem()}"
+                         rendered="#{visitaTecnicaBean.vt.idVt != null
+                                     and ((visitaTecnicaBean.selectedTab eq 'MANO_OBRA'
+                                     and visitaTecnicaBean.validarEdicionMOInfraestructura())
+                                     or (visitaTecnicaBean.selectedTab eq 'MATERIALES'
+                                     and visitaTecnicaBean.validarEdicionMTInfraestructura()))
+                                     and !visitaTecnicaBean.validarEstadoFlujoOT()}"/>
+
+        <h:commandButton value="Guardar" id="btnEditarMD"
+                         disabled="#{visitaTecnicaBean.deshabilitaFormVT}"
+                         styleClass="btn"
+                         action="#{itemVtBean.actualizarCostoDiseno()}"
+                         rendered="#{visitaTecnicaBean.vt.idVt != null 
+                                     and ((visitaTecnicaBean.selectedTab eq 'MODISENO'
+                                     and visitaTecnicaBean.validarEdicionMODiseno())
+                                     or (visitaTecnicaBean.selectedTab eq 'MTDISENO'
+                                     and visitaTecnicaBean.validarEdicionMTDiseno()))
+                                     and !visitaTecnicaBean.validarEstadoFlujoOT()}"/>
+
+        <h:commandButton value="Guardar" id="btnEditarCostos"
+                         disabled="#{visitaTecnicaBean.deshabilitaFormVT || !visitaTecnicaBean.rolCrear}"
+                         styleClass="btn"
+                         action="#{itemVtBean.actualizarCostosVT()}"
+                         rendered="#{visitaTecnicaBean.vt.idVt != null 
+                                     and (visitaTecnicaBean.selectedTab eq 'COSTOS'
+                                     and visitaTecnicaBean.validarTabCostos())
+                                     and !visitaTecnicaBean.validarEstadoFlujoOT()}">
+            <f:setPropertyActionListener value="#{subEdificiosVtBean.subEdificioVtList}"
+                                         target="#{itemVtBean.subEdificioVtList}" />
+        </h:commandButton>
+
+    </h:panelGroup>
+    
+    <h:panelGroup style="width: 100%;  margin: 0px auto">
+    
+        <h:commandButton value="Guardar" id="btnEditarSubEdi"
+                         disabled="#{visitaTecnicaBean.deshabilitaFormVT}"
+                         styleClass="btn"
+                         action="#{subEdificiosVtBean.editarSubEdificios()}"
+                         rendered="#{visitaTecnicaBean.vt.idVt != null 
+                                     and visitaTecnicaBean.selectedTab eq 'MULTIEDIFICIO'
+                                     and subEdificiosVtBean.subEdificioVtList.size() > 0
+                                     and visitaTecnicaBean.validarEdicionMultiedificio()
+                                     and !visitaTecnicaBean.validarEstadoFlujoOT()}"/>
+   
+
+
+    </h:panelGroup>
+
+</ui:composition>

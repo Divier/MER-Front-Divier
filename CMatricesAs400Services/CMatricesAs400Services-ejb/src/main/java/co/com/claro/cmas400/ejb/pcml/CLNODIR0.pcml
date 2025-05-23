@@ -1,0 +1,25 @@
+<pcml version="4.0">                                                           
+    <!-- RPG module: CLNODIR0  -->                                            
+    <!-- created: 2019-04-16-09.15.08 -->
+    <!-- old source: JSEGURA/QDSCLARO(INSNODES) -->
+    <!-- source: JSEGURA/QDSCLARO(CLNODIR0) -->                                 
+    <!-- 3300 -->                                                               
+    <program name="CLNODIR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CLNODIR0.PGM">                             
+        <data name="IDPRC" type="char" length="1" usage="inputoutput"   />         
+        <data name="IDUSER" type="char" length="10" usage="inputoutput" />       
+        <data name="CODNOD" type="char" length="6" usage="inputoutput"  />        
+        <data name="CODNOM" type="char" length="29" usage="inputoutput" />       
+        <data name="CODALI" type="char" length="2" usage="inputoutput"  />        
+        <data name="CODDIV" type="char" length="3" usage="inputoutput"  />        
+        <data name="CODDVS" type="char" length="1" usage="inputoutput"  />        
+        <data name="CODARE" type="char" length="2" usage="inputoutput"  />        
+        <data name="CODZON" type="char" length="3" usage="inputoutput"  />        
+        <data name="CODCOM" type="char" length="3" usage="inputoutput"  />        
+        <data name="CODDIS" type="char" length="3" usage="inputoutput"  />
+        <data name="CODUNI" type="char" length="4" usage="inputoutput"  />     
+        <data name="TIPRED" type="char" length="3" usage="inputoutput"  />     
+        <data name="EDONOD" type="char" length="3" usage="inputoutput"  />     
+        <data name="IDENDM" type="char" length="7" usage="inputoutput"  />     
+        <data name="ENDMSG" type="char" length="200" usage="inputoutput"/>                  
+    </program>                                                               
+</pcml>

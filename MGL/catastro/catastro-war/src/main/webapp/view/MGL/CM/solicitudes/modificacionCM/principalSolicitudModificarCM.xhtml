@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/tempModCM.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes">
+
+        <ui:define name="content" >
+
+
+            <!-- ***********************************************************
+            **********SECCION MODIFICACIÓN DATOS CUENTA MATRIZ*************
+            **************************************************************-->
+
+            <h:panelGroup id="groupModCm" >
+                <h3>MODIFICAR DATOS CUENTA MATRIZ</h3>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.activoCheckModDatosCM ? '' : 'Se encuentra desactivada la opción Tipo de Modificación: Datos CM' }" style="font-weight: bold; color: #000000 "  />
+
+                <h:panelGrid class="formulario3" columns="4"  style="width: 100%" 
+                             rendered="#{encabezadoSolicitudModificacionCMBean.activoCheckModDatosCM }"  >
+
+                    <br />
+                    <h:outputText value="ANTES" style="text-decoration: underline; font-weight: bold; color: #333" />
+                    <h:outputText value="DESPUÉS" style="text-decoration: underline; font-weight: bold; color: #333"/>
+                    <h:outputText value="CAMPO A MODIFICAR" style="text-decoration: underline; font-weight: bold; color: #333" />
+
+                    <h:outputText value="Nombre Edificio" class="txtLabelsMgl"/>
+                    <h:outputText  id="antNombreEdificio"  value="#{solicitudModificacionCMBean.subEdificioGeneralMod.subEdificioObj.nombreSubedificio }" />
+
+                    <h:inputText  id="nuevoNombreEdificio" 
+                                  maxlength="200" 
+                                 required="true"
+                                 requiredMessage="Campo nombre edificio es requerido" 
+                                 value="#{solicitudModificacionCMBean.subEdificioGeneralMod.nombreSubedificio}" 
+                                 disabled= "#{!solicitudModificacionCMBean.subEdificioGeneralMod.checkModNombreSubedificio or solicitudModificacionCMBean.modoGestion or 
+                                              !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}" >
+                    <f:ajax event="change" execute="@this" render="@form" />
+                    </h:inputText>
+
+                    <h:selectBooleanCheckbox id="modNombreEdificio"  value="#{solicitudModificacionCMBean.subEdificioGeneralMod.checkModNombreSubedificio }" 
+                                             disabled= "#{solicitudModificacionCMBean.modoGestion or !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}">
+                        <f:ajax event="change" execute="@this" render="nuevoNombreEdificio"  />
+                    </h:selectBooleanCheckbox>  
+
+                    <h:outputText value="Tipo Edificio" class="txtLabelsMgl"/>
+                    <h:outputText  id="antTipoEdificio"  value="#{solicitudModificacionCMBean.subEdificioGeneralMod.subEdificioObj.tipoEdificioObj.nombreBasica}"  />
+                    <h:selectOneMenu id="nuevoTipoEdificio"  
+                                     required="true"
+                                     requiredMessage="Campo tipo edificio es requerido"
+                                     value="#{solicitudModificacionCMBean.subEdificioGeneralMod.tipoEdificioObj.basicaId}" 
+                                     styleClass="ListaConsulta" 
+                                     disabled= "#{!solicitudModificacionCMBean.subEdificioGeneralMod.checkModTipoEdificioObj or 
+                                                  solicitudModificacionCMBean.modoGestion or 
+                                                  !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}" >
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{solicitudModificacionCMBean.tipoEdificioList}" var="tsel"
+                                       itemValue="#{tsel.basicaId}"
+                                       itemLabel="#{tsel.nombreBasica}"/>   
+                        <f:ajax event="change" execute="@this" render="@form" />
+                    </h:selectOneMenu> 
+                    <h:selectBooleanCheckbox id="modTipoEdificio"   value="#{solicitudModificacionCMBean.subEdificioGeneralMod.checkModTipoEdificioObj }"
+                                             disabled= "#{solicitudModificacionCMBean.modoGestion or !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}">
+                        <f:ajax event="change" execute="@this" render="nuevoTipoEdificio"  />
+                    </h:selectBooleanCheckbox>  
+
+                    <h:outputText value="Teléfono Portería" class="txtLabelsMgl"/>
+                    <h:outputText  id="antTelefono"  value="#{solicitudModificacionCMBean.subEdificioGeneralMod.subEdificioObj.telefonoPorteria}"  />
+                    <h:inputText maxlength="10"  id="nuevoTelefono"  
+                                 required="true"
+                                 requiredMessage="Campo Teléfono Portería es requerido"
+                                 value="#{solicitudModificacionCMBean.subEdificioGeneralMod.telefonoPorteria}"  
+                                 disabled= "#{!solicitudModificacionCMBean.subEdificioGeneralMod.checkModTelefonoPorteria or 
+                                              solicitudModificacionCMBean.modoGestion or 
+                                              !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}" 
+                                 validatorMessage="Teléfono portería' solo se acepta 7 o 10 dígitos.">
+                        <f:ajax event="change" execute="@this" render="@form" />
+                     <f:validateRegex pattern="[0-9]{7,10}"  />
+                    </h:inputText>
+                    <h:selectBooleanCheckbox id="modTelefono"   value="#{solicitudModificacionCMBean.subEdificioGeneralMod.checkModTelefonoPorteria }" 
+                                             disabled= "#{solicitudModificacionCMBean.modoGestion or !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}"
+                                             validatorMessage="Teléfono asesor solo se acepta 7 o 10 dígitos.">
+                        <f:ajax event="change" execute="@this" render="nuevoTelefono"  />
+                    </h:selectBooleanCheckbox>  
+                    
+                 <h:outputText value="Teléfono Portería 2" class="txtLabelsMgl"/>
+                 <h:outputText  id="antTelefono2"  value="#{solicitudModificacionCMBean.subEdificioGeneralMod.subEdificioObj.telefonoPorteria2}"  />
+                    <h:inputText maxlength="10"  id="nuevoTelefono2"  
+                                 required="true"
+                                 requiredMessage="Campo teléfono portería 2' es requerido"
+                                 value="#{solicitudModificacionCMBean.subEdificioGeneralMod.telefonoPorteria2}"  
+                                 disabled= "#{!solicitudModificacionCMBean.subEdificioGeneralMod.checkModTelefonoPorteria2 or 
+                                              solicitudModificacionCMBean.modoGestion or 
+                                              !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}" 
+                                 validatorMessage="Teléfono portería 2 solo se acepta 7 o 10 dígitos.">
+                        <f:ajax event="change" execute="@this" render="@form" />
+                     <f:validateRegex pattern="[0-9]{7,10}"  />
+                    </h:inputText>
+                 <h:selectBooleanCheckbox id="modTelefono2"   value="#{solicitudModificacionCMBean.subEdificioGeneralMod.checkModTelefonoPorteria2 }" 
+                                             disabled= "#{solicitudModificacionCMBean.modoGestion or !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}"
+                                             validatorMessage="Teléfono asesor solo se acepta 7 o 10 dígitos.">
+                        <f:ajax event="change" execute="@this" render="nuevoTelefono2"  />
+                    </h:selectBooleanCheckbox>  
+
+                    <h:outputText value="Administrador" class="txtLabelsMgl"/>
+                    <h:outputText  id="antAdministrador"  value="#{solicitudModificacionCMBean.subEdificioGeneralMod.subEdificioObj.administrador}"  />
+                    <h:inputText maxlength="40"  id="nuevoAdministrador"  
+                                 required="true"
+                                 requiredMessage="Campo administrador es requerido" 
+                                 validatorMessage="Campo administrador solo se acepta letras y espacios" 
+                                 value="#{solicitudModificacionCMBean.subEdificioGeneralMod.administrador}"  
+                                 disabled="#{!solicitudModificacionCMBean.subEdificioGeneralMod.checkModAdministrador or solicitudModificacionCMBean.modoGestion or !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}" >
+                    <f:ajax event="change" execute="@this" render="@form" />
+                     <f:validateRegex pattern="[a-zA-Z\s]*"/> 
+                    </h:inputText>
+                    <h:selectBooleanCheckbox id="modAdministrador"  value="#{solicitudModificacionCMBean.subEdificioGeneralMod.checkModAdministrador}"  
+                                             disabled= "#{solicitudModificacionCMBean.modoGestion or !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}">
+                        <f:ajax event="change" execute="@this" render="nuevoAdministrador"  />
+                    </h:selectBooleanCheckbox>  
+
+                    <h:outputText value="Compañía de Administración" class="txtLabelsMgl"/>
+                    <h:outputText  id="antCompAdmin"   value="#{solicitudModificacionCMBean.subEdificioGeneralMod.subEdificioObj.companiaAdministracionObj.nombreCompania}" />
+                    <h:selectOneMenu id="nuevoCompAdmin"  
+                                     required="true"
+                                     requiredMessage="Campo compañía de administración es requerido"
+                                     value="#{solicitudModificacionCMBean.subEdificioGeneralMod.companiaAdministracionObj.companiaId}" styleClass="ListaConsulta"  
+                                     disabled= "#{!solicitudModificacionCMBean.subEdificioGeneralMod.checkModCompaniaAdministracionObj or solicitudModificacionCMBean.modoGestion or !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}" >
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{solicitudModificacionCMBean.companiaAdministacionList}" var="cal"
+                                       itemValue="#{cal.companiaId}"
+                                       itemLabel="#{cal.nombreCompania}"/>  
+                        <f:ajax event="change" execute="@this" render="@form" />
+                    </h:selectOneMenu>
+                    <h:selectBooleanCheckbox id="modCompAdmin"  value="#{solicitudModificacionCMBean.subEdificioGeneralMod.checkModCompaniaAdministracionObj }" 
+                                             disabled= "#{solicitudModificacionCMBean.modoGestion or !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}">
+                        <f:ajax event="change" execute="@this" render="nuevoCompAdmin"  />
+                    </h:selectBooleanCheckbox>  
+
+                    <h:outputText value="Compañía Ascensores" class="txtLabelsMgl"/>
+                    <h:outputText  id="antCiaAsc"   value="#{solicitudModificacionCMBean.subEdificioGeneralMod.subEdificioObj.companiaAscensorObj.nombreCompania}" />
+                    <h:selectOneMenu id="nuevoCiaAsc"  
+                                      required="true"
+                                     requiredMessage="Campo compañía ascensores es requerido"
+                                     value="#{solicitudModificacionCMBean.subEdificioGeneralMod.companiaAscensorObj.companiaId}" styleClass="ListaConsulta"  
+                                     disabled= "#{!solicitudModificacionCMBean.subEdificioGeneralMod.checkModCompaniaAscensorObj or solicitudModificacionCMBean.modoGestion or !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}" >
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{solicitudModificacionCMBean.companiaAscensoresList}" var="ccl"
+                                       itemValue="#{ccl.companiaId}"
+                                       itemLabel="#{ccl.nombreCompania}"/>  
+                        <f:ajax event="change" execute="@this" render="@form" />
+                    </h:selectOneMenu>
+                    <h:selectBooleanCheckbox id="modCiaConstr"  value="#{solicitudModificacionCMBean.subEdificioGeneralMod.checkModCompaniaAscensorObj }" 
+                                             disabled= "#{solicitudModificacionCMBean.modoGestion or !(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}">
+                        <f:ajax event="change" execute="@this" render="nuevoCiaAsc"  />
+                    </h:selectBooleanCheckbox>  
+
+
+                </h:panelGrid> 
+
+
+            </h:panelGroup>
+        </ui:define>
+</ui:composition>

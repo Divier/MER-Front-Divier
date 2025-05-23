@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://192.168.253.92:8082/UnitService/management?wsdl" uri="wsdl/192.168.253.92_8082/UnitService/management.wsdl"/>
+    <system systemId="http://192.168.253.92:8082/UnitService/management?xsd=1" uri="wsdl/192.168.253.92_8082/UnitService/management.xsd_1.xsd"/>
+    <system systemId="http://172.31.2.230:8080/UnitService/management?wsdl" uri="wsdl/172.31.2.230_8080/UnitService/management.wsdl"/>
+    <system systemId="http://172.31.2.230:8080/UnitService/management?xsd=1" uri="wsdl/172.31.2.230_8080/UnitService/management.xsd_1.xsd"/>
+    <system systemId="http://172.31.2.67:8084/UnitService/management?wsdl" uri="wsdl/172.31.2.67_8084/UnitService/management.wsdl"/>
+    <system systemId="http://172.31.2.67:8084/UnitService/management?xsd=1" uri="wsdl/172.31.2.67_8084/UnitService/management.xsd_1.xsd"/>
+</catalog>

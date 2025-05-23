@@ -1,0 +1,34 @@
+{
+	"Files": [
+		{
+			"cluster": [
+				"CLUSTER_MER"
+			],
+			"environment": "DEV"
+		},
+		{
+			"cluster": [
+				"CLUSTER_MER"
+			],
+			"environment": "QA"
+		},
+		{
+			"cluster": [
+				"CLUSTER_GDO"
+			],
+			"environment": "PRE_PROD"
+		},
+		{
+			"cluster": [
+				"CLUSTER_EAP_OPERINSP"
+			],
+			"environment": "PROD"
+		},
+		{
+			"cluster": [
+				"CLUSTER_EAP_MER"
+			],
+			"environment": "PR_W14"
+		}
+	]
+}

@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:t="http://myfaces.apache.org/tomahawk"              
+                template="/view/MGL/template/main.xhtml"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" >
+    <ui:define name="title"><span class="TituloSeccion">Validacion Parametrizada </span></ui:define>        
+    <ui:define name="content">
+        <h2 style="margin-top: -15px; 
+            margin-left: -12px;text-align: center;">VALIDACIÓN PARAMETRIZADA</h2>
+
+        <h:panelGrid columns="9" id="modeloHhppMgl" style="width:100%;"  > 
+  
+            <h:panelGrid columns="3">
+                <h:outputText style="font-weight:bold"  id="tipoValidacionP" value="Tipo Validación:" />  
+                 <h:selectOneMenu style="width: 140px;" value="#{validacionParametrizadaMglBean.validacionSeleccionadaBasicaId}"                                           
+                                 id="validacionId" >                            
+                    <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                    <f:selectItems value="#{validacionParametrizadaMglBean.tipoValidacionParamentrizadaList}" 
+                                   var="tipo" itemLabel="#{tipo.nombreBasica}" 
+                                   itemValue="#{tipo.basicaId}"/> 
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{validacionParametrizadaMglBean.obtenerValidacionParametrizadaList()}"
+                            render="validacionesList"/> 
+                </h:selectOneMenu> 
+
+            </h:panelGrid>
+        </h:panelGrid>
+
+        <h:dataTable id="validacionesList" 
+                     value="#{validacionParametrizadaMglBean.validacionParametrizadaList}" 
+                     var="validacion"  
+                     styleClass="constructGTable" 
+                     rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                     style="width: 100%">
+    
+            <h:column > 
+                <h:selectBooleanCheckbox value="#{validacion.validacionSeleccionada}" />                                     
+            </h:column> 
+
+            <h:column >   
+                <f:facet name="header">  
+                    <h:outputText value="Nombre Validacion" />                                 
+                </f:facet>
+                <h:outputText value="#{validacion.validacionParametrizadaId.nombreValidacion}"/>                                        
+            </h:column>
+
+            <h:column >   
+                <f:facet name="header">  
+                    <h:outputText value="Descripción Validacion" />                                 
+                </f:facet>
+                <h:outputText value="#{validacion.validacionParametrizadaId.descripcionValidacion}"/>                                        
+            </h:column>
+
+            <h:column >   
+                <f:facet name="header">
+                    <h:outputText value="Fecha creación" />                                                                     
+                </f:facet>
+                <h:outputText value="#{validacion.validacionParametrizadaId.fechaCreacion}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd"/>
+                </h:outputText>
+            </h:column>                                                       
+            <h:column >   
+                <f:facet name="header">
+                    <h:outputText value="Tipo Validación" />
+                </f:facet>
+                <div style="text-align: center;">
+                    <h:outputText value="#{validacion.tipoValidacionBasicaId.nombreBasica}"/>   
+                </div>
+            </h:column> 
+
+        </h:dataTable>  
+        
+        <div style="text-align: center">
+            <h:commandButton id="guardarButton" value="Guardar Parametrización" styleClass="btn"
+                             action="#{validacionParametrizadaMglBean.guardarParametrizacion()}">
+                
+            </h:commandButton>
+            
+            <h:commandButton id="limpiarButton" value="Limpiar Pantalla" styleClass="btn"
+                             action="#{validacionParametrizadaMglBean.limpiarParametrizacion()}">
+                
+            </h:commandButton>
+            
+        </div>
+
+
+
+    </ui:define>
+
+
+</ui:composition>

@@ -1,0 +1,1515 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:rich="http://richfaces.org/rich">
+    <ul>
+        <!-- JDHT !-->
+        <li class='has-sub'>
+            <h:link value="Menú Principal"
+                    rendered="#{menuCmBean.rolMenuCuentasMatrices or menuVtBean.rolMenuHomePass}" />
+            <ul>
+                <li class='has-sub'>
+                    <h:link title="CCMM"
+                            value="Cuentas Matrices"
+                            rendered="#{menuCmBean.rolMenuCuentasMatrices}" />
+                    <ul>
+                        <li><h:commandLink action="#{menuCmBean.irMenu('CREACIONSOLICITUDCREACM')}"
+                                           id="menuCmCreaSolCreacionCmP"
+                                           title="Creación solicitud CM"
+                                           value="Creación CM" immediate="true"
+                                           rendered="#{menuCmBean.rolMenuCreaSolCreacionCm}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>  <h:commandLink action="#{menuCmBean.irMenu('CONSULTACM')}"
+                                             id="menuCmAdminBuscaCms"
+                                             title="Buscar cuenta matriz"
+                                             value="Búsqueda" immediate="true"
+                                             rendered="#{menuCmBean.rolMenuAdminBuscaCm}" >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li><h:commandLink action="#{menuCmBean.irMenu('CREACIONSOLICITUDMODCM')}"
+                                           id="menuCmCreaSolModificacionCmP"
+                                           title="Modificación de Cuenta Matriz"
+                                           value="Modificación de CM" immediate="true"
+                                           rendered="#{menuCmBean.rolMenuCreaSolModificacionCm}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                            </h:commandLink></li>
+                        <li><h:commandLink action="#{menuCmBean.irMenu('CREACIONSOLICITUDVT')}"
+                                           id="menuCmCreaSolVtP"
+                                           title="Visita Técnica"
+                                           value="Visita Técnica" immediate="true"
+                                           rendered="#{menuCmBean.rolMenuCreaSolVt}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                            </h:commandLink></li>
+                        <li><h:commandLink action="#{menuCmBean.irMenu('SOLICITUDELIMINAIONCM')}"
+                                           id="menuCmEliminarP"
+                                           title="Eliminar CM"
+                                           value="Eliminar CM" immediate="true"
+                                           rendered="#{menuCmBean.rolMenuElimarCM}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                            </h:commandLink></li>
+                        <li><h:commandLink action="#{menuCmBean.irMenu('CREACIONSOLICITUHHPP')}"
+                                           id="menuCmCreaSolCreacionHhppCmP"
+                                           title="Creación HHPP"
+                                           value="Creación/Modificación HHPP" immediate="true"
+                                           rendered="#{menuCmBean.rolMenuCreaSolCreacionHhppCm or menuCmBean.rolMenuCreaSolModificacionHhppCm}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                            </h:commandLink></li>
+                        <li>
+                            <h:commandLink  action="#{menuCmBean.irMenu('ESTADOSOLICITUD')}"
+                                            id="menuCmEstadoSolicitudP"
+                                            title="Estado Solicitudes"
+                                            value="Estado Solicitudes" immediate="true"
+                                            rendered="#{menuCmBean.rolMenuEstadoSolicitud}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                            </h:commandLink>
+                        </li>
+                    </ul>
+                </li>
+                <li class='has-sub'>
+                    <h:link title="HHPP"
+                            value="Home Passed"
+                            rendered="#{menuVtBean.rolMenuHomePass}"/>
+                    <ul>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('SOLICITUDVTCREARSOLICITUD')}"
+                                           id="menuVtSolCrearSolicitudd"
+                                           title="Crear solicitud"
+                                           value="Crear solicitud"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtSolCrearSolicitud}" >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+
+                        <li class='has-sub'>
+                            <h:link title="Factibilidades" value="Factibilidades" rendered="#{menuVtBean.rolMenuVtModeloOverview}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('MODELOOVERVIEW')}"
+                                                   id="menuVtModeloHHPPPVisor"
+                                                   title="Visor de Factibilidad"
+                                                   value="Visor de Factibilidad"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuVtModeloOverview}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('MODELOOVERVIEWREPORTE')}"
+                                                   id="reporteFactibilidad"
+                                                   title="Reportes"
+                                                   value="Reportes"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuReporteFact}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+
+
+
+                            </ul>
+                        </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('MODELOADMPERFIL')}"
+                                           id="menuAdmPerfilFact"
+                                           title="Administracion de Perfiles"
+                                           value="Administracion de Perfiles"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuAdmPerfilFact}"
+                                           >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('ESTADOSOLICITUDVT')}"
+                                           id="menuVtEstadoSolicitudP"
+                                           title="Estado de la solicitud."
+                                           value="Estado de la solicitud"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtEstadoSolicitud}"
+                                           >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                    </ul>
+                </li>
+                <li class='has-sub'>
+                    <h:link title="Nodos A Cuadrantes"
+                            value="Nodos A Cuadrantes"
+                            rendered="#{menuVtBean.rolMenuVtNodoCuadrante}"/>
+                    <ul>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('NODCUAGESSOL')}"
+                                           id="menuVtNodoCuadrante"
+                                           title="Gestionar Solicitudes"
+                                           value="Gestionar Solicitudes"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtNodoCuadrante}" >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                    </ul>                    
+                </li>
+            </ul>
+        </li>
+        <li class='has-sub'>
+            <h:link title="Cuentas Matrices"
+                    value="Cuentas Matrices"
+                    rendered="#{menuCmBean.rolMenuCuentaMatrices}" />
+            <ul>
+                <li class='has-sub'>
+                    <h:link title="Administración" value="Administración" rendered="#{menuCmBean.rolMenuAdministracion}" />
+                    <ul>
+                        <li class='has-sub'>
+                            <h:link title="Mto Tablas" value="Mantenimiento de Tablas"
+                                    rendered="#{menuCmBean.rolMenuMantenimientoTablas}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('CRUDTBLBASICA')}"
+                                                   id="menuCmCrudTbBasicas"
+                                                   title="crud básicas"
+                                                   value="Tipo Tabla"
+                                                   immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuMttoTipoTabla}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('TBBASICA')}"
+                                                   id="menuCmMtoTbBasicas"
+                                                   title="mto básicas"
+                                                   value="Tabla Básica"
+                                                   immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuTbBasicas}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('MTOTABLAS')}"
+                                                   id="menuCmTablaBasicas"
+                                                   title="tablas básicas"
+                                                   value="Mantenimiento de Tablas" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuMttoTablas}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+
+
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('MARCACREAHHPPVIRTR1R2MTOTABLAS')}"
+                                                   id="menuCmMarcaCreaHHPPVirtualR1R2"
+                                                   title="marcaciones creacion hhpp virtual r1 y r2"
+                                                   value="Marcaciones Creacion HHPP Virtual R1 y R2" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuMarcacionesHHPPVirtual}" >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+
+
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('PARAMCOBERTURAENTERGAS')}"
+                                                   id="menuCmCovert"
+                                                   title="Parametrización Proveedores"
+                                                   value="Parametrización Proveedores" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuParametrizacionProveedores}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('SUBTIPOSOTCMVTTEC')}"
+                                                   id="menuSubtipoOtCmVt"
+                                                   title="Subtipos Ot de VT por Tecnología"
+                                                   value="Subtipos Ot de VT por Tecnología" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuSubtipoOtCmVt}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('SLAOT')}"
+                                                   id="menuCmSlaOt"
+                                                   title="Sub-Tipo Órdenes"
+                                                   value="Sub-Tipo Órdenes SLA" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuEstadoSlaTipoOt}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('SLASOL')}"
+                                                   id="menuCmSlaSol"
+                                                   title="Tipos de solicitud"
+                                                   value="Tipos de Solicitud SLA" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuSlaSolicitudOt}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('NODO')}"
+                                                   id="menuCmNodo"
+                                                   title="Nodo"
+                                                   value="Nodo" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCmNodo}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('ACTESTCOMER')}"
+                                                   id="menuCmActualizacionEstrcturalComercial"
+                                                   title="Actualización Estructura Comercial"
+                                                   value="Actualización Estructura Comercial" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCmActEstCom}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('TBCOMPETENCIA')}"
+                                                   id="menuCmCompetencia"
+                                                   title="Tipo Competencia"
+                                                   value="Tipo Competencia" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuTbCompetencias}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('REGIONAL')}"
+                                                   id="menuCmRegional"
+                                                   title="Regional"
+                                                   value="Regional" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCmRegional}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('COMUNIDADES')}"
+                                                   id="menuCmComunidad"
+                                                   title="Comunidades"
+                                                   value="Comunidades" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCmComunidad}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('PLANTA')}"
+                                                   id="menuCmPlanta"
+                                                   title="Mantenimiento de planta y localizaciones"
+                                                   value="Mantenimiento de planta y localizaciones"
+                                                   immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCmPlanta}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('ARRENDATARIO')}"
+                                                   id="menuCmArrendatario"
+                                                   title="Arrendatarios de Infraestructura"
+                                                   value="Arrendatarios de Infraestructura"
+                                                   immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCmArrendatario}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('SLAEJECUCION')}"
+                                                   id="menuCmSlaEjecucion"
+                                                   title="SLA de Ejecucion"
+                                                   value="SLA de Ejecucion"
+                                                   immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCmSlaEjecucion}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('HOMOLOGACIONRAZONES')}"
+                                                   id="menuCmHomologacionRazones"
+                                                   title="Homologación Razones"
+                                                   value="Homologación Razones"
+                                                   immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCmHomologacionRazones}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="Viabilidad" value="Viabilidad" rendered="#{menuCmBean.rolMenuViabilidad}" />
+                            <ul>
+                                <li><h:commandLink action="#{menuCmBean.irMenu('VIABILIDADHHPP')}"
+                                                   id="menuCmViabilidadHhpp"
+                                                   title="Viabilidad HHPP"
+                                                   value="Viabilidad HHPP" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuViabilidadHhpp}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink></li>
+                                <li><h:commandLink action="#{menuCmBean.irMenu('VIABILIDADSEGESTRATO')}"
+                                                   id="menuCmViabilidadEstrato"
+                                                   title="Viabilidad Segmento Estrato"
+                                                   value="Viabilidad Segmento Estrato" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuViabilidadEstrato}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink></li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="Viabilidad" value="Matriz Viabilidad" rendered="#{menuCmBean.rolMenuMatrizViabilidad}" />
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('VIABILIDADTIPOVALIDACION')}"
+                                                   id="menuCmViabilidadTipoValidacion"
+                                                   title="Tipo Validación"
+                                                   value="Tipo Validación"
+                                                   immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuViabilidadHhpp}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('VIABILIDADMENSAJEREGLA')}"
+                                                   id="menuCmViabilidadMsgRegla"
+                                                   title="Mensajes Regla Proyecto"
+                                                   value="Mensajes Regla Proyecto" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuViabilidadEstrato}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('VIABILIDADVALIDACIONPROYECTO')}"
+                                                   id="menuCmViabilidadValidacionProyecto"
+                                                   title="Validación Proyecto"
+                                                   value="Validación Proyecto" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuViabilidadHhpp}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('VIABILIDADREGLAVALIDACION')}"
+                                                   id="menuCmViabilidadReglaValidacion"
+                                                   title="Reglas Validación"
+                                                   value="Reglas Validación" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuViabilidadEstrato}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="Tablas Ga" value="Gestión Avanzada" rendered="#{menuCmBean.rolMenuGestionAvanzada}" />
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('ESTADOINTERNOGA')}"
+                                                   id="menuCmEstadoInternoGa"
+                                                   title="Estado interno de la GA"
+                                                   value="Estado interno de la GA" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuEstadoInternoGa}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('RELACIONESTADOCMTIPOGA')}"
+                                                   id="menuCmRelacionCmGa"
+                                                   title="RelacionCmGa"
+                                                   value="Relación Estado CM – Tipo GA" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuRelacionCmGa}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('ESTADOXTECNOLOGIA')}"
+                                                   id="menuCmEstadoxTecnologia"
+                                                   title="Estados Tecnologías"
+                                                   value="Estados Tecnologías" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuEstadoTecnologia}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="otras tablas" value="Compañías" rendered="#{menuCmBean.rolMenuCompania}" />
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('COMPADMIN')}"
+                                                   id="menuCmCompaniaAdmin"
+                                                   title="compañías de administración"
+                                                   value="Administración" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCompaniaAdmin}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('COMPCONSTRUCCION')}"
+                                                   id="menuCmCompaniaConstructora"
+                                                   title="Compañías constructoras"
+                                                   value="Constructoras" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCompaniaConstructora}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('COMPASCENSORES')}"
+                                                   id="menuCmCompaniaAscensores"
+                                                   title="Compañías de ascensores"
+                                                   value="Ascensores" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCompaniaAscensonres}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class='has-sub'>
+                            <h:link title="parámetros del sistema" value="Parámetros MER"
+                                    rendered="#{menuCmBean.rolMenuGestionParametros}" />
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('GESTIONPARAMETROS')}"
+                                                   id="menuCmParametrosAdmin"
+                                                   title="Gestión de parámetros"
+                                                   value="Gestión Parámetros" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuGestionParametros}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                                                
+                        <li class='has-sub'>
+                            <h:link title="Crear regla" value="Crear reglas estados combinados"
+                                    rendered="#{menuCmBean.rolMenuEstadosCombinados}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('CREARREGLAESTADOS')}"
+                                                   id="menuCrearReglaEstados"
+                                                   title="Crear regla"
+                                                   value="Crear reglas estados combinados" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuEstadosCombinados}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+                <li class='has-sub'>
+                    <h:link title="Órdenes de trabajo" value="Órdenes de trabajo" rendered="#{menuCmBean.rolMenuOrdenesTrabajo}"/>
+                    <ul>
+                        <li class='has-sub'>
+                            <h:link title="Gestión" value="Gestión OT" rendered="#{menuCmBean.rolMenuGestionOT}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('GESTIONOT')}"
+                                                   id="menuCmGestionOt"
+                                                   title="OT Pendientes Gestión"
+                                                   value="OT Pendientes Gestión" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuGestionOt}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('GENERAROTEJECUCION')}"
+                                                   id="menuCmGenerarOtEjecucion"
+                                                   title="Generar OT de ejecución"
+                                                   value="Generar OT de ejecución" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCmGenerarOtEjecucion}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="Crear OT" value="Creación OT" rendered="#{menuCmBean.rolCreaOT}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('CREAROTVT')}"
+                                                   id="menuCmCreaOtVt"
+                                                   title="Crear Orden de Trabajo"
+                                                   value="Crear Orden de Trabajo" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCreaOtVt}" >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="Administración OT" value="Administración de OT" rendered="#{menuCmBean.rolAdministraOT}" />
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('ESTXFLUJO')}"
+                                                   id="menuCmEstadosxFlujosOt"
+                                                   title="Estados x Flujos"
+                                                   value="Estados x Flujos" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuEstadosxFlujoOt}" >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('REGLAFLUJOOT')}"
+                                                   id="menuCmreglaFlujo"
+                                                   title="Reglas Flujo OT"
+                                                   value="Reglas Flujo OT" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuReglaFlujoOt}" >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('ESTADOINTEXT')}"
+                                                   id="menuCmEstadosIntExt"
+                                                   title="Estados Interno x Externo"
+                                                   value="Estados Inteno x Externo" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuReglaFlujoOt}" >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class='has-sub'>
+                    <h:link title="Cuenta matriz" value="Cuenta matriz" rendered="#{menuCmBean.rolMenuCuentaMatriz}"/>
+                    <ul>
+                        <li class='has-sub'>
+                            <h:link title="Administrar" value="Administrar" rendered="#{menuCmBean.rolMenuCMAdministrar}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('CONSULTACM')}"
+                                                   id="menuCmAdminBuscaCm"
+                                                   title="Buscar cuenta matriz"
+                                                   value="Búsqueda" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuAdminBuscaCm}" >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('CARGUEMASIVOS')}"
+                                                   id="menuCmcarguemasivos"
+                                                   title="Cargue Masivo"
+                                                   value="Cargue Masivo" immediate="true"
+                                                   rendered="#{menuCmBean.rolCargueMasivoCcmm}" >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="Solicitudes" value="Solicitudes" rendered="#{menuCmBean.rolMenuCMSolicitudes}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('CREACIONSOLICITUDCREACM')}"
+                                                   id="menuCmCreaSolCreacionCm"
+                                                   title="Creación Solicitud CM"
+                                                   value="Creación CM" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCreaSolCreacionCm}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('CREACIONSOLICITUDMODCM')}"
+                                                   id="menuCmCreaSolModificacionCm"
+                                                   title="Modificación de Cuenta Matriz"
+                                                   value="Modificación de CM" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCreaSolModificacionCm}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('CREACIONSOLICITUDVT')}"
+                                                   id="menuCmCreaSolVt"
+                                                   title="Visita Técnica"
+                                                   value="Visita Técnica" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCreaSolVt}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('SOLICITUDELIMINAIONCM')}"
+                                                   id="menuCmEliminar"
+                                                   title="Eliminar CM"
+                                                   value="Eliminar CM" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuElimarCM}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('CREACIONSOLICITUHHPP')}"
+                                                   id="menuCmCreaSolCreacionHhppCm"
+                                                   title="Creación HHPP"
+                                                   value="Creación/Modificación HHPP" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuCreaSolCreacionHhppCm or menuCmBean.rolMenuCreaSolModificacionHhppCm}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="Gestión" value="Gestión de Solicitudes" rendered="#{menuCmBean.rolMenuCMGestionSolicitudes}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuCmBean.irMenu('GESTIONSOLICITUD')}"
+                                                   id="menuCmGestionSolicitud"
+                                                   title="Gestionar Solicitudes"
+                                                   value="Gestionar Solicitudes" immediate="true"
+                                                   rendered="#{menuCmBean.rolMenuGestionSolicitud}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="Reportes" value="Reportes" rendered="#{menuCmBean.rolMenuCMReportes}" />
+                            <ul>
+                                <li>
+                                    <h:commandLink  action="#{menuCmBean.irMenu('REPORTESOLICITUDES')}"
+                                                    id="menuCmReporteSolicitud"
+                                                    title="Reportes Solicitudes CM"
+                                                    value="Reportes Solicitudes CM" immediate="true"
+                                                    rendered="#{menuCmBean.rolMenuReportesSolicitud}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink  action="#{menuCmBean.irMenu('REPORTEPENETRACION')}"
+                                                    id="menuCmPenetracion"
+                                                    title="Reportes Penetración CM"
+                                                    value="Reportes Penetración CM" immediate="true"
+                                                    rendered="#{menuCmBean.rolMenuReportesPenetracion}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink  action="#{menuCmBean.irMenu('REPORTECOMPROMISOCOMERCIAL')}"
+                                                    id="menuCmCompromiso"
+                                                    title="Reporte Compromiso Comercial CM"
+                                                    value="Reporte Compromiso Comercial CM" immediate="true"
+                                                    rendered="#{menuCmBean.rolMenuReportesSolicitud}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="Estado Solicitudes" value="Estado de Solicitudes" rendered="#{menuCmBean.rolMenuCMEstadoSolicitud}" />
+                            <ul>
+                                <li>
+                                    <h:commandLink  action="#{menuCmBean.irMenu('ESTADOSOLICITUD')}"
+                                                    id="menuCmEstadoSolicitud"
+                                                    title="Estado Solicitudes"
+                                                    value="Estado Solicitudes" immediate="true"
+                                                    rendered="#{menuCmBean.rolMenuEstadoSolicitud}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='has-sub'>
+                            <h:link title="utilidades" value="Modificaciones" rendered="#{menuCmBean.rolMenuCMModificaciones}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink  action="#{menuCmBean.irMenu('CARGUEMASIVOMODIFICACION')}"
+                                                    id="menuCmCargueMasivo"
+                                                    title="Modificación masiva de Cuenta Matriz"
+                                                    value="Modificación masiva de Cuenta Matriz"
+                                                    immediate="true"
+                                                    rendered="#{menuCmBean.rolMenuCmModificacionMasiva}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink  action="#{menuCmBean.irMenu('MASIVOMODIFICACION')}"
+                                                    id="menuCmMasivoModificacion"
+                                                    title="Ejecutar Cargue masivo"
+                                                    value="Ejecutar Cargue masivo"
+                                                    immediate="true"
+                                                    rendered="#{menuCmBean.rolMenuCmCargueMasivo}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class='has-sub'>
+                    <h:link title="Reportes" value="Reportes" rendered="#{menuCmBean.rolMenuReporteOtCm}"/>
+                    <ul>
+                        <li class='has-sub'>
+                            <h:commandLink action="#{menuCmBean.irMenu('ESTADOACTUALOTCM')}"
+                                           id="menuOtCcmm"
+                                           title="Tracking de Ordenes"
+                                           value="Tracking de Ordenes"
+                                           immediate="true"
+                                           rendered="#{menuCmBean.rolOtCcmm}" >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li class='has-sub'>
+                            <h:commandLink action="#{menuCmBean.irMenu('HISTORICOOTDIR')}"
+                                           id="menuRolHistOtDir"
+                                           title="Historico Tracking de Ordenes"
+                                           value="Historico Tracking de Ordenes"
+                                           immediate="true"
+                                           rendered="#{menuCmBean.rolHistOtDir}"
+                                           >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('CM')}"/>
+                            </h:commandLink>
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li class='has-sub'>
+            <h:link title="Home Passed"
+                    value="Home Passed"
+                    rendered="#{menuVtBean.rolMenuHhpp}"/>
+            <ul>
+                <li class='has-sub'>
+                    <h:link title="Solicitar"
+                            value="Solicitar"
+                            rendered="#{menuVtBean.rolMenuHpSolicitar}"/>
+                    <ul>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('SOLICITUDVTCREARSOLICITUD')}"
+                                           id="menuVtSolCrearSolicitud"
+                                           title="Crear solicitud"
+                                           value="Crear solicitud"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtSolCrearSolicitud}" >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('SOLICITUDVTREPLANTEAMIENTO')}"
+                                           id="menuVtSolReplanteamiento"
+                                           title="Visita Técnica Replanteamiento"
+                                           value="Visita Técnica Replanteamiento"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtSolReplanteamiento}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('SOLICITUDVTCAMBIOESTRATO')}"
+                                           id="menuVtSolCambioEstrato"
+                                           title="Cambios de estrato."
+                                           value="Cambios de estrato"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtSolCambioEstrato}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('SOLICITUDVTVIABILIDADINTERNET')}"
+                                           id="menuVtSolViabilidadInternet"
+                                           title="Viabilidad Internet."
+                                           value="Viabilidad Internet"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtSolViabilidadInternet}"
+                                           >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+
+                    </ul>
+                </li>
+
+
+                <!-- SUBMENU TEMPORAL -->
+                <li class='has-sub'>
+                    <h:link title="Solicitar CCMM"
+                            value="Solicitar CCMM"
+                            rendered="#{menuVtBean.rolMenuHpSolicitar}"/>
+                    <ul>
+                        <!-- TEMPORAL -->
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('SOLICITUDVTEDIFICIOCONJUNTO')}"
+                                           id="menuVtSolEdificioConjunto"
+                                           title="Visita Técnica Edificio o Conjunto"
+                                           value="Visita Técnica Edificio o Conjunto"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtSolEdificioConjunto}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('SOLICITUDVTENCASA')}"
+                                           id="menuVtSolEnCasa"
+                                           title="Visita Técnica En casas"
+                                           value="Visita Técnica En casas"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtSolEnCasa}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('SOLICITUDVTCREACIONCM')}"
+                                           id="menuVtSolCreacionCuentaMatriz"
+                                           title="Creación de cuenta Matriz."
+                                           value="Creación de cuenta Matriz"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtSolCreacionCuentaMatriz}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+
+                        <!--
+                          <li>
+                              <h:commandLink action="# {menuVtBean.irMenu('SOLICITUDVTCREACIONHHPPUNIDI')}"
+                                             id="menuVtSolCreacionHHPPUniDireccional"                 
+                                             title="Creaci&oacute;n de HHPP Unidireccional." 
+                                             value="Creaci&oacute;n de HHPP Unidireccional" 
+                                             immediate="true"
+                                             rendered="# {menuVtBean.rolMenuVtSolCreacionHHPPUnidireccional}">
+                                  <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                              </h:commandLink> 
+                          </li>
+                        -->
+
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('SOLICITUDVTCREACIONHHPPCM')}"
+                                           id="menuVtSolCreacionHHPPEnCuentaMatriz"
+                                           title="Creación de HHPP en Cuenta Matriz."
+                                           value="Creación de HHPP en Cuenta Matriz"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtSolCreacionHHPPEnCuentaMatriz}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('SOLICITUDVTMODIFICARELIMINARCM')}"
+                                           id="menuVtSolModificarEliminarCuentaMatriz"
+                                           title="Modificar Eliminar Cuenta Matriz."
+                                           value="Modificar Eliminar Cuenta Matriz"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtSolModificarEliminarCuentaMatriz}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+
+                        <!--
+                        <li>
+                            <h:commandLink action="# {menuVtBean.irMenu('SOLICITUDVTMODIFICARHHPP')}"
+                                           id="menuVtSolModificarHHPP"                 
+                                           title="Modificaci&oacute;n HHPP." 
+                                           value="Modificaci&oacute;n HHPP"
+                                           immediate="true"
+                                           rendered="# {menuVtBean.rolMenuVtSolModificarHHPP}">
+                                <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink> 
+                        </li>
+                        
+                        <li>
+                            <h:commandLink action="# {menuVtBean.irMenu('SOLICITUDVERIFICARCASA')}"
+                                           id="menuVtSolVerificarCasa"                 
+                                           title="Verificaci&oacute;n de casas." 
+                                           value="Verificaci&oacute;n de casas"
+                                           immediate="true"
+                                           rendered="# {menuVtBean.rolMenuVtSolVerificarCasa}">
+                                <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink> 
+                        </li>-->
+
+                        <!-- // FIN TEMPORAL -->
+                    </ul>
+                </li>
+                <li class='has-sub'>
+                    <h:link title="Gestionar"
+                            value="Gestionar Solicitud"
+                            rendered="#{menuVtBean.rolMenuHpGestionarSolicitud}"/>
+                    <ul>
+                        <li>
+                            <h:commandLink     action="#{menuVtBean.irMenu('SOLICITUDVTGESTIONSOLICITUD')}"
+                                               id="menuVtGestionSolicitud"
+                                               title="Gestión solicitud."
+                                               value="Gestión solicitud"
+                                               immediate="true"
+                                               rendered="#{menuVtBean.rolMenuVtGestionSolicitud}" >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('GESTIONVTREPLANTEAMIENTO')}"
+                                           id="menuVtGestionReplanteamiento"
+                                           title="Visita Técnica Replanteamiento."
+                                           value="Visita Técnica Replanteamiento"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtGestionReplanteamiento}"
+                                           >
+                                <f:setPropertyActionListener
+                                    target="#{actionManagedBean.action}"
+                                    value="#{actionManagedBean.gestionarVtReeplanteamiento}"/>
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink     action="#{menuVtBean.irMenu('GESTIONCAMBIOESTRATO')}"
+                                               id="menuVtGestionCambiosEstrato"
+                                               title="Cambios de estrato."
+                                               value="Cambios de estrato"
+                                               immediate="true"
+                                               rendered="#{menuVtBean.rolMenuVtGestionCambiosEstrato}"
+                                               >
+                                <f:setPropertyActionListener
+                                    target="#{actionManagedBean.action}"
+                                    value="#{actionManagedBean.gestionarActualizacionCambioEstrato}"/>
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('GESTIONVIAINTERNET')}"
+                                           id="menuVtGestionViabilidadInternet"
+                                           title="Viabilidad Internet."
+                                           value="Viabilidad Internet"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtGestionViabilidadInternet}">
+                                <f:setPropertyActionListener
+                                    target="#{actionManagedBean.action}"
+                                    value="#{actionManagedBean.gestionarViabilidadInternet}"/>
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <!-- SUBMENU TEMPORAL -->
+                <li class='has-sub'>
+                    <h:link title="Gestionar CCMM"
+                            value="Gestionar Solicitud CCMM"
+                            rendered="#{menuVtBean.rolMenuHpGestionarSolicitud}"/>
+                    <ul>
+                        <!-- TEMPORAL -->
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('GESTIONVTEDCO')}"
+                                           id="menuVtGestionEdificioConjunto"
+                                           title="Visita Técnica Edificio o Conjunto."
+                                           value="Visita Técnica Edificio o Conjunto"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtGestionEdificioConjunto}"
+                                           >
+                                <f:setPropertyActionListener
+                                    target="#{actionManagedBean.action}"
+                                    value="#{actionManagedBean.gestionarVtEdificioConjunto}"/>
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+
+
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('GESTIONVTENCAS')}"
+                                           id="menuVtGestionEnCasa"
+                                           title="Visita Técnica En casa."
+                                           value="Visita Técnica En casas"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtGestionEnCasa}"
+                                           >
+                                <f:setPropertyActionListener
+                                    target="#{actionManagedBean.action}"
+                                    value="#{actionManagedBean.gestionarVtEnCasas}"/>
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('GESTIONCRCUMA')}"
+                                           id="menuVtGestionCreacionCuentaMatriz"
+                                           title="Creación de cuenta Matriz"
+                                           value="Creación de cuenta Matriz"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtGestionCreacionCuentaMatriz}"
+                                           >
+                                <f:setPropertyActionListener
+                                    target="#{actionManagedBean.action}"
+                                    value="#{actionManagedBean.gestionarCreacionCuentaMatriz}"/>
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+
+                        <!--
+                         <li>
+                             <h:commandLink action="# {menuVtBean.irMenu('GESTIONCRHHPPUNI')}"
+                                            id="menuVtGestionCreacionHHPPUni"
+                                            title="Creaci&oacute;n de HHPP Unidireccional." 
+                                            value="Creaci&oacute;n de HHPP Unidireccional"
+                                            immediate="true" 
+                                            rendered="# {menuVtBean.rolMenuVtGestionCreacionHHPPUni}">
+                                 <f:setPropertyActionListener 
+                                     target="# {actionManagedBean.action}" 
+                                     value="# {actionManagedBean.gestionarCreacionHHPPUnidireccional}"/>      
+                                 <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                             </h:commandLink> 
+                         </li>
+                        -->
+
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('GESTIONCRHHPPCUMA')}"
+                                           id="menuVtGestionCreacionHHPPCuentaMatriz"
+                                           title="Creación de HHPP en Cuenta Matriz."
+                                           value="Creación de HHPP en Cuenta Matriz"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtGestionCreacionHHPPCuentaMatriz}"
+                                           >
+                                <f:setPropertyActionListener
+                                    target="#{actionManagedBean.action}"
+                                    value="#{actionManagedBean.gestionarCreacionHHPPEnCuentaMatriz}"/>
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('GESTIONMODELCUMA')}"
+                                           id="menuVtGestionModificarEliminarCuentaMatriz"
+                                           title="Modificar Eliminar Cuenta Matriz."
+                                           value="Modificar Eliminar Cuenta Matriz"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtGestionModificarEliminarCuentaMatriz}"
+                                           >
+                                <f:setPropertyActionListener
+                                    target="#{actionManagedBean.action}"
+                                    value="#{actionManagedBean.
+                                             gestionarModificarEliminarCuentaMatriz}"/>
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+
+                        <!--
+                         <li>
+                             <h:commandLink    
+                                 action="# {menuVtBean.irMenu('GESTIONMODHHPP')}"
+                                 id="menuVtGestionModificarHHPP"
+                                 title="Modificaci&oacute;n HHPP." 
+                                 value="Modificaci&oacute;n HHPP"
+                                 immediate="true" 
+                                rendered="# {menuVtBean.rolMenuVtGestionModificarHHPP}">
+                                 <f:setPropertyActionListener 
+                                     target="# {actionManagedBean.action}" 
+                                     value="# {actionManagedBean.gestionarActualizacionHHPP}"/>
+                                 <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                             </h:commandLink> 
+                         </li>
+                        
+                         <li>
+                             <h:commandLink action="# {menuVtBean.irMenu('GESTIONVERCASAS')}"
+                                            id="menuVtGestionVerificacionCasas"
+                                            title="Verificaci&oacute;n de casas." 
+                                            value="Verificaci&oacute;n de casas"
+                                            immediate="true"     
+                                            rendered="# {menuVtBean.rolMenuVtGestionVerificacionCasas}">
+                                 <f:setPropertyActionListener 
+                                     target="# {actionManagedBean.action}" 
+                                     value="# {actionManagedBean.gestionarVerificacionCasas}"/>
+                                 <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                             </h:commandLink> 
+                         </li>-->
+
+                        <!-- // FIN TEMPORAL -->
+                    </ul>
+                </li>
+                <li class='has-sub'>
+                    <h:link title="Órdenes de trabajo"
+                            value="Órdenes de trabajo"
+                            rendered="#{menuVtBean.rolMenuHpOrdenesTrabajo}" />
+                    <ul>
+                        <li class='has-sub'>
+                            <h:link title="Gestión" value="Gestión OT" rendered="#{menuVtBean.rolMenuHpGestionOt}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('GESTIONHHPPOT')}"
+                                                   id="menuVtAdministradorOtHhpp"
+                                                   title="OT Pendientes Gestión"
+                                                   value="OT Pendientes Gestión"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuHhppGestionOt}" >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}" />
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('CONFIGURACIONHHPPOT')}"
+                                           id="menuVtConfiguracionOtHhpp"
+                                           title="Configuración de OT"
+                                           value="Configuración de OT"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtAdministradorNodo}"
+                                           >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <h:commandLink action="#{menuVtBean.irMenu('VETONODOS')}"
+                                   id="menuVtVetoNodos"
+                                   title="Veto Nodos"
+                                   value="Veto Nodos"
+                                   immediate="true"
+                                   rendered="#{menuVtBean.rolMenuVtVetoNodos}"
+                                   >
+                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                    </h:commandLink>
+                </li>
+                <li>
+                    <h:commandLink action="#{menuVtBean.irMenu('MODELOHHPP')}"
+                                   id="menuVtModeloHHPP"
+                                   title="Búsqueda de Hhpp"
+                                   value="Búsqueda de Hhpp"
+                                   immediate="true"
+                                   rendered="#{menuVtBean.rolMenuHHPPBusquedaHHPP}" >
+                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                    </h:commandLink>
+                </li>
+                <li>
+                    <h:commandLink action="#{menuVtBean.irMenu('ESTADOSOLICITUDVT')}"
+                                   id="menuVtEstadoSolicitud"
+                                   title="Estado de la solicitud."
+                                   value="Estado de la solicitud"
+                                   immediate="true"
+                                   rendered="#{menuVtBean.rolMenuVtEstadoSolicitud}">
+                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                    </h:commandLink>
+                </li>
+                <!--   <li>
+                       <h:commandLink action="# {menuVtBean.irMenu('ADMINISTRADORVT')}"
+                                      id="menuVtAdministrador"
+                                      title="Administrador." 
+                                      value="Administrador"
+                                      immediate="true"
+                                      rendered="# {menuVtBean.rolMenuVtAdministrador}" >
+                           <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                       </h:commandLink> 
+                   </li> -->
+                <li>
+                    <h:commandLink action="#{menuVtBean.irMenu('REPORTESVT')}"
+                                   id="menuVtReporteSolicitudes"
+                                   title="Reportes Solicitudes."
+                                   value="Reportes"
+                                   immediate="true"
+                                   rendered="#{menuVtBean.rolMenuVtReporteSolicitudes}" >
+                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                    </h:commandLink>
+                </li>
+                <!--   <li>
+                       <h:commandLink action="# {menuVtBean.irMenu('CIERREMASIVOVT')}"
+                                      id="menuVtCierreMasivo"
+                                      title="Cierre Masivo." 
+                                      value="Cierre Masivo"
+                                      immediate="true"
+                                      rendered="# {menuVtBean.rolMenuVtCierreMasivo}"
+                                      >
+                           <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                       </h:commandLink> 
+                   </li>-->
+                <li class='has-sub'>
+                    <h:link title="Administrador de direcciones"
+                            value="Administrador de direcciones"
+                            rendered="#{menuVtBean.rolMenuHpAdministradorDireccciones}"/>
+                    <ul>
+                        <!--<li>
+                            <h:commandLink action="# {menuVtBean.irMenu('ADMINNODO')}"
+                                           id="menuVtAdministradorNodo"
+                                           title="Administrador Nodo." 
+                                           value="Administrador Nodo"
+                                           immediate="true"
+                                           rendered="# {menuVtBean.rolMenuVtAdministradorNodo}" >
+                                <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink> 
+                        </li>                        
+                        <li>
+                            <h:commandLink action="# {menuVtBean.irMenu('ADMINDIRECCIONES')}"
+                                           id="menuVtAdministradorDirecciones"
+                                           title="Administrador Direcci&oacute;n." 
+                                           value="Administrador Direcci&oacute;n"
+                                           immediate="true" 
+                                           rendered="# {menuVtBean.rolMenuVtAdministradorDirecciones}"
+                                           >
+                                <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink> 
+                        </li>-->
+                        <li class='has-sub'>
+                            <h:link title="Administrador de Dptos y Ciudades"
+                                    value="Administrador de Dptos y Ciudades"
+                                    rendered="#{menuVtBean.rolMenuHpAdministradorDireccciones}"/>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('ADMINCIUDADES')}"
+                                                   id="menuVtAdministradorCiudades"
+                                                   title="Administrador Dptos y ciudades."
+                                                   value="Administrador Dptos y ciudades"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuVtAdministradorCiudades}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class='has-sub'>
+                    <h:link title="Operaciones sobre el HHPP"
+                            value="Operaciones sobre el HHPP"
+                            rendered="#{menuVtBean.rolMenuHpOperacionesHhpp}"/>
+                    <ul>
+                        <!-- <li>
+                             <h:commandLink action="# {menuVtBean.irMenu('OPERACIONESCAMBESTRATOMASIVO')}"
+                                            id="menuVtOperacionesCambioEstratoMasivo"
+                                            title="Cambio de Estrato Masivo." 
+                                            value="Cambio de Estrato Masivo"
+                                            immediate="true"
+                                            rendered="# {menuVtBean.rolMenuVtOperacionesCambioEstratoMasivo}" >
+                                 <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                             </h:commandLink> 
+                         </li>
+                         <li>
+                             <h:commandLink action="# {menuVtBean.irMenu('OPERACIONESELIMINARMASIVO')}"
+                                            id="menuVtOperacionesEliminarMasivoHHPP"
+                                            title="Eliminar Masivamente HHPP." 
+                                            value="Eliminar Masivamente HHPP"
+                                            immediate="true"
+                                            rendered="# {menuVtBean.rolMenuVtOperacionesEliminarMasivoHHPP}"
+                                            >
+                                 <f:actionListener binding="# {bienvenidaBean.setModulo('HHPP')}"/>
+                             </h:commandLink> 
+                         </li> -->
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('OPERACIONESCREARREPORTE')}"
+                                           id="menuVtOperacionesCrearReporteHHPP"
+                                           title="Crear reporte masivo HHPP"
+                                           value="Crear reporte masivo HHPP"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtOperacionesCrearReporte}"
+                                           >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('OPERACIONESCARGUEMASIVO')}"
+                                           id="menuVtOperacionesCarguerMasivoModificacionHHPP"
+                                           title="Cargue masivo modificación HHPP"
+                                           value="Cargue masivo modificación HHPP"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtOperacionesCargueMasivo}" >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('OPERACIONESINHABILITARMASIVO')}"
+                                           id="menuVtOperacionesCrearReporteInhabilitarHHPP"
+                                           title="Crear reporte inhabilitar HHPP"
+                                           value="Crear reporte inhabilitar HHPP"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtOperacionesInhabilitarMasivo}" >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                    </ul>
+                </li>
+                <li class='has-sub'>
+                    <h:link title="Fichas"
+                            value="Fichas"
+                            rendered="#{menuVtBean.rolFichas}"/>
+                    <ul>
+                        <li>
+                            <a title="Prefichas" value="Prefichas" immediate="true">Prefichas</a>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('CARGUEFICHA')}"
+                                                   id="menuVtCargueFichas"
+                                                   title ="Cargue de Fichas"
+                                                   value="Cargue de Fichas"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuVtCargueFicha}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('GENERARPREFICHA')}"
+                                                   id="menuVtGenerarPreficha"
+                                                   title="Generar preficha."
+                                                   value="Generar preficha"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuVtGenerarPreficha}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('VALIDARPREFICHA')}"
+                                                   id="menuVtValidarPreficha"
+                                                   title="Validar preficha."
+                                                   value="Validar preficha"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuVtValidarPreficha}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('CREARPREFICHA')}"
+                                                   id="menuVtCrearPreficha"
+                                                   title="Crear preficha"
+                                                   value="Crear preficha"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuVtCrearPreficha}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a title="Fichas" value="Fichas" immediate="true">Fichas</a>
+                            <ul>
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('GENERARFICHA')}"
+                                                   id="menuVtGenerarFicha"
+                                                   title="Generar ficha."
+                                                   value="Generar ficha"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuVtGenerarFicha}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('ACTUALIZARFICHA')}"
+                                                   id="menuVtActualizarFicha"
+                                                   title="Actualizar ficha"
+                                                   value="Actualizar ficha"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuVtActualizarFicha}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('PARAMETROSCORREO')}"
+                                                   id="menuVtParametricaCorreoFichas"
+                                                   title="Parámetros Correo"
+                                                   value="Parámetros Correo"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuVtGenerarFicha}">
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+
+                                <li>
+                                    <h:commandLink action="#{menuVtBean.irMenu('HISTORICOEXPORTFICHAS')}"
+                                                   id="menuVtHistoricoExportFichas"
+                                                   title="Histórico Export Fichas"
+                                                   value="Histórico Export Fichas"
+                                                   immediate="true"
+                                                   rendered="#{menuVtBean.rolMenuVtGenerarFicha}"
+                                                   >
+                                        <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                                    </h:commandLink>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li>
+                            <h:commandLink action="#{menuVtBean.irMenu('LOGACTUALIZABATCH')}"
+                                           id="menuVtLogActualizarNap"
+                                           title="LOG Actualizaciones NAP"
+                                           value="LOG Actualizaciones NAP"
+                                           immediate="true"
+                                           rendered="#{menuVtBean.rolMenuVtLogActualizarNap}"
+                                           >
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>  
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class='has-sub'>
+                    <h:link title="Fraudes" value="Marcar direcciones fraudulentas" rendered="#{menuVtBean.rolMenuFraudes}" />
+                    <ul>
+                        <li>
+                            <h:commandLink  action="#{menuVtBean.irMenu('FRAUDESUNUAUNO')}"
+                                            id="menuFraudeUno"
+                                            title=""
+                                            value="Marcación Uno a Uno" immediate="true"
+                                            rendered="#{menuVtBean.rolMenuFraudesMarcaUnoUno}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink  action="#{menuVtBean.irMenu('FRAUDESUNUAUNODESM')}"
+                                            id="menuFraudeUnoDesm"
+                                            title=""
+                                            value="Desmarcación Uno a Uno" immediate="true"
+                                            rendered="#{menuVtBean.rolMenuFraudesDesmarcaUnoUno}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink  action="#{menuVtBean.irMenu('DESCARGUEMARCADODF')}"
+                                            id="menuDescargueMar"
+                                            title=""
+                                            value="Descargue de archivo para marcado de DF" immediate="true"
+                                            rendered="#{menuVtBean.rolMenuDescargueMar}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink  action="#{menuVtBean.irMenu('CARGUEMARCADODF')}"
+                                            id="menuCargueMarcadoDF"
+                                            title=""
+                                            value="Cargue de archivo para marcado de DF" immediate="true"
+                                            rendered="#{menuVtBean.rolMenuCargueMar}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink  action="#{menuVtBean.irMenu('DESCARGUEDESMARCADODF')}"
+                                            id="menuDescargueDesm"
+                                            title=""
+                                            value="Descargue de archivo para desmarcado de DF" immediate="true"
+                                            rendered="#{menuVtBean.rolMenuDescargueDes}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:commandLink  action="#{menuVtBean.irMenu('CARGUEDESMARCADODF')}"
+                                            id="menuCargueDesmarcadoDF"
+                                            title=""
+                                            value="Cargue de archivo para desmarcado de DF" immediate="true"
+                                            rendered="#{menuVtBean.rolMenuCargueDes}">
+                                <f:actionListener binding="#{bienvenidaBean.setModulo('HHPP')}"/>
+                            </h:commandLink>
+                        </li>
+                    </ul>
+                </li>
+
+
+            </ul>
+        </li>
+    </ul>
+</ui:composition>

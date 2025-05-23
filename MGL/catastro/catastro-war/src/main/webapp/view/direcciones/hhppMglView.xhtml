@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/template/home.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Administrador HHPP</span></ui:define>
+    <ui:define name="message"><span class="error"> #{hhppMglBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <h:form id="form1">
+
+            <h:panelGrid columns="4" id="HhppMgl" class="EtiquetaConsulta" width="100%" >
+                <h:outputText value="Id HHPP" id="IdHHPPlb"/>
+                <h:inputText id="IdHHPPTxt" value="#{hhppMglBean.hhppMgl.hhpId}"  disabled="true" /> 
+
+                <h:outputText value="THH_ID" id="thhIdlb"/>
+                <h:inputText id="thhIdTxt" value="#{hhppMglBean.hhppMgl.thhId}" maxlength="2" /> 
+
+                <h:outputText value="Fecha Creación" id="hhpFechaCreacionlb"/>
+                <h:inputText id="hhpFechaCreacionTxt" value="#{hhppMglBean.hhppMgl.hhpFechaCreacion}" disabled="true"  /> 
+
+                <h:outputText value="Usuario Creación" id="hhpUsuarioCreacionlb"/>
+                <h:inputText id="hhpUsuarioCreacionTxt" value="#{hhppMglBean.hhppMgl.hhpUsuarioCreacion}"  disabled="true"  /> 
+
+                <h:outputText value="Fecha Modificación" id="hhpFechaModificacionlb"/>
+                <h:inputText id="hhpFechaModificacionTxt" value="#{hhppMglBean.hhppMgl.hhpFechaModificacion}" disabled="true"  /> 
+
+                <h:outputText value="Usuario Modificación" id="hhpUsuarioModificacionlb"/>
+                <h:inputText id="hhpUsuarioModificacionTxt" value="#{hhppMglBean.hhppMgl.hhpUsuarioModificacion}"  disabled="true"  /> 
+
+                <h:outputText value="EHH_ID" id="ehhIdlb" />
+                <h:inputText id="ehhIdTxt" value="#{hhppMglBean.hhppMgl.ehhId}" maxlength="1" /> 
+
+                <h:outputText value="HHP_ID_RR" id="hhpIdrRlb"/>
+                <h:inputText id="hhpIdrRTxt" value="#{hhppMglBean.hhppMgl.hhpIdrR}" maxlength="20"  /> 
+
+
+
+                <h:outputText value="Dirección" id="dirIdlb"/>
+                <h:selectOneMenu id="listDireccion" value="#{hhppMglBean.direccion}" 
+                                 styleClass="ListaConsulta"   >
+                    <f:selectItem itemValue="0" itemLabel=""  />
+                    <f:selectItems value="#{hhppMglBean.listDireccionMgl}" var="ld"
+                                   itemValue="#{ld.dirId}"
+                                   itemLabel="#{ld.dirNostandar}"   />   
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{hhppMglBean.listSubDireccionChange()}" render="listSubDireccionMgl"/>
+                </h:selectOneMenu> 
+
+                <h:outputText value="Subdirección" id="sdiIddlb"/>
+                <h:selectOneMenu id="listSubDireccionMgl" value="#{hhppMglBean.subDireccion}" 
+                                 styleClass="ListaConsulta" >
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{hhppMglBean.listSubDireccionMgl}" var="lsd"
+                                   itemValue="#{lsd.sdiId}"
+                                   itemLabel="#{lsd.sdiFormatoIgac}"/>                
+                </h:selectOneMenu> 
+
+                <h:outputText value="Nodo" id="nodIdlb"/>
+                <h:selectOneMenu id="listNodo" value="#{hhppMglBean.nodo}" 
+                                 styleClass="ListaConsulta" >
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{hhppMglBean.listNodoMgl}" var="ln"
+                                   itemValue="#{ln.nodId}"
+                                   itemLabel="#{ln.nodNombre}"/>                
+                </h:selectOneMenu> 
+
+
+
+
+
+                <h:outputText value="Tipo HHPP red" id="thrIdlb"/>           
+                <h:selectOneMenu id="listTipoHhppRed" value="#{hhppMglBean.tipoHhppRed}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{hhppMglBean.listTipoHhppRedMgl}" var="lthr"
+                                   itemValue="#{lthr.thrId}"
+                                   itemLabel="#{lthr.thrNokmbre}"/>                
+                </h:selectOneMenu>
+
+                <h:outputText value="Tipo HHPP conexión" id="thcIdlb"/>
+                <h:selectOneMenu id="listTipoHhppConexion" value="#{hhppMglBean.tipoHhppConexion}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{hhppMglBean.listTipoHhppConexionMgl}" var="lthc"
+                                   itemValue="#{lthc.thcId}"
+                                   itemLabel="#{lthc.thcNombre}"/>                
+                </h:selectOneMenu>
+                
+                <div  style="width: 150px" ><h:inputHidden  id="nodHid" value="hid" ></h:inputHidden> </div><div  style="width: 150px" ></div>
+            </h:panelGrid>
+            <br></br><br></br>
+            <h:panelGrid columns="4" id="nodoMgl2" styleClass="panelInfo">
+
+                <h:commandButton value="Actualizar" action="#{hhppMglBean.actualizarHhppMgl()}"  styleClass="buttonl" rendered="#{!((hhppMglBean.hhppMgl.hhpId eq 0) or (hhppMglBean.hhppMgl.hhpId eq null)) }" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+                <h:commandButton value="Guardar" action="#{hhppMglBean.crearHhppMgl()}" styleClass="buttonl"   rendered="#{(hhppMglBean.hhppMgl.hhpId eq 0) or (hhppMglBean.hhppMgl.hhpId eq null)}"  style="text-align: center; color:#FFFFFF;"></h:commandButton>
+                <h:commandButton value="Eliminar" action="#{hhppMglBean.eliminarHhppMgl()}" styleClass="buttonl"  rendered="#{!((hhppMglBean.hhppMgl.hhpId eq 0) or (hhppMglBean.hhppMgl.hhpId eq null)) }" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+                <h:commandButton value="Volver" action="hhppMglListView" styleClass="buttonl" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+
+            </h:panelGrid>
+
+        </h:form>
+    </ui:define>
+
+
+</ui:composition>
+

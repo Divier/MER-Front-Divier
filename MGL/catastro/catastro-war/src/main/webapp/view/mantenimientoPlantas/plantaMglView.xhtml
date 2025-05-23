@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/MGL/template/main.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Administrador Plantas</span></ui:define>
+    <ui:define name="message"><span class="error"> #{plantaMglBean.message}</span></ui:define>
+    <ui:define name="content">
+        <fieldset>
+            <legend>ADMINISTRACIÓN PLANTAS</legend> 
+            <br />
+            
+            <h:outputLabel value='vista:#{plantaMglBean.tipoUbicacion}'/>
+            <h:outputLabel value='seleccionado#{plantaMglBean.codigoplanta}'/>
+            
+            <h:panelGrid columns="4" id="plantaMgl" class="EtiquetaConsulta" width="100%">
+                <h:outputText value="Configuracion Planta Id" id="ConfiguracionPlantaId"  />
+                <h:inputText id="IdSqlTxt" value="#{plantaMglBean.plantaMgl.configuracionplantaid}" disabled="true" /> 
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio}Tipo Ubicación" id="LocationType"/>
+               <h:selectOneMenu id="listLocationType" value="#{plantaMglBean.locationType}"
+                                 styleClass="ListaConsulta" 
+                                 required="true" requiredMessage="Campo tipo ubicación es requerido">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItem itemValue="HE" itemLabel="HE"/>
+                    <f:selectItem itemValue="CT" itemLabel="CT"/>
+                    <f:selectItem itemValue="ND" itemLabel="ND"/>
+                </h:selectOneMenu>
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio}Codigo Ubicación" id="LocationCode"/>
+                <h:inputText id="locCTxt" value="#{plantaMglBean.plantaMgl.locationcode}" maxlength="6"
+                             requiredMessage="Campo codigo ubicación es requerido" required="true"/>
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio}Descripción" id="Description"/>
+                <h:inputText id="descTxt" value="#{plantaMglBean.plantaMgl.description}" maxlength="40"
+                             requiredMessage="Campo descripción es requerido" required="true"/>
+                <h:outputText escape="false" value="Padre Tipo Ubicación" id="PLocationType"/>
+                
+                <h:selectOneMenu id="listLocationTypep" value="#{plantaMglBean.parentLocationType}"
+                                 styleClass="ListaConsulta" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItem itemValue="HE" itemLabel="HE"/>
+                    <f:selectItem itemValue="CT" itemLabel="CT"/>
+                    <f:selectItem itemValue="ND" itemLabel="ND"/>
+                </h:selectOneMenu>
+                <h:outputText escape="false" value="Padre Codigo Ubicación" id="PLocationCode"/>
+                <h:inputText id="plocCTxt" value="#{plantaMglBean.parentLocatioCode}" 
+                             maxlength="6"/>
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio}24 Horas" id="Hour24"/>
+                <h:inputText id="htxt24" value="#{plantaMglBean.plantaMgl.hour24}" maxlength="3"
+                              requiredMessage="Campo 24 horas es requerido" required="true"/>
+                 <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio}48 Horas" id="Hour48"/>
+                 <h:inputText id="htxt48" value="#{plantaMglBean.plantaMgl.hour48}" maxlength="3"
+                              requiredMessage="Campo 48 horas es requerido" required="true"/>
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio}Semana" id="Week"/>
+                <h:inputText id="weekTxt" value="#{plantaMglBean.plantaMgl.week}" maxlength="3" 
+                                requiredMessage="Campo semana es requerido" required="true"/>
+                 <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio}Mes" id="Month"/>
+                 <h:inputText id="montTxt" value="#{plantaMglBean.plantaMgl.month}" maxlength="3"
+                              requiredMessage="Campo mes es requerido" required="true"/>
+                 
+                 <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio}Año" id="Year"/>
+                 <h:inputText id="yearTxt" value="#{plantaMglBean.plantaMgl.year}" maxlength="3" 
+                                requiredMessage="Campo año es requerido" required="true" />
+                <h:outputText escape="false" value="Notas" id="Notas"/>
+                <h:inputTextarea id="notasTxt"  value="#{plantaMglBean.nota}" cols="50" rows="10" disabled="true"/>
+                <div style="width: 150px" >
+                    <h:inputHidden id="nodHid" value="hid" ></h:inputHidden>
+                </div>
+                <div style="width: 150px" ></div>
+            </h:panelGrid>
+            <br /><br />
+            <h:panelGrid columns="4" id="plantalMgl2" styleClass="panelInfo">
+                <h:commandButton value="Actualizar" action="#{plantaMglBean.actualizarPlantaMgl()}"
+                                 styleClass="buttonl" rendered="#{(plantaMglBean.guardado)}"
+                                 style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+                <h:commandButton value="Guardar" action="#{plantaMglBean.crearPlantaMgl()}"
+                                 styleClass="buttonl" rendered="#{!(plantaMglBean.guardado)}"
+                                 disabled="#{(plantaMglBean.guardado)}" style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+                <h:commandButton value="Eliminar" styleClass="buttonl" immediate="true" action="#{plantaMglBean.eliminarPlantaMgl()}"
+                                 style="text-align: center; color:#FFFFFF;" rendered="#{(plantaMglBean.guardado)}">
+                </h:commandButton>
+                <h:commandButton value="Volver" action="plantaMglListView" immediate="true"
+                                 styleClass="buttonl" style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+            </h:panelGrid>
+            <br />
+            <h:panelGroup id="tblConsulta">
+            <div class="tableContent" >
+                <fieldset>
+                    <legend>HISTORICO DE NOTAS</legend>
+                    <br />
+                    <h:dataTable id="notasTable"  binding="#{plantaMglBean.notasDataTable}" 
+                                 value="#{plantaMglBean.notasPlantaMglList}" var="plantaMglNotas" rows="15"  
+                                 style="width: 100%;"  styleClass="constructGTable" headerClass="constructGTableHeader" 
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow" >
+                        <h:column>
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Id Nota"/><BR/>
+                                    <h:inputText maxlength="30" id="notaId" style="width: 50px" 
+                                                 value="#{plantaMglBean.cmtFiltroConsultaNotasPlantaDto.noteconfiguracionplantaid}"
+                                                 onkeypress="return submitByEnter(event);">
+                                        <f:ajax listener="#{plantaMglBean.notasFindByFiltro}" 
+                                                event="change" execute="@this" render="notasTable"/>
+                                    </h:inputText>
+                                   
+                                </f:facet>
+                                <h:outputText value="#{plantaMglNotas.noteconfiguracionplantaid}"/>
+                            </div>
+                        </h:column>
+                        <h:column>
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Nota"/><BR/>
+                                    <h:inputText maxlength="30" id="locationTId" 
+                                                 style="width: 50px" 
+                                                 onkeypress="return submitByEnter(event);"
+                                                 value="#{plantaMglBean.cmtFiltroConsultaNotasPlantaDto.nota}">
+                                        <f:ajax listener="#{plantaMglBean.notasFindByFiltro}" 
+                                                event="change" execute="@this" render="notasTable"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{plantaMglNotas.note}"/>
+                            </div>  
+                        </h:column>
+
+
+                        <f:facet name="footer" >
+                            <div class="pagination2">
+                                <h:panelGroup>
+                                    <h:commandButton value= ""  action="#{plantaMglBean.notasPageFirst}" class="botonTPagInicioCm botonBaselista"/>
+                                    <h:commandButton  value= "" action="#{plantaMglBean.pagePreviousNotas}" class="botonTPagAnteriorCm botonBaselista"/>
+                                    <h:commandButton value="#{plantaMglBean.pageActualNotas}" />
+                                    <h:selectOneMenu  value="#{plantaMglBean.notasNumPagina}" 
+                                                      styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                        <f:selectItems value="#{plantaMglBean.notasPaginaList}" var="notapag"
+                                                       itemValue="#{notapag}"
+                                                       itemLabel="#{notapag}"/>    
+                                        <f:ajax render="notasTable"  event="change"  listener="#{plantaMglBean.notasIrPagina()}"  execute="@this" />                                         
+                                    </h:selectOneMenu>  
+                                    <h:commandButton  value= "" action="#{plantaMglBean.notasPageNext}" class="botonTPagSiguienteCm botonBaselista"/>
+                                    <h:commandButton  value= "" action="#{plantaMglBean.notasPageLast}" class="botonTPagFinCm botonBaselista"/>
+                                </h:panelGroup>
+                            </div>
+                        </f:facet>        
+                    </h:dataTable>    
+                </fieldset>   
+            </div>
+            
+        </h:panelGroup>     
+               
+   
+            
+        </fieldset>
+    </ui:define>
+
+</ui:composition>

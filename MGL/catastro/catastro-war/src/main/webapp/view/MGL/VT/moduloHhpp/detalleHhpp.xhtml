@@ -1,0 +1,1329 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/view/MGL/template/main_prime.xhtml">
+    <ui:define name="title">
+        <span class="TituloSeccion">Detalle de Hhpp</span>
+    </ui:define>        
+    <ui:define name="content">
+        <title>Detalle de Hhpp</title>
+        <div id="contenidoPantalla" 
+             style="width: 72%;float:left;">
+            <h:panelGrid columns="5" 
+                         id="encabezadoMgl" 
+                         class="formulario3" 
+                         style="font-size: 9px; width: 100%;" > 
+                <h:panelGrid >
+                    <h:outputLabel style="font-weight: bold;"  
+                                   id="direccionLabel" 
+                                   value="Dirección:"/>
+                    <h:outputText  class="txtLabelsMgl"  
+                                   id="direccion" 
+                                   value="#{detalleHhppBean.direccionDetallada.direccionTexto}" />  
+                </h:panelGrid>
+                <h:panelGrid >
+                    <h:outputLabel  style="font-weight: bold;" 
+                                    id="barrioLabel" 
+                                    value="Barrio:" />  
+                    <h:outputText   class="txtLabelsMgl" 
+                                    id="barrio" 
+                                    value="#{detalleHhppBean.direccionDetallada.barrio}"/> 
+                </h:panelGrid>
+                <h:panelGrid >
+                    <h:outputLabel style="font-weight: bold;" id="departamentoLabel" value="Departamento:" /> 
+                    <h:outputText class="txtLabelsMgl" id="departamento" value="#{detalleHhppBean.departamentoGpo.gpoNombre}"  /> 
+                </h:panelGrid>
+                <h:panelGrid>
+                    <h:outputLabel style="font-weight: bold;" id="ciudadLabel" value="Ciudad:" />    
+                    <h:outputText class="txtLabelsMgl" id="ciudad" value="#{detalleHhppBean.ciudadGpo.gpoNombre}"  />
+                </h:panelGrid>
+                <h:panelGrid>
+                    <h:outputLabel style="font-weight: bold;" id="centroPobladoLabel" value="Centro Poblado:" /> 
+                    <h:outputText class="txtLabelsMgl" id="centroPoblado" value="#{detalleHhppBean.centroPobladoGpo.gpoNombre}"  /> 
+                </h:panelGrid>
+                <h:panelGrid >
+                    <h:outputText   style="font-weight: bold;" id="cuentaMatrizLabel" value="Cuenta Matriz:"/>  
+                    <h:commandLink id="cuentaLink" actionListener="#{detalleHhppBean.irCuentaMatrizDetalle()}" >
+                        <h:outputText class="txtLabelsMgl"  id="cuentaMatriz"  value="#{detalleHhppBean.hhppSeleccionado.cuenta}" 
+                                      rendered="#{detalleHhppBean.verificaEstadoCCMM() }"
+                                      />     
+                    </h:commandLink> 
+                </h:panelGrid>
+                <h:panelGrid >
+                    <h:outputLabel  style="font-weight: bold;" id="nombreLabel" value="Nombre:"/> 
+                    <h:outputText class="txtLabelsMgl" id="nombre" rendered="#{detalleHhppBean.verificaEstadoCCMM()}" value="#{detalleHhppBean.hhppSeleccionado.nombreCuenta}" />         
+
+                </h:panelGrid>
+                <h:panelGrid >
+                    <h:outputText  style="font-weight: bold;" id="cuentasLabel" value="Cuenta Suscriptor:"/> 
+                    <h:outputText class="txtLabelsMgl"  id="suscritor" value="#{detalleHhppBean.hhppSeleccionado.suscriptor}" />            
+                </h:panelGrid>
+                <h:panelGrid >
+                    <h:outputText  style="font-weight: bold;" id="currierLabel" value="Currier:"/> 
+                    <h:outputText class="txtLabelsMgl"  id="currierId" value="#{detalleHhppBean.currier}" />            
+                </h:panelGrid>
+                <h:panelGrid >
+                    <h:outputText  style="font-weight: bold;" id="PostalLabel" value="Codigo Postal:"/> 
+                    <h:outputText class="txtLabelsMgl"  id="postalId" value="#{detalleHhppBean.codigoPostal}" />            
+                </h:panelGrid>
+                <h:panelGrid >
+                    <h:panelGroup> <h:outputLabel escape="false" value="#{detalleHhppBean.espacio}" />  </h:panelGroup>
+                    <h:panelGroup> <h:outputLabel escape="false" value="#{detalleHhppBean.espacio}" />   </h:panelGroup>
+                </h:panelGrid>
+            </h:panelGrid>
+            <h:panelGrid id="panelTabs" class="formulario3" style="font-size: 9px;" columns="10">
+                <h:commandButton  id="irGeneral"  
+                                  class="#{detalleHhppBean.selectedTab == 'GENERAL' ? 'btn2 btn2Active':'btn2'}" 
+                                  style="font-size: 10.5px !important;"
+                                  value="General"                              
+                                  disabled="#{!detalleHhppBean.selectedTab eq 'GENERAL'}" >            
+                    <f:ajax event="click" execute="@this" listener="#{detalleHhppBean.cambiarTab('GENERAL')}"
+                            render="tabsWrap panelTabs"/>                      
+                </h:commandButton>
+                <h:commandButton  id="irOrdenes" 
+                                  class="#{detalleHhppBean.selectedTab == 'ORDENES' ? 'btn2 btn2Active':'btn2'}" 
+                                  style="font-size: 10.5px !important;"
+                                  value="Ordenes"                               
+                                  disabled="#{!detalleHhppBean.selectedTab eq 'ORDENES'}" >
+                    <f:ajax event="click" execute="@this" listener="#{detalleHhppBean.cambiarTab('ORDENES')}" 
+                            render="tabsWrap panelTabs"/>                      
+                </h:commandButton>
+                <h:commandButton  id="irNotas" 
+                                  class="#{detalleHhppBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                                  style="font-size: 10.5px !important;"
+                                  value="Notas"                               
+                                  disabled="#{!detalleHhppBean.selectedTab eq 'NOTAS'}" >
+                    <f:ajax event="click" execute="@this" listener="#{detalleHhppBean.cambiarTab('NOTAS')}" 
+                            render="tabsWrap panelTabs"/>                      
+                </h:commandButton>
+                <h:commandButton  id="irInfTecnica" 
+                                  class="#{detalleHhppBean.selectedTab == 'INFOTECNICA' ? 'btn2 btn2Active':'btn2'}" 
+                                  style="font-size: 10.5px !important;"
+                                  value="Inf. Técnica"                               
+                                  disabled="#{!detalleHhppBean.selectedTab eq 'INFOTECNICA'}" >
+                    <f:ajax event="click" execute="@this" listener="#{detalleHhppBean.cambiarTab('INFOTECNICA')}" 
+                            render="tabsWrap panelTabs"/>                      
+                </h:commandButton>
+                <h:commandButton  id="irHorario" 
+                                  class="#{detalleHhppBean.selectedTab == 'HORARIO' ? 'btn2 btn2Active':'btn2'}" 
+                                  style="font-size: 10.5px !important;"
+                                  value="Horario"                               
+                                  disabled="#{!detalleHhppBean.selectedTab eq 'HORARIO'}" >
+                    <f:ajax event="click" execute="@this" listener="#{detalleHhppBean.cambiarTab('HORARIO')}" 
+                            render="tabsWrap panelTabs"/>                      
+                </h:commandButton>
+                <h:commandButton  id="irHistoricoClientes" 
+                                  class="#{detalleHhppBean.selectedTab == 'HISTORICOCLIENTES' ? 'btn2 btn2Active':'btn2'}" 
+                                  style="font-size: 10.5px !important;"
+                                  value="Historico Clientes"                               
+                                  disabled="#{!detalleHhppBean.selectedTab eq 'HISTORICOCLIENTES'}" >
+                    <f:ajax event="click" execute="@this" listener="#{detalleHhppBean.cambiarTab('HISTORICOCLIENTES')}" 
+                            render="tabsWrap panelTabs"/>                      
+                </h:commandButton>
+                <h:commandButton  id="irBitacora" 
+                                  class="#{detalleHhppBean.selectedTab == 'BITACORA' ? 'btn2 btn2Active':'btn2'}" 
+                                  style="font-size: 10.5px !important;"
+                                  value="Bitácora"                               
+                                  disabled="#{!detalleHhppBean.selectedTab eq 'BITACORA'}" >
+                    <f:ajax event="click" execute="@this" listener="#{detalleHhppBean.cambiarTab('BITACORA')}" 
+                            render="tabsWrap panelTabs"/>                      
+                </h:commandButton>
+                <h:commandButton  id="irBitacoraDireccion" 
+                                  class="#{detalleHhppBean.selectedTab == 'BITACORADIRECCION' ? 'btn2 btn2Active':'btn2'}" 
+                                  style="font-size: 10.5px !important;"
+                                  value="BitácoraDirección"                               
+                                  disabled="#{!detalleHhppBean.selectedTab eq 'BITACORADIRECCION'}" >
+                    <f:ajax event="click" execute="@this" listener="#{detalleHhppBean.cambiarTab('BITACORADIRECCION')}" 
+                            render="tabsWrap panelTabs"/>                      
+                </h:commandButton>
+                <h:commandButton  id="irCurries" 
+                                  class="#{detalleHhppBean.selectedTab == 'CURRIER' ? 'btn2 btn2Active':'btn2'}" 
+                                  style="font-size: 10.5px !important;"
+                                  value="Cobertura Entrega (Currier)"                               
+                                  disabled="#{!detalleHhppBean.selectedTab eq 'CURRIER'}" >
+                    <f:ajax event="click" execute="@this" listener="#{detalleHhppBean.cambiarTab('CURRIER')}" 
+                            render="tabsWrap panelTabs"/>                      
+                </h:commandButton>
+                <h:commandButton  id="irMarcas" 
+                                  class="#{detalleHhppBean.selectedTab == 'MARCAS' ? 'btn2 btn2Active':'btn2'}" 
+                                  style="font-size: 10.5px !important;"
+                                  value="Etiquetas"                               
+                                  disabled="#{!detalleHhppBean.selectedTab eq 'MARCAS'}"
+                                  rendered="#{detalleHhppBean.hhppTecnologiaList != null  }">
+                    <f:ajax event="click" 
+                            execute="@this" 
+                            listener="#{detalleHhppBean.cambiarTab('MARCAS')}"
+                            render="tabsWrap panelTabs"/>                      
+                </h:commandButton>
+            </h:panelGrid>
+            <h:panelGrid style="font-size: 9px; width: 100%" class="formulario3"   id="tabsWrap"> 
+                <!-- **************************** PESTAÑA GENERAL **************************** !-->
+                <h:panelGroup style="width: 100%"  id="generalTab" rendered="#{detalleHhppBean.generalTab}">
+                    <table style="width: 100%" >
+                        <td style="width:96%" ><h2 id="solModData" style="margin-top: 0px; margin-left: -12px">ETIQUETAS </h2>  </td>
+                        <td style="width:5%">
+                            <h:commandButton style="margin:0px 0 11px 0; " id="mostrarComponenteButton" image="../../../img/ocultar.png" >
+                                <f:ajax render="panelWrapEtiquetas" 
+                                        event="click" listener="#{detalleHhppBean.mostrarOcultarEtiquetas()}" />
+                            </h:commandButton>
+                        </td>
+                    </table>
+                    <h:panelGroup id="panelWrapEtiquetas">
+                        <h:panelGroup id="panelEtiquetas" rendered="#{detalleHhppBean.showEtiquetas}">
+                            <h:outputText style="font-weight: bold;"  id="etiquetas" value="#{detalleHhppBean.etiquetasHhpp}"/>
+                        </h:panelGroup>
+                    </h:panelGroup>
+                    <hr size="5" width="99%" align="LEFT"/>
+                    <h:panelGrid columns="4" 
+                                 id="contenidoGeneral" 
+                                 class="formulario3" style="font-size: 9px; width:90%;" > 
+
+                        <h:panelGrid>
+                            <h:outputText style="font-weight: bold;"  
+                                          id="direccionAntiguaLabel" value="Dirección Antigua:"/>   
+                            <h:outputText   id="direccionAntigua"  
+                                            value="#{detalleHhppBean.direccionAntiguaHhpp}" /> 
+                        </h:panelGrid>
+
+                        <h:panelGrid>
+                            <h:outputText  style="font-weight: bold;" 
+                                           id="direccionAlternaLabel" 
+                                           value="Dirección Alterna:" /> 
+
+                            <h:inputTextarea id="dirAlter" 
+                                             style="width: 252px; height: 37px;" 
+                                             cols="4" rows="12" 
+                                             value="#{detalleHhppBean.direccionAlterna}"  >                 
+                            </h:inputTextarea> 
+                        </h:panelGrid>
+
+                        <h:panelGrid>
+                            <h:outputText  style="font-weight: bold;" 
+                                           id="manzanaLabel" 
+                                           value="Manzana:" /> 
+                            <h:outputText  id="manzana" 
+                                           value="#{detalleHhppBean.direccionDetallada.direccion.dirManzanaCatastral}"  /> 
+                        </h:panelGrid>
+
+                        <h:panelGrid>
+                            <h:outputText  style="font-weight: bold;" 
+                                           id="localidadLabel" 
+                                           value="Localidad:" /> 
+                            <h:outputText    id="localidad"  
+                                             value="#{detalleHhppBean.localidadHhpp}" /> 
+                        </h:panelGrid>
+
+
+                        <h:panelGrid>
+                            <h:outputText style="font-weight: bold;" 
+                                          id="postalFieldLabel" 
+                                          value="Postal Field:"/>   
+                            <h:outputText  id="postalField" 
+                                           value="#{detalleHhppBean.hhppSeleccionado.hhpCodigoPostal}" /> 
+                        </h:panelGrid>
+
+                        <h:panelGrid>
+                            <h:outputText style="font-weight: bold;" 
+                                          id="telefonosLabel" 
+                                          value="Teléfonos:" /> 
+                            <h:outputText   id="telefonosGeneral" 
+                                            value="#{detalleHhppBean.telefonosCuentaMatriz}"/> 
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight: bold;"  
+                                          id="nivelSocioEconomicoLabel" 
+                                          value="Niv_Socio:"/>   
+                            <h:outputText id="nivelSocioEconomico" 
+                                          value="#{detalleHhppBean.nivelSocioEcoDireccion}" /> 
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight: bold;" 
+                                          id="estratoLabel" 
+                                          value="Estrato:" /> 
+                            <h:outputText id="estra" 
+                                          value="#{detalleHhppBean.estrato}" /> 
+                            <ui:repeat  var="ar" 
+                                        value="#{detalleHhppBean.tecArchivosCambioEstratos}">  
+                                <div style="text-align: left;">
+
+                                    <a href="#{ar.urlArchivoSoporte}" 
+                                       target="blank" 
+                                       id="linkDescarga2" >                                    
+                                        #{detalleHhppBean.retornaNombreArchivo(ar.urlArchivoSoporte)}
+                                    </a>
+                                </div>
+                            </ui:repeat>                            
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight: bold;  width: 20em" 
+                                          id="tipoVivienda" 
+                                          value="Tipo Vivienda" /> 
+                            <h:outputText   id="tipoViviendaoxt" 
+                                            value="#{detalleHhppBean.tipoHHppSelected}"/> 
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:outputText style="font-weight: bold;" 
+                                          id="coordenadaYLabel" 
+                                          value="Coordenada Y:" /> 
+                            <h:outputText style="font-weight: bold;" 
+                                          id="coordenadaXLabel" 
+                                          value="Coordenada X:" /> 
+                            <h:outputText id="coordenadaY" 
+                                          value="#{detalleHhppBean.direccionDetallada.direccion.ubicacion.ubiLatitud}"/>
+                            <h:outputText   id="coordenadaX" 
+                                            value="#{detalleHhppBean.direccionDetallada.direccion.ubicacion.ubiLongitud}"/>
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight: bold;" 
+                                          id="origenFichaLabel" 
+                                          value="Origen:" /> 
+                            <h:outputText id="origenFicha"
+                                           value="#{detalleHhppBean.hhppSeleccionado.hhppOrigenFicha}">
+                            </h:outputText>          
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight: bold;" 
+                                          id="EstadoDirLabel" value="Estado Dir:" /> 
+                            <h:outputText id="EstadoDir"
+                                          value="#{detalleHhppBean.direccionDetallada.estadoDirGeo}">
+                            </h:outputText>
+                        </h:panelGrid>
+                        <h:panelGrid> </h:panelGrid>
+                        <h:panelGrid> </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight: bold;" 
+                                          id="ConfiabilidadDirLabel" value="Confiabilidad dirección:" /> 
+                            <h:outputText id="ConfiabilidadDir"
+                                          value="#{detalleHhppBean.direccionDetallada.direccion.dirConfiabilidad eq null ? '' : detalleHhppBean.direccionDetallada.direccion.dirConfiabilidad.toString().concat(' %') }">
+                            </h:outputText>
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight: bold;" 
+                                          id="ConfiabilidadCompLabel" value="Confiabilidad complemento:" /> 
+                            <h:outputText id="ConfiabilidadComp"
+                                          value="#{detalleHhppBean.direccionDetallada.subDireccion eq null ? '' : detalleHhppBean.direccionDetallada.subDireccion.sdirConfiabilidad.toString().concat(' %') }">
+                            </h:outputText>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <br/>
+
+                    <h:panelGrid columns="4" id="contenidoGeneral4" 
+                                 class="formulario4" style="font-size: 9px; width:100%;">
+                        
+                        <h:outputText style="font-weight: bold; " 
+                                      id="descripcionPredioLabel" 
+                                      value="Descripción Predio:" /> 
+                        <h:inputTextarea id="descripcion" 
+                                         style="width: 251px; height: 39px;" 
+                                         cols="1" 
+                                         rows="12" 
+                                         value="#{detalleHhppBean.descripcionPredio}"/>                 
+
+                        <h:outputText style="font-weight:bold" id="indicationsLabel"
+                                          value="Indicaciones de llegada:"/>
+
+                        <h:inputTextarea value="#{detalleHhppBean.direccionDetallada.indicaciones}"
+                                             id="indicationsTextArea" 
+                                             style="width: 251px; height: 39px;" 
+                                             cols="4" rows="12">
+                        </h:inputTextarea>
+                    </h:panelGrid>  
+                        
+                    <h:panelGrid columns="4" id="contenidoGeneral5" 
+                                 class="formulario5" style="font-size: 9px; width:100%;" > 
+
+                        <div style="text-align: center;"> 
+                            <h:commandButton id="guardarDescripcion" 
+                                             action="#{detalleHhppBean.guardarDescripcionPredio()}" 
+                                             styleClass="btn" 
+                                             value="Guardar Nota" disabled="#{!detalleHhppBean.isRolCrear(detalleHhppBean.getTAB_GENERAL_HHPP())}"/>
+                            <h:commandButton styleClass="btn"  id="limpiarNota" 
+                                             action="#{detalleHhppBean.limpiarDescripcionPredio()}" 
+                                             value="Limpiar">  </h:commandButton> 
+                            <h:commandButton id="goBack" value="Atrás" 
+                                             styleClass="btn" 
+                                             action="#{detalleHhppBean.irConsultaHhpp()}" />
+                        </div>     
+                    </h:panelGrid>  
+                </h:panelGroup>            
+                <!-- **************************** FIN PESTAÑA GENERAL **************************** !-->
+
+
+                <!-- **************************** PESTAÑA ORDENES **************************** !-->
+                <h:panelGroup style="width: 100%"  id="ordenesTab" rendered="#{detalleHhppBean.ordenesTab}">
+                    <h2 style="margin-top: -22px; 
+                        margin-left: -12px;text-align: center;">ORDENES</h2>      
+
+                    <h:dataTable id="otHhppList" 
+                                 value="#{detalleHhppBean.otHhppList}" 
+                                 var="otHhpp" rows="15" 
+                                 styleClass="solicitudesGTable"  border="1" 
+                                 headerClass="solicitudesGTableHeader"
+                                 rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"     
+                                 style="width: 100%">
+                        <f:facet name="header">                                       
+                            Listado de Ot Hhpp
+                        </f:facet>
+
+                        <h:column >   
+                            <f:facet name="header">  
+                                <h:outputText value="Ot N°" /><br></br>
+                                <h:inputText value="#{detalleHhppBean.filtroOrdenes.otHhppId}" style="padding: 4px;border-radius: 3px;width: 60%"  onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;" >
+                                    <f:ajax event="blur" listener="#{detalleHhppBean.cargarOtHhppList}" execute="@form" render="formPrincipal:otHhppList"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:commandLink value="#{otHhpp.otHhppId}" action="#{detalleHhppBean.irDetalleOtHhpp(otHhpp)}"/>
+                        </h:column>
+
+                        <h:column >   
+                            <f:facet name="header">  
+                                <h:outputText value="Tipo de Trabajo" /><br></br>
+                                <h:selectOneMenu value="#{detalleHhppBean.filtroOrdenes.tipoOtHhppId.tipoOtId}" style="padding: 3px;border-radius: 3px" >
+                                     <f:ajax event="change" listener="#{detalleHhppBean.cargarOtHhppList}" execute="@form" render="formPrincipal:otHhppList"/>
+                                     <f:selectItem itemLabel="--Seleccione--" itemValue=""/>
+                                     <f:selectItems value="#{detalleHhppBean.tipoOtList}" var="tipoot" itemLabel="#{tipoot.nombreTipoOt}" itemValue="#{tipoot.tipoOtId}"/>
+                                 </h:selectOneMenu>
+                            </f:facet>
+                            <h:outputText value="#{otHhpp.tipoOtHhppId.nombreTipoOt}"/>  
+                        </h:column>
+
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Tecnología" /><br></br>
+                                <h:selectOneMenu value="#{detalleHhppBean.filtroOrdenes.tipoTecnologiaId}" style="padding: 3.0px;border-radius: 3px">
+                                     <f:ajax event="change" listener="#{detalleHhppBean.cargarOtHhppList}" execute="@form" render="formPrincipal:otHhppList"/>
+                                     <f:selectItem itemLabel="--Seleccione--" itemValue="0"/>
+                                     <f:selectItems value="#{detalleHhppBean.tiposTecnologiaList}" var="tec" itemLabel="#{tec.descripcion}" itemValue="#{tec.basicaId}"/>
+                                 </h:selectOneMenu>
+                            </f:facet>
+                            <h:outputText value="#{otHhpp.tecnologia}"/>  
+
+                        </h:column>  
+
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Fecha Creación" /> <br></br>
+                                <p:calendar value="#{detalleHhppBean.filtroOrdenes.fechaCreacion}"  styleClass="estiloCalendario">
+                                     <f:ajax event="change" listener="#{detalleHhppBean.cargarOtHhppList}" execute="@form" render="formPrincipal:otHhppList"/>
+                                     <f:ajax event="dateSelect" listener="#{detalleHhppBean.cargarOtHhppList}"  execute="@form" render="formPrincipal:otHhppList"/>
+                                </p:calendar>
+                            </f:facet>
+                            <h:outputText value="#{otHhpp.fechaCreacionOt}"/>    
+                        </h:column>  
+
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Fecha Modificación" /><br></br>
+                                <p:calendar value="#{detalleHhppBean.filtroOrdenes.fechaEdicion}"  styleClass="estiloCalendario">
+                                     <f:ajax event="change" listener="#{detalleHhppBean.cargarOtHhppList}" execute="@form" render="formPrincipal:otHhppList"/>
+                                     <f:ajax event="dateSelect" listener="#{detalleHhppBean.cargarOtHhppList}"  execute="@form" render="formPrincipal:otHhppList"/>
+                                </p:calendar>
+                            </f:facet>
+                            <h:outputText value="#{otHhpp.fechaEdicion}"/>    
+                        </h:column>   
+
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Usuario" /><br></br>
+                                <h:inputText value="#{detalleHhppBean.filtroOrdenes.nombreContacto}" style="padding: 4px;border-radius: 3px;width: 90%;">
+                                     <f:ajax event="blur" listener="#{detalleHhppBean.cargarOtHhppList}" execute="@form" render="formPrincipal:otHhppList"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{otHhpp.nombreContacto}"/>    
+                        </h:column>                                 
+
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado General" /><br></br>
+                                <h:inputText value="#{detalleHhppBean.filtroOrdenes.estadoGeneral.nombreBasica}" style="padding: 4px;border-radius: 3px;width: 90%;">
+                                     <f:ajax event="blur" listener="#{detalleHhppBean.cargarOtHhppList}" execute="@form" render="formPrincipal:otHhppList"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{otHhpp.estadoGeneral.nombreBasica}"/>    
+                        </h:column>  
+
+                        <f:facet name="footer" >
+                            <h:panelGroup >
+                                <h:commandButton title="Primera Página" 
+                                                 value="#{detalleHhppBean.inicioPagina}" 
+                                                 action="#{otHhppBean.pageFirst}"
+                                                 class="btn"/>
+                                <h:commandButton title="Página Anterior" 
+                                                 value="#{detalleHhppBean.anteriorPagina}" 
+                                                 action="#{detalleHhppBean.pagePrevious}"
+                                                 class="btn"/>
+                                <h:commandButton title="Número Páginas" value="#{detalleHhppBean.pageActual}"
+                                                 styleClass="botonTPagInicio"    />
+                                <h:selectOneMenu id="listTabla" 
+                                                 value="#{detalleHhppBean.numPagina}" 
+                                                 styleClass="ListaConsulta" 
+                                                 style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{detalleHhppBean.paginaList}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>    
+                                    <f:ajax render="@form"  event="change"  
+                                            listener="#{detalleHhppBean.irPagina()}"  
+                                            execute="@this" />                                         
+                                </h:selectOneMenu>  
+                                <h:commandButton title="Página Siguiente" value="#{detalleHhppBean.siguientePagina}" action="#{detalleHhppBean.pageNext}"
+                                                 class="btn"/>
+                                <h:commandButton title="Última Página" value="#{detalleHhppBean.finPagina}" action="#{detalleHhppBean.pageLast}"
+                                                 class="btn"/>
+                            </h:panelGroup>
+                        </f:facet>                          
+                    </h:dataTable>
+                    
+                    
+                     <h:dataTable id="ordenesSolicitudList" 
+                                 value="#{detalleHhppBean.ordenesSolicitudList}" 
+                                 var="solicitud" 
+                                 styleClass="solicitudesGTable"  border="1" 
+                                 headerClass="solicitudesGTableHeader"
+                                 rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"  
+                                 style="width: 100%">
+                        <f:facet name="header">                                       
+                            Listado Ordenes de Solicitudes
+                        </f:facet>
+                         
+                         <p:column width="50">
+                             <f:facet name="header">
+                                 <h:outputLabel value="Numero Id"/><br></br>
+                                 <h:inputText value="#{detalleHhppBean.filtrosSolicitudes.idSolicitud}" style="padding: 4px;border-radius: 3px;width: 60%"  onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;" >
+                                     <f:ajax event="blur" listener="#{detalleHhppBean.cargarOrdenesSolicitudesList}" execute="@form" render="formPrincipal:ordenesSolicitudList"/>
+                                 </h:inputText>
+                             </f:facet>
+                             <h:commandLink value="#{solicitud.idSolicitud}" action="#{detalleHhppBean.detallarSolicitud(solicitud)}"/>
+                         </p:column>
+                         
+                         <h:column>
+                             <f:facet name="header">
+                                 <h:outputLabel value="Tipo Solicitud"/><br></br>
+                                 <h:selectOneMenu value="#{detalleHhppBean.filtrosSolicitudes.cambioDir}" style="padding: 3px;border-radius: 3px" >
+                                     <f:ajax event="change" listener="#{detalleHhppBean.cargarOrdenesSolicitudesList}" execute="@form" render="formPrincipal:ordenesSolicitudList"/>
+                                     <f:selectItem itemLabel="--Seleccione--" itemValue=""/>
+                                     <f:selectItems value="#{detalleHhppBean.tiposSolitudesList}" var="sol" itemLabel="#{sol.nombreBasica}" itemValue="#{sol.codigoBasica}"/>
+                                 </h:selectOneMenu>
+                             </f:facet>
+                             <h:outputText value="#{solicitud.tipoAccionSolicitudStr}"/>
+                         </h:column>
+                         
+                         <h:column>
+                             <f:facet name="header">
+                                 <h:outputLabel value="Tecnología"/><br></br>
+                                 <h:selectOneMenu value="#{detalleHhppBean.filtrosSolicitudes.tecnologiaId.basicaId}" style="padding: 3.0px;border-radius: 3px">
+                                     <f:ajax event="change" listener="#{detalleHhppBean.cargarOrdenesSolicitudesList}" execute="@form" render="formPrincipal:ordenesSolicitudList"/>
+                                     <f:selectItem itemLabel="--Seleccione--" itemValue="0"/>
+                                     <f:selectItems value="#{detalleHhppBean.tiposTecnologiaList}" var="tec" itemLabel="#{tec.descripcion}" itemValue="#{tec.basicaId}"/>
+                                 </h:selectOneMenu>
+                             </f:facet>
+                             <h:outputText value="#{solicitud.tecnologiaId.descripcion}"/>
+                         </h:column>
+                         
+                         <h:column>
+                             <f:facet name="header">
+                                 <h:outputLabel value="Fecha Creación"/><br></br>
+                                 <p:calendar value="#{detalleHhppBean.filtrosSolicitudes.fechaIngreso}"  styleClass="estiloCalendario">
+                                     <f:ajax event="change" listener="#{detalleHhppBean.cargarOrdenesSolicitudesList}" execute="@form" render="formPrincipal:ordenesSolicitudList"/>
+                                     <f:ajax event="dateSelect" listener="#{detalleHhppBean.cargarOrdenesSolicitudesList}"  execute="@form" render="formPrincipal:ordenesSolicitudList"/>
+                                 </p:calendar>
+                             </f:facet>
+                             <h:outputText value="#{solicitud.fechaIngreso}">
+                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                             </h:outputText>
+                         </h:column>
+                         
+                         <h:column>
+                             <f:facet name="header">
+                                 <h:outputLabel value="Fecha Modificación"/><br></br>
+                                 <p:calendar value="#{detalleHhppBean.filtrosSolicitudes.fechaModificacion}" styleClass="estiloCalendario">
+                                     <f:ajax event="change" listener="#{detalleHhppBean.cargarOrdenesSolicitudesList}" execute="@form" render="formPrincipal:ordenesSolicitudList"/>
+                                     <f:ajax event="dateSelect" listener="#{detalleHhppBean.cargarOrdenesSolicitudesList}"  execute="@form" render="formPrincipal:ordenesSolicitudList"/>
+                                 </p:calendar>
+                             </f:facet>
+                             <h:outputText value="#{solicitud.fechaModificacion}">
+                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                             </h:outputText>
+                         </h:column>
+                         
+                         <h:column>
+                             <f:facet name="header">
+                                 <h:outputLabel value="Estado"/><br></br>
+                                 <h:inputText value="#{detalleHhppBean.filtrosSolicitudes.estado}" style="padding: 4px;border-radius: 3px;width: 90%;">
+                                     <f:ajax event="blur" listener="#{detalleHhppBean.cargarOrdenesSolicitudesList}" execute="@form" render="formPrincipal:ordenesSolicitudList"/>
+                                 </h:inputText>
+                             </f:facet>
+                             <h:outputText value="#{solicitud.estado}"/>
+                         </h:column>
+                         
+                         <h:column>
+                             <f:facet name="header">
+                                 <h:outputLabel value="Usuario"/><br></br>
+                                 <h:inputText value="#{detalleHhppBean.filtrosSolicitudes.usuario}" style="padding: 4px;border-radius: 3px;width: 90%;">
+                                     <f:ajax event="blur" listener="#{detalleHhppBean.cargarOrdenesSolicitudesList}" execute="@form" render="formPrincipal:ordenesSolicitudList"/>
+                                 </h:inputText>
+                             </f:facet>
+                             <h:outputText value="#{solicitud.usuario}"/>
+                         </h:column>
+                        
+                         <f:facet name="footer">                    
+                             <h:panelGroup>
+                                 <h:commandButton title="Primera Página" value="#{detalleHhppBean.inicioPagina}" action="#{detalleHhppBean.pageFirstSolicitudes}"
+                                                 class="btn"/>
+                                 <h:commandButton title="Página Anterior" value="#{detalleHhppBean.anteriorPagina}" action="#{detalleHhppBean.pagePreviousSolicitudes}"
+                                                 class="btn"/>
+                                 <h:commandButton title="Número Páginas" value="#{detalleHhppBean.pageActualSolicitudes}" styleClass="botonTPagInicio"    />
+                                 <h:selectOneMenu id="listTabla" value="#{detalleHhppBean.numPaginaSolicitudes}" 
+                                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                     <f:selectItems value="#{detalleHhppBean.paginaListSolicitudes}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>    
+                                    <f:ajax render="@form"  event="change"  
+                                            listener="#{detalleHhppBean.irPaginaSolicitudes()}"  
+                                            execute="@this" />                                         
+                                </h:selectOneMenu>  
+                                 <h:commandButton title="Página Siguiente" value="#{detalleHhppBean.siguientePagina}" action="#{detalleHhppBean.pageNextSolicitudes()}"
+                                                 class="btn"/>
+                                 <h:commandButton title="Última Página" value="#{detalleHhppBean.finPagina}" action="#{detalleHhppBean.pageLastSolicitudes()}"
+                                                 class="btn"/>
+                            </h:panelGroup>
+                         </f:facet>
+                     </h:dataTable>    
+                    <div style="text-align: center;">
+                        <h:commandButton id="goBackOrdenes" value="Atrás" styleClass="btn" action="#{detalleHhppBean.irConsultaHhpp()}" />
+                    </div>
+                </h:panelGroup>
+                <!-- **************************** FIN PESTAÑA ORDENES ********************* !-->
+
+
+                <!-- **************************** PESTAÑA NOTAS **************************** !-->               
+                <h:panelGroup style="width: 100%"  id="notasTab" rendered="#{detalleHhppBean.notasTab}">
+                    <h2 style="margin-top: -22px; 
+                        margin-left: -12px;text-align: center;">NOTAS</h2>
+                    <h:panelGroup id="panelGroupDetalleNota"  >
+                        <h:panelGrid id="panelNotaInfo" columns="4" style="width: 100%;">
+
+                            <h:outputText rendered="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId  != null}" 
+                                          value="ID Nota:" id="idNotaLabel"/>            
+
+                            <h:outputText rendered="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId  != null}" 
+                                          id="idNotaTxt" 
+                                          value="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId}"/>
+
+                            <h:outputText rendered="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId  != null}" 
+                                          value="" />    
+
+                            <h:outputText rendered="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId  != null}" 
+                                          value="" />   
+
+                            <h:outputText value="Descripcion" id="DescripcionNotaOtLabel"/>
+                            <h:inputText label="Descripcion" id="DescripcionNotaOtInput" 
+                                         maxlength="200" 
+                                         value="#{detalleHhppBean.cmtNotasHhppVtMgl.descripcion}"
+                                         readonly="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId != null}" />
+
+                            <h:outputText value="Tipo Nota" id="TipoNotaOtLabel"/>
+                            <h:selectOneMenu id="TipoNotaOtList"  value="#{detalleHhppBean.tipoNotaSelected.basicaId}"
+                                             styleClass="ListaConsulta" 
+                                             disabled="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId  != null}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{detalleHhppBean.tipoNotaList}" var="ld"
+                                               itemValue="#{ld.basicaId}"
+                                               itemLabel="#{ld.nombreBasica}"/>                 
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid id="panelDescNotaInfo" columns="1" style="width: 100%;">
+                            <h:outputText value="Nota (4000 Caracteres)" id="NotaOtLabel"/>
+
+                            <h:inputTextarea label="Nota" id="NotaOtInput" 
+                                             style="width: 100%; resize: none; overflow-y: scroll;" rows="2" 
+                                             value="#{detalleHhppBean.cmtNotasHhppVtMgl.nota}" 
+                                             readonly="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId != null}" 
+                                             validatorMessage="'Nota' Numero maximo de caracteres es 4000">
+                                <f:validateLength maximum="4000" />
+                            </h:inputTextarea>
+                        </h:panelGrid>
+
+                        <h:panelGrid id="panelComentarioNota" 
+                                     rendered="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId != null}"
+                                     columns="1" style="width: 100%;" >
+                            <h:outputText value="Comentario (4000 Caracteres)" id="ComentarioNotaOtLabel"/>
+
+                            <h:inputTextarea label="Comentario" id="ComentarioNotaOtInput"
+                                             style="width: 100%; resize: none; overflow-y: scroll;" rows="1" 
+                                             value="#{detalleHhppBean.notaComentarioStr}"                                          
+                                             validatorMessage="'Comentario' Numero maximo de caracteres es 4000">
+                                <f:validateLength maximum="4000" />
+                            </h:inputTextarea>
+                        </h:panelGrid>
+                        <h:panelGrid id="panelBotonesNotaInfo" 
+                                     columns="3" 
+                                     style="width: 100%; margin: 0 auto;">
+                            <h:commandButton value="Guardar Nota" 
+                                             id="CrearNotaOtButton" 
+                                             rendered="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId == null}" 
+                                             styleClass="btn"
+                                             action="#{detalleHhppBean.guardarNota()}"
+                                             disabled="#{!detalleHhppBean.isRolCrear(detalleHhppBean.getTAB_NOTAS_HHPP())}"/>
+                            <h:commandButton value="Guardar Comentario" 
+                                             id="CrearComentarioNotaButton" 
+                                             rendered="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId != null}" 
+                                             styleClass="btn"
+                                             action="#{detalleHhppBean.guardarComentarioNota()}"
+                                             disabled="#{!detalleHhppBean.isRolCrear(detalleHhppBean.getTAB_NOTAS_HHPP())}" />
+                            <h:commandButton value="Limpiar Campos" id="limpiarButton" 
+                                             rendered="true" styleClass="btn" immediate="true">
+                                <f:ajax render="notasTab" execute="@this" 
+                                        event="click" listener="#{detalleHhppBean.limpiarCamposNota()}"/>
+                            </h:commandButton>
+                            <h:outputText value="" />                         
+                            <h:dataTable rendered="#{detalleHhppBean.cmtNotasHhppVtMgl.notasId != null}"
+                                         style="width:50%" styleClass="constructGTable" 
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow " 
+                                         value="#{detalleHhppBean.comentarioList}" var="cmNtSol">
+                                <f:facet name="header">
+                                    <h:outputText value="Comentarios de la Nota" />
+                                </f:facet>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Comentario" />
+                                    </f:facet>
+                                    <h:outputText value="#{cmNtSol.nota}" style="width: 100%;">
+                                        <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                                    </h:outputText>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Fecha" />
+                                    </f:facet>
+                                    <div style="text-align: center;">
+                                        <h:outputText value="#{cmNtSol.fechaCreacion}" style="width: 100%;">
+                                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                                        </h:outputText>
+                                    </div>
+                                </h:column>
+                            </h:dataTable>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                    <h:panelGroup id="panelGroupHistorialNotas" style="width: 100%;">
+                        <div style="width: 100%; height: 200px; overflow-y: scroll;">
+                            <h:dataTable  id="HistorialNotasTable" style="width:100%;margin:0 auto;"
+                                          var="ntHhpp"
+                                          value="#{detalleHhppBean.notasHhppList}"
+                                          styleClass="constructGTable" 
+                                          rowClasses="constructGTableEvenRow, constructGTableOddRow "  >
+                                <f:facet name="header">
+                                    <h:outputText value="Historial Notas" />
+                                </f:facet>
+                                <h:column>   
+                                    <f:facet name="header">  
+                                        <h:outputText value="Id. Nota" />                                 
+                                    </f:facet>
+                                    <h:outputText value="#{ntHhpp.notasId}"/>  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">  
+                                        <h:outputText value="Tipo de Nota" />                                 
+                                    </f:facet>
+                                    <h:outputText value="#{ntHhpp.tipoNotaObj.nombreBasica}"/>  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">  
+                                        <h:outputText value="Nota" />                                 
+                                    </f:facet>
+                                    <h:outputText value="#{ntHhpp.nota}"/>  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">  
+                                        <h:outputText value="Usuario:" />                                 
+                                    </f:facet>
+                                    <h:outputText value="#{ntHhpp.usuarioCreacion}" />  
+                                </h:column>   
+                                <h:column>   
+                                    <f:facet name="header">  
+                                        <h:outputText value="Fecha Creación:" />                                 
+                                    </f:facet>
+                                    <h:outputText value="#{ntHhpp.fechaCreacion}">
+                                        <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                                    </h:outputText>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">  
+                                        <h:outputText value="Fecha Edición" />                                 
+                                    </f:facet>
+                                    <h:outputText value="#{ntHhpp.fechaEdicion}">  
+                                        <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                                    </h:outputText>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">  
+                                        <h:outputText value=" Detallar/Agregar comentario:" />                                 
+                                    </f:facet>
+                                    <h:commandLink value=""                                                   
+                                                   action="#{detalleHhppBean.mostarComentario(ntHhpp)}">
+                                        <h:graphicImage value="../../images/icon_plus_red.png" />
+                                    </h:commandLink>
+                                </h:column>  
+
+
+                            </h:dataTable>
+                        </div>
+                    </h:panelGroup>
+                    <div style="text-align: center;">
+                        <h:commandButton id="goBackONotas" value="Atrás" styleClass="btn" action="#{detalleHhppBean.irConsultaHhpp()}" />
+                    </div>
+                </h:panelGroup>
+                <!-- **************************** FIN PESTAÑA NOTAS ******************************* !--> 
+                <!-- **************************** PESTAÑA INFO TÉCNICA **************************** !--> 
+                <h:panelGroup style="width: 100%"  id="infTecnicaTab" rendered="#{detalleHhppBean.infoTecnicaTab}">
+                    <h:panelGrid columns="4" class="formulario3" style="width: 100%">
+                        <f:facet name="header">
+                            <h2 style="margin-top: -22px; 
+                                margin-left: -12px">INFORMACIÓN TÉCNICA</h2>
+                        </f:facet>
+                        <h:dataTable id="infoTecnicaList" 
+                                     value="#{detalleHhppBean.hhppTecnologiaList}" 
+                                     var="tec" 
+                                     styleClass="constructGTable" 
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                                     style="width: 100%">
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Tecnología" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{tec.nodId.nodTipo.nombreBasica}" />
+                                </div>
+                            </h:column>  
+
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Marker" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{tec.marker}" />
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Zona(Nodo):" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{tec.nodId.nodCodigo}" />
+                                </div>
+                            </h:column>  
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Tipo Acometida:" />
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:outputText value="#{tec.hhpTipoAcomet}"  />  
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGrid>
+                    <div style="text-align: center;">
+                        <h:commandButton id="goBackInfo" 
+                                         value="Atrás" 
+                                         styleClass="btn" 
+                                         action="#{detalleHhppBean.irConsultaHhpp()}" />
+                    </div>
+                </h:panelGroup>              
+                <!-- **************************** FIN PESTAÑA INFO TÉCNICA **************************** !--> 
+                <!-- **************************** PESTAÑA HORARIOS ************************************* !-->             
+                <h:panelGroup id="horarioTab"
+                              style="width: 100%"   
+                              rendered="#{detalleHhppBean.horarioTab}">
+                    <h:panelGroup id="panelGHorarioCuentaMatriz" 
+                                  rendered="#{detalleHhppBean.horarioCargado}" 
+                                  style="width: 100%;">
+                        <h2 id="myhMmData"> [Horario] CUENTA MATRIZ: #{detalleHhppBean.hhppSeleccionado.nombreCuenta}</h2>
+                        <div style="height: 250px; overflow: scroll">                
+
+                            <cc:componente-horario id="cmphorarioId" 
+                                                   horarioRestriccion="#{detalleHhppBean.horarioRestriccion}" 
+                                                   horarioEditable="N"
+                                                   permisoCreacion="#{detalleHhppBean.isRolCrear(detalleHhppBean.getTAB_HORARIO_HHPP())}"
+                                                   permisoEliminacion="#{detalleHhppBean.isRolEliminar(detalleHhppBean.getTAB_HORARIO_HHPP())}"/>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{!detalleHhppBean.horarioCargado}" id="panelGSinHorario" style="width: 100%;">
+                        <h:outputText style="font-weight: bold; font-size: 16px;" 
+                                      value="EL HHPP NO CUENTA CON UNA CUENTA MATRIZ CON HORARIOS" />                    
+                    </h:panelGroup>
+                    <div style="text-align: center;">
+                        <h:commandButton id="goBackOHorarios" value="Atrás" styleClass="btn" action="#{detalleHhppBean.irConsultaHhpp()}" />
+                    </div>
+                </h:panelGroup>
+                <!-- **************************** FIN PESTAÑA HORARIOS ********************************** !-->
+                <!-- **************************** PESTAÑA HISTORICO CLIENTES *********************** !-->
+                <h:panelGroup style="width: 100%"  id="hisotricoClientesTab" rendered="#{detalleHhppBean.historicoClientesTab}">
+                    <h2 style="margin-top: -22px; 
+                        margin-left: -12px;text-align: center;">HISTORICO CLIENTES</h2>
+                    <h:dataTable id="idHistoricoClienteList" 
+                                 value="#{detalleHhppBean.historicoClientesList}" 
+                                 var="historico"  
+                                 styleClass="constructGTable" 
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                                 style="width: 100%">
+                        <f:facet name="header">                                       
+                            HISTORICO DE CLIENTES
+                        </f:facet>     
+                        <h:column >   
+                            <f:facet name="header">  
+                                <h:outputText value="Id Suscriptor" />                                 
+                            </f:facet>
+                            <h:outputText value="#{historico.suscriptor}"/>                                        
+                        </h:column>
+                        <f:facet name="footer" >
+                        </f:facet>                          
+                    </h:dataTable>  
+                    <div style="text-align: center;">
+                        <h:commandButton id="goBackHistoricoClientes" value="Atrás" styleClass="btn" action="#{detalleHhppBean.irConsultaHhpp()}" />
+                    </div>
+                </h:panelGroup>
+                <!-- **************************** FIN PESTAÑA HISTORICO CLIENTES *********************** !--> 
+
+                <!-- **************************** PESTAÑA BITACORA *************************************** !-->
+                <h:panelGroup style="width: 100%"  id="bitacoraTab" rendered="#{detalleHhppBean.bitacoraTab}">
+                    <h2 style="margin-top: -22px; 
+                        margin-left: -12px;text-align: center;width: 95%">BITACORA DE CAMBIOS</h2>
+                    <h:panelGroup id="panelAuditoriaHhpp">
+
+                        <cc:componente-auditoria auditoriaDto="#{detalleHhppBean.listAuditoria}">
+                        </cc:componente-auditoria>
+
+                    </h:panelGroup>
+                    <div style="text-align: center;">
+                        <h:commandButton id="goBackBitacora" value="Atrás" styleClass="btn" action="#{detalleHhppBean.irConsultaHhpp()}" />
+                    </div>
+                </h:panelGroup> 
+                <!-- **************************** FIN PESTAÑA BITACORA *************************************** !-->
+
+                <!-- **************************** PESTAÑA BITACORA DIRECCION *************************************** !-->
+                <h:panelGroup style="width: 100%"  id="bitacoraDirTab" rendered="#{detalleHhppBean.bitacoraDireccionTab}">
+                    <h2 style="margin-top: -22px; 
+                        margin-left: -12px;text-align: center;width: 80%">BITÁCORA DE CAMBIOS DE DIRECCIÓN</h2>
+                    <h:panelGroup id="panelAuditoriaDir">
+
+                        <cc:componente-auditoria auditoriaDto="#{detalleHhppBean.listAuditoriaDireccion}">
+                        </cc:componente-auditoria>
+
+                    </h:panelGroup>
+                    <div style="text-align: center;">
+                        <h:commandButton id="goBackBitacoraDir" value="Atrás" styleClass="btn" action="#{detalleHhppBean.irConsultaHhpp()}" />
+                    </div>
+                </h:panelGroup>
+                <!-- **************************** FIN PESTAÑA BITACORA DIRECCION*************************************** !-->
+
+                <!-- **************************** PESTAÑA CURRIER *************************************** !-->
+                <h:panelGroup style="width: 100%"  id="currierTabPanel" rendered="#{detalleHhppBean.curriesTab}">
+
+                    <h:dataTable id="currierList" 
+                                 value="#{detalleHhppBean.cmtCoberturaEntregaMglList}" 
+                                 var="currier"  rows="8"
+                                 styleClass="constructGTable"
+                                 headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                 style="width: 100%">
+
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Tipo Inventario" />
+                                <h:inputText maxlength="50" id="Filtro1Covertura" style="width: 100px" value="#{detalleHhppBean.tipoInvCovertura}">
+                                    <f:ajax event="change" listener="#{detalleHhppBean.findByFiltroCover()}" render="currierList" resetValues="Filtro1Covertura"/>
+                                </h:inputText>
+                            </f:facet>                                
+                            <h:outputText value="#{currier.basica.nombreBasica}"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Operador" />
+                                <h:inputText maxlength="50" id="Filtro2Covertura" style="width: 100px" value="#{detalleHhppBean.tipoInvOperador}">
+                                    <f:ajax event="change" listener="#{detalleHhppBean.findByFiltroCover()}"  render="currierList" resetValues="Filtro2Covertura"/>
+                                </h:inputText>
+                            </f:facet>                                
+                            <h:outputText value="#{currier.operadorBasicaID.nombreBasica}"/>  
+                        </h:column>
+                        <f:facet name="footer" >
+                            <h:panelGroup>
+                                <h:commandButton value="" 
+                                                 class="botonTPagInicioCm botonBaselista">
+                                    <f:ajax render="currierList"  event="click"  
+                                            listener="#{detalleHhppBean.pageFirstCover}"  execute="@this" /> 
+                                </h:commandButton>
+                                <h:commandButton value=""
+                                                 class="botonTPagAnteriorCm botonBaselista">
+                                    <f:ajax render="currierList"  event="click"  
+                                            listener="#{detalleHhppBean.pagePreviousCover}"  execute="@this" /> 
+                                </h:commandButton>
+                                <h:commandButton value="#{detalleHhppBean.pageActualCover}" styleClass="botonTPagInicio"    />
+                                <h:selectOneMenu id="listTabla" value="#{detalleHhppBean.numPaginaCover}" 
+                                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{detalleHhppBean.paginaListCover}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>    
+                                    <f:ajax render="currierList"  event="change"  
+                                            listener="#{detalleHhppBean.irPaginaCover()}"  execute="@this" />                                         
+                                </h:selectOneMenu>
+                                <h:commandButton value="" 
+                                                 class="botonTPagSiguienteCm botonBaselista">
+                                    <f:ajax render="currierList"  event="click"  
+                                            listener="#{detalleHhppBean.pageNextCover}"  execute="@this" /> 
+                                </h:commandButton>
+                                <h:commandButton value="" 
+                                                 class="botonTPagFinCm botonBaselista">
+                                    <f:ajax render="currierList"  event="click"  
+                                            listener="#{detalleHhppBean.pageLastCover}"  execute="@this" /> 
+                                </h:commandButton> 
+                            </h:panelGroup>
+                        </f:facet>
+
+                    </h:dataTable>    
+                    <div style="text-align: center;">
+                        <h:commandButton id="goBackCurries" value="Atrás" styleClass="btn" action="#{detalleHhppBean.irConsultaHhpp()}" />
+                    </div>
+                </h:panelGroup>
+                <!-- **************************** FIN PESTAÑA CURRIER ********************* !-->
+
+                <!-- **************************** PESTAÑA ETIQUETAS *************************************** !-->
+                <h:panelGroup id="marcasTab"
+                              rendered="#{detalleHhppBean.marcasTab}">
+                    <h2>ETIQUETAS</h2>
+                    <h:panelGroup id="marcasTabConsulta" 
+                                  rendered='#{detalleHhppBean.crudMarcasHhppActivo.equalsIgnoreCase("C")}' >
+                        <h:dataTable id="tablaMarcashhpp"
+                                     styleClass="constructGTable2"                                      
+                                     value="#{detalleHhppBean.listaMarcasHomePassAux}"
+                                     var="etiqu"
+                                     headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                     >
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Código Etiqueta" />
+                                    <h:inputText maxlength="50" id="FiltroEtiqueta" style="width: 100px" value="#{detalleHhppBean.codigoMarcaFiltro}" onclick="return submitByEnter(event);">
+                                        <f:ajax listener="#{detalleHhppBean.findByEtiqueta()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="formPrincipal:tablaMarcashhpp"/>
+                                    </h:inputText>
+                                </f:facet>                                
+                                <h:outputText value="#{etiqu.marId.marCodigo}"/>                               
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre de Etiqueta" />
+                                    <h:inputText maxlength="50" id="FiltroEtiqueta2" style="width: 100px" value="#{detalleHhppBean.nombreEtiquetaFiltro}" onclick="return submitByEnter(event);">
+                                        <f:ajax listener="#{detalleHhppBean.findByEtiqueta()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="formPrincipal:tablaMarcashhpp"/>
+                                    </h:inputText>
+                                </f:facet>                                
+                                <h:outputText value="#{etiqu.marId.marNombre}" />
+                                    
+                            </h:column>                          
+                            
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Tecnología" />
+                                    <h:inputText maxlength="50" id="FiltroEtiqueta3" style="width: 100px" value="#{detalleHhppBean.tecnologiaFiltro}" onclick="return submitByEnter(event);">
+                                        <f:ajax listener="#{detalleHhppBean.findByEtiqueta()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="formPrincipal:tablaMarcashhpp"/>
+                                    </h:inputText>
+                                </f:facet>                                
+                                <h:outputText value="#{etiqu.hhpp.nodId.nodTipo.nombreBasica}"/>                               
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Estado" />
+                                     <p:selectOneMenu id="selectEstado" 
+                                             value="#{detalleHhppBean.estadoFiltro}" >
+                                <f:selectItem itemLabel="Todos" itemValue="" />
+                                 <f:selectItem itemLabel="Activo" 
+                                              itemValue="1" />
+                                <f:selectItem itemLabel="Inactivo" 
+                                              itemValue="0"/>
+                                <f:ajax listener="#{detalleHhppBean.findByEtiqueta()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="formPrincipal:tablaMarcashhpp"/>
+                            </p:selectOneMenu>
+
+                                </f:facet>                                
+                                <h:outputText value="#{etiqu.estadoRegistro eq 1 ? 'Activo' : 'Inactivo'}"/>                               
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Auditoría" />
+                                </f:facet>
+                                <h:commandLink value="log"
+                                               action="#{detalleHhppBean.etiquetaLog()}">
+                                    <f:setPropertyActionListener value="#{etiqu}" 
+                                                                 target="#{detalleHhppBean.marcaHomePassSeleccionado}" />
+                                </h:commandLink>                              
+                            </h:column>
+                            <f:facet name="footer" >
+                                <h:panelGroup>                                    
+                                    <div style="text-align: center;">
+                                        <h:commandButton title="Primera Página" value="#{detalleHhppBean.inicioPagina}" action="#{detalleHhppBean.pageFirstEtiquetas}"
+                                                         class="btn"/>
+                                        <h:commandButton title="Página Anterior" value="#{detalleHhppBean.anteriorPagina}" action="#{detalleHhppBean.pagePreviousEtiquetas}"
+                                                         class="btn"/>
+                                        <h:commandButton title="Número Páginas" value="#{detalleHhppBean.pageActualEtiquetas}" styleClass="botonTPagInicio"    />
+                                        <h:selectOneMenu id="listTabla" value="#{detalleHhppBean.numPaginaEtiquetas}" 
+                                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                            <f:selectItems value="#{detalleHhppBean.paginaListEtiquetas}" var="pag"
+                                                           itemValue="#{pag}"
+                                                           itemLabel="#{pag}"/>    
+                                            <f:ajax event="change" 
+                                                    listener="#{detalleHhppBean.irPaginaEtiquetas()}"                                                      
+                                                    execute="@this" 
+                                                    render="formPrincipal:tablaMarcashhpp"/>                                         
+                                        </h:selectOneMenu>  
+                                        <h:commandButton title="Página Siguiente" value="#{detalleHhppBean.siguientePagina}" action="#{detalleHhppBean.pageNextEtiquetas}"
+                                                         class="btn"/>
+                                        <h:commandButton title="Última Página" value="#{detalleHhppBean.finPagina}" action="#{detalleHhppBean.pageLastEtiquetas}"
+                                                         class="btn"/>
+                                    </div>
+                                </h:panelGroup>
+                            </f:facet> 
+                        </h:dataTable>
+                        
+                        <p:commandButton id="goMarcasAnadir"
+                                         action="#{detalleHhppBean.etiquetaAdicionar()}"
+                                         value="Adicionar"
+                                         ajax="false"
+                                         styleClass="btn"
+                                         update="marcasTabAdicion" disabled="#{!detalleHhppBean.isRolCrear(detalleHhppBean.getTAB_ETIQUETAS_HHPP())}"/>
+                    </h:panelGroup>
+                    <p:panelGrid id="marcasTabAdicion"
+                                 rendered='#{detalleHhppBean.crudMarcasHhppActivo.equalsIgnoreCase("A")}' 
+                                 columns="1"
+                                 styleClass="constructGTable2"
+                                 class="ui-g">                        
+                        <p:panelGrid columns="4" 
+                                     styleClass="constructGTable2"
+                                     class="ui-g-3">
+                            <p:outputLabel value="Etiqueta:"/>                           
+                            <p:selectOneMenu id="somMarcaCreacion" 
+                                             value="#{detalleHhppBean.marcaSeleccionada}" >
+                                <f:selectItem itemLabel="Seleccione Una Marca" 
+                                              itemValue="#{BigDecimal.ZERO}" />
+                                <f:selectItems value="#{detalleHhppBean.listaMarcas}"
+                                               var="mar"
+                                               itemLabel="#{mar.marNombre}"
+                                               itemValue="#{mar.marId}" />
+                                <f:ajax event="change" render="@this" />
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Estado: "/>
+                            <p:selectOneRadio id="estadoRegistroMarcaId" 
+                                              value="#{detalleHhppBean.estadoRegistroMarca}" >
+                                <f:selectItem itemLabel="Activo" 
+                                              itemValue="1" />
+                                <f:selectItem itemLabel="Inactivo" 
+                                              itemValue="0"/>
+                            </p:selectOneRadio>
+                            <p:outputLabel value="Tecnologia:" />
+                            <p:selectOneMenu id="somTecnologia"
+                                             value="#{detalleHhppBean.tecnologiaHhppSeleccionada}" 
+                                             disabled="#{detalleHhppBean.activarTodasMarcasHhppString}">
+                                <f:selectItem itemLabel="Seleccione Una Tecnologia"
+                                              itemValue="#{BigDecimal.ZERO}" />
+                                <f:selectItems value="#{detalleHhppBean.hhppTecnologiaList}"
+                                               var="tecs"
+                                               itemLabel="#{tecs.nodId.nodTipo.nombreBasica}" 
+                                               itemValue="#{tecs.hhpId}"/>
+                                <f:ajax event="change" 
+                                        execute="@this" 
+                                        listener="#{detalleHhppBean.buscarMarcasTecnologia()}"
+                                        render="formPrincipal:marcasTabAdicion" />
+                            </p:selectOneMenu>
+                            <p:selectBooleanCheckbox value="#{detalleHhppBean.activarTodasMarcasHhpp}" 
+                                                     itemLabel="Todas">
+                                <f:ajax render="formPrincipal:marcasTabAdicion" listener="#{detalleHhppBean.buscarMarcasTecnologia()}"/>
+                            </p:selectBooleanCheckbox>
+                        </p:panelGrid>
+                        <p:outputLabel value="Observaciones:"/>
+                        <p:inputTextarea    value="#{detalleHhppBean.observacionesMarcas}"
+                                            maxlength="500"
+                                            cols="150"
+                                            rows="3" />
+                        <p:panelGrid    columns="2">
+                            <p:commandButton id="goMarcasConsulta_Adicionar"
+                                             action="#{detalleHhppBean.etiquetaConsultar()}"
+                                             value="Volver"
+                                             styleClass="btn"
+                                             ajax="false"
+                                             immediate="true" />
+                            <p:commandButton id="btMarcasCreacion"
+                                             action="#{detalleHhppBean.etiquetaCrear()}"
+                                             value="Crear"
+                                             styleClass="btn"
+                                             ajax="false"   />
+                        </p:panelGrid>
+                    </p:panelGrid>
+                    <p:panelGrid id="marcasTabModificar" 
+                                 columns="1"
+                                  rendered='#{detalleHhppBean.crudMarcasHhppActivo.equalsIgnoreCase("M")}'>
+                        <p:panelGrid columns="4" class="ui-g-3">
+                            <p:outputLabel value="Etiqueta:"/>                           
+                            <p:selectOneMenu id="somMarcaActualiza" 
+                                             value="#{detalleHhppBean.marcaSeleccionada}" >
+                                <f:selectItem itemLabel="Seleccione Una Marca" itemValue="#{BigDecimal.ZERO}" />
+                                <f:selectItems  value="#{detalleHhppBean.listaMarcas}"
+                                                var="mar"
+                                                itemLabel="#{mar.marNombre}"
+                                                itemValue="#{mar.marId}" />
+                                <p:ajax event="change" 
+                                        update="@this" />
+                            </p:selectOneMenu>
+                            <p:outputLabel  value="Estado: "/>
+                            <p:selectOneRadio   id="sorEstadoRegistroMarcaId" 
+                                                value="#{detalleHhppBean.estadoRegistroMarca}" >
+                                <f:selectItem   itemLabel="Activo" 
+                                                itemValue="1" />
+                                <f:selectItem   itemLabel="Inactivo" 
+                                                itemValue="0"/>
+                            </p:selectOneRadio>
+                            <p:selectOneMenu    rendered="false">
+                            </p:selectOneMenu>
+                            <p:selectBooleanCheckbox value="#{detalleHhppBean.activarTodasMarcasHhpp}" 
+                                                     itemLabel="Todas">
+                                <p:ajax update="marcasTabModificar" 
+                                        listener="#{detalleHhppBean.buscarMarcasTecnologia()}"  />
+                            </p:selectBooleanCheckbox>
+                        </p:panelGrid>
+                        <p:outputLabel value="Observaciones:"/>
+                        <p:inputTextarea id="taActualizaMarca"
+                                         value="#{detalleHhppBean.observacionesMarcas}"
+                                         maxlength="500"
+                                         cols="150"
+                                         rows="3"/>
+                        <p:panelGrid columns="2">
+                            <p:commandButton id="goMarcasConsulta_Actualizar"
+                                             action="#{detalleHhppBean.etiquetaConsultar()}"
+                                             value="Volver" 
+                                             ajax="false"
+                                             immediate="true" />
+                            <p:commandButton id="btMarcasActualizacion"
+                                             action="#{detalleHhppBean.etiquetaModificarConfirmacion()}"
+                                             value="Actualizar" 
+                                             ajax="false"   />
+                        </p:panelGrid>
+                    </p:panelGrid>
+                    <h:panelGroup id="marcasTabAuditoria" 
+                                  rendered='#{detalleHhppBean.crudMarcasHhppActivo.equalsIgnoreCase("L")}'>
+                        <p:dataTable id="tablaMarcashhppLog"
+                                     styleClass="constructGTable2" 
+                                     rows="10"
+                                     value="#{detalleHhppBean.listaMarcasHomePassLog}"
+                                     var="etiquLog"
+                                     paginator="true"
+                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} 
+                                     {PageLinks} {NextPageLink} {LastPageLink}" 
+                                     widgetVar="etiqueTableLog" >
+                            <p:column headerText="Usuario Creacion">
+                                <p:outputLabel value="#{etiquLog.tecmarca.usuarioCreacion}"/>
+                            </p:column>
+                            <p:column headerText="Fecha de Creacion">
+                                <p:outputLabel value="#{etiquLog.tecmarca.fechaCreacion}"/>
+                            </p:column>
+                            <p:column headerText="Usuario Modificacion">
+                                <p:outputLabel value="#{etiquLog.tecmarca.usuarioEdicion}"/>
+                            </p:column>
+                            <p:column headerText="Fecha Modificacion">
+                                <p:outputLabel value="#{etiquLog.tecmarca.fechaEdicion}"/>
+                            </p:column>
+                            <p:column headerText="Valroes Anteriores">
+                                <p:outputLabel value="#{etiquLog.dataAnterior}"/>
+                            </p:column>
+                            <p:column headerText="Valroes Nuevos">
+                                <p:outputLabel value="#{etiquLog.dataNueva}"/>
+                            </p:column>
+                            <p:column headerText="Justificacion">
+                                <p:outputLabel value="#{etiquLog.justificacion}"/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:commandButton id="goMarcasConsulta_Auditoria"
+                                         action="#{detalleHhppBean.etiquetaConsultar()}"
+                                         value="Volver" 
+                                         ajax="false"/>
+                    </h:panelGroup>
+                </h:panelGroup>
+                <!-- **************************** FIN PESTAÑA ETIQUETAS *************************************** !-->
+            </h:panelGrid>
+        </div>
+        <div style="float: right; width: 28%; padding: 0px">
+            <div style="text-align: center;">   <h:outputText style="font-weight: bold; size: 17px;" value="ESTADOS"/>  </div>
+            <hr size="5" width="99%" align="LEFT"/>
+            <h:dataTable id="idEstadosTecnologiaList" rendered="#{detalleHhppBean.hhppExistente}"
+                         value="#{detalleHhppBean.estadoTecnologiaHhppDtoList}" 
+                         var="tecnologia"
+                         style="width: 100%; font-size: 10px;">                    
+                <h:column >     
+                    <f:facet name="header">
+                        <h:outputText value="Tecnología " />
+                    </f:facet>
+                    <h:outputText escape="false" value="#{tecnologia.nombreTecnologia}"/>                                        
+                </h:column>
+                <h:column >    
+                    <f:facet name="header">
+                        <h:outputText value="HHPP" />
+                    </f:facet>
+                    <h:outputText value="#{tecnologia.nombreEstadoTecnologia}" rendered="#{!tecnologia.enableLink}"/>   
+                    <h:commandLink rendered="#{tecnologia.enableLink}" id="hhppselectedLink" value="#{tecnologia.nombreEstadoTecnologia}" 
+                                   action="#{detalleHhppBean.cambiarTab('BITACORADIRECCION')}">
+                    </h:commandLink>
+                </h:column>
+                <h:column >
+                    <f:facet name="header">
+                        <h:outputText value="CCMM" />
+                    </f:facet>
+                    <h:outputText value="#{tecnologia.nombreEstadoTecnologCM}"/>
+                </h:column>
+                
+                <h:column >    
+                    <f:facet name="header">
+                        <h:outputText value="NODO" />
+                    </f:facet>
+                    <h:outputText value="#{tecnologia.stateNodeTecnologCM}" rendered="#{!tecnologia.enableLinkNode}"/>   
+                    <h:commandLink rendered="#{tecnologia.enableLinkNode}" id="hhppselectedLinkNode" value="#{tecnologia.stateNodeTecnologCM}" 
+                                   action="#{detalleHhppBean.cambiarTab('INFOTECNICA')}">
+                    </h:commandLink>
+                </h:column>
+                
+                <h:column >     
+                    <f:facet name="header">
+                        <h:outputText value="NAP " />
+                    </f:facet>
+                    <h:outputText escape="false" value="#{tecnologia.hhppMglSelected.nap != null ? tecnologia.hhppMglSelected.nap : 'No disponible'}"/>                                        
+                </h:column>
+            </h:dataTable>
+            <h:dataTable id="CoberturasTecnologiaList" rendered="#{!detalleHhppBean.hhppExistente}"
+                         value="#{detalleHhppBean.tecnologiaBasicaList}"
+                         var="tec"
+                         style="width: 100%; font-size: 10px;">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Tecnología " />
+                    </f:facet>
+                    <h:outputText escape="false" value="#{tec.nombreBasica}"/>
+                </h:column>
+                <h:column >
+                    <f:facet name="header">
+                        <h:outputText value="Nodo Cobertura" />
+                    </f:facet>
+                    <h:outputText value="#{tec.nodoCobertura}"/>
+                </h:column>
+            </h:dataTable>
+        </div>
+    </ui:define>
+</ui:composition>

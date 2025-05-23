@@ -1,0 +1,12 @@
+<pcml version="4.0">
+   <!-- RPG program: CMEDFARP  -->
+   <!-- created: 2014-09-18-17.10.17 -->
+   <!-- source: CMWEBF0/QRPGLESRC(CMEDFARP) -->
+   <!-- 49 -->
+   <program name="CMEDFARP" path="/QSYS.LIB/TVCABLEEXE.LIB/CMEDFARP.PGM">
+      <data name="NOMBRE" type="char" length="30" usage="inputoutput" />
+      <data name="TIPOERROR" type="char" length="1" usage="inputoutput" />
+      <data name="ERROR" type="char" length="20" usage="inputoutput" />
+      <data name="RESPUESTA" type="char" length="83" count="500" usage="inputoutput" />
+   </program>
+</pcml>

@@ -1,0 +1,24 @@
+<pcml version="4.0">                                                           
+    <!-- RPG module: CLMUNIR0  -->                                             
+    <!-- created: 2019-04-16-09.11.45 -->
+    <!-- old source: JSEGURA/QDSCLARO(INSMUNICI) -->
+    <!-- source: JSEGURA/QDSCLARO(CLMUNIR0) -->                                
+    <!-- 3100 -->                                                               
+    <program name="CLMUNIR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CLMUNIR0.PGM">                           
+        <data name="IDPRC" type="char" length="1" usage="inputoutput" />         
+        <data name="IDUSER" type="char" length="10" usage="inputoutput" />       
+        <data name="CDDANE" type="char" length="8" usage="inputoutput" />        
+        <data name="DSPOBLD" type="char" length="62" usage="inputoutput" />      
+        <data name="CDDEPTO" type="char" length="2" usage="inputoutput" />       
+        <data name="DSDEPTO" type="char" length="49" usage="inputoutput" />      
+        <data name="CDMPIO" type="char" length="5" usage="inputoutput" />        
+        <data name="DSMPIO" type="char" length="31" usage="inputoutput" />       
+        <data name="CDCLASE" type="char" length="4" usage="inputoutput" />       
+        <data name="NUMMANZ" type="char" length="5" usage="inputoutput" />       
+        <data name="ANOCREA" type="char" length="4" usage="inputoutput" />       
+        <data name="ESTVIG" type="char" length="2" usage="inputoutput" />                
+        <data name="IDENDM" type="char" length="7" usage="inputoutput" />         
+        <data name="ENDMSG" type="char" length="200" usage="inputoutput" />       
+    </program>                                                                   
+</pcml> 
+

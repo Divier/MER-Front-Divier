@@ -1,0 +1,410 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>        
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/script.js"></script>
+        <style type="text/css">
+            .ui-g div {
+                background-color: #ededed;
+                text-align: center;
+                border: 1px solid #fafafa;
+                
+            }
+            .calendarClass input{
+                 margin-left: 10px;
+                 width: 85px
+            }
+        </style>       
+
+    </h:head>
+    <h:body>
+
+
+
+        <h:form id="formPrincipal">
+            <ui:include src="../../CM/panelMensajes.xhtml" />
+            <div id="header">
+                <ui:include src="../../CM/name.xhtml" />
+            </div>
+            <div id="cssmenu">
+                <ui:include src="../../template/menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../../CM/version.xhtml" />
+            </div>
+            <div id="content">
+                <div id="subcontent">
+                    <section class="tabs">
+                        <div id="contenido">
+                            <ui:insert name="content">
+
+                                <h:form>
+                                    <p:growl id="msgs" showDetail="true" />
+
+                                    <p:panel id="basic" header=" Reporte Estado actual órdenes de Direcciones " footer="Reporte HHPP" style="margin-bottom:20px">
+                                         <h3 style="margin-top: 0">Filtro</h3>
+                                        <div class="ui-g">
+                                            <div class="ui-g-6"> 
+                                                <h:outputText  value="Filtro Fechas" escape="false"/>
+                                               <h:selectOneMenu id="filtroFechas" value="#{reporteEstadoActualOtDirBean.filtroFechas}" style="width:125px">
+                                                    <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                                    <f:selectItem itemLabel="Creación OT" itemValue="Creación OT" />
+                                                    <f:selectItem itemLabel="Creación ONYX" itemValue="Creación ONYX" />
+                                                    <f:selectItem itemLabel="Agendamiento OFSC" itemValue="Agendamiento OFSC" />
+                                                    <f:selectItem itemLabel="Asignación Técnico OFSC" itemValue="Asignación técnico OFSC" />
+                                                    <f:selectItem itemLabel="Cierre Agenda OFSC" itemValue="Cierre agenda OFSC" />
+                                                    <f:selectItem itemLabel="Cancelación OFSC" itemValue="Cancelación OFSC" />
+                                                    <f:selectItem itemLabel="Reagendamiento OFSC" itemValue="Reagendamiento OFSC" />
+                                                    <f:selectItem itemLabel="Suspensión OFSC" itemValue="Suspensión OFSC" />
+                                                    <f:ajax event="change"
+                                                            render="basic" execute="@this"
+                                                            listener="#{reporteEstadoActualOtDirBean.mostralPanel}"/>
+                                                </h:selectOneMenu>
+                                            </div>
+                                            <div class="ui-g-6">
+                                               
+                                            </div>
+                                        </div>
+
+                                      
+                                         <!-- primera fila fecha -->
+                                        <h3 style="margin-top: 0">Fechas</h3>
+                                        <h:panelGroup id="creacionOt"  rendered="#{reporteEstadoActualOtDirBean.panelCreacionOt}" >
+                                            <div class="ui-g">
+                                                <div class="ui-g-6"> 
+                                                    <h:outputText id="slaOtDesText1"  value="Fecha Inicio de OT"  />
+                                                    <p:calendar id="initDate" styleClass="calendarClass" 
+                                                                value="#{reporteEstadoActualOtDirBean.fechaInicioOt}"
+                                                                readonly="false" 
+                                                                showOn="both">
+                                                        <f:convertDateTime pattern="dd/MM/yy" />   
+                                                    </p:calendar>     
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <h:outputText id="lblfechaFinal"  value="Fecha Fin de OT" />
+                                                    <p:calendar id="fechaFInalOnyx" styleClass="calendarClass"
+                                                                value="#{reporteEstadoActualOtDirBean.fechaFinOt}"
+                                                                readonly="false" 
+                                                                showOn="both">
+                                                        <f:convertDateTime pattern="dd/MM/yy" />   
+                                                    </p:calendar> 
+                                                </div>
+                                            </div>
+                                        </h:panelGroup>
+                                          <!-- segunda fila fecha -->
+                                         <h:panelGroup id="otOnyx"    rendered="#{reporteEstadoActualOtDirBean.panelcreacionONYX}" >
+                                             <div class="ui-g">
+                                                 <div class="ui-g-6"> 
+                                                     <h:outputText id="lblfechaInyx" value="Fecha Inicio OT Onyx"  />
+                                                     <p:calendar id="initDateOnyx" styleClass="calendarClass" readonlyInput="true"
+                                                                 value="#{reporteEstadoActualOtDirBean.fechaInicioOtOnyx}"
+                                                                 readonly="false" 
+                                                                 showOn="both">
+                                                         <f:convertDateTime pattern="dd/MM/yy" />   
+                                                     </p:calendar>    
+                                                 </div>
+                                                 <div class="ui-g-6">
+                                                     <h:outputText id="lblfechaFinalOnyx" styleClass="calendarClass" value="Fecha Fin OT Onyx" />
+                                                     <p:calendar id="fechaInyx2" styleClass="calendarClass" readonlyInput="true"
+                                                                 value="#{reporteEstadoActualOtDirBean.fechaFinOtOnyx}"
+                                                                 readonly="false" 
+                                                                 showOn="both">
+                                                         <f:convertDateTime pattern="dd/MM/yy" />   
+                                                     </p:calendar>
+                                                 </div>
+                                             </div> 
+                                         </h:panelGroup>
+                                            <!-- tercera fila fecha -->
+                                            <h:panelGroup id="panelAgendamientoOFSC"    rendered="#{reporteEstadoActualOtDirBean.panelAgendamientoOFSC}" >
+
+                                                <div class="ui-g">
+                                                    <div class="ui-g-6"> 
+                                                        <h:outputText id="lblAgendaIni2" value="Fecha Inicio Agend OFSC"  />
+                                                        <p:calendar id="fechainitAgendaOfsc1" styleClass="calendarClass" readonlyInput="true"
+                                                                    value="#{reporteEstadoActualOtDirBean.fechaInicioAgendOFSC}"
+                                                                    readonly="false" 
+                                                                    showOn="both">
+                                                            <f:convertDateTime pattern="dd/MM/yy" />   
+                                                        </p:calendar>  
+                                                    </div>
+                                                    <div class="ui-g-6">
+                                                          <h:outputText id="lblAgendaFin2" value="Fecha Fin Agend OFSC" />
+                                                            
+                                                             <p:calendar id="fechaFinAgendaOfsc2" styleClass="calendarClass" readonlyInput="true"
+                                                                        value="#{reporteEstadoActualOtDirBean.fechaFinAgendOFSC}"
+                                                                        readonly="false" 
+                                                                        showOn="both">
+                                                            </p:calendar>    
+                                                    </div>
+                                                </div>
+                                            </h:panelGroup>
+                                              <!-- cuarta fila fecha -->
+                                             <h:panelGroup id="panelAsignaciontecnicoOFSC"    rendered="#{reporteEstadoActualOtDirBean.panelAsignaciontecnicoOFSC}" >
+                                                 <div class="ui-g">
+                                                     <div class="ui-g-6"> 
+                                                         <h:outputText id="lblTecnicoIni1" value="Fecha Inicio Asig. Técnico"  />
+                                                         <p:calendar id="fechaInitTecnico1" styleClass="calendarClass" readonlyInput="true"
+                                                                     value="#{reporteEstadoActualOtDirBean.fechaInicioAsigTecnico}"
+                                                                     readonly="false" 
+                                                                     showOn="both">
+                                                             <f:convertDateTime pattern="dd/MM/yy" />   
+                                                         </p:calendar>          
+                                                     </div>
+                                                     <div class="ui-g-6">
+                                                         <h:outputText id="lblTecnicoFin2" value="Fecha Fin Asig. Técnico" />
+                                                         <p:calendar id="fechaFinTecnico2" styleClass="calendarClass" readonlyInput="true"
+                                                                     value="#{reporteEstadoActualOtDirBean.fechaFinAsigTecnico}"
+                                                                     readonly="false" 
+                                                                     showOn="both">
+                                                             <f:convertDateTime pattern="dd/MM/yy" />   
+                                                         </p:calendar>       
+                                                     </div>
+                                                 </div>
+                                             </h:panelGroup>
+                                             <!-- quinta fila fecha -->
+                                             <h:panelGroup id="panelCierreagendaOFSC"    rendered="#{reporteEstadoActualOtDirBean.panelCierreagendaOFSC}" >
+                                                 <div class="ui-g">
+                                                     <div class="ui-g-6"> 
+                                                         <h:outputText id="lblCierreAgenda" value="Fecha Inicio Cierre Agenda" />
+                                                         <p:calendar id="fechaIniAgenda" styleClass="calendarClass" readonlyInput="true"
+                                                                     value="#{reporteEstadoActualOtDirBean.fechaInicioCierreAgenda}"
+                                                                     readonly="false" 
+                                                                     showOn="both">
+                                                             <f:convertDateTime pattern="dd/MM/yy" />   
+                                                         </p:calendar>   
+                                                     </div>
+                                                     <div class="ui-g-6">
+                                                         <h:outputText id="lblFinCierreAgenda" value="Fecha Fin Cierre Agenda" />
+                                                         <p:calendar id="fechaFinCierreAgenda" styleClass="calendarClass" readonlyInput="true"
+                                                                     value="#{reporteEstadoActualOtDirBean.fechaFinCierreAgenda}"
+                                                                     readonly="false" 
+                                                                     showOn="both">
+                                                             <f:convertDateTime pattern="dd/MM/yy" />   
+                                                         </p:calendar>    
+                                                     </div>
+                                                 </div>
+                                             </h:panelGroup>
+                                             <!-- sexta fila fecha -->
+                                             <h:panelGroup id="panelCancelacionOFSC"    rendered="#{reporteEstadoActualOtDirBean.panelCancelacionOFSC}" >
+                                                 <div class="ui-g">
+                                                     <div class="ui-g-6"> 
+                                                         <h:outputText id="lblIniCancelAgenda" value="Fecha Inicio Canc. Agenda" />
+                                                         <p:calendar id="fechaIniCanAgenda" styleClass="calendarClass" readonlyInput="true"
+                                                                     value="#{reporteEstadoActualOtDirBean.fechaInicioCancAgenda}"
+                                                                     readonly="false" 
+                                                                     showOn="both">
+                                                             <f:convertDateTime pattern="dd/MM/yy" />   
+                                                         </p:calendar>     
+                                                     </div>
+                                                     <div class="ui-g-6">
+                                                         <h:outputText id="lblFinCancelAgenda" value="Fecha Fin Canc. Agenda" />
+                                                         <p:calendar id="fechaFinCanAgenda" styleClass="calendarClass" readonlyInput="true"
+                                                                     value="#{reporteEstadoActualOtDirBean.fechaFinCancAgenda}"
+                                                                     readonly="false" 
+                                                                     showOn="both">
+                                                             <f:convertDateTime pattern="dd/MM/yy" />   
+                                                         </p:calendar>   
+                                                     </div>
+                                                 </div>
+                                             </h:panelGroup>
+                                             <!-- septima fila fecha -->
+                                             <h:panelGroup id="panelReagendamientoOFSC"    rendered="#{reporteEstadoActualOtDirBean.panelReagendamientoOFSC}" >
+                                                 <div class="ui-g">
+                                                     <div class="ui-g-6"> 
+                                                         <h:outputText id="lblIniAgendamiento" value="Fecha Inicio Reagenda " />
+                                                         <p:calendar id="fechaIniAgendamiento" styleClass="calendarClass" readonlyInput="true"
+                                                                     value="#{reporteEstadoActualOtDirBean.fechaInicioReagenda}"
+                                                                     readonly="false" 
+                                                                     showOn="both">
+                                                             <f:convertDateTime pattern="dd/MM/yy" />   
+                                                         </p:calendar>      
+                                                     </div>
+                                                     <div class="ui-g-6">
+                                                         <h:outputText id="lblFinAgendamiento" value="Fecha Fin Reagenda " />
+                                                         <p:calendar id="fechaFinAgendamiento" styleClass="calendarClass" readonlyInput="true"
+                                                                     value="#{reporteEstadoActualOtDirBean.fechaFinReagenda}"
+                                                                     readonly="false" 
+                                                                     showOn="both">
+                                                             <f:convertDateTime pattern="dd/MM/yy" />   
+                                                         </p:calendar>       
+                                                     </div>
+                                                 </div>
+
+                                             </h:panelGroup>
+                                              <!-- octava fila fecha -->
+                                             <h:panelGroup id="panelSuspensionOFSC"    rendered="#{reporteEstadoActualOtDirBean.panelSuspensionOFSC}" >
+                                                 <div class="ui-g">
+                                                     <div class="ui-g-6"> 
+
+                                                         <h:outputText id="lblIniSuspension" value="Fecha Inicio Suspensión " />
+                                                         <p:calendar id="fechaIniSuspension" styleClass="calendarClass" readonlyInput="true"
+                                                                     value="#{reporteEstadoActualOtDirBean.fechaInicioSuspension}"
+                                                                     readonly="false" 
+                                                                     showOn="both">
+                                                             <f:convertDateTime pattern="dd/MM/yy" />   
+                                                         </p:calendar> 
+                                                     </div>
+                                                     <div class="ui-g-6">
+                                                         <h:outputText id="lblFinSuspension" value="Fecha Fin Suspensión " />
+                                                         <p:calendar id="fechaFinSuspension" styleClass="calendarClass"
+                                                                     value="#{reporteEstadoActualOtDirBean.fechaFinSuspension}"
+                                                                     readonly="false" 
+                                                                     showOn="both">
+                                                             <f:convertDateTime pattern="dd/MM/yy" />   
+                                                         </p:calendar>      
+                                                     </div>
+                                                 </div>
+                                             </h:panelGroup>
+                                          <!-- primera fila-->
+                                           <h3 style="margin-top: 0">Ordenes</h3>
+                                        <div class="ui-g">
+                                            <div class="ui-g-6"> <h:outputText  value="Número OT Inicial" escape="false"/>
+                                                <p:inputText placeholder="Numero Ot Inicial" 
+                                                               converterMessage="Por favor ingrese solo números"
+                                                             value="#{reporteEstadoActualOtDirBean.otIni}" />      
+                                            </div>
+                                            <div class="ui-g-6"><h:outputText  value="Número OT Final" escape="false"/>
+                                                <p:inputText placeholder="Numero Ot Final" 
+                                                               converterMessage="Por favor ingrese solo números"
+                                                             value="#{reporteEstadoActualOtDirBean.otFin}" /> 
+                                            </div>
+                                        </div>
+                                         <h3 style="margin-top: 0">Ordenes</h3>
+                                         <div class="ui-g">
+                                             <div class="ui-g-3"> 
+                                                 <h:outputText id="lblTiposOrdenes" value="Tipos de órdenes " />
+                                                 <p:selectCheckboxMenu id="subtiposOrdenes" value="#{reporteEstadoActualOtDirBean.subtipoOrden}" label=" Tipos de órdenes"
+                                                                       filter="true" filterMatchMode="startsWith" >
+                                                     <f:selectItems value="#{reporteEstadoActualOtDirBean.tipoGeneralOrdenTrabajo}"
+                                                                    var="ot"  
+                                                                    itemValue="#{ot.basicaId}" 
+                                                                    itemLabel="#{ot.nombreBasica}"/>
+                                                 </p:selectCheckboxMenu> 
+
+
+                                             </div>
+                                             <div class="ui-g-3"> 
+                                                 <h:outputText id="lblSubTiposOrdenes" value="Sub Tipos de órdenes " />
+                                                 <p:selectCheckboxMenu id="tiposOrdenes" value="#{reporteEstadoActualOtDirBean.tipoOrden}" label="Sub Tipos de órdenes"
+                                                                       filter="true" filterMatchMode="startsWith" >
+                                                     <f:selectItems value="#{reporteEstadoActualOtDirBean.tipoOtHhppList}"
+                                                                    var="otMgl"  
+                                                                    itemValue="#{otMgl.tipoOtId}" 
+                                                                    itemLabel="#{otMgl.nombreTipoOt}"/>
+                                                 </p:selectCheckboxMenu> 
+
+                                             </div>
+                             <div class="ui-g-3">  
+                                                  <h:outputText id="lbltipoOrdenesTrabajo" value="Tipo de Ordenes OFSC" />
+                                                
+                                                  <p:selectCheckboxMenu id="tipoTrabajo" value="#{reporteEstadoActualOtDirBean.tipoOrdenOfscSelected}" label="SubTipo de Trabajo"
+                                                                         filter="true" filterMatchMode="startsWith" >
+                                                       <f:selectItems value="#{reporteEstadoActualOtDirBean.tipoGeneralOrdenTrabajo}"
+                                                                    var="st"  
+                                                                    itemValue="#{st.basicaId}" 
+                                                                    itemLabel="#{st.nombreBasica}"/>
+                                                  </p:selectCheckboxMenu>
+                                                
+                                              </div>
+                                              <div class="ui-g-3">  
+                                                  <h:outputText id="lblSubTipoOrdenesTrabajo" value="SubTipo de órdenes OFSC" />
+                                                
+                                                  <p:selectCheckboxMenu id="SubTipoTrabajo" value="#{reporteEstadoActualOtDirBean.subTipoOrdenOfscSelected}" label="SubTipo de Trabajo"
+                                                                         filter="true" filterMatchMode="startsWith" >
+                                                       <f:selectItems value="#{reporteEstadoActualOtDirBean.listBasicaSubtipoOrdenOFSC}"
+                                                                    var="st"  
+                                                                    itemValue="#{st.codigoBasica}" 
+                                                                    itemLabel="#{st.descripcion}"/>
+                                                  </p:selectCheckboxMenu>
+                                                
+                                              </div>
+                                            
+                                             
+                                          </div> 
+                                           <h3 style="margin-top: 0">Estado</h3>
+                                           <div class="ui-g">
+                                               <div class="ui-g-6">
+                                                   <h:outputText id="lblEstadosOrden" value="Estados de la Orden" />
+                                                   <p:selectCheckboxMenu id="EstadosOrden"  value="#{reporteEstadoActualOtDirBean.estadoInternolist}" label="Estados de la Orden"
+                                                                         filter="true" filterMatchMode="startsWith" >
+                                                       <f:selectItems value="#{reporteEstadoActualOtDirBean.estadoGeneralList}"
+                                                                      var="e"  
+                                                                      itemValue="#{e.basicaId}" 
+                                                                      itemLabel="#{e.nombreBasica}"/>
+                                                   </p:selectCheckboxMenu>
+                                               </div>
+                                               <div class="ui-g-6">
+
+                                               </div>
+                                           </div>
+                                    </p:panel>
+                                </h:form>
+
+                                <br></br>  
+                                <p:panel id="basic" header="ESTADO ACTUAL ÓRDENES DE DIRECCIONES Y AGENDAS" footer="Proceso" style="margin-bottom:20px" rendered="#{reporteEstadoActualOtDirBean.numRegAProcesar > 0}">
+                                    <h:panelGroup id="procesoRegistros"  style="color:red; width: 100%; text-align: center;"   >
+
+                                        <fieldset>
+                                            <legend>Estado del Reporte</legend>
+                                            <div>
+                                                <h:outputText id="mesage"  style="color:red; width: 100%; font-size: 1.5em; font-weight: bold;width: 50%; text-align: center;"  
+                                                              value="Resultados Encontrados:  #{reporteEstadoActualOtDirBean.numRegAProcesar} "  />
+                                            </div>
+                                          
+                                        </fieldset>
+                                    </h:panelGroup>
+                                </p:panel>
+                                
+                                <p:toolbar>
+                                    <f:facet name="left">
+                                        <h:commandButton value="Reporte" styleClass="btn" style=" text-align: center;" 
+                                                         action="#{reporteEstadoActualOtDirBean.getReporte()}" rendered="#{reporteEstadoActualOtDirBean.btnReporte}"
+                                                         />
+
+                                        <span class="ui-separator">
+                                            <span class="ui-icon pi pi-ellipsis-v" />
+                                        </span>
+                                                <h:commandButton value="Exportar .csv" styleClass="btn unblockClaro" style="text-align: center;"   
+                                                                 rendered="#{!reporteEstadoActualOtDirBean.btnReporte}"                                                                  
+                                                                 action="#{reporteEstadoActualOtDirBean.downloadCvsTxt('csv')}"
+                                                                 />
+                                              
+                                                <h:commandButton value="Limpiar" styleClass="btn" style="text-align: center;"  
+                                                                   action="#{reporteEstadoActualOtDirBean.volverList()}"
+                                                                 />
+                                       
+                                    </f:facet>
+                                </p:toolbar>
+                            </ui:insert>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </h:form>
+        <div id="footer">
+            <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

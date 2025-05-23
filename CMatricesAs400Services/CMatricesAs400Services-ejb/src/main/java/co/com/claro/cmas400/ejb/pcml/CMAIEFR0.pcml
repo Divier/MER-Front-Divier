@@ -1,0 +1,17 @@
+<pcml version="4.0">                                                            
+   <!-- RPG program: CMAIEFR0  -->                                              
+   <!-- created: 2016-03-02-11.42.28 -->                                        
+   <!-- source: TVCSRC/CMRPGLESRC(CMAIEFR0) -->                                 
+   <!-- 74 -->                                                                  
+   <program name="CMAIEFR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMAIEFR0.PGM">       
+      <data name="CUENTA" type="char" length="9" usage="inputoutput" />         
+      <data name="PCML" type="char" length="2" usage="inputoutput" />           
+      <data name="PFUNCI" type="char" length="1" usage="inputoutput" />         
+      <data name="PCONFI" type="char" length="1" usage="inputoutput" />         
+      <data name="PUSERID" type="char" length="10" usage="inputoutput" />       
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />        
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />      
+      <data name="TABLARTA" type="char" length="45" count="500" usage="inputoutput" />      
+      <data name="MENSAJE" type="char" length="63" usage="inputoutput" />       
+   </program>                                                                   
+</pcml>                                                       

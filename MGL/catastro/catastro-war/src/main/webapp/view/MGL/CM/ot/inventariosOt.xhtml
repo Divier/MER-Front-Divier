@@ -1,0 +1,267 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/otTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Inventarios OT</span></ui:define>
+    <ui:define name="content">
+
+        <h:panelGroup id="panelCrearInventariosOt" rendered="#{CmtInventariosOtMglBean.mostrarPanelCrearInvOt}">
+            <fieldset >
+                <legend>Inventarios OT</legend>
+                <table style="width: 100%; border-spacing: 10px;">
+
+                    <td style="width:2%;" />
+                    <td style="width:10%;" />
+                    <td style="width:10%;" />
+                    <td style="width:2%;" />
+                    <td style="width:10%;" />
+                    <td style="width:10%;" />
+                    <td style="width:2%;" />
+
+                    <tr> 
+                        <td> <h:outputText value="Id OT:" styleClass="formColumn1"/>   </td>
+                        <td> <h:inputText value="#{CmtInventariosOtMglBean.ordenTrabajo.idOt == null ? '':CmtInventariosOtMglBean.ordenTrabajo.idOt}"
+                                          readonly="true" disabled="true" style="width: 140px"/> </td>
+                        <td/>
+                        <td> <h:outputText value="Tipo Inventario:" styleClass="formColumn1" />  </td>
+                        <td>
+                            <h:selectOneMenu id="TipoInvTecList"  value="#{CmtInventariosOtMglBean.tipoInvTecSelected}"
+                                             style="width: 140px"
+                                             required="true" requiredMessage="Tipo Inventario Tecnología: Valor es necesario"
+                                             disabled="#{CmtInventariosOtMglBean.inhabilitarFormulario}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{CmtInventariosOtMglBean.tipoInvTecList}" var="tpTec"
+                                               itemValue="#{tpTec.nombreBasica}"
+                                               itemLabel="#{tpTec.nombreBasica}"/>                 
+                            </h:selectOneMenu>
+                        </td>
+                        <td/>
+                        <td> <h:outputText value="Clase Inventario:" styleClass="formColumn1" />  </td>
+                        <td>
+                            <h:selectOneMenu id="ClaseInvTecList"  value="#{CmtInventariosOtMglBean.claseInvTecSelected}"
+                                             style="width: 140px"
+                                             required="true" requiredMessage="Clase Inventario Tecnología: Valor es necesario"
+                                             disabled="#{CmtInventariosOtMglBean.inhabilitarFormulario}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{CmtInventariosOtMglBean.claseInvTecList}" var="clInTec"
+                                               itemValue="#{clInTec.nombreBasica}"
+                                               itemLabel="#{clInTec.nombreBasica}"/>                 
+                            </h:selectOneMenu>
+                        </td>
+                        <td/>
+                    </tr>  
+                    <br></br>
+                    <tr>
+                        <td> <h:outputText value="Fabricante:" styleClass="formColumn1" />  </td>
+                        <td>
+                            <h:selectOneMenu id="FabInvTecList"  value="#{CmtInventariosOtMglBean.fabInvTecSelected}"
+                                             style="width: 140px"
+                                             required="true" requiredMessage="Fabricante Inventario Tecnología: Valor es necesario"
+                                             disabled="#{CmtInventariosOtMglBean.inhabilitarFormulario}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{CmtInventariosOtMglBean.fabInvTecList}" var="fab"
+                                               itemValue="#{fab.nombreBasica}"
+                                               itemLabel="#{fab.nombreBasica}"/>                 
+                            </h:selectOneMenu>
+                        </td>
+                        <td/>
+                        <td> <h:outputText value="Serial:" styleClass="formColumn1"/>   </td>
+                        <td> <h:inputText value="#{CmtInventariosOtMglBean.ordenTrabajoInventarioMgl.serial}" maxlength="15" style="width: 140px"
+                                          required="true"
+                                          requiredMessage="El campo Serial es requerido" disabled="#{CmtInventariosOtMglBean.inhabilitarFormulario}">
+                            </h:inputText>
+
+                        </td>
+                        <td/>
+                        <td> <h:outputText value="Referencia:" styleClass="formColumn1"/>   </td>
+                        <td> <h:inputText value="#{CmtInventariosOtMglBean.ordenTrabajoInventarioMgl.referencia}" maxlength="15" style="width: 140px"
+                                          required="true"
+                                          requiredMessage="El campo referencia es requerido" disabled="#{CmtInventariosOtMglBean.inhabilitarFormulario}">
+                            </h:inputText>
+                        </td>
+                        <td/>
+                    </tr>
+                    <br></br>
+                    <tr>       
+                        <td> <h:outputText value="Mac:" styleClass="formColumn1"/>   </td>
+                        <td> <h:inputText value="#{CmtInventariosOtMglBean.ordenTrabajoInventarioMgl.mac}" maxlength="50" style="width: 140px"
+                                          required="true"
+                                          validatorMessage="'Mac' formato del Campo no es valido: Debe escribir la MAC con alguno de estos 
+                                          formato: 01-23-45-67-89-ab || 01:23:45:67:89:ab"
+                                          requiredMessage="El campo Mac es requerido" disabled="#{CmtInventariosOtMglBean.inhabilitarFormulario}">
+                                <f:validateRegex pattern="^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"  />
+                            </h:inputText>
+                        </td>
+                        <td/>
+                        <td> <h:outputText value="Subedificio Visita Técnica:" styleClass="formColumn1"/>
+                        </td>
+                        <td> 
+                            <h:selectOneMenu id="SubVisTec"  value="#{CmtInventariosOtMglBean.subEdificioMglSelected}"
+                                             style="width: 140px"
+                                             required="true" requiredMessage="Subedificio Visita Técnica: Valor es necesario"
+                                             disabled="#{CmtInventariosOtMglBean.inhabilitarFormulario}">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{CmtInventariosOtMglBean.lsCmtSubEdificiosVts}" var="subVT"
+                                               itemValue="#{subVT.idEdificioVt}"
+                                               itemLabel="#{(subVT.subEdificioObj eq null?(subVT.nombreSubEdificio eq null?subVT.idEdificioVt.toString().concat('-Sin Nombre'):subVT.nombreSubEdificio):subVT.subEdificioObj.nombreSubedificio)}"/>                 
+                            </h:selectOneMenu>
+
+                        </td>
+                        <td/>
+                    </tr>
+                    <h:panelGrid id="panelGridBotonesOt" columns="4" style="margin: 0 auto;">
+                        <h:commandButton value="Adicionar"  id="CrearInvTecOTButton" 
+                                         styleClass="btn" 
+                                         action="#{CmtInventariosOtMglBean.crearInventarioTecOT()}"
+                                         disabled="#{CmtInventariosOtMglBean.inhabilitarFormulario}"
+                                         rendered="#{!OtMglBean.validarEstadoFlujoOT()}">
+                        </h:commandButton>
+                        <h:commandButton value="Volver"  id="VolverlistInvTecOT" 
+                                         styleClass="btn" immediate="true"
+                                         action="#{CmtInventariosOtMglBean.volver()}">
+                        </h:commandButton> 
+                    </h:panelGrid>
+                </table>
+            </fieldset>            
+        </h:panelGroup>
+
+        <h:panelGroup style="margin: 0 auto;" id="panelListaInvOt" rendered="#{CmtInventariosOtMglBean.mostrarPanelListaInvOt}">
+            <h1>Listado Inventarios OT</h1>  
+            <h:dataTable id="InventariosSubtecnologiasTable" style="width:100%;margin:0 auto;"
+                         rendered="#{CmtInventariosOtMglBean.lsCmtOrdenTrabajoInventarioMgls != null 
+                                     and  CmtInventariosOtMglBean.lsCmtOrdenTrabajoInventarioMgls.size() >0}"
+                         value="#{CmtInventariosOtMglBean.lsCmtOrdenTrabajoInventarioMgls}" var="inOt"
+                         styleClass="constructGTable" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow " >
+                <f:facet name="header">
+                    <h:outputText value="Listado Inventarios OT" />
+                </f:facet>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Número Inventario Tecnología OT" />
+                    </f:facet>  
+                    <h:outputText value="#{inOt.ordentrabajoInventarioId}"/>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Nombre Subedificio" />
+                    </f:facet>  
+                    <h:outputText value="#{(inOt.cmtSubEdificiosVtObj.subEdificioObj eq null?(inOt.cmtSubEdificiosVtObj.nombreSubEdificio eq null?inOt.cmtSubEdificiosVtObj.idEdificioVt.toString().concat('-Sin Nombre'):inOt.cmtSubEdificiosVtObj.nombreSubEdificio):inOt.cmtSubEdificiosVtObj.subEdificioObj.nombreSubedificio)}"/>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Tipo Inventario" />
+                    </f:facet>  
+                    <h:outputText value="#{inOt.tipoInventario}"/>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Clase Inventario" />
+                    </f:facet>  
+                    <h:outputText value="#{inOt.claseInventario}"/>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Fabricante" />
+                    </f:facet>  
+                    <h:outputText value="#{inOt.fabricante}"/>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Serial" />
+                    </f:facet>  
+                    <h:outputText value="#{inOt.serial}"/>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Referencia" />
+                    </f:facet>  
+                    <h:outputText value="#{inOt.referencia}"/>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Mac" />
+                    </f:facet>  
+                    <h:outputText value="#{inOt.mac}"/>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Fecha Creación" />
+                    </f:facet>  
+                    <h:outputText value="#{inOt.fechaCreacion}">
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                    </h:outputText>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Action" />
+                    </f:facet>  
+                    <h:selectOneMenu id="action"  value="#{inOt.actionInvTecOt}"   
+                                     rendered="#{inOt.actionInvTecOt eq '3'}"  valueChangeListener="#{CmtInventariosOtMglBean.cambiarEstadoDelete(inOt.ordentrabajoInventarioId)}" >
+                        <f:selectItem itemLabel="Delete" itemValue="2" />
+                        <f:selectItem itemLabel="No Action" itemValue="3" />
+                        <f:ajax event="change" render="@form" execute="@this" />          
+                    </h:selectOneMenu>
+                    <h:outputText value="Add" rendered="#{inOt.actionInvTecOt eq '1'}" />
+                    <h:outputText value="Delete" rendered="#{inOt.actionInvTecOt eq '2'}" />
+                </h:column>
+                <h:column> 
+                    <f:facet name="header">
+                        <h:outputText value="" />
+                    </f:facet>  
+                    <h:commandLink id="Deshacer" title="Deshacer"
+                                   immediate="true" styleClass="btnIconDeshacer"
+                                   rendered="#{(inOt.actionInvTecOt eq '1')or (inOt.actionInvTecOt eq '2')}"
+                                   action="#{CmtInventariosOtMglBean.deshacer(inOt.actionInvTecOt,inOt.ordentrabajoInventarioId)}">
+                    </h:commandLink>
+                </h:column>    
+                 <f:facet name="footer" >
+                      <h:panelGroup>
+                          <div style="text-align: center;">
+                              <h:commandButton title="Primera Página" value=""
+                                               class="botonTPagInicioCm botonBaselista">
+                                  <f:ajax   render="InventariosSubtecnologiasTable" execute="@this" 
+                                            event="click" listener="#{CmtInventariosOtMglBean.pageFirstNot()}"/>
+                              </h:commandButton>
+                              <h:commandButton title="Página Anterior" value=""
+                                               class="botonTPagAnteriorCm botonBaselista">
+                                  <f:ajax   render="InventariosSubtecnologiasTable" execute="@this" 
+                                            event="click" listener="#{CmtInventariosOtMglBean.pagePreviousNot()}"/>
+                              </h:commandButton>
+                              <h:commandButton title="Número Páginas" value="#{CmtInventariosOtMglBean.pageActualNot}" styleClass="botonTPagInicio"/>
+                              <h:selectOneMenu id="listTablaNot" value="#{CmtInventariosOtMglBean.numPaginaNot}" 
+                                               styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                  <f:selectItems value="#{CmtInventariosOtMglBean.paginaListNot}" var="pag"
+                                                 itemValue="#{pag}"
+                                                 itemLabel="#{pag}"/>
+                                  <f:ajax render="InventariosSubtecnologiasTable" event="change"
+                                          listener="#{CmtInventariosOtMglBean.irPaginaNot()}"
+                                          execute="@this" />
+                              </h:selectOneMenu>
+                              <h:commandButton  title="Página Siguiente" value=""
+                                                class="botonTPagSiguienteCm botonBaselista">
+                                  <f:ajax   render="InventariosSubtecnologiasTable" execute="@this" 
+                                            event="click" listener="#{CmtInventariosOtMglBean.pageNextNot()}"/>
+                              </h:commandButton>
+                              <h:commandButton title="Última Página" value=""
+                                               class="botonTPagFinCm botonBaselista">
+                                  <f:ajax   render="InventariosSubtecnologiasTable" execute="@this" 
+                                            event="click" listener="#{CmtInventariosOtMglBean.pageLastNot()}"/>
+                              </h:commandButton>
+                          </div>
+                      </h:panelGroup>
+                  </f:facet>     
+            </h:dataTable>
+            <h:commandButton value="Nuevo"  id="CrearNewInvTecOTButton" 
+                                         styleClass="btn" 
+                                         action="#{CmtInventariosOtMglBean.crearNewIntOt()}">
+         </h:commandButton> 
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

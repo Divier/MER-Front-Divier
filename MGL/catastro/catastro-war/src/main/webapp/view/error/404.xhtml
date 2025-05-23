@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/errorTemplate.xhtml">
+    <ui:define name="content">
+        <title>Error 404</title>
+        <div id="notfound">
+            <div class="notfound-bg">
+                <div class="notfound">
+                    <div class="notfound-404">
+                        <h1>404</h1>
+                    </div>
+                    <h2>Oops! Algo salio mal</h2>
+                    <h3>Página no encontrada</h3>
+                    <div class="claro">
+                        <img src="${facesContext.externalContext.requestContextPath}/view/img/ErrorClaro.png"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,406 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <h:outputStylesheet library="css" name="primeflex/primeflex.css"/>
+        <h:outputStylesheet library="css" name="claro/pageAdmon.css"/>
+        <h:outputScript library="js" name="claro/pageAdmon.js"/>
+
+        <h:form id="formAdminArrenda" prependId="false">
+            <p:growl id="messagePer" showDetail="true" sticky="true" >
+                <p:autoUpdate/>
+            </p:growl>
+
+            <p:panel id="lstArrendatarios" styleClass="ui-fluid" rendered="#{arrendatarioMglBean.mostrarListaArrenda}">
+                <fieldset>
+                    <legend>MODULO ARRENDATARIOS</legend>
+                    <br/> 
+                    <p:dataTable var="arrenda" 
+                                 value="#{arrendatarioMglBean.arrendatariosMglList}" 
+                                 id="arrendaList"
+                                 widgetVar="arrendatarios"                                
+                                 reflow="true"
+                                 styleClass="tablaDatosCss"
+                                 style="margin-top: 20px;"
+                                 rows="#{arrendatarioMglBean.filasPag15}"
+                                 paginator="true"
+                                 paginatorPosition="bottom" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="Página {currentPage} de {totalPages}"
+                                 rowsPerPageTemplate="5,10,15"
+                                 emptyMessage="No se encontraron arrendatarios." 
+                                 selectionMode="single" selection="#{arrendatarioMglBean.arrendatariosMglSelected}" rowKey="#{arrenda.arrendatarioId}">
+
+
+                        <p:column headerText="" 
+                                  filterMatchMode="contains">
+
+                            <h:commandLink id="arrendaLink"  title="Ir detalle Arrendatario" 
+                                           rendered="#{arrendatarioMglBean.validarDetalle()}" 
+                                           disabled="#{!arrendatarioMglBean.validarEditarRol()}">
+                                <h:outputText class="txtLabelsMgl" style="color: red" id="arrendaId"  
+                                              value="Editar"/> 
+                                <f:ajax 
+                                    listener="#{arrendatarioMglBean.irArrendatarioDetalle(arrenda)}"
+                                    render="@form"/> 
+                            </h:commandLink> 
+                        </p:column>        
+                                            
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="ID"/>				
+                                <h:inputText  maxlength="50" id="arrendatarioId"
+                                              style="width: 106px; height:27px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{arrendatarioMglBean.filtroConsultaArrendatarioDto.idArrendaSeleccionado}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{arrendatarioMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="arrendaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>
+                            <h:outputText value="#{arrenda.arrendatarioId}"/>
+                        </p:column>        
+                        
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="PREVISITA"/>				
+                                <h:inputText  maxlength="50" id="previsita"
+                                              style="width: 100px; height:27px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{arrendatarioMglBean.filtroConsultaArrendatarioDto.previsitaSeleccionada}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{arrendatarioMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="arrendaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>
+                            <h:outputText value="#{arrenda.previsita}"/> 
+                        </p:column>
+                        
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="SLA EN DÍAS PREVISITA"/>				
+                                <h:inputText  maxlength="50" id="slaPrevisita"
+                                              style="width: 100px; height:27px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{arrendatarioMglBean.filtroConsultaArrendatarioDto.slaPrevisitaSeleccionada}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{arrendatarioMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="arrendaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>
+                            <h:outputText value="#{arrenda.slaPrevisita eq null ? '0' :arrenda.slaPrevisita} Días"/>  
+                        </p:column>
+                        
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="SLA EN DÍAS PERMISO"/>				
+                                <h:inputText  maxlength="50" id="slaPermisos"
+                                              style="width: 100px; height:27px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{arrendatarioMglBean.filtroConsultaArrendatarioDto.slaPermisoSeleccionada}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{arrendatarioMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="arrendaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>
+                            <h:outputText value="#{arrenda.slaPermisos eq null ? '0' : arrenda.slaPermisos } Días"/> 
+                        </p:column>
+
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="DPTO"/>				
+                                <h:inputText  maxlength="50" id="dptoName"
+                                              style="width: 100px; height:27px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{arrendatarioMglBean.filtroConsultaArrendatarioDto.dptoSelecionado}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{arrendatarioMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="arrendaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>
+                            <h:outputText value="#{arrenda.departamento.gpoNombre}"/>
+                        </p:column>
+                        
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="CIUDAD"/>				
+                                <h:inputText  maxlength="50" id="ciudad"
+                                              style="width: 100px; height:27px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{arrendatarioMglBean.filtroConsultaArrendatarioDto.ciudadSelecionada}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{arrendatarioMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="arrendaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>
+                            <h:outputText value="#{arrenda.ciudad.gpoNombre}"/>
+                        </p:column>
+                        
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="CENTRO POBLADO"/>				
+                                <h:inputText  maxlength="50" id="centroPoblado"
+                                              style="width: 100px; height:27px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{arrendatarioMglBean.filtroConsultaArrendatarioDto.centroPobladoSelecionado}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{arrendatarioMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="arrendaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>
+                            <h:outputText value="#{arrenda.centroPoblado.gpoNombre}"/> 
+                        </p:column>                   
+                        
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="NOMBRE ARRENDATARIO"/>				
+                                <h:inputText  maxlength="50" id="nombreArrendatario"
+                                              style="width: 100px; height:27px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{arrendatarioMglBean.filtroConsultaArrendatarioDto.nombreArrendaSelecionado}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{arrendatarioMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="arrendaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>
+                            <h:outputText value="#{arrenda.nombreArrendatario}"/>
+                        </p:column>
+                        
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="CUADRANTE"/>				
+                                <h:inputText  maxlength="50" id="cuadrante"
+                                              style="width: 100px; height:27px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{arrendatarioMglBean.filtroConsultaArrendatarioDto.cuadranteSeleccionado}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{arrendatarioMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="arrendaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>
+                            <h:outputText value="#{arrenda.cuadrante}"/> 
+                        </p:column>
+                                                
+                        <p:column headerText="LOG" >
+                            <h:commandLink id="arrendaLinkLog"  title="Ir al log del registro" rendered="#{arrendatarioMglBean.validarLOG()}" style="margin-left: 35px;"
+                                           action="#{arrendatarioMglBean.mostrarAuditoria(arrenda)}" >
+                                <h:outputText class="txtLabelsMgl" style="color: red" id="arrendaIdLog"  value="Log"/>     
+                            </h:commandLink> 
+                        </p:column>
+                        
+                        <p:column headerText="ELIMINAR" >
+                            <p:commandButton title="Eliminar Registro"
+                                             style="width:25px; margin-left: 35px;"
+                                             action="#{arrendatarioMglBean.eliminarArrendatarioList(arrenda)}"
+                                             id="adiccionarCoorItButton" 
+                                             icon="fa fa-fw fa-close" immediate="true"
+                                             update=":formAdminArrenda:arrendaList" 
+                                             onclick="return confirm('¿Esta seguro de eliminar el registro seleccionado ?');"
+                                             disabled="#{!arrendatarioMglBean.validarOpcionEliminarRol()}"/>
+                        </p:column>
+                    </p:dataTable>
+                </fieldset>
+
+                <p:panelGrid columns="1" style="margin-right: 100em;">
+                    <p:commandButton title="Crear Nuevo Registro" id="crearNewId" rendered="#{arrendatarioMglBean.validarNuevo()}"
+                                     action="#{arrendatarioMglBean.irToCrearArrendatario()}"
+                                     disabled="#{!arrendatarioMglBean.validarNuevoRol()}"
+                                     styleClass="btn red-button" value="Nuevo"
+                                     update="@form"/>
+                </p:panelGrid>
+            </p:panel>    
+
+            <p:panel id="panelCrearModArrenda" rendered="#{arrendatarioMglBean.mostrarAdminArrenda}">
+                <fieldset>
+                    <legend>ADMINISTRACIÓN ARRENDATARIOS</legend>
+                    <br/>
+                    <p:panelGrid columns="6">
+                        <p:outputLabel style="font-weight:bold; padding:5px; width: 30%;" value="Departamento:" /> 
+                        <p:selectOneMenu value="#{arrendatarioMglBean.idDpto}"                                           
+                                         id="departamento" 
+                                         style="min-width: 200px" disabled="#{arrendatarioMglBean.habilitaDpto}">                            
+                            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                            <f:selectItems value="#{arrendatarioMglBean.departamentoList}" 
+                                           var="departamento" itemLabel="#{departamento.gpoNombre}" 
+                                           itemValue="#{departamento.gpoId}"/> 
+                        </p:selectOneMenu>
+
+                        <p:outputLabel style="font-weight:bold; padding:5px; width: 30%;"  id="cityCen" value="Ciudad:"/>               
+                        <p:selectOneMenu value="#{arrendatarioMglBean.idCiudad}"                                           
+                                         id="ciudad" style="min-width: 200px" disabled="#{arrendatarioMglBean.habilitaCity}">                            
+                            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                            <f:selectItems value="#{arrendatarioMglBean.ciudadesList}" 
+                                           var="ciudad" itemLabel="#{ciudad.gpoNombre}" 
+                                           itemValue="#{ciudad.gpoId}"/> 
+                            <f:ajax event="change" execute="ciudad" 
+                                    listener="#{arrendatarioMglBean.obtenerDepartamento()}"
+                                    render="departamento"/> 
+                        </p:selectOneMenu>
+
+
+                        <p:outputLabel style="font-weight:bold; padding:5px; width: 30%;" value="Centro Poblado:" /> 
+                        <p:selectOneMenu id="centroPoblado"  disabled="#{arrendatarioMglBean.botonMod}"     
+                                         value="#{arrendatarioMglBean.nombreCentroPoblado}" effect="fade" 
+                                         filter="true" filterMatchMode="startsWith"  
+                                         style="min-width: 200px">
+                            <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                            <f:selectItems value="#{arrendatarioMglBean.nameCentroPobladoList}" 
+                                           var="centroPob"
+                                           itemValue="#{centroPob}"
+                                           itemLabel="#{centroPob}">
+                            </f:selectItems>   
+                            <f:ajax  event="change" execute="centroPoblado" render="ciudad departamento"
+                                     listener="#{arrendatarioMglBean.obtenerCentroPobladoSeleccionado()}"/>  
+                        </p:selectOneMenu>
+
+                        <p:outputLabel id="labelPrevisita" 
+                                       value="Previsita:"/>
+                        <p:selectOneMenu id="listFact" value="#{arrendatarioMglBean.arrendatarioMgl.previsita}" 
+                                         styleClass="ListaConsulta" style="min-width: 200px">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItem itemLabel="Si" itemValue="S"/>
+                            <f:selectItem itemLabel="No" itemValue="N"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel style="font-weight:bold; padding:5px;" 
+                                               value="Nombre Arrendatario:"  /> 
+                        <p:inputText  id="idInputNameArrendatario"  
+                                      value="#{arrendatarioMglBean.arrendatarioMgl.nombreArrendatario}" 
+                                              style="min-width: 200px;" maxlength="70">                             
+                        </p:inputText>
+                        
+                       <p:outputLabel style="font-weight:bold; padding:5px;" 
+                                               value="Nombre Cuadrante:"  /> 
+                       <p:inputText  id="idInputNameCuadrante"  
+                                     value="#{arrendatarioMglBean.arrendatarioMgl.cuadrante}" 
+                                              style="min-width: 200px;" maxlength="70">                             
+                       </p:inputText>
+                      
+                        <p:outputLabel id="labelSlaPrevisita" 
+                                       value="SLA en días Previsita:"/>
+                        <p:inputText  id="idinputSlaPrevisita"  
+                                      value="#{arrendatarioMglBean.arrendatarioMgl.slaPrevisita}" 
+                                      style="min-width: 200px;">                             
+                        </p:inputText>
+
+                        <p:outputLabel id="labelSlaPermiso" 
+                                       value="SLA en días Permiso:"/>
+                        <p:inputText  id="idinputSlaPermiso"  
+                                      value="#{arrendatarioMglBean.arrendatarioMgl.slaPermisos}" 
+                                      style="min-width: 200px;">                             
+                        </p:inputText>
+                        
+                    </p:panelGrid>  
+
+                    <p:panelGrid columns="2">
+                        <p:commandButton title="Volver Atrás"  
+                                         icon="fa fa-fw fa-mail-reply" 
+                                         id="volverArrendatarios" styleClass="btn red-button" value="Volver"  
+                                         action="#{arrendatarioMglBean.volverPanelListArrenda()}"
+                                         update="@form :formAdminArrenda:arrendaList"/>
+                        <p:commandButton title="Crear Arrendatario" rendered="#{(arrendatarioMglBean.botonCrear and arrendatarioMglBean.validarCrear())}"
+                                         action="#{arrendatarioMglBean.crearArrendatario()}"
+                                         id="nuevoId" styleClass="btn red-button" value="Crear"
+                                         update="@form :formAdminArrenda:arrendaList"/>
+                        <p:commandButton title="Modificar Arrendatario" rendered="#{(arrendatarioMglBean.botonMod and arrendatarioMglBean.validarUpdate())}"
+                                         action="#{arrendatarioMglBean.modificarArrendatario()}"
+                                         id="modId" styleClass="btn red-button" value="Modificar"
+                                         update="@form"/>
+                    </p:panelGrid>
+                </fieldset> 
+                
+            </p:panel>
+            
+            <p:panel rendered="#{arrendatarioMglBean.renderAuditoria}">
+                <span class="TituloSeccion">Auditoria de Arrendatario
+                    [#{arrendatarioMglBean.arrendatariosMglSelected.centroPoblado.gpoNombre}],
+                    Registro [#{arrendatarioMglBean.arrendatariosMglSelected.arrendatarioId}]</span>       
+                <fieldset>
+                    <legend>AUDITORIA</legend>
+                    <br/> 
+                    <p:dataTable var="aud" 
+                                 value="#{arrendatarioMglBean.informacionAuditoria}" 
+                                 id="audList"
+                                 reflow="true"
+                                 styleClass="tablaDatosCss"
+                                 style="margin-top: 20px;"
+                                 rows="#{arrendatarioMglBean.filasPag15}"
+                                 paginator="true"
+                                 paginatorPosition="bottom" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="Página {currentPage} de {totalPages}"
+                                 rowsPerPageTemplate="5,10,15"
+                                 sortBy="#{aud.usuarioCreacion}"
+                                 emptyMessage="No se encontro auditoria." >
+
+                        <p:column headerText="Usuario Creación" 
+                                  sortBy="#{aud.usuarioCreacion}"
+                                  filterBy="#{aud.usuarioCreacion}"
+                                  filterMatchMode="contains">
+
+                            <h:outputText value="#{aud.usuarioCreacion}"/>  
+                        </p:column>
+
+                        <p:column headerText="Fecha Creación" 
+                                  sortBy="#{aud.fechaCreacion}"
+                                  filterBy="#{aud.fechaCreacion}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{aud.fechaCreacion}">
+                                <f:convertDateTime type="date" pattern="yyyy-MM-dd hh:mm:ss"/>
+                            </h:outputText>    
+                        </p:column>
+
+                        <p:column headerText="Usuario Modificacion" 
+                                  sortBy="#{aud.usuarioModificacion}"
+                                  filterBy="#{aud.usuarioModificacion}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{aud.usuarioModificacion}"/> 
+                        </p:column> 
+
+                        <p:column headerText="Fecha Modificacion" 
+                                  sortBy="#{aud.fechaModificacion}"
+                                  filterBy="#{aud.fechaModificacion}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{aud.fechaModificacion}">
+                                <f:convertDateTime type="date" pattern="yyyy-MM-dd hh:mm:ss"/>
+                            </h:outputText>     
+                        </p:column>
+
+                        <p:column headerText="Valores Anteriores" 
+                                  sortBy="#{aud.antes}"
+                                  filterBy="#{aud.antes}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{aud.antes}" escape="false" />
+                        </p:column>
+
+                        <p:column headerText="Valores Nuevos" 
+                                  sortBy="#{aud.despues}"
+                                  filterBy="#{aud.despues}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{aud.despues}" escape="false"/>
+                        </p:column>
+                    </p:dataTable>
+                </fieldset> 
+                <p:commandButton title="Volver Atras"  
+                                 icon="fa fa-fw fa-mail-reply" 
+                                 id="volverArrendatarios2" styleClass="btn red-button" value="Volver"  
+                                 action="#{arrendatarioMglBean.ocultarAuditoria()}"
+                                 update="@form"/>
+            </p:panel>     
+        </h:form>   
+    </ui:composition>
+</html>

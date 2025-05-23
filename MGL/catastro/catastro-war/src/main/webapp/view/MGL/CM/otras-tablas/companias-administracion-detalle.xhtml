@@ -1,0 +1,252 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes">
+
+    <body>        
+        <ui:composition template="/view/MGL/template/main.xhtml">   
+            <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+            <ui:define name="content">
+                <h2>Compañías de Administración</h2>
+                <h:panelGroup id="formAdmin">
+                    <h:panelGrid  class="comboCenter" >
+                        <h:selectOneMenu  value="#{companiasAdministracionBean.tipo}" disabled="true">
+                            <f:selectItem itemLabel="Compañía de Administración" itemValue="3" />
+                            <f:selectItem itemLabel="Administradores (Persona Natural)" itemValue="4" />
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid id="tipo_3" rendered="#{companiasAdministracionBean.tipo == 3 and !companiasAdministracionBean.mostrarRestriccionHorarios}" class="formulario" columns="4">
+                        <h:outputText escape="false" value="Id" />
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.companiaAdmin.companiaId}" />
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Departamento" />
+                        <h:selectOneMenu id="depto" value="#{companiasAdministracionBean.companiaAdmin.departamento.gpoId}" required="true" requiredMessage="Ingrese departamento">
+                            <f:selectItem itemValue="0" itemLabel="" />
+                            <f:selectItems value="#{companiasAdministracionBean.departamentoList}" var="depto"
+                                           itemValue="#{depto.gpoId}"
+                                           itemLabel="#{depto.gpoNombre}"/>    
+                            <f:ajax event="change" execute="@this" 
+                                    listener="#{companiasAdministracionBean.consultarCiudades}"  render="muni centroPoblado"/>
+                        </h:selectOneMenu>
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}NIT" />
+                        <h:inputText id="nit" value="#{companiasAdministracionBean.companiaAdmin.nitCompania}" requiredMessage="El NIT es obligatorio" validatorMessage="El Nit es númerico y debe llevar el formato correspondiente" maxlength="11">
+                            <f:validateRegex pattern="([0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]){0,1}"/>
+                        </h:inputText>
+
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Municipio" />
+                        <h:selectOneMenu id="muni" value="#{companiasAdministracionBean.companiaAdmin.municipio.gpoId}" required="true" requiredMessage="Ingrese municipio">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{companiasAdministracionBean.ciudadList}" var="ciudad"
+                                           itemValue="#{ciudad.gpoId}"
+                                           itemLabel="#{ciudad.gpoNombre}"/> 
+                            <f:ajax event="change" execute="@this" 
+                                    listener="#{companiasAdministracionBean.consultarCentrosPoblados}" render="centroPoblado"/>
+                        </h:selectOneMenu>
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Razón Social" />
+                        <h:inputText id="nombre" value="#{companiasAdministracionBean.companiaAdmin.nombreCompania}" requiredMessage="Ingrese nombre de compañía" maxlength="30"/>
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Centro Poblado" />
+                        <h:selectOneMenu id="centroPoblado" value="#{companiasAdministracionBean.companiaAdmin.centroPoblado.gpoId}" required="true" requiredMessage="Ingrese centro poblado">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{companiasAdministracionBean.centroPobladoList}" 
+                                           var="centroPoblado"  itemValue="#{centroPoblado.gpoId}" itemLabel="#{centroPoblado.gpoNombre}"/>
+                            <f:ajax event="change" execute="@this" render="centroPoblado" listener="#{companiasAdministracionBean.asignarCentroPoblado()}"/>                       
+                        </h:selectOneMenu>
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Abreviatura" />
+                        <h:inputText  id="abrev" value="#{companiasAdministracionBean.companiaAdmin.abreviatura}" required="true" requiredMessage="La abreviatura es obligatoria" disabled="#{(companiasAdministracionBean.companiaAdmin.companiaId eq null)}"/>
+                        <h:outputText value="Barrio" />
+                        <h:selectOneMenu id="barrio" value="#{companiasAdministracionBean.companiaAdmin.barrio}" >
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{companiasAdministracionBean.barrioList}" 
+                                           var="barrio"  itemValue="#{barrio}" itemLabel="#{barrio}"/>
+                        </h:selectOneMenu>
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Nombre Contacto" />
+                        <h:inputText id="contacto" value="#{companiasAdministracionBean.companiaAdmin.nombreContacto}" 
+                                     requiredMessage="El contacto es obligatorio" maxlength="100" />
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Dirección" />
+                        <h:panelGroup>
+                            <h:inputText id="dirComp" value="#{companiasAdministracionBean.companiaAdmin.direccion}" 
+                                         validatorMessage="El campo dirección debe contener más de 8 caracteres"
+                                         requiredMessage="La dirección es requerida" maxlength="60" style="width: 90%;">
+                                <f:ajax event="change" execute="@form" listener="#{companiasAdministracionBean.validarDireccion()}" 
+                                        render="@form"/>
+                            </h:inputText>
+                            <h:graphicImage id="mostrarComponenteButton" style="width: 5%;" 
+                                            title="Validar dirección" value="/view/img/home.gif">
+                                <f:ajax render="@form" execute="@form" 
+                                        event="click" listener="#{companiasAdministracionBean.irPopUpDireccion()}"/>
+                            </h:graphicImage>
+                        </h:panelGroup>
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Teléfono" />
+                        <h:inputText id="tel1" value="#{companiasAdministracionBean.companiaAdmin.telefonos}" converterMessage="El teléfono debe ser numérico" maxlength="10" requiredMessage="El primer teléfono es obligatorio " >
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                        </h:inputText>
+                        <h:outputText value="Teléfono" />
+                        <h:inputText required="false" id="tel2" value="#{companiasAdministracionBean.companiaAdmin.telefono2}" converterMessage="El teléfono debe ser numérico" maxlength="10" >
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                        </h:inputText>
+                        <h:outputText value="Teléfono" />
+                        <h:inputText required="false" id="tel3" value="#{companiasAdministracionBean.companiaAdmin.telefono3}" converterMessage="El teléfono debe ser numérico" maxlength="10" >
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                        </h:inputText>
+                        <h:outputText value="Teléfono" />
+                        <h:inputText required="false" id="tel4" value="#{companiasAdministracionBean.companiaAdmin.telefono4}" converterMessage="El teléfono debe ser numérico" maxlength="10" >
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                        </h:inputText>
+
+                        <h:outputText value="E-mail" />
+                        <h:inputText required="false" id="email" value="#{companiasAdministracionBean.companiaAdmin.email}" maxlength="100" validatorMessage="El valor digitado en E-mail debe tener las características de un E-mail">
+                            <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>
+                        </h:inputText>
+
+                        <h:outputText value="Página WEB" />
+                        <h:inputText required="false" id="pagWeb" value="#{companiasAdministracionBean.companiaAdmin.paginaWeb}" maxlength="100" validatorMessage="El formato de la página web no es correcto">
+                            <f:validateRegex pattern="((http(s)?://)?([\w-]+\.)+[\w-]+(/[\w- ./?%&amp;=]*)?)?"/>
+                        </h:inputText>
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Código RR" />
+                        <h:inputText required="true" id="codigoRr" value="#{companiasAdministracionBean.companiaAdmin.codigoRr}" requiredMessage="El código es obligatorio"
+                                     converterMessage="El código RR es numérico"
+                                     maxlength="4"
+                                     disabled="#{!(companiasAdministracionBean.companiaAdmin.companiaId eq null)}">
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                        </h:inputText>
+
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Estado" />
+                        <h:selectOneRadio  rendered="#{companiasAdministracionBean.companiaAdmin.estadoRegistro eq 1}" id="estado_admin" required="true" value="#{companiasAdministracionBean.companiaAdmin.activado}" class="radioB" requiredMessage="Estado obligatorio" disabled="#{(companiasAdministracionBean.companiaAdmin.companiaId eq null)}" >
+                            <f:selectItem itemLabel="Activo" itemValue="Y"/>
+                            <f:selectItem itemLabel="Inactivo" itemValue="N"/>
+                        </h:selectOneRadio>
+                        <h:outputText value="Eliminado" rendered="#{companiasAdministracionBean.companiaAdmin.activado eq 0}" />
+
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Justificación ultimo cambio(200)" id="asc_campo_justificacion1lb" rendered="#{(!(companiasAdministracionBean.companiaAdmin.companiaId eq null) and !(companiasAdministracionBean.companiaAdmin.companiaId eq 0))}"/>
+                        <h:inputTextarea id="asc_campo_justificaTxt" value="#{companiasAdministracionBean.companiaAdmin.justificacion}" rows="3" requiredMessage="El campo justificación es requerido para cualquier modificación o eliminación del registro" rendered="#{(!(companiasAdministracionBean.companiaAdmin.companiaId eq null) and !(companiasAdministracionBean.companiaAdmin.companiaId eq 0))}" >
+                            <f:validateRequired />
+                        </h:inputTextarea>                          
+
+
+                    </h:panelGrid>
+                    <h:panelGroup id="botonesDibujar" rendered="#{companiasAdministracionBean.tipo == 3  and !companiasAdministracionBean.mostrarRestriccionHorarios}">
+                        <div class="buttonArea">
+                            <h:commandButton value="Actualizar" styleClass="btn"
+                                             disabled="#{!(companiasAdministracionBean.validado)}"
+                                             actionListener="#{companiasAdministracionBean.modificarCompania}"
+                                             rendered="#{companiasAdministracionBean.validarEdicionDetalle() and
+                                                         (companiasAdministracionBean.companiaAdmin.companiaId eq null ? false:true)}" />
+                            <h:commandButton value="Eliminar" styleClass="btn"
+                                             action="#{companiasAdministracionBean.eliminarCompania()}"
+                                             onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"
+                                             rendered="#{companiasAdministracionBean.validarBorradoDetalle() and
+                                                         (companiasAdministracionBean.companiaAdmin.companiaId eq null ? false:true)}" />
+                            <h:commandButton value="Crear" styleClass="btn"
+                                             disabled="#{!(companiasAdministracionBean.validado)}"
+                                             actionListener="#{companiasAdministracionBean.crearCompania()}"
+                                             rendered="#{companiasAdministracionBean.companiaAdmin.companiaId eq null ? true:false}" />
+                            <h:commandButton value="Volver"
+                                             immediate="true" styleClass="btn"
+                                             action="companias-administracion.jsf" />
+                            <h:commandButton value="Horario" immediate="true" styleClass="btn"
+                                             rendered="#{companiasAdministracionBean.validarEdicionHorario()}"
+                                             actionListener="#{companiasAdministracionBean.verHorarioRestriccion()}"
+                                             disabled="#{(companiasAdministracionBean.companiaAdmin.companiaId eq null)}" />
+                        </div>
+                    </h:panelGroup>                  
+                    <!-- Jeisson Gómez  -->
+                    <h:panelGroup id="pnlHorariosAdminId" rendered="#{companiasAdministracionBean.tipo == 3 and !(companiasAdministracionBean.companiaAdmin.companiaId eq null) and companiasAdministracionBean.mostrarRestriccionHorarios}">
+                        <div class="buttonArea"> 
+                            <h:commandButton value="Almacenar Cambios" styleClass="btn"
+                                             rendered="#{!(companiasAdministracionBean.companiaAdmin.companiaId eq null)}"> 
+                                <f:ajax execute="@form" render="@form" event="click"
+                                        listener="#{companiasAdministracionBean.guardarHorarioRestriccion()}" />     
+                            </h:commandButton>
+                            <h:commandButton immediate="true"
+                                             styleClass="btn" value="Volver"
+                                             actionListener="#{companiasAdministracionBean.ocultarHorarioRestriccion()}"
+                                             rendered="#{!(companiasAdministracionBean.companiaAdmin.companiaId eq null)}"/>
+                        </div>
+                        <cc:componente-horario id="Administracionid" horarioRestriccion="#{companiasAdministracionBean.horarioRestriccion}" horarioEditable="E"
+                                               permisoCreacion="true" permisoEliminacion="true"/>
+                    </h:panelGroup> 
+                    <h:panelGrid id="tipo_4" rendered="#{companiasAdministracionBean.tipo == 4  and !companiasAdministracionBean.mostrarRestriccionHorarios}" class="formulario" columns="4">
+                        <h:outputText escape="false" value="Id" />
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.companiaAdmin.companiaId}" />
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Nombre Administrador" />
+                        <h:inputText  requiredMessage="Ingrese Nombre" required="true" id="nombre_admin" value="#{companiasAdministracionBean.companiaAdmin.nombreContacto}" maxlength="30" />
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Teléfono móvil" />
+                        <h:inputText required="true" id="movil" value="#{companiasAdministracionBean.companiaAdmin.telefonos}" converterMessage="El campo teléfono es numérico" maxlength="10" requiredMessage="El móvil es obligatorio">
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                        </h:inputText>
+
+
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Tipo de identificación" />
+                        <h:selectOneMenu id="tipoId" value="#{companiasAdministracionBean.companiaAdmin.tipoDocumento}" required="true" >
+                            <f:selectItem itemValue="CC" itemLabel="CC"/>
+                            <f:selectItem itemValue="CE" itemLabel="CE"/>
+                            <f:selectItem itemValue="RUT" itemLabel="RUT"/>
+                        </h:selectOneMenu>
+                        <h:outputText value="E-mail" />
+                        <h:inputText required="false" id="email_admin" value="#{companiasAdministracionBean.companiaAdmin.email}" maxlength="30" validatorMessage="El valor digitado en E-mail debe tener las características de un E-mail">
+                            <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>
+                        </h:inputText>
+
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}N&uacute;mero de identificación" />
+                        <h:inputText required="true" id="doc_admin" value="#{companiasAdministracionBean.companiaAdmin.nitCompania}" requiredMessage="Ingrese identificación" maxlength="11" validatorMessage="El tipo de documento no cumple con el formato">
+                            <f:validateRegex pattern="([0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?-?[0-9]?){0,1}"/>
+                        </h:inputText>
+
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Estado" />
+                        <h:selectOneRadio  rendered="#{companiasAdministracionBean.companiaAdmin.estadoRegistro eq 1}" id="estado_admin2" required="true" value="#{companiasAdministracionBean.companiaAdmin.activado}" class="radioB" requiredMessage="Estado obligatorio" disabled="#{(companiasAdministracionBean.companiaAdmin.companiaId eq null)}" >
+                            <f:selectItem itemLabel="Activo" itemValue="Y"/>
+                            <f:selectItem itemLabel="Inactivo" itemValue="N"/>
+                        </h:selectOneRadio>
+                        <h:outputText value="Eliminado" rendered="#{companiasAdministracionBean.companiaAdmin.activado eq 0}" />
+
+                        <h:outputText escape="false" value="#{companiasAdministracionBean.estiloObligatorio}Justificación ultimo cambio(200)" id="asc_campo_justificacion2lb"  rendered="#{(!(companiasAdministracionBean.companiaAdmin.companiaId eq null) and !(companiasAdministracionBean.companiaAdmin.companiaId eq 0))}"/>
+                        <h:inputTextarea id="asc_campo_justifica2Txt" value="#{companiasAdministracionBean.companiaAdmin.justificacion}" rows="3" requiredMessage="El campo justificación es requerido para cualquier modificación o eliminación del registro" rendered="#{(!(companiasAdministracionBean.companiaAdmin.companiaId eq null) and !(companiasAdministracionBean.companiaAdmin.companiaId eq 0))}" >
+                            <f:validateRequired />
+                        </h:inputTextarea>                          
+
+                    </h:panelGrid>
+                    <h:panelGroup rendered="#{companiasAdministracionBean.tipo == 4  and !companiasAdministracionBean.mostrarRestriccionHorarios}">
+                        <div class="buttonArea">                                            
+                            <h:commandButton value="Eliminar" styleClass="btn"
+                                             action="#{companiasAdministracionBean.eliminarCompania()}"
+                                             onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"
+                                             rendered="#{companiasAdministracionBean.validarBorradoDetalle() and
+                                                         !(companiasAdministracionBean.companiaAdmin.companiaId eq null)}" />
+                            <h:commandButton value="Actualizar" styleClass="btn"
+                                             actionListener="#{companiasAdministracionBean.modificarCompania()}"
+                                             rendered="#{companiasAdministracionBean.validarEdicionDetalle() and
+                                                         companiasAdministracionBean.companiaAdmin.companiaId eq null ? false:true}" />
+                            <h:commandButton value="Crear" styleClass="btn"
+                                             actionListener="#{companiasAdministracionBean.crearCompania()}"
+                                             rendered="#{(companiasAdministracionBean.companiaAdmin.companiaId eq null)}"/>
+                            <h:commandButton value="Volver"
+                                             immediate="true" styleClass="btn"
+                                             action="companias-administracion.jsf"/>
+                            <h:commandButton value="Horario" immediate="true" styleClass="btn"
+                                             actionListener="#{companiasAdministracionBean.verHorarioRestriccion()}"
+                                             rendered="#{companiasAdministracionBean.validarEdicionHorario() and
+                                                         !(companiasAdministracionBean.companiaAdmin.companiaId eq null)}" />
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup id="pnlHorariosNaturalesId" rendered="#{companiasAdministracionBean.tipo == 4 and !(companiasAdministracionBean.companiaAdmin.companiaId eq null)  and companiasAdministracionBean.mostrarRestriccionHorarios}">
+                        <div class="buttonArea"> 
+                            <h:commandButton value="Almacenar Cambios" styleClass="btn"
+                                             rendered="#{!(companiasAdministracionBean.companiaAdmin.companiaId eq null)}"> 
+                                <f:ajax execute="@form" render="@form" event="click" listener="#{companiasAdministracionBean.guardarHorarioRestriccion()}" />     
+                            </h:commandButton>
+                            <h:commandButton value="Volver" immediate="true" styleClass="btn"
+                                             actionListener="#{companiasAdministracionBean.ocultarHorarioRestriccion()}"
+                                             rendered="#{!(companiasAdministracionBean.companiaAdmin.companiaId eq null)}" />
+                        </div>
+                        <div id="dcomphAdministracion" class="buttonArea" >
+                            <cc:componente-horario id="comhAdministracionNaturalId" horarioRestriccion="#{companiasAdministracionBean.horarioRestriccion}" horarioEditable="E"
+                                                   permisoCreacion="true"/>
+                        </div>    
+                    </h:panelGroup> 
+                </h:panelGroup>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+    <ui:composition template="/view/template/home.xhtml">
+        <ui:define name="title">Gestión Solicitud Creación de HHPP (Uno a Uno) Visitas tecnicas Ciclos comerciales</ui:define>
+        <ui:define name="message"> #{gestionarSolicitudModificacionMBean.message}</ui:define>
+        <ui:define name="content">
+            <f:view>
+                <h:form id="formulario">
+                    <h:panelGroup id="principal">
+                        <h:panelGroup id="main">
+                            <h:panelGrid id="contenedor" columns="2">
+                                <h:outputLabel value="Pais:" styleClass="contenidoLf" />
+                                <a4j:outputPanel id="paisId" >
+                                    <h:selectOneMenu id="lstpaises" value="#{gestionarSolicitudModificacionMBean.pais}" styleClass="contenidodf" 
+                                                     valueChangeListener="#{gestionarSolicitudModificacionMBean.updateRegionales}"
+                                                     disabled="#{!gestionarSolicitudModificacionMBean.showConsultar}">
+                                        <f:selectItem itemValue="0" itemLabel="#{gestionarSolicitudModificacionMBean.seleccionar}" />
+                                        <f:selectItems value="#{gestionarSolicitudModificacionMBean.listPaises}"/>
+                                        <a4j:ajax event="change" render="regionalId" execute="@this" />
+                                    </h:selectOneMenu>
+                                </a4j:outputPanel>
+
+                                <h:outputLabel value="Departamento:" styleClass="contenidoLf" />
+                                <a4j:outputPanel id="regionalId">
+                                    <h:selectOneMenu id="lstdeptos" value="#{gestionarSolicitudModificacionMBean.departamento}" 
+                                                     styleClass="contenidodf" valueChangeListener="#{gestionarSolicitudModificacionMBean.updateCiudades}"
+                                                     disabled="#{!gestionarSolicitudModificacionMBean.showConsultar}">
+                                        <f:selectItem itemValue="0" itemLabel="#{gestionarSolicitudModificacionMBean.seleccionar}" />
+                                        <f:selectItems value="#{gestionarSolicitudModificacionMBean.listDeptos}"/>
+                                        <a4j:ajax event="change" render="ciudadId" execute="@this" />
+                                    </h:selectOneMenu>
+                                </a4j:outputPanel>
+
+                                <h:outputLabel value="Ciudad:" styleClass="contenidoLf"/>
+                                <a4j:outputPanel id="ciudadId">
+                                    <h:selectOneMenu id="lstciudades" value="#{gestionarSolicitudModificacionMBean.ciudad}" styleClass="contenidodf" 
+                                                     disabled="#{!gestionarSolicitudModificacionMBean.showConsultar}">
+                                        <f:selectItem itemValue="0" itemLabel="#{gestionarSolicitudModificacionMBean.seleccionar}"/>
+                                        <f:selectItems id="ssciudades" value="#{gestionarSolicitudModificacionMBean.listCiudades}"/>
+                                    </h:selectOneMenu>
+                                </a4j:outputPanel>
+
+                                <h:outputText value="Tipo de Solicitud" styleClass="contenidoLf"/>
+                                <h:selectOneMenu id="lstsols" value="#{gestionarSolicitudModificacionMBean.son_tipoSolicitud}" styleClass="onemenu"
+                                                 disabled="#{!gestionarSolicitudModificacionMBean.showConsultar}">
+                                    <f:selectItem itemValue="0" itemLabel="#{gestionarSolicitudModificacionMBean.seleccionar}" />
+                                    <f:selectItems value="#{gestionarSolicitudModificacionMBean.lstTSolicitud}"/>
+                                </h:selectOneMenu>
+                            </h:panelGrid>
+                            <h:panelGrid  id="botones"  columns="2" >
+                                <h:commandButton value="Consultar" actionListener="#{gestionarSolicitudModificacionMBean.onActionQuery}" styleClass="buttonl" rendered="#{gestionarSolicitudModificacionMBean.showConsultar}"  style="color:#FFFFFF;"/>
+                                   <h:commandButton value="Cancelar" actionListener="#{gestionarSolicitudModificacionMBean.onActionCancel}" styleClass="buttonl" style="color:#FFFFFF;"/>
+                            </h:panelGrid>
+                            <h:panelGrid id="pgRegistros" styleClass="panelInfo" style="text-align: center" rendered="#{gestionarSolicitudModificacionMBean.showTable}">
+                                <rich:dataTable id="queryresult" var="solicitud" styleClass="altrowstable"  
+                                                value="#{gestionarSolicitudModificacionMBean.solicitudes}" rows="10"
+                                                rendered="#{gestionarSolicitudModificacionMBean.showTable}">
+                                    <f:facet name="header">
+                                        <rich:columnGroup>
+                                            <rich:column><h:outputLabel value="Id" /></rich:column>
+                                            <rich:column><h:outputLabel value="Direccion" /></rich:column>
+                                            <rich:column><h:outputLabel value="Fecha de creación" /></rich:column>
+                                            <rich:column><h:outputLabel value="Ver" /></rich:column>
+                                        </rich:columnGroup>
+                                    </f:facet>
+                                    <rich:column style="text-align: center">
+                                        <h:outputText value="#{solicitud.sonId}"/>
+                                    </rich:column>
+                                    <rich:column>
+                                        <h:outputText value="#{solicitud.sonNostandar}" styleClass="output"/>
+                                    </rich:column>
+                                    <rich:column>
+                                        <h:outputText value="#{solicitud.sonFechaCreacion}" styleClass="output"/>
+                                    </rich:column>
+                                    <rich:column>
+                                        <a4j:commandLink action="#{gestionarSolicitudModificacionMBean.onSeleccionar}">
+                                            <h:graphicImage  value="../img/select.gif"/>
+                                            <a4j:param value="#{solicitud.sonId}" assignTo="#{gestionarSolicitudModificacionMBean.solicitudid}" />
+                                            <a4j:param value="#{solicitud.sonNostandar}" assignTo="#{gestionarSolicitudModificacionMBean.solicituddir}" />
+                                        </a4j:commandLink>
+                                    </rich:column>
+                                    <f:facet name="footer">
+                                        <rich:dataScroller id="sc1" for="queryresult" rendered="#{gestionarSolicitudModificacionMBean.showFooter}"
+                                               page="#{gestionarSolicitudModificacionMBean.scrollerPage}" renderIfSinglePage="true"
+                                               stepControls="show" boundaryControls="auto" fastControls="auto" maxPages="50" fastStep="10">
+                                            <f:facet name="first">
+                                                <h:outputText value="Primero"/>
+                                            </f:facet>
+                                            <f:facet name="last">
+                                                <h:outputText value="Ultimo"/>
+                                            </f:facet>
+                                        </rich:dataScroller>
+                                    </f:facet>
+                                </rich:dataTable>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </h:panelGroup>
+                </h:form>
+            </f:view>
+        </ui:define>
+    </ui:composition>
+</ui:composition>

@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml"
+    >
+
+    <ui:define name="title"><span class="TituloSeccion">Administrador tablasBasicas</span></ui:define>
+    <ui:define name="message"><span class="error"> #{mantenimientoTablasBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <h:panelGroup>
+            <br></br>
+
+            <h:panelGrid columns="2">
+                <h:outputText value="Tipo de tabla b&aacute;sica" id="geo_nombrelb"/>
+                <h:selectOneMenu id="listtipotablabasicaMgl" 
+                                 value="#{mantenimientoTablasBean.tablaTipoBasicaSelected}" 
+                                 styleClass="ListaConsulta" style="width: 100%;" >
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{mantenimientoTablasBean.tablasTipoBasicasMglList}" var="lttb"
+                                   itemValue="#{lttb.tipoBasicaId}"
+                                   itemLabel="#{lttb.nombreTipo}">
+                    </f:selectItems>   
+                    <f:ajax listener="#{mantenimientoTablasBean.panelActive()}" event="change"  render="@form"/>
+
+                </h:selectOneMenu>
+            </h:panelGrid>
+            <br></br>
+
+    
+            <h:panelGroup id="mttoTablas" rendered="#{mantenimientoTablasBean.tblTecnologia}">
+                <fieldset>
+                    <legend>TABLA TECNOLOGÍA </legend>
+                    <div id="nodos" >
+
+                        <table align="center" border="1" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td>
+                                    <fieldset>
+                                        <legend>Tabla Basica</legend>
+                                        <table style="width: 100%">
+                                            <tr><td></td>
+                                                <td>  <h:outputText value="Id" id="asc_idlb"   rendered="#{tipoBasicaMglBean.tipoBasica.tipoBasicaId != null}" /></td>
+                                                <td>  <h:outputText  value="#{tipoBasicaMglBean.tipoBasica.tipoBasicaId}" rendered="#{tipoBasicaMglBean.tipoBasica.tipoBasicaId != null}"/></td>
+
+                                            </tr> 
+                                            <tr></tr>
+                                            <tr><td></td>
+                                                <td>  <h:outputText value="#{tipoBasicaMglBean.estiloObligatorio}Nombre"  escape="false"  /> </td>
+                                                <td> <h:inputText  value="#{tipoBasicaMglBean.tipoBasica.nombreTipo}" style="width: 75%" maxlength="30" requiredMessage="El campo nombre es requerido">
+
+                                                    </h:inputText>   </td>
+                                                <td> <h:outputText escape="false" value="#{tipoBasicaMglBean.estiloObligatorio}C&oacute;digo" />   </td>
+                                                <td>   <h:inputText style="width: 75%" value="#{tipoBasicaMglBean.tipoBasica.codigoTipo}" >
+
+                                                    </h:inputText> </td>
+                                            </tr> 
+                                            <tr></tr>
+                                            <tr><td></td>
+                                                <td> <h:outputText escape="false" value="#{tipoBasicaMglBean.estiloObligatorio}Descripci&oacute;n" />  </td>
+                                                <td>   <h:inputTextarea    value="#{tipoBasicaMglBean.tipoBasica.descripcionTipo}" rows="3" style="width: 75%" requiredMessage="El campo descripci&oacute;n es requerido" >
+
+                                                    </h:inputTextarea>   </td>
+                                                <td>  <h:outputText escape="false" value="#{tipoBasicaMglBean.estiloObligatorio}Estado" />  </td>
+                                                <td>   <h:selectOneMenu  value="#{tipoBasicaMglBean.selectedEstado}"  
+                                                                         styleClass="ListaConsulta" style="width: 75%">
+                                                        <f:selectItem itemValue="1" itemLabel="Activo" />
+                                                        <f:selectItem itemValue="0" itemLabel="Inactivo" />
+                                                    </h:selectOneMenu>  </td>
+                                            </tr> 
+                                            <tr></tr>
+                                            <tr><td></td>
+                                                <td> <h:outputText value="Justificaci&oacute;n" styleClass="formColumn1" />   </td>
+                                                <td>   <h:inputTextarea   value="#{tipoBasicaMglBean.tipoBasica.justificacion}" rows="3" style="width: 75%" requiredMessage="El campo justificaci&oacute;n es requerido para cualquier modificaci&oacute;n o eliminaci&oacute;n del registro" >
+
+                                                    </h:inputTextarea>  </td>
+
+                                            </tr> 
+
+                                        </table>
+                                    </fieldset>
+                                </td>
+                                <td align="center" >
+                                    <table class="header">
+                                        <tr><td></td>
+                                            <th>Tipo de Validacion</th>
+                                            <th>Valor de Validacion</th>
+
+                                        </tr>
+                                        <tr><td></td>
+                                            <td> <h:outputText  value="Soporte"/></td>
+                                            <td><h:selectOneMenu id="soporte" value=""  
+                                                                 styleClass="ListaConsulta">
+                                                    <f:selectItem itemValue="1" itemLabel="Requerido" />
+                                                    <f:selectItem itemValue="2" itemLabel="No Requerido" />
+                                                    <f:selectItem itemValue="3" itemLabel="No Aplica" />
+                                                </h:selectOneMenu> </td>
+                                        </tr> 
+                                        <tr><td></td>
+                                            <td> <h:outputText value="SubEdificio"/></td>
+                                            <td><h:selectOneMenu id="subedificio" value="#{mantenimientoTablasBean.subEdificioSelected}"  
+                                                                 styleClass="ListaConsulta">
+                                                    <f:selectItem itemValue="1" itemLabel="Requerido" />
+                                                    <f:selectItem itemValue="2" itemLabel="No Requerido" />
+                                                    <f:selectItem itemValue="3" itemLabel="No Aplica" />
+                                                </h:selectOneMenu> </td>
+                                            <td> </td>
+                                            <td> </td>
+
+                                        </tr> 
+                                        <tr><td></td>
+                                            <td>  <h:outputText  value="Tipo de Vivienda"/></td>
+                                            <td><h:selectOneMenu id="tipoViviendaa" value="#{mantenimientoTablasBean.subEdificioSelected}"  
+                                                                 styleClass="ListaConsulta">
+                                                    <f:selectItem itemValue="1" itemLabel="Requerido" />
+                                                    <f:selectItem itemValue="2" itemLabel="No Requerido" />
+                                                    <f:selectItem itemValue="3" itemLabel="No Aplica" />
+                                                </h:selectOneMenu>
+
+                                            </td>
+                                            <td> <h:outputText class="txtLabelsMgl" value="Unidades" /></td>
+                                            <td>  
+
+                                                <ui:repeat  value="#{mantenimientoTablasBean.listTipoNivel5}"  var="tipo5">  
+
+
+                                                </ui:repeat>
+
+                                                <td>  <div class="dropdown">
+                                                        <button class="dropbtn">Unidades</button>
+                                                        <div class="dropdown-content">
+                                                            <ui:repeat  value="#{mantenimientoTablasBean.listTipoNivel5}"  var="unidades">  
+
+                                                                <h:commandLink   action="#{mantenimientoTablasBean.buscarTipoVivienda()}"> 
+                                                                    #{unidades.descripcion}<br></br>
+                                                                    <h:selectBooleanCheckbox class="columnReadForm" value="#{tipo5.descripcion}" id = "chkAprobacion" /> 
+                                                                </h:commandLink>
+
+                                                            </ui:repeat>
+                                                        </div>
+                                                    </div></td>
+                                            </td>
+                                        </tr> 
+                                    </table>
+
+                                </td>
+                            </tr>
+
+
+                        </table>
+
+
+                    </div>
+                </fieldset>
+            </h:panelGroup>
+
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

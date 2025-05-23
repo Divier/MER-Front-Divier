@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml"
+    >
+    <ui:define name="title"><span class="TituloSeccion">Administrador Validacion Proyecto</span></ui:define>
+    <ui:define name="content">
+        <h:panelGroup rendered="#{validacionProyectoBean.renderFiltro}">
+
+            <h2>Validacion por Proyecto</h2>    
+
+            <h:panelGrid id="filtroReglaValidacion" 
+                         columns="3" style="width: 100%">
+                <h:outputText value="Proyecto" />
+                <h:selectOneMenu id="proyectoFiltroList"  
+                                 styleClass="ListaConsulta" 
+                                 value="#{validacionProyectoBean.proyectoFiltroSelected}">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{validacionProyectoBean.basicaProyectoList}" 
+                                   var="proyecto"
+                                   itemValue="#{proyecto.basicaId}"
+                                   itemLabel="#{proyecto.nombreBasica}"/>
+                    <f:ajax event="change" 
+                            listener="#{validacionProyectoBean.obtenerValidacionFiltro()}"
+                            execute="@this filtroReglaValidacion" 
+                            render="@this validacionProyectoTable panelCreacion"/>
+
+                </h:selectOneMenu>
+                <h:commandButton  id="crearNuevaReglaButton" 
+                                  class="btn" value="Crear nueva Configuraci&oacute;n" 
+                                  action="#{validacionProyectoBean.goCrear()}"
+                                  disabled="#{!validacionProyectoBean.validarOpcionCreaNuevaConfRol()}"/>
+            </h:panelGrid>
+
+            <h:dataTable id="validacionProyectoTable" 
+                         value="#{validacionProyectoBean.validacionProyectoFiltroList}" 
+                         var="validacion" rows="#{validacionProyectoBean.filasPag}"                         
+                         styleClass="constructGTable"
+                         headerClass="constructGTableHeader" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                         style="width: 100%">
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Regla Id" />
+                    </f:facet>
+                    <h:commandLink value="#{validacion.idValidacionProyecto}"
+                                   action="#{validacionProyectoBean.goActualizar(validacion)}"
+                                   disabled="#{!validacionProyectoBean.validarOpcionReglaIdRol()}"
+                                   title="Ir Detalle">
+                    </h:commandLink>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Proyecto" />
+                    </f:facet>
+                    <h:outputText value="#{validacion.tipoBasicaProyectoId.nombreBasica}"/>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Tipo Validaci&oacute;n" />
+                    </f:facet>
+                    <h:outputText value="#{validacion.tipoBasicaValidacionId.tipoBasicaObj.nombreTipo}"/>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Valor Validaci&oacute;n" />
+                    </f:facet>
+                    <h:outputText value="#{validacion.tipoBasicaValidacionId.nombreBasica}"/>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Viabilidad" />
+                    </f:facet>
+                    <h:outputText value="#{validacion.viabilidad}"/>
+                </h:column>
+
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Acci&oacute;n" />
+                    </f:facet>
+                    <h:commandLink id="lnkEliminar" 
+                                   value="" title="Eliminar"
+                                   styleClass="btnIconEliminar"
+                                   disabled="#{!validacionProyectoBean.validarOpcionEliminarRol()}"
+                                   action="#{validacionProyectoBean.eliminarValidacionFromTable(validacion)}"
+                                   onclick="return confirm('¿Est&aacute; seguro que desea Eliminar el registro?');" />
+                </h:column>
+
+                <f:facet name="footer" >
+                    <h:commandButton value="" action="#{validacionProyectoBean.pageFirst}"
+                                     class="botonTPagInicioCm botonBaselista"/>
+                    <h:commandButton value="" action="#{validacionProyectoBean.pagePrevious}"
+                                     class="botonTPagAnteriorCm botonBaselista"/>
+                    <h:commandButton value="#{validacionProyectoBean.pageActual}" styleClass="botonTPagInicio"    />
+                    <h:selectOneMenu id="listTabla" value="#{validacionProyectoBean.numPagina}" 
+                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                        <f:selectItems value="#{validacionProyectoBean.paginaList}" var="pag"
+                                       itemValue="#{pag}"
+                                       itemLabel="#{pag}"/>    
+                        <f:ajax render="@this validacionProyectoTable" 
+                                event="change"  
+                                listener="#{validacionProyectoBean.irPagina()}"  
+                                execute="@this " />                                         
+                    </h:selectOneMenu>  
+                    <h:commandButton value="" action="#{validacionProyectoBean.pageNext}"
+                                     class="botonTPagSiguienteCm botonBaselista"/>
+                    <h:commandButton value="" action="#{validacionProyectoBean.pageLast}"
+                                     class="botonTPagFinCm botonBaselista"/>
+                </f:facet>
+            </h:dataTable>
+        </h:panelGroup>
+
+        <h:panelGrid id="panelCreacion" 
+                     columns="1" style="width: 100%" 
+                     rendered="#{validacionProyectoBean.renderCreacion}">
+            <h2>Creacion Validacion por Proyecto</h2> 
+            <h:panelGrid columns="3" >
+                <h:outputText value="Proyecto" />
+                <h:selectOneMenu id="proyectoDetalleList"  
+                                 required="true"
+                                 requiredMessage="La Validaci&oacute;n es requerida"
+                                 styleClass="ListaConsulta" 
+                                 value="#{validacionProyectoBean.proyectoDetalleSelected}">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{validacionProyectoBean.basicaProyectoList}" 
+                                   var="proyectoD"                                    
+                                   itemValue="#{proyectoD.basicaId}"
+                                   itemLabel="#{proyectoD.nombreBasica}"/>
+                    <f:ajax event="change" 
+                            listener="#{validacionProyectoBean.cargarConfiguracionPrevia()}"
+                            execute="@this " 
+                            render="@this validacionProyectoTableCreacion"/>
+
+                </h:selectOneMenu>
+                <h:commandButton id="crearConfiguracionButton" 
+                                 class="btn" 
+                                 value="Crear Configuraci&oacute;n proyecto" 
+                                 disabled="#{!validacionProyectoBean.validarOpcionCreaNuevaConfRol()}"
+                                 action="#{validacionProyectoBean.crearConfiguracion()}"/>
+            </h:panelGrid>
+            <h:dataTable id="validacionProyectoTableCreacion" 
+                         value="#{validacionProyectoBean.validacionProyectoCreacionList}" 
+                         var="valProyectoCrea"                         
+                         styleClass="constructGTable"
+                         headerClass="constructGTableHeader" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                         style="width: 100%">
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Tipo Validaci&oacute;n" />
+                    </f:facet>
+                    <h:outputText 
+                        value="#{valProyectoCrea.tipoBasicaValidacionId.tipoBasicaObj.nombreTipo}"/>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Valor Validaci&oacute;n" />
+                    </f:facet>
+                    <h:outputText 
+                        value="#{valProyectoCrea.tipoBasicaValidacionId.nombreBasica}"/>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Viabilidad" />
+                    </f:facet>
+                    <h:selectOneMenu id="valorValidacionDetalleList"  
+                                     styleClass="ListaConsulta" 
+                                     value="#{valProyectoCrea.viabilidad}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItem itemValue="Y" itemLabel="Requerido" />
+                        <f:selectItem itemValue="N" itemLabel="No Requerido" />
+                        <f:selectItem itemValue="P" itemLabel="Requiere Proceso" />
+                        <f:selectItem itemValue="R" itemLabel="Restringido" />
+                        <f:selectItem itemValue="NA" itemLabel="No Aplica" />
+                    </h:selectOneMenu>
+                </h:column>
+
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Acci&oacute;n" />
+                    </f:facet>
+                    <h:commandLink id="lnkEliminar" 
+                                   value="" title="Eliminar" 
+                                   action="#{validacionProyectoBean.removeFromListConfiguracion(valProyectoCrea)}"
+                                   styleClass="btnIconEliminar"
+                                   rendered="true"/>
+                </h:column>
+
+            </h:dataTable>
+
+        </h:panelGrid>
+        <h:panelGroup rendered="#{validacionProyectoBean.renderDetalle}">
+            <h2>Detalle Validacion por Proyecto</h2>
+
+            <h:panelGrid id="panelDetalle" 
+                         columns="2" 
+                         styleClass="centrado">
+
+                <h:column>
+                    <h:outputLabel styleClass="txtLabelsMgl" 
+                                   value="Regla Id"/>
+                </h:column>
+                <h:column>
+                    <h:inputText value="#{validacionProyectoBean.validacionProyectoSelected
+                                          .idValidacionProyecto}" 
+                                 disabled="true"/>
+                </h:column>
+                <h:column>
+                    <h:outputLabel styleClass="txtLabelsMgl" 
+                                   value="Proyecto"/>
+                </h:column>
+                <h:column>
+                    <h:inputText value="#{validacionProyectoBean.validacionProyectoSelected
+                                          .tipoBasicaProyectoId.nombreBasica}" 
+                                 disabled="true"/>
+                </h:column>
+                <h:column>
+                    <h:outputLabel styleClass="txtLabelsMgl" 
+                                   value="Tipo Validaci&oacute;n"/>
+                </h:column>
+                <h:column>
+                    <h:inputText value="#{validacionProyectoBean.validacionProyectoSelected
+                                          .tipoBasicaValidacionId.tipoBasicaObj.nombreTipo}" 
+                                 disabled="true"/>
+                </h:column>
+                <h:column>
+                    <h:outputLabel styleClass="txtLabelsMgl" 
+                                   value="Valor Validaci&oacute;n"/>
+                </h:column>
+                <h:column>
+                    <h:inputText value="#{validacionProyectoBean.validacionProyectoSelected
+                                          .tipoBasicaValidacionId.nombreBasica}" 
+                                 disabled="true"/>
+                </h:column>
+                <h:column>
+                    <h:outputLabel styleClass="txtLabelsMgl" 
+                                   value="Viabilidad"/>
+                </h:column>
+                <h:column>
+                    <h:selectOneMenu value="#{validacionProyectoBean.validacionProyectoSelected
+                                              .viabilidad}"
+                                     required="true"
+                                     requiredMessage="#{validacionProyectoBean.campoVacio}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItem itemValue="Y" itemLabel="Requerido" />
+                        <f:selectItem itemValue="N" itemLabel="No Requerido" />
+                        <f:selectItem itemValue="P" itemLabel="Requiere Proceso" />
+                        <f:selectItem itemValue="R" itemLabel="Restringido" />
+                        <f:selectItem itemValue="NA" itemLabel="No Aplica" />
+
+                    </h:selectOneMenu>
+                </h:column>
+
+            </h:panelGrid>
+
+            <h:panelGrid columns="3">
+                <h:commandButton value="Actualizar" styleClass="btn"
+                                 action="#{validacionProyectoBean.actualizar()}"/>
+                <h:commandButton value="Eliminar" styleClass="btn"
+                                 rendered="#{validacionProyectoBean.validarBorrado()}"
+                                 action="#{validacionProyectoBean.eliminarValidacion}"
+                                 onclick="return confirm('¿Est&aacute; seguro que desea Eliminar el registro?');"/>
+                <h:commandButton value="Volver" styleClass="btn"
+                                 action="#{validacionProyectoBean.volver()}"/>
+
+            </h:panelGrid>
+
+
+        </h:panelGroup>
+
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/MGL/template/main.xhtml"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes">
+    <ui:define name="title"><span class="TituloSeccion">Administrador tablasBasicas Parametrizacion Proveedores Cobertura Entregas</span></ui:define>
+    <ui:define name="content">
+        <h:panelGroup id="combosCobertura">
+            <h:panelGrid columns="4" style="margin-top: 20px;">                
+                <h:outputLabel class="EtiquetaConsulta" value="Departamento:"/>
+                <h:selectOneMenu id="listDptos" value="#{parametrizarOperadorBean.dptoStr}" 
+                                 styleClass="ListaConsulta"
+                                 required="true">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{parametrizarOperadorBean.dptoList}" var="ld"
+                                   itemValue="#{ld.gpoId}"
+                                   itemLabel="#{ld.gpoNombre}"/>  
+                    <f:ajax event="change" execute="listDptos" 
+                            listener="#{parametrizarOperadorBean.loadCities()}" render="listCiudades listCentrosPoblados tablaVal"/>
+                </h:selectOneMenu> 
+
+                <h:outputLabel class="EtiquetaConsulta" value="Ciudad:"/> 
+                <h:selectOneMenu id="listCiudades" value="#{parametrizarOperadorBean.ciudadStr}" 
+                                 styleClass="ListaConsulta"
+                                 required="true">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{parametrizarOperadorBean.ciudadList}" var="lc"
+                                   itemValue="#{lc.gpoId}"
+                                   itemLabel="#{lc.gpoNombre}"/>   
+                    <f:ajax event="change" execute="listCiudades" 
+                            listener="#{parametrizarOperadorBean.loadCenters()}" render="listCentrosPoblados tablaVal"/>
+                </h:selectOneMenu> 
+                <h:outputLabel class="EtiquetaConsulta" value="Centro poblado:"/> 
+                <h:selectOneMenu id="listCentrosPoblados" value="#{parametrizarOperadorBean.centroPobladoStr}"
+                                 styleClass="ListaConsulta"
+                                 required="true">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{parametrizarOperadorBean.centrosPobladosList}" var="cenPo"
+                                   itemValue="#{cenPo.gpoId}"
+                                   itemLabel="#{cenPo.gpoNombre}"/>
+                    <f:ajax event="change" execute="listCentrosPoblados" 
+                            listener="#{parametrizarOperadorBean.loadOperadores()}" render="listOperadorLogistico tablaVal"/>
+                </h:selectOneMenu>
+                <h:outputLabel class="EtiquetaConsulta" value="Operadores Logisticos:"/> 
+                <h:selectOneMenu id="listOperadorLogistico" value="#{parametrizarOperadorBean.operadorLogisticoStr}"
+                                 styleClass="ListaConsulta"
+                                 required="true">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{parametrizarOperadorBean.listaOperadores}" var="oper"
+                                   itemValue="#{oper.basicaId}"
+                                   itemLabel="#{oper.nombreBasica}"/>
+                    <f:ajax event="change" execute="listOperadorLogistico" 
+                            listener="#{parametrizarOperadorBean.cambioOperador()}" render="tablaVal"/>
+                </h:selectOneMenu>   
+            </h:panelGrid>
+
+            <h:panelGrid columns="4" id="estadoxFlujoBtn" styleClass="panelInfo">
+                <h:panelGroup id="botonesAcciones">
+                    <h:commandButton value="Guardar" styleClass="btn"
+                                     action="#{parametrizarOperadorBean.guardarCoberturaEntrega()}" 
+                                     disabled="#{!parametrizarOperadorBean.validarOpcionNuevo()}"/>
+                    <h:commandButton value="Limpiar Campos" styleClass="btn"
+                                     action="#{parametrizarOperadorBean.nuevoRegistro()}">
+                        <f:ajax render="tablaVal combosCobertura"></f:ajax>
+                    </h:commandButton>
+                </h:panelGroup>
+            </h:panelGrid>
+        </h:panelGroup>
+
+        <h:panelGrid id="tablaVal">
+            <h:dataTable id="tablaValoresOpLog" 
+                         styleClass="constructGTable"
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                         value="#{parametrizarOperadorBean.listaInventario}" var="itemTbBasicaCober" rendered="#{parametrizarOperadorBean.listaInventario != null and parametrizarOperadorBean.listaInventario.size() > 0}">
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Seleccionar" /><BR/>
+                    </f:facet>
+                    <h:selectBooleanCheckbox value="#{parametrizarOperadorBean.datos[itemTbBasicaCober.abreviatura]}">
+                        <f:ajax event="change" listener="#{parametrizarOperadorBean.addItemListCoberturaCentroPob(itemTbBasicaCober)}" ></f:ajax>
+                    </h:selectBooleanCheckbox>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Abreviatura" /><BR/>
+                    </f:facet>
+                    <h:outputText value="#{itemTbBasicaCober.basicaId}"></h:outputText>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Nombre " /><BR/>
+                    </f:facet>
+                    <h:outputText value="#{itemTbBasicaCober.nombreBasica}"></h:outputText>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Descripcion " /><BR/>
+                    </f:facet>
+                    <h:outputText value="#{itemTbBasicaCober}"></h:outputText>
+                </h:column>
+            </h:dataTable>
+
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>
+
+

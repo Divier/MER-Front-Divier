@@ -1,0 +1,416 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="content"> 
+        <!--Pantalla de consulta de mensajes de validacion-->
+        <h:panelGroup rendered="#{mensajeValidacionBean.isConsultar}">
+            <h2>Mensajes Tipo Validación</h2>
+            <h:panelGrid columns="8" >
+                <h:outputLabel>Tipo Validación</h:outputLabel>
+                <h:selectOneMenu id="tipoValidacion" 
+                                 value="#{mensajeValidacionBean.seleccionTipoValidacion}"
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemLabel="" itemValue=""/>
+                    <f:selectItems value="#{mensajeValidacionBean.tiposValidacion}" 
+                                   var="tipoV"
+                                   itemValue="#{tipoV.tipoBasicaObj.tipoBasicaId}"
+                                   itemLabel="#{tipoV.tipoBasicaObj.nombreTipo}"
+                                   />
+                    <f:ajax listener="#{mensajeValidacionBean.actualizarTablaMensajes(mensajeValidacionBean.primera)}" 
+                            execute="@this" 
+                            render="tablaMensajes"
+                            event="change"/>
+                </h:selectOneMenu>
+
+            </h:panelGrid>
+
+            <br/><br/>
+
+            <div class="">
+                <h:dataTable id="tablaMensajes"
+                             value="#{mensajeValidacionBean.mensajesValidacion}"
+                             var="mensajes" 
+                             styleClass="constructGTable"
+                             headerClass="constructGTableHeader"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Id Mensaje"/>
+                        </f:facet>
+                        <h:commandLink value="#{mensajes.idMensaje}" title="Ir Detalle"
+                                       disabled="#{!mensajeValidacionBean.validarOpcionCrear()}"
+                                       actionListener="#{mensajeValidacionBean.irActualizarMensaje(mensajes)}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Id Tipo Validaci&oacute;n"/>
+                        </f:facet>
+                        <h:outputText value="#{mensajes.idValidacion}"/>
+                    </h:column>                    
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Mensaje S&Iacute;"/>
+                        </f:facet>
+                        <h:outputText value="#{mensajes.mensajeSi}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Mensaje NO"/>
+                        </f:facet>
+                        <h:outputText value="#{mensajes.mensajeNo}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Mensaje PROCESO"/>
+                        </f:facet>
+                        <h:outputText value="#{mensajes.mensajeProcesos}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Mensaje NA"/>
+                        </f:facet>
+                        <h:outputText value="#{mensajes.mensajeNa}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Mensaje Restringido"/>
+                        </f:facet>
+                        <h:outputText value="#{mensajes.mensajeRestringido}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Acci&oacute;n"/>
+                        </f:facet>
+                        <h:commandLink id="lnkEliminar" title="Eliminar" disabled="#{!mensajeValidacionBean.validarEliminarRol()}"
+                                       styleClass="btnIconEliminar" value=""
+                                       action="#{mensajeValidacionBean.eliminarMensajeFromTable(mensajes)}"
+                                       onclick="return confirm('¿Est&aacute; seguro que desea Eliminar el registro?');" />
+                    </h:column>
+                    <f:facet name="footer">
+
+                        <h:panelGroup>
+                            <h:commandButton value="" action="#{mensajeValidacionBean.actualizarTablaMensajes(mensajeValidacionBean.primera)}"
+                                             disabled="#{mensajeValidacionBean.paginaActual == 1}" 
+                                             class="botonTPagInicioCm botonBaselista"/>
+                            <h:commandButton value="" action="#{mensajeValidacionBean.actualizarTablaMensajes(mensajeValidacionBean.atras)}"
+                                             disabled="#{mensajeValidacionBean.paginaActual == 1}" 
+                                             class="botonTPagAnteriorCm botonBaselista"/>
+
+                            <h:inputText id="pagina" value="#{mensajeValidacionBean.paginaActual}">
+                                <f:ajax listener="#{mensajeValidacionBean.actualizarTablaMensajes(mensajeValidacionBean.irA)}" 
+                                        event="blur" 
+                                        execute="@this" 
+                                        render="tablaMensajes"/>
+                            </h:inputText>
+                            <h:outputLabel value="#{mensajeValidacionBean.paginaActual}...#{mensajeValidacionBean.totalPaginas}"/>
+
+                            <h:commandButton value="" action="#{mensajeValidacionBean.actualizarTablaMensajes(mensajeValidacionBean.siguiente)}"
+                                             disabled="#{mensajeValidacionBean.ultimaPagina}" 
+                                             class="botonTPagSiguienteCm botonBaselista" />
+                            <h:commandButton value="" action="#{mensajeValidacionBean.actualizarTablaMensajes(mensajeValidacionBean.ultima)}"
+                                             disabled="#{mensajeValidacionBean.ultimaPagina}" 
+                                             class="botonTPagFinCm botonBaselista"/>
+                        </h:panelGroup>
+
+                    </f:facet>
+
+                </h:dataTable>
+
+            </div>
+
+            <div class="buttonArea">
+                <h:commandButton value="Crear Mensaje" styleClass="btn"
+                                 action="#{mensajeValidacionBean.irCrearMensaje()}"
+                                 disabled="#{!mensajeValidacionBean.validarCrearRol()}"/>
+            </div>
+
+        </h:panelGroup>
+
+        <!-- Pantalla detalle y modificacion de registros-->
+        <h:panelGroup rendered="#{mensajeValidacionBean.isActualizar}">
+            <h2>Actualización Mensajes Tipo Validación</h2>
+            <h:panelGrid columns="2" styleClass="centrado">
+                <h:column rendered="#{mensajeValidacionBean.mensajeTipVal.idMensaje != null}"> 
+                    <h:outputLabel styleClass="txtLabelsMgl" value="Id Mensaje"/>
+                </h:column>
+                <h:column rendered="#{mensajeValidacionBean.mensajeTipVal.idMensaje != null}">
+                    <div style="display: block">
+
+                        <div>
+                            <h:inputText id="idMensaje" 
+                                         styleClass="ListaConsulta"
+                                         disabled="true"
+                                         value="#{mensajeValidacionBean.mensajeTipVal.idMensaje}"/>
+                        </div>
+                    </div>
+                </h:column>
+                <h:column>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputLabel styleClass="txtLabelsMgl" value="Tipo Validaci&oacute;n"/>
+                </h:column>
+                <h:column>
+                    <div style="display: block">
+                        <div>
+                            <h:selectOneMenu id="tipoValidacionDetalle" 
+                                             disabled="#{mensajeValidacionBean.mensajeTipVal.idMensaje != null}"
+                                             value="#{mensajeValidacionBean.tipoValidacionDetalleSelected}"
+                                             styleClass="ListaConsulta"
+                                             required="true">
+                                <f:selectItem itemLabel="" itemValue=""/>
+                                <f:selectItems value="#{mensajeValidacionBean.tiposValidacion}" 
+                                               var="tipoV"
+                                               itemValue="#{tipoV.tipoBasicaObj.tipoBasicaId}"
+                                               itemLabel="#{tipoV.tipoBasicaObj.nombreTipo}"
+                                               />
+                                <f:ajax listener="#{mensajeValidacionBean.obtenerValorValidacion()}" 
+                                        execute="@this" 
+                                        render="tipoValidacionDetalle valorValidacionDetalle"
+                                        event="change"/>
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                </h:column>
+                <h:column>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputLabel styleClass="txtLabelsMgl" value="Valor Validaci&oacute;n "/>
+                </h:column>
+                <h:column>
+                    <div style="display: block">
+                        <div>
+                            <h:selectOneMenu id="valorValidacionDetalle" 
+                                             disabled="#{mensajeValidacionBean.mensajeTipVal.idMensaje != null}"
+                                             value="#{mensajeValidacionBean.mensajeTipVal.idValidacion.basicaId}"
+                                             styleClass="ListaConsulta"
+                                             required="true"
+                                             requiredMessage="#{mensajeValidacionBean.campoVacio} Valor Validaci&oacute;n">
+                                <f:selectItem itemLabel="" itemValue=""/>
+                                <f:selectItems value="#{mensajeValidacionBean.valorValidacionList}" 
+                                               var="valValidacion"
+                                               itemValue="#{valValidacion.basicaId}"
+                                               itemLabel="#{valValidacion.nombreBasica}"
+                                               />
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                </h:column>
+                <h:column>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputLabel styleClass="txtLabelsMgl" value="Mensaje S&Iacute;"/>
+                </h:column>
+                <h:column>
+                    <div style="display: block">
+                        <div>
+                            <h:inputText id="mensajeS" styleClass="ListaConsulta"
+                                         required="true"
+                                         maxlength="499"
+                                         requiredMessage="#{mensajeValidacionBean.campoVacio} Mensaje SI"
+                                         value="#{mensajeValidacionBean.mensajeTipVal.mensajeSi}"/>
+                        </div>
+                    </div>
+                </h:column>
+                <h:column>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputLabel styleClass="txtLabelsMgl" value="Mensaje NO "/>
+                </h:column>
+                <h:column>
+                    <div style="display: block">
+                        <div>
+                            <h:inputText id = "mensajeN" styleClass="ListaConsulta"
+                                         required="true"                                             
+                                         maxlength="499"
+                                         requiredMessage="#{mensajeValidacionBean.campoVacio} Mensaje NO"
+                                         value="#{mensajeValidacionBean.mensajeTipVal.mensajeNo}"/>
+                        </div>
+                    </div>
+                </h:column>
+                <h:column>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputLabel styleClass="txtLabelsMgl" value="Mensaje Proceso "/>
+                </h:column>
+                <h:column>
+                    <div style="display: block">
+                        <div>
+                            <h:inputText id="mensajeP" styleClass="ListaConsulta"
+                                         required="true"
+                                         maxlength="499"
+                                         requiredMessage="#{mensajeValidacionBean.campoVacio} Mensaje Proceso"
+                                         value="#{mensajeValidacionBean.mensajeTipVal.mensajeProcesos}"/>
+                        </div>
+                    </div>
+                </h:column>
+                <h:column>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputLabel styleClass="txtLabelsMgl" value="Mensaje NA "/>
+                </h:column>
+                <h:column>
+                    <div style="display: block">
+                        <div>
+                            <h:inputText id="mensajeNa" styleClass="ListaConsulta"
+                                         required="true"
+                                         maxlength="499"
+                                         requiredMessage="#{mensajeValidacionBean.campoVacio} Mensaje NA"
+                                         value="#{mensajeValidacionBean.mensajeTipVal.mensajeNa}"/>
+                        </div>
+                    </div>
+                </h:column>
+                <h:column>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputLabel styleClass="txtLabelsMgl" value="Mensaje Restringido "/>
+                </h:column>
+                <h:column>
+                    <div style="display: block">
+                        <div>
+                            <h:inputText id="mensajeRestringidoDetalle" styleClass="ListaConsulta"
+                                         required="true"
+                                         maxlength="499"
+                                         requiredMessage="#{mensajeValidacionBean.campoVacio} Mensaje Restringido"
+                                         value="#{mensajeValidacionBean.mensajeTipVal.mensajeRestringido}"/>
+                        </div>
+                    </div>
+                </h:column>
+
+            </h:panelGrid>
+
+            <h:panelGrid id="panelBotonesDetalle" columns="3">
+                <h:commandButton action="#{mensajeValidacionBean.actualizarMensaje()}" 
+                                 rendered="#{mensajeValidacionBean.mensajeTipVal.idMensaje != null}"
+                                 value="Actualizar" styleClass="btn"/>
+                <h:commandButton value="Eliminar" styleClass="btn"
+                                 action="#{mensajeValidacionBean.borrarMensaje()}"
+                                 onclick="return confirm('¿Est&oacute; seguro que desea Eliminar el registro?');"
+                                 disabled="#{!mensajeValidacionBean.validarEliminarRol()}"/>
+                <h:commandButton action="#{mensajeValidacionBean.volver()}" 
+                                 immediate="true"
+                                 value="Volver" styleClass="btn"/>
+            </h:panelGrid>
+
+        </h:panelGroup>
+
+        <!--Pantalla de creación de los mensajes-->
+        <h:panelGroup rendered="#{mensajeValidacionBean.isCrear}">
+            <h2>Creación Mensajes Tipo Validación</h2>
+            <h:panelGrid columns="1">
+                <h:outputLabel>Tipo validación</h:outputLabel>
+                <h:selectOneMenu id="crearTipoValidacion"
+                                 value="#{mensajeValidacionBean.tipoValidacionDetalleSelected}">
+                    <f:selectItem itemLabel="" 
+                                  itemValue=""/>
+                    <f:selectItems value="#{mensajeValidacionBean.tiposValidacion}"
+                                   var="tipoV"
+                                   itemValue="#{tipoV.tipoBasicaObj.tipoBasicaId}"
+                                   itemLabel="#{tipoV.tipoBasicaObj.nombreTipo}"/>
+                    <f:ajax listener="#{mensajeValidacionBean.llenarTablaCreacion()}" 
+                            execute="@this" 
+                            event="change" 
+                            render="tablaCrearMensajes"/>
+                </h:selectOneMenu>
+            </h:panelGrid>
+            <br/><br/>
+
+            <table>
+                <tr>
+                    <td style="width:20%;" />
+                    <td style="width:20%;" />
+                    <td style="width:20%;" />
+                    <td style="width:20%;" />
+                    <td style="width:20%;" />
+                    <td style="width:20%;" />                
+                </tr>
+                <tr>
+                    <td > <h:outputLabel style="font-weight: bold;" value="Mensaje SI" /> </td>
+                    <td > <h:outputLabel style="font-weight: bold;" value="Mensaje NO" /> </td>
+                    <td > <h:outputLabel style="font-weight: bold;" value="Mensaje PROCESO" /> </td>
+                    <td > <h:outputLabel style="font-weight: bold;" value="Mensaje N/A" /> </td>
+                    <td > <h:outputLabel style="font-weight: bold;" value="Mensaje RESTRINGIDO" /> </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:inputText value="#{mensajeValidacionBean.mensajeSiGlobal}" 
+                                     id="mensajeSi" style="width: 90%;  font-size: 15px;"
+                                     maxlength="250"/> </td>
+                    <td>    <h:inputText value="#{mensajeValidacionBean.mensajeNoGlobal}" 
+                                         id="mensajeNo" style="width: 90%;  font-size: 15px;"
+                                         maxlength="250"/>    </td>
+                    <td>   <h:inputText value="#{mensajeValidacionBean.mensajeProcesoGlobal}" 
+                                        id="mensajeProceso" style="width: 90%;  font-size: 15px;"
+                                        maxlength="250"/> </td>
+                    <td>   <h:inputText value="#{mensajeValidacionBean.mensajeNaGlobal}" 
+                                        id="mensajeN_A" style="width: 90%;  font-size: 15px;"
+                                        maxlength="250"/> </td>
+                    <td>  <h:inputText value="#{mensajeValidacionBean.mensajeRestringidoGlobal}" 
+                                       id="mensajeR" style="width: 90%;  font-size: 15px;"
+                                       maxlength="250"/>    </td>
+                    <td> <h:commandButton action="#{mensajeValidacionBean.aplicarMensajeGlobales()}" id="aplicarMensajesButton" styleClass="btn" value="Aplicar a Todos" > </h:commandButton> </td>
+                    <td> <h:commandButton action="#{mensajeValidacionBean.limpiarMensajeGlobales()}" id="limpiarMensajesButton" styleClass="btn" value="Limpiar Todos" > </h:commandButton> </td>
+                </tr>
+            </table>
+
+
+
+            <h:dataTable id="tablaCrearMensajes" 
+                         value="#{mensajeValidacionBean.mensajesValidacionCreacion}"
+                         var="mensajesCreacion"
+                         styleClass="constructGTable"
+                         headerClass="constructGTableHeader"
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Id Tipo Validaci&oacute;n"/>
+                    </f:facet>
+                    <h:outputLabel value="#{mensajesCreacion.idValidacion.nombreBasica}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Mensaje Si"/>
+                    </f:facet>
+                    <h:inputText id="msnSi" 
+                                 value="#{mensajesCreacion.mensajeSi}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Mensaje No"/>
+                    </f:facet>
+                    <h:inputText id="msnNo" 
+                                 value="#{mensajesCreacion.mensajeNo}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Mensaje Proceso"/>
+                    </f:facet>
+                    <h:inputText id="msnProceso" 
+                                 value="#{mensajesCreacion.mensajeProcesos}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Mensaje N/A"/>
+                    </f:facet>
+                    <h:inputText id="msnNA" 
+                                 value="#{mensajesCreacion.mensajeNa}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputLabel value="Mensaje Restringido"/>
+                    </f:facet>
+                    <h:inputText id="msnRestringido" 
+                                 value="#{mensajesCreacion.mensajeRestringido}"/>
+                </h:column>
+
+            </h:dataTable>
+            <h:panelGroup>
+                <h:commandButton action="#{mensajeValidacionBean.crearMensajes()}" 
+                                 rendered="true"
+                                 value="Crear" styleClass="btn"/>
+                <h:commandButton action="#{mensajeValidacionBean.volver()}" 
+                                 immediate="true"
+                                 value="Volver" styleClass="btn"/>
+            </h:panelGroup>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

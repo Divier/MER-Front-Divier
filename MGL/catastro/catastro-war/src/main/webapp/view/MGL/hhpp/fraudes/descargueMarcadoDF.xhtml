@@ -1,0 +1,698 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:p="http://primefaces.org/ui">
+    <h:head>        
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-1.3.2.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/script.js"></script>
+
+    </h:head>
+    <h:body>
+	 <h:form id="idFormCargue">
+      <ui:composition template="/view/MGL/template/main.xhtml">
+        <ui:define name="title">Descarga Archivo Marcado DF</ui:define>
+        <ui:define name="content">
+            <table style="width: 100%" >
+                <td style="width:96%" >
+                    <h2 id="solModData" style="margin-top: 0px; margin-left: -12px;text-align: center;">[#{!descargueMarcadoDFBean.desmarcar ? "Descargue de Archivo para Marcado de DF": "Descargue de Archivo para Desmarcado de DF"}]</h2>  </td>
+                <td style="width:5%">
+                    <h:commandButton style="margin:0px 0 11px 0; " id="mostrarComponenteButtonDir" image="/view/img/ocultar.png" >
+                        <f:ajax render="panelcontenidoBusqueda buttonClean" 
+                                event="click" listener="#{descargueMarcadoDFBean.showHideDireccion()}" />
+                    </h:commandButton>
+                </td>
+            </table>
+            <h:panelGroup id="panelcontenidoBusqueda">
+                <h:panelGroup id="contenidoBusqueda" rendered="#{descargueMarcadoDFBean.showPanelBusquedaDireccion}">
+                    <h:panelGrid columns="9" id="modeloHhppMgl" class="formulario3"  style="width:100%;"  >        
+                        <h:panelGrid>
+                            <h:outputText style="font-weight:bold"  id="tipoDireccion" value="Tipo Dirección:" />  
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:selectOneMenu style="width: 140px;"  id="tipoDireccionComboBox" 
+                                             value="#{descargueMarcadoDFBean.tipoDireccion}">                            
+                                <f:selectItem itemLabel="CALLE - CARRERA" itemValue="CK"/>
+                                <f:selectItem itemLabel="BARRIO - MANZANA" itemValue="BM"/>
+                                <f:selectItem itemLabel="INTRADUCIBLE" itemValue="IT"/>
+                                <f:ajax  event="change" execute="tipoDireccionComboBox" 
+                                         listener="#{descargueMarcadoDFBean.validarTipoDireccion()}" 
+                                         render="panelWrapper direccionStrLabel" />
+                            </h:selectOneMenu>  
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight:bold" value="Departamento" /> 
+                        </h:panelGrid>            
+                        <h:panelGrid>                
+                            <h:selectOneMenu style="width: 140px;" value="#{descargueMarcadoDFBean.departamento}"                                           
+                                             id="departamento" >                            
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                <f:selectItems value="#{descargueMarcadoDFBean.departamentoList}" 
+                                               var="departamento" itemLabel="#{departamento.gpoNombre}" 
+                                               itemValue="#{departamento.gpoId}"/> 
+                                <f:ajax  event="change" execute="@form" 
+                                         listener="#{descargueMarcadoDFBean.obtenerCiudadesList()}"
+                                         render="ciudad centroPoblado"/> 
+                            </h:selectOneMenu> 
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight:bold"  id="cityC" value="Ciudad:"></h:outputText>                
+                        </h:panelGrid>            
+                        <h:panelGrid>
+                            <h:selectOneMenu style="width: 140px;" value="#{descargueMarcadoDFBean.ciudad}"                                           
+                                             id="ciudad" >                            
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                <f:selectItems value="#{descargueMarcadoDFBean.ciudadesList}" 
+                                               var="ciudad" itemLabel="#{ciudad.gpoNombre}" 
+                                               itemValue="#{ciudad.gpoId}"/> 
+                                <f:ajax event="change" execute="@form" 
+                                        listener="#{descargueMarcadoDFBean.obtenerCentroPobladoList()}"
+                                        render="centroPoblado "/> 
+                            </h:selectOneMenu>     
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight:bold" value="Centro Poblado" /> 
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:selectOneMenu id="centroPoblado" style="width: 140px;"           
+                                             value="#{descargueMarcadoDFBean.idCentroPoblado}" >
+                                <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                <f:selectItems value="#{descargueMarcadoDFBean.centroPobladoList}" 
+                                               var="centroPob"
+                                               itemValue="#{centroPob.gpoId}"
+                                               itemLabel="#{centroPob.gpoNombre}">
+                                </f:selectItems>   
+                                <f:ajax  event="change" execute="centroPoblado" render="nodo"
+                                         listener="#{descargueMarcadoDFBean.obtenerCentroPobladoSeleccionado(true)}"/>  
+                            </h:selectOneMenu> 
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <h:panelGrid columns="4" id="modeloHhppMgl2" class="formulario4" > 
+                        <h:panelGrid>
+                            <h:outputText style="font-weight:bold" value="Nodo" /> 
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:selectOneMenu id="nodo" style="width: 140px;"           
+                                             value="#{descargueMarcadoDFBean.codigoNodo}" >
+                                <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                <f:selectItems value="#{descargueMarcadoDFBean.lstCodigoNodos}" 
+                                               var="nod"
+                                               itemValue="#{nod}"
+                                               itemLabel="#{nod}">
+                                </f:selectItems>   
+                            </h:selectOneMenu> 
+                        </h:panelGrid>
+                        
+                        <h:panelGrid>
+                            <h:outputText style="font-weight:bold" id="barrioLabel" value="Barrio:" />  
+                             </h:panelGrid>
+                         <h:panelGrid>
+                            <h:inputText id="barrioIn" value="#{descargueMarcadoDFBean.barrio}"> 
+                            </h:inputText>  
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <br/><br/>
+                    <hr size="5" width="100%" align="LEFT"/>
+                    <div style="padding:15px"> 
+                        <h:panelGroup id="panelWrapper" >
+                            <h:panelGroup id="ckPanel" rendered="#{descargueMarcadoDFBean.showCKPanel}" >
+                                <h:panelGrid columns="6" >
+                                    <h:panelGroup  > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="dir" value="*"/>
+                                        <h:outputText id="direccionLabel" value="Ingrese la dirección:" /> </h:panelGroup>
+                                    <h:panelGroup > <h:inputText value="#{descargueMarcadoDFBean.direccionCk}"
+                                                                 id="direccion" style="width: 490px; margin-right: 10px;"
+                                                                 maxlength="49" /> 
+                                    </h:panelGroup>
+                                    <h:panelGroup ><h:commandButton value="+" styleClass="btn"
+                                                                    title="Construir Direccion"                                                           
+                                                                    id="agregarDireccionCkButton"
+                                                                    action="#{descargueMarcadoDFBean.construirDireccionCk()}"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>                   
+                                </h:panelGrid>
+                                <!--STAR-->
+                                <h:panelGroup rendered="#{!descargueMarcadoDFBean.notGeoReferenciado}" id="pnNoRefences">
+                                    <table style="padding:5px 5px;" cellspacing="2" cellpadding="2">
+                                        <tr>
+                                            <td colspan="6" style="text-align: center; vertical-align: middle;height: 20px;">
+                                                <h:outputText id="compDircc4a" value="Calle" style=" text-decoration: underline;font-weight: bold; text-align: center; vertical-align: middle;" ></h:outputText>
+                                            </td>
+                                        </tr>    
+
+                                        <tr>
+                                            <td style="width:130px;margin: 5px 5px;">
+                                                <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegViaa" value="*"/><h:outputText id="compDircc5a" style="font-weight: bold;margin: 5px 5px;" value="Vía principal:"/>
+                                            </td>
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegNums" value="*"/><h:outputText id="compDircc6s" style="font-weight: bold;margin: 5px 5px;" value="Núm:" />
+                                            </td>
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:outputText id="compDircc7a" style="font-weight: bold;margin: 5px 5px;" value="Letra:"/>
+                                            </td>
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:outputText id="compDircc8s" style="font-weight: bold;margin: 5px 5px;" value="Letra 2:"/>
+                                            </td>
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:outputText id="compDircc9a" style="font-weight: bold;margin: 5px 5px;" value="Bis:"/>
+                                            </td>
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:outputText  id="compDircc10s" style="font-weight: bold;margin: 5px 5px;" value="Cardinales:"/>
+                                            </td>
+                                        </tr>                                             
+
+                                        <tr>
+                                            <td style="width:130px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="viaPrincipala"  value="#{descargueMarcadoDFBean.drDireccion.tipoViaPrincipal}" style="width:120px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems   value="#{descargueMarcadoDFBean.obtenerListadoTipoSolicitudList('CALLES_DIR')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+
+                                            <td style="width:120px;margin: 5px 5px;">                                                                           
+                                                <h:inputText  id="compDircc12a"  value="#{descargueMarcadoDFBean.drDireccion.numViaPrincipal}" style="width:105px;" >                              
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:inputText>  
+                                            </td>
+
+                                            <td style="width:70px;margin: 5px 5px;"> 
+                                                <h:selectOneMenu id="letraUnoPrincipala"  value="#{descargueMarcadoDFBean.drDireccion.ltViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems  value="#{descargueMarcadoDFBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>      
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+
+                                            <td style="width:70px;margin: 5px 5px;"> 
+                                                <h:selectOneMenu id="letraDosPrincipala"  value="#{descargueMarcadoDFBean.drDireccion.nlPostViaP}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems  value="#{descargueMarcadoDFBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>                                    
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+
+                                            <td style="width:70px;margin: 5px 5px;"> 
+                                                <h:selectOneMenu id="bisPrincipala"   value="#{descargueMarcadoDFBean.drDireccion.bisViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems    value="#{descargueMarcadoDFBean.optionBisDir('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>                                   
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+
+                                            <td style="width:120px;margin: 5px 5px;"> 
+                                                <h:selectOneMenu id="cuadrantePrincipala"  value="#{descargueMarcadoDFBean.drDireccion.cuadViaPrincipal}" style="width:100px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems    value="#{descargueMarcadoDFBean.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6">
+                                                <h:outputText  id="compDircc17a" value="#"  style=" font-size: 25px; text-align: center;margin:5px 5px;"></h:outputText>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <table id="calleCarrera_9a" style="padding:5px 5px;" cellpadding="2" cellspacing="2">
+                                        <tr>
+                                            <td style="text-align:center;" colspan="9">
+                                                <h:outputText id="compDircc18s" value="Placa" style="text-decoration:underline;font-weight:bold;text-align:center;vertical-align: middle;" ></h:outputText>
+                                            </td>
+                                        </tr> 
+                                        <tr>
+                                            <td style="width:130px;margin:5px 5px;">                
+                                                <h:outputText  id="compDircc20a" style="font-weight:bold;margin:5px 5px;" value="Cruce"/>
+                                            </td>
+                                            <td style="width:120px;margin:5px 5px;">                     
+                                                <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegNumGena" value="*"/>
+                                                <h:outputText  id="compDircc21s" style="font-weight:bold;margin:5px 5px;" value="Núm:"/>
+                                            </td>
+                                            <td style="width:70px;margin:5px 5px;">
+                                                <h:outputText  id="compDircc22a" style="font-weight:bold;margin:5px 5px;" value="Letra:"/>
+                                            </td>
+                                            <td style="width:70px;margin:5px 5px;">
+                                                <h:outputText  id="compDircc23d" style="font-weight:bold;margin:5px 5px;" value="Letra 2:"/>
+                                            </td>
+                                            <td style="width:70px;margin:5px 5px;">
+                                                <h:outputText  id="compDircc24a" style="font-weight:bold;margin:5px 5px;" value="Letra 3:"/>
+                                            </td>
+                                            <td style="width:120px;margin:5px 5px;">
+                                                <h:outputText  id="compDircc25d" style="font-weight:bold;margin:5px 5px;" value="Bis:"/>
+                                            </td>
+                                            <td style="width:120px;margin:5px 5px;">
+                                                <h:outputText  id="compDircc26a" style="font-weight:bold;margin:5px 5px;" value="Cardinales:"/>
+                                            </td>
+                                            <td>
+                                                <h:outputText></h:outputText>
+                                            </td>
+                                            <td style="width:120px;margin:5px 5px;">
+                                                <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegPlaa" value="*"/>
+                                                <h:outputText  id="compDircc27a" value="No. Placa:" style="font-weight:bold;margin:5px 5px;"/>
+                                            </td>                  
+                                        </tr>
+                                        <tr>
+                                            <td style="width:130px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="viaGeneradoras" value="#{descargueMarcadoDFBean.drDireccion.tipoViaGeneradora}" style="width:120px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{descargueMarcadoDFBean.obtenerListadoTipoSolicitudList('CALLES_DIR_GEN')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu> 
+                                            </td>
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:inputText id="compDircc261a" value="#{descargueMarcadoDFBean.drDireccion.numViaGeneradora}" style="width:105px;margin: 5px 5px;" >
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:inputText>
+                                            </td>
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:selectOneMenu  id="letraUnoGeneradoras" value="#{descargueMarcadoDFBean.drDireccion.ltViaGeneradora}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{descargueMarcadoDFBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td> 
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="letraDosGeneradoraa" value="#{descargueMarcadoDFBean.drDireccion.nlPostViaG}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{descargueMarcadoDFBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="letraTresGeneradoraa" value="#{descargueMarcadoDFBean.drDireccion.letra3G}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{descargueMarcadoDFBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn"/>
+                                                </h:selectOneMenu>
+                                            </td> 
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="bisGeneradoras" value="#{descargueMarcadoDFBean.drDireccion.bisViaGeneradora}" style="width:100px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{descargueMarcadoDFBean.optionBisDir('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>                                   
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="cuadranteGeneradoras" value="#{descargueMarcadoDFBean.drDireccion.cuadViaGeneradora}" style="width:100px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{descargueMarcadoDFBean.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+                                            <td>
+                                                <h:outputText  id="compDircc3a4" value="#{' '}-#{' '}" style="font-size: 25px; font-weight:bold"></h:outputText>
+                                            </td> 
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:inputText id="compDircc35a1"  value="#{descargueMarcadoDFBean.drDireccion.placaDireccion}" style="width:90px;margin:5px 5px;">   
+                                                    <f:ajax event="change" listener="#{descargueMarcadoDFBean.buildDireccion()}" render="createDireccionn direccionStrLabel compDircc35a1"/>
+                                                </h:inputText>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align:center;" colspan="9">
+                                                <h:outputText value="#{descargueMarcadoDFBean.createDireccion}" style="font-weight:bold;color:red;" id="createDireccionn"/>
+                                            </td>
+                                        </tr>                        
+                                    </table>                               
+                                </h:panelGroup>
+                            </h:panelGroup>
+                            <h:panelGroup id="bmPanel" rendered="#{descargueMarcadoDFBean.showBMPanel}">
+                                <h:panelGrid columns="6" >
+                                    <h:panelGroup > 
+                                        <h:outputText id="addInfo" value="Ingrese uno a uno los valores:" /> </h:panelGroup>
+                                    <h:panelGroup >
+                                        <h:selectOneMenu                                     
+                                            style="width: 100%" id="tipoDireccionBMComboBox" 
+                                            value="#{descargueMarcadoDFBean.tipoNivelBm}">
+                                            <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                            <f:selectItems value="#{descargueMarcadoDFBean.bmList}" 
+                                                           var="barriomanzana"  itemValue="#{barriomanzana.idParametro}" 
+                                                           itemLabel="#{barriomanzana.descripcion}"/>
+                                        </h:selectOneMenu></h:panelGroup>
+                                    <h:panelGroup ><h:inputText value="#{descargueMarcadoDFBean.nivelValorBm}" 
+                                                                id="tipoDireccionBM" style="width: 100%; margin-right: 10px;" maxlength="250"  />
+                                    </h:panelGroup>              
+                                    <h:panelGroup ><h:commandButton                                      
+                                            title="Construir Direccion"  value="+" styleClass="btn"
+                                            action="#{descargueMarcadoDFBean.construirDireccionBm()}" 
+                                            id="agregarInfoBMButton" /></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+                                </h:panelGrid>
+                            </h:panelGroup>
+
+                            <h:panelGroup id="itPanel" rendered="#{descargueMarcadoDFBean.showITPanel}">
+
+                                <h:panelGrid columns="6" >
+                                    <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="it" value="*"/> <h:outputText id="addInfoIt" value="Ingrese uno a uno los valores:" /> </h:panelGroup>
+                                    <h:panelGroup ><h:selectOneMenu style="width: 100%"  id="tipoDireccionITComboBox"  value="#{descargueMarcadoDFBean.tipoNivelIt}">
+                                            <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                            <f:selectItems value="#{descargueMarcadoDFBean.itList}" 
+                                                           var="intraducible"  itemValue="#{intraducible.idParametro}" itemLabel="#{intraducible.descripcion}"/>
+
+                                        </h:selectOneMenu></h:panelGroup>
+                                    <h:panelGroup ><h:inputText value="#{descargueMarcadoDFBean.nivelValorIt}"  id="tipoDireccionIt" style="width: 100%;margin-right: 10px;" maxlength="250"  /></h:panelGroup>              
+                                    <h:panelGroup ><h:commandButton title="Construir Direccion" styleClass="btn" value="+" action="#{descargueMarcadoDFBean.construirDireccionIt()}" id="agregarInfoItButton"  /></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+                                </h:panelGrid>
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGrid columns="8"   style="width:100%;"> 
+                            <h:outputText style="font-weight:bold" id="complementoLabel" value="Complemento:" />               
+                            <h:selectOneMenu style="width: 90%"  id="tipoComplementoComboBox" 
+                                             value="#{descargueMarcadoDFBean.tipoNivelComplemento}"> 
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                <f:selectItems value="#{descargueMarcadoDFBean.complementoList}" 
+                                               var="complemento"  itemValue="#{complemento.idParametro}" 
+                                               itemLabel="#{complemento.descripcion}"/>
+                            </h:selectOneMenu>   
+                            <h:inputText maxlength="50" style="margin-right: 10px;width: 90%" id="complementoParametro" 
+                                         value="#{descargueMarcadoDFBean.complemento}" />  
+                            <h:commandButton title="Construir Direccion"
+                                             action="#{descargueMarcadoDFBean.construirDireccionComplemento()}"
+                                             id="agregarComplementoButton" styleClass="btn" value="+"> 
+                            </h:commandButton> 
+                            <h:outputText style="font-weight:bold" id="apartamentoLabel" value="Apartamento:" />         
+
+                            <h:selectOneMenu style="width: 90%"  id="tipoApartamentoComboBox" 
+                                             value="#{descargueMarcadoDFBean.tipoNivelApartamento}">
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                <f:selectItems value="#{descargueMarcadoDFBean.aptoList}" 
+                                               var="apartamento"  itemValue="#{apartamento.idParametro}"
+                                               itemLabel="#{apartamento.descripcion}"/>
+                            </h:selectOneMenu>  
+                            <h:inputText maxlength="10" style="margin-right: 10px;width: 90%" id="apartamentoParametro" 
+                                         value="#{descargueMarcadoDFBean.apartamento}" />             
+                            <h:commandButton title="Construir Dirección"  
+                                             action="#{descargueMarcadoDFBean.construirDireccionApartamento()}"
+                                             id="agregarApartamentoButton" styleClass="btn" value="+"/>         
+          
+                        </h:panelGrid>
+                    </div>
+
+                    <h:panelGroup id="barriosSugeridospanelWrapper" >
+                        <h:panelGroup id="barriosSugeridosPanel" rendered="#{descargueMarcadoDFBean.showBarrio}" >
+                            <hr size="5" width="100%" align="LEFT"/>
+                            <div style="border: 2px groove #f70808; margin: 9px;padding: 8px;">
+
+                                <span class="TituloSeccion"> <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="barriospan" value="BARRIO SUGERIDO"/></span>
+                                <br/>
+                                <h:panelGrid columns="6" >
+
+                                    <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="barrioSug" value="*"/> <h:outputText id="barrioSugeridoLabel"
+                                                                                                                                                                  value="Seleccione barrio sugerido:" /> </h:panelGroup>
+                                    <h:panelGroup > 
+                                        <h:selectOneMenu 
+                                            style="width: 100%"  id="barrioSugeridoComboBox" 
+                                            value="#{descargueMarcadoDFBean.barrioSugerido}">
+                                            <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                            <f:selectItems value="#{descargueMarcadoDFBean.barrioSugeridoList}" var="barriomanzana"  itemValue="#{barriomanzana.neighborhood}" itemLabel="#{barriomanzana.neighborhood}" />
+                                            <f:ajax event="change" execute="barrioSugeridoComboBox"
+                                                    listener="#{descargueMarcadoDFBean.validarBarrioSugeridoSeleccionado()}"
+                                                    render="barriosSugeridospanelWrapper barrioStrsa"/>
+                                        </h:selectOneMenu>
+                                    </h:panelGroup>
+                                    <h:panelGroup > 
+                                        <h:outputText id="barrioText" rendered="#{descargueMarcadoDFBean.barrioSugeridoField}"
+                                                      value="Ingrese barrio:" /></h:panelGroup>
+                                    <h:panelGroup >
+                                        <h:inputText 
+                                            id="barrioField" rendered="#{descargueMarcadoDFBean.barrioSugeridoField}"  value="#{descargueMarcadoDFBean.barrioSugeridoStr}"/></h:panelGroup>
+                                    <h:panelGroup >
+                                        <h:commandButton 
+                                            rendered="#{descargueMarcadoDFBean.barrioSugeridoField}"
+                                            action="#{descargueMarcadoDFBean.agregarBarrioSugerido()}"
+                                            id="agregarBarrioButton" value="Agregar Barrio" 
+                                            styleClass="btn" > 
+                                            <f:ajax event="change" execute="@this" render="barrioStrsa"/>
+                                        </h:commandButton></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+
+                                </h:panelGrid>
+                            </div>
+                        </h:panelGroup>
+
+                    </h:panelGroup>
+
+
+
+                    <div style="width: 100%; text-align: center;" >
+                        <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;" 
+                                      id="direccionStrLabel" value="#{descargueMarcadoDFBean.direccionLabel}" /> 
+
+                        <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;" id="barrioStrsa" value="#{descargueMarcadoDFBean.barrioSugeridoStr}" /> 
+                    </div>
+
+
+                    <div style="width: 100%; text-align: center;" >
+                        <h:commandButton title="Buscar Hhpp"  
+                                         action="#{descargueMarcadoDFBean.buscarHhpp()}"
+                                         id="searchHhppButton" styleClass="btn" value="Buscar"/>
+
+                        <h:commandButton title="Limpiar búsqueda Hhpp"  
+                                         action="#{descargueMarcadoDFBean.limpiarBusqueda()}" 
+                                         immediate="#{descargueMarcadoDFBean.borrarListaFraudes()}"
+                                         id="cleanButton" styleClass="btn" value="Limpiar"/>
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <div style="width: 100%; text-align: center;margin: -6px;">
+                <h:panelGroup id="buttonClean" >
+                    <h:commandButton title="Limpiar búsqueda Hhpp" rendered="#{!descargueMarcadoDFBean.showPanelBusquedaDireccion}"  
+                                     action="#{descargueMarcadoDFBean.limpiarBusqueda()}" 
+                                     immediate="#{descargueMarcadoDFBean.borrarListaFraudes()}"
+                                     id="cleanButtonBusqueda" styleClass="btn" value="Limpiar"/> 
+                </h:panelGroup>
+                <h:panelGroup  >
+                    <h2 style="margin-left: -12px">CONTENIDO</h2>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{descargueMarcadoDFBean.direccionDetalladaList.size() > 0}" >
+                    <h2 style="margin-left: -12px">DIRECCIONES ENCONTRADAS </h2>
+                </h:panelGroup>
+            </div>
+
+
+            <h:dataTable id="dirList"
+                         value="#{descargueMarcadoDFBean.direccionDetalladaList}" 
+                         var="dir" 
+                         styleClass="constructGTable"  
+                         headerClass="solicitudesGTableHeader"
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow"   
+                         style="width: 100%; padding: 0px;">
+                <f:facet name="headerButtoon">                                       
+
+                </f:facet>
+
+                <h:column >   
+                    <f:facet name="header">  
+                        <h:outputText value="Id Dirección" />                                 
+                    </f:facet>
+                    <h:outputText value="#{dir.direccionDetalladaId}"/>  
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Dirección Completa" />                                                                     
+                    </f:facet>
+                    <h:commandLink value="#{dir.direccionTexto}" action="#{descargueMarcadoDFBean.addDireccionAFraudes(dir)}" /> 
+                </h:column>                                 
+
+                <h:column >   
+                    <f:facet name="header">
+                        <h:outputText value="Barrio" />
+                    </f:facet>
+                    <h:outputText value="#{dir.barrio}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Ciudad" />
+                    </f:facet>
+                    <h:outputText value="#{dir.ciudad}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Departamento" />
+                    </f:facet>
+                    <h:outputText value="#{dir.departamento}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Centro Poblado" />
+                    </f:facet>
+                   <h:outputText value="#{dir.direccion.ubicacion.gpoIdObj.gpoNombre}"/>                                        
+                </h:column>
+
+                <f:facet name="footer" >
+                    <h:panelGroup rendered="#{descargueMarcadoDFBean.showFooter}">
+                        <h:commandButton title="Primera Página" value="#{descargueMarcadoDFBean.inicioPagina}" action="#{descargueMarcadoDFBean.pageFirst}"
+                                         class="btn"/>
+                        <h:commandButton title="Página Anterior" value="#{descargueMarcadoDFBean.anteriorPagina}" action="#{descargueMarcadoDFBean.pagePrevious}"
+                                         class="btn"/>
+                        <h:commandButton title="Número Páginas" value="#{descargueMarcadoDFBean.pageActual}" styleClass="botonTPagInicio"    />
+                        <h:selectOneMenu id="listTabla" value="#{descargueMarcadoDFBean.numPagina}" 
+                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                            <f:selectItems value="#{descargueMarcadoDFBean.paginaList}" var="pag"
+                                           itemValue="#{pag}"
+                                           itemLabel="#{pag}"/>    
+                            <f:ajax render="@form"  event="change"  
+                                    listener="#{descargueMarcadoDFBean.irPagina()}"  
+                                    execute="@this" />                                         
+                        </h:selectOneMenu>  
+                        <h:commandButton title="Página Siguiente" value="#{descargueMarcadoDFBean.siguientePagina}" action="#{descargueMarcadoDFBean.pageNext}"
+                                         class="btn"/>
+                        <h:commandButton title="Última Página" value="#{descargueMarcadoDFBean.finPagina}" action="#{descargueMarcadoDFBean.pageLast}"
+                                         class="btn"/>
+
+                        <h:commandButton title="Mover Lista" value="Mover Lista"   action="#{descargueMarcadoDFBean.moverPaginaAFraudes()}"
+                                         class="btn"/>
+                        <h:commandButton title="Limpiar Lista" value="Limpiar Lista"  action="#{descargueMarcadoDFBean.borrarListaBusqueda()}"
+                                         class="btn"/>
+
+                    </h:panelGroup>
+                </f:facet>                           
+            </h:dataTable>
+
+
+
+            <div style="width: 100%; text-align: center;margin: -6px;">
+                <h:panelGroup  >
+                    
+                    <h2 style="margin-left: -12px">DIRECCIONES SELECCIONADAS PARA DESCARGAR </h2>
+                </h:panelGroup>
+            </div>
+
+            <h:dataTable id="dirListFraudes"
+                         value="#{descargueMarcadoDFBean.direccionFraudesListMuestra}" 
+                         var="dir" 
+                         styleClass="constructGTable"  
+                         headerClass="solicitudesGTableHeader"
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow"   
+                         style="width: 100%; padding: 0px;">
+                <h:column>
+                    <f:facet name="header">  
+                        <h:outputText value="Id Dirección" />                                 
+                    </f:facet>
+                    <h:outputText value="#{dir.direccionDetalladaId}"/>  
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Dirección Completa" />                                                                     
+                    </f:facet>
+                    <h:outputText value="#{dir.direccionTexto}"/> 
+                </h:column>   
+                <h:column >   
+                    <f:facet name="header">
+                        <h:outputText value="Barrio" />
+                    </f:facet>
+                    <h:outputText value="#{dir.barrio}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Ciudad" />
+                    </f:facet>
+                    <h:outputText value="#{dir.ciudad}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Departamento" />
+                    </f:facet>
+                    <h:outputText value="#{dir.departamento}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Centro Poblado" />
+                    </f:facet>
+                    <h:outputText value="#{dir.direccion.ubicacion.gpoIdObj.gpoNombre}"/>                                        
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Marca" />
+                    </f:facet>
+
+                    <ui:repeat var="mar" value="#{descargueMarcadoDFBean.listaMarcasFraude}" varStatus="status">
+                        <h:commandLink action="#{descargueMarcadoDFBean.addMarca(dir,mar)}"  rendered="#{!(descargueMarcadoDFBean.verificarColor(dir,mar) eq 'blue')}" disabled="true">
+                            <h:outputText value="#{mar.marCodigo} - "  style="font-size:1.5em; font-weight: bold;  color: #9B9998" />
+                        </h:commandLink> 
+                    </ui:repeat>
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Eliminar" />
+                    </f:facet>
+                    <div style="text-align: center;">
+                        <h:commandLink immediate="#{descargueMarcadoDFBean.removeDireccionFraudes(dir)}" action="#{descargueMarcadoDFBean.pageNext}">
+                            <h:graphicImage value="/view/img/close.gif"  />
+                        </h:commandLink>
+
+                    </div>
+                </h:column>
+
+                <f:facet name="footer" >
+                    <h:panelGroup>
+                        <h:commandButton title="Primera Página" value="#{descargueMarcadoDFBean.inicioPagina}" action="#{descargueMarcadoDFBean.pageFirstFra}"
+                                         class="btn"/>
+                        <h:commandButton title="Página Anterior" value="#{descargueMarcadoDFBean.anteriorPagina}" action="#{descargueMarcadoDFBean.pagePreviousFra}"
+                                         class="btn"/>
+                        <h:commandButton title="Número Páginas" value="#{descargueMarcadoDFBean.pageActualFra}" styleClass="botonTPagInicio"    />
+                        <h:selectOneMenu id="listTabla" value="#{descargueMarcadoDFBean.numPaginaFra}" 
+                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                            <f:selectItems value="#{descargueMarcadoDFBean.paginaListFra}" var="pag"
+                                           itemValue="#{pag}"
+                                           itemLabel="#{pag}"/>    
+                            <f:ajax render="@form"  event="change"  
+                                    listener="#{descargueMarcadoDFBean.irPaginaFra()}"  
+                                    execute="@this" />                                         
+                        </h:selectOneMenu>  
+                        <h:commandButton title="Página Siguiente" value="#{descargueMarcadoDFBean.siguientePagina}" action="#{descargueMarcadoDFBean.pageNextFra}"
+                                         class="btn"/>
+                        <h:commandButton title="Última Página" value="#{descargueMarcadoDFBean.finPagina}" action="#{descargueMarcadoDFBean.pageLastFra}"
+                                         class="btn"/>
+
+                        <h:commandButton title="Limpiar Lista" value="Limpiar Lista"  action="#{descargueMarcadoDFBean.borrarListaFraudes()}"
+                                         class="btn"/>
+                        <h:commandButton title="Descargue archivo para MARCAR" value="Descargue archivo para MARCAR"  rendered="#{!descargueMarcadoDFBean.desmarcar}"
+                                         styleClass="btn unblockClaro" action="#{descargueMarcadoDFBean.descargarArchivo()}" disabled="#{!descargueMarcadoDFBean.validarOpcionDescArchivoMarcar()}"/>
+                        <h:commandButton title="Descargar archivo para DESMARCAR" value="Descargar archivo para DESMARCAR" rendered="#{descargueMarcadoDFBean.desmarcar}"
+                                         styleClass="btn unblockClaro" action="#{descargueMarcadoDFBean.descargarArchivo()}" disabled="#{!descargueMarcadoDFBean.validarOpcionDescArchivoDesmarcar()}"/>
+			       
+
+                    </h:panelGroup>
+                </f:facet>                           
+            </h:dataTable>
+
+        </ui:define>  
+    </ui:composition>
+ </h:form>
+        <div id="footer">
+            <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/solicitudTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Solicitud VT</span></ui:define>
+
+    <ui:define name="content">
+        <h2 id="solVtTitle">SOLICITUD DE VISITA TÉCNICA</h2> 
+        <h:panelGroup id="panelGroupInfoSolVt">
+            <h:panelGrid id="panelGridVt" columns="2" style="width: 50%">
+
+                <h:outputText class="txtLabelsMgl" value="Acondicionamiento" id="AcondicionamientoLabel"/>
+
+                <h:selectOneMenu id="AcondicionamientoList"  
+                                 value="#{encabezadoSolicitudModificacionCMBean.tipoAcondicionamiento.basicaId}"
+                                 styleClass="ListaConsulta" style="width: 95%"
+                                 disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.tipoAcondicionamientoList}" 
+                                   var="ld"
+                                   itemValue="#{ld.basicaId}"
+                                   itemLabel="#{ld.nombreBasica}"/>                 
+                </h:selectOneMenu>
+                <h:panelGroup>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputText class="txtLabelsMgl" value="Segmento" id="SegmentoLabel"/>
+                </h:panelGroup>
+                <h:selectOneMenu id="SegmentoList"  
+                                 value="#{encabezadoSolicitudModificacionCMBean.tipoSegmento.basicaId}"
+                                 styleClass="ListaConsulta" style="width: 95%"
+                                 required="true" requiredMessage="Campo 'Segmento' es requerido"
+                                 disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.tipoSegmentoList}" 
+                                   var="ld"
+                                   itemValue="#{ld.basicaId}"
+                                   itemLabel="#{ld.nombreBasica}"/>                 
+                </h:selectOneMenu>
+                <h:panelGroup>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputText class="txtLabelsMgl" value="Tecnología"/>
+                </h:panelGroup>
+
+                <h:selectOneMenu id="tecnologiasList"  
+                                 value="#{encabezadoSolicitudModificacionCMBean.tecnologiaSelect.basicaId}" 
+                                 styleClass="ListaConsulta" style="width: 95%"
+                                 required="true" requiredMessage="Campo 'Tecnología' es requerido"
+                                 disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.listaTecnologiasBasica}" var="tec" 
+                                   itemValue="#{tec.basicaId}"
+                                   itemLabel="#{tec.nombreBasica}"/>
+                </h:selectOneMenu>
+              
+                <h:panelGroup>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputText class="txtLabelsMgl" value="Fecha Sugerida VT" id="FprogramacionOtLabel" />
+                </h:panelGroup>
+                        <h:panelGroup id="panelGruopFprogramacionOt">
+                            <h:inputText label="Fecha Programación" id="FprogramacionOtInput" style="width: 90%"
+                                         value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaProgramcionVt}"
+                                         required="true" requiredMessage="Campo 'Fecha Programación' es requerido"
+                                         readonly="false"  disabled="false" styleClass="datepicker"
+                                         validatorMessage="Formato de fecha incorrecto en el campo Fecha Programación">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                            </h:inputText>
+                        </h:panelGroup>
+                   
+                <h:panelGroup>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputText class="txtLabelsMgl" value="Cantidad Torres" id="CantidadTrrLabel"/>
+                </h:panelGroup>
+                <h:panelGrid id="panelGridNumTorres" columns="2" style="width: 95%">
+                    <h:selectOneRadio id="checkBoxTorres" required="true"
+                                      value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.unidad}"
+                                      disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                        <f:selectItem itemLabel="Unidad" itemValue="1"/>
+                        <f:selectItem itemLabel="Torres" itemValue="0"/>
+                    </h:selectOneRadio>
+                    <h:panelGroup id="panelGridCantidadTorres" 
+                                  rendered="true">
+                        <h:inputText label="Cantidad Torres" id="CantidadTrrInput" style="width: 95%"
+                                     required="true" requiredMessage="Campo 'Cantidad Torres' es requerido"
+                                     validatorMessage="'Cantidad Torres' formato del Campo no es válido"
+                                     value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cantidadTorres}"
+                                     readonly="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}" 
+                                     disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+
+                        </h:inputText>
+                    </h:panelGroup>
+                </h:panelGrid>
+                <h:outputText class="txtLabelsMgl" value="Horario de Atención" id="HorarioAtLabel"/>
+                <h:commandLink id="HorarioAtCommandlink" 
+                               value="Seleccionar Horario de Atención"
+                               immediate="true"
+                               action="#{encabezadoSolicitudModificacionCMBean.cambiarTab('HORARIO')}"
+                               disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null}"/>
+
+            </h:panelGrid>
+            <h:panelGrid id="panelGridInfoAdmin" columns="4" style="width: 50%">
+
+                <h:panelGroup>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputText class="txtLabelsMgl" value="Administrador" id="AdministradorLabel"/>
+                </h:panelGroup>
+                <h:inputText label="Administrador" id="AdministradorInput" style="width: 95%"
+                             required="true"
+                             requiredMessage="Campo 'Administrador' es requerido"
+                             value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.nombreAdministrador}"
+                             readonly="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}" 
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"/>
+
+                <h:panelGroup>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputText class="txtLabelsMgl" value="Tel Cel Administrador" id="CelAdministradorLabel"/>
+                </h:panelGroup>
+                <h:inputText label="Tel Cel Administrador" id="CelAdministradorInput" style="width: 95%"
+                             required="true"
+                             requiredMessage="Campo 'Tel Cel Administrador' es requerido"
+                             validatorMessage="'Tel Cel Administrador' formato del Campo no es válido"
+                             maxlength="10"
+                             value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.celularAdministrador}"
+                             readonly="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}" 
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                    <f:validateRegex pattern="[0-9]{7,10}"  />
+                </h:inputText>
+
+                <h:panelGroup>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputText class="txtLabelsMgl" value="Correo Administrador" id="CorreoAdministradorLabel"/>
+                </h:panelGroup>
+                <h:inputText label="Correo Administrador" id="CorreoAdministradorInput"  style="width: 95%"
+                             required="true"
+                             requiredMessage="Campo 'Correo Administrador' es requerido"
+                             validatorMessage="El campo correo administrador no tiene el formato requerido"
+                             value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.correoAdministrador}"
+                             readonly="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}" 
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                    <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                </h:inputText>
+
+                <h:outputText value="Teléfono Administrador" id="TelefonoAdministradorLabel" class="txtLabelsMgl"/>
+                <h:inputText label="Teléfono Administrador" id="TelefonoAdministradorInput" style="width: 95%"
+                             maxlength="10"
+                             validatorMessage="'Teléfono Administrador' formato del Campo no es valido"
+                             value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.telFijoAdministrador}"
+                             readonly="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}" 
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                    <f:validateRegex pattern="([0-9]{7,10})?"/>
+                </h:inputText>
+
+
+                <h:outputText value="Nombre Contacto" id="NombreContactoLabel" class="txtLabelsMgl"/>
+                <h:inputText label="Nombre Contacto" id="NombreContactoInput" style="width: 95%"
+                             requiredMessage="Campo 'Nombre Contacto' es requerido"
+                             value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.nombreContacto}"
+                             readonly="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}" 
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"/>
+
+
+                <h:outputText value="Tel Contacto" id="TelContactoLabel" class="txtLabelsMgl"/>
+                <h:inputText label="Tel Contacto" id="TelContactoInput" style="width: 95%"
+                             requiredMessage="Campo 'Tel Contacto' es requerido"
+                             validatorMessage="'Tel Contacto' formato del Campo no es valido"
+                             maxlength="10"
+                             value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.telefonoContacto}"
+                             readonly="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}" 
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}">
+                    <f:validateRegex pattern="([0-9]{7,10})?"  />
+                </h:inputText>
+
+
+            </h:panelGrid>
+
+
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk">
+
+    <ui:composition template="/view/MGL/template/tempModCM.xhtml">
+
+        <ui:define name="content" >
+          
+            <script language="javascript" type="text/javascript">
+            function submitByEnter(e) {
+                if (e.keyCode === 13) {
+                    return false;
+                } else
+                    return true;
+            }
+           </script>
+
+            <h:panelGroup id="groupModCm"  >
+                <h3>MODIFICAR COBERTURA</h3>
+                <h:outputText value="#{encabezadoSolicitudModificacionCMBean.activoCheckModCobertura ? '' : 'Se encuentra desactivada la opción Tipo de Modificación: Cobertura' }" 
+                              style="font-weight: bold; color: #000000 "  />
+                
+                        <h:outputText/> 
+                        <h:outputText/>
+                        <h:outputText/> 
+                        <h:outputText/>
+                        
+                <h:panelGrid columns="1" >
+
+                    <h:panelGroup id ="groupTableSubEdi" rendered="#{encabezadoSolicitudModificacionCMBean.activoCheckModCobertura}" >
+                       
+                       <h:panelGrid columns="2"  style="width: 100%">
+                       <h:outputText class="TecnologiaLabel" value="Tecnolog&iacute;a:"/>
+
+                        <h:selectOneMenu id="tecnologiasList"  
+                                         value="#{solicitudModificacionCMBean.tecnologiaSelect.basicaId}" 
+                                         styleClass="ListaConsulta" style="width: 70%"  
+                                         disabled="#{solicitudModificacionCMBean.habilitarCombo or solicitudModificacionCMBean.modoGestion}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{solicitudModificacionCMBean.listaTecnologiasBasica}" var="tec" 
+                                           itemValue="#{tec.basicaId}"
+                                           itemLabel="#{tec.nombreBasica}"/>
+                            <f:ajax event="change" 
+                                    execute="@this"
+                                    listener="#{solicitudModificacionCMBean.buscaNodosCoberturaTec()}"
+                                    render="@form"/> 
+                        </h:selectOneMenu>
+
+                        <h:outputText/> 
+                        <h:outputText/> 
+                        <h:outputText/> 
+                        <h:outputText/> 
+                        <h:outputText/> 
+                        <h:outputText/> 
+                        
+                        </h:panelGrid>
+                        
+                        <div  class="divTableContent" style="overflow:auto; width:150%; height:200px;" >
+                            
+                            <h:dataTable id="subTable"
+                                         var="se" 
+                                         value="#{solicitudModificacionCMBean.coberturaModList}" 
+                                         styleClass="constructGTable2"
+                                         headerClass="constructGTableHeader" 
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         rows="10"  rendered="#{solicitudModificacionCMBean.mostrarTabla or solicitudModificacionCMBean.modoGestion}" > 
+                                
+                               <h:column rendered="#{!solicitudModificacionCMBean.modoGestion}">
+                                    <f:facet name="header" >
+                                        <h:outputText value="Seleccionar"  />
+                                    </f:facet>
+                                    <h:selectBooleanCheckbox id="solModCob" value="#{se.seleccionado}"   immediate="true">
+                                        <f:ajax render="nodoGestionSol" event="change" execute="@this" immediate="true"
+                                                listener="#{solicitudModificacionCMBean.accionSeleccionCoberturaCm(se)}">  
+                                        </f:ajax>
+                                    </h:selectBooleanCheckbox>            
+                                </h:column>     
+                                
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Subedificio"/>
+                                    </f:facet>
+                                    <h:outputText  value="#{se.subEdificioObj.nombreSubedificio}"/> <!-- //style= " # {se.edificioGeneral == true ? 'color: red' : 'color: #333'}" -->
+                                </h:column>
+                                   
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Direcci&oacute;n"/>
+                                    </f:facet>
+                                    <h:outputText  value="#{se.subEdificioObj.getDireccionSubEdificio()}"/> 
+                                </h:column>
+                                        <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Nodo Actual"/>
+                                    </f:facet>
+                                    <h:outputText  value="#{solicitudModificacionCMBean.escribeNombreGestion(se)}" rendered="#{!solicitudModificacionCMBean.modoGestion}"/><!-- se.subEdificioObj.nodoObj.nodNombre //style= " # {se.edificioGeneral == true ? 'color: red' : 'color: #333'}" -->
+                                    <h:outputText  value="#{se.nodoObj.nodCodigo}" rendered="#{solicitudModificacionCMBean.modoGestion}"/>
+                                </h:column>
+
+                           
+                                <h:column  rendered="#{!solicitudModificacionCMBean.modoGestion}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Nodo Cobertura"/>
+                                    </f:facet>
+                                    <h:selectOneMenu id="nuevoNodo" value="#{solicitudModificacionCMBean.nodoCobertura.nodCodigo}" 
+                                                     styleClass="ListaConsulta" 
+                                                     style="width: 150px" 
+                                                     disabled="#{solicitudModificacionCMBean.modoGestion or !se.seleccionado}">
+                                        <f:selectItem itemValue="NA" 
+                                                      itemLabel="NA"/>
+                                        <f:selectItems id="listNodSubEdi" 
+                                                       value="#{solicitudModificacionCMBean.lstNodosCobertura}" var="nl"
+                                                       itemValue="#{nl.nodCodigo}"
+                                                       itemLabel="#{nl.nodCodigo}"/> 
+                                        <f:ajax render="nodoGestionSol" execute="@this"   event="change" 
+                                                listener="#{solicitudModificacionCMBean.accionCambiarNodoCm(se)}" />
+                                    </h:selectOneMenu>                                         
+                                </h:column> 
+
+                                <h:column rendered="#{solicitudModificacionCMBean.modoGestion}" >
+                                    <f:facet name="header">
+                                        <h:outputText value="Nodo Nuevo"/>
+                                    </f:facet>
+                                    <h:outputText  value="#{solicitudModificacionCMBean.buscarNodoNuevo(se)}"/> 
+                                </h:column>
+
+                                <h:column rendered="#{!solicitudModificacionCMBean.modoGestion}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Nodo Diseño"/>
+                                    </f:facet>
+                                    <h:inputText  id="nodoGestionSol" 
+                                                  value="#{se.nodoDisenoObj.nodCodigo}" 
+                                                  disabled="#{solicitudModificacionCMBean.modoGestion or !se.seleccionado}"
+                                                  onkeypress="return submitByEnter(event);">
+                                    <f:ajax listener="#{solicitudModificacionCMBean.guardaNodoGestion(se)}" 
+                                    event="change" execute="@this" render="subTable"/>
+                                    </h:inputText>
+                                </h:column> 
+                                
+                                  <h:column rendered="#{solicitudModificacionCMBean.modoGestion}">
+                                    <f:facet name="header">
+                                        <h:outputText value="Nodo Diseño"/>
+                                    </f:facet>
+                                    <h:inputText  id="nodoGestion" 
+                                                  value="#{se.nodoDisGestion.nodCodigo}" 
+                                                  onkeypress="return submitByEnter(event);">
+                                    <f:ajax listener="#{solicitudModificacionCMBean.guardaNodoGestion(se)}" 
+                                    event="change" execute="@this" render="subTable"/>
+                                    </h:inputText>
+                                </h:column> 
+
+                            </h:dataTable>  
+                        </div>
+                    </h:panelGroup>
+
+                    <h:panelGroup id ="groupMod" rendered="#{encabezadoSolicitudModificacionCMBean.activoCheckModCobertura}" >
+
+                    </h:panelGroup>
+
+
+                </h:panelGrid>
+            </h:panelGroup>
+        </ui:define>
+
+    </ui:composition>
+</ui:composition>

@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Dirección Alternas</span></ui:define>
+    <ui:define name="message"><span class="error"> #{direccionAlternaMglBean.message}</span></ui:define>
+    <ui:define name="content">
+        
+        <h:form id="form1">
+            <div class="tableContent" >
+                
+                <h:dataTable id="DireccionAlternaMglTable" 
+                             binding="#{direccionAlternaMglBean.dataTable}" value="#{direccionAlternaMglBean.direccionMglList}" var="direccionMgl" rows="15"                         
+                             styleClass="constructGTable" 
+                             headerClass="constructGTableHeader" rowClasses="constructGTableEvenRowSelect, constructGTableOddRowSelect " style="width: 900px;">
+
+                    <h:column>
+                        <f:facet name="header">
+                            <t:outputText value="Seleccionar" />
+                        </f:facet>
+                        <div style="#{direccionMgl.tdiId eq 2?'background: #A4A4A4;padding: 5px;':'padding: 5px;'}">
+                            <h:selectBooleanCheckbox value="#{direccionMgl.seleccionado}" >
+                                <f:ajax event="change" execute="@this" render="@form" listener="#{direccionAlternaMglBean.selectOneRow(direccionMgl.dirId)}"/>
+                            </h:selectBooleanCheckbox>
+                        </div>
+                    </h:column>
+                    
+                    <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Direccion " />
+                            </f:facet>
+                        <div align="left"  style="width: 200px; #{direccionMgl.tdiId eq 2?'background: #A4A4A4;padding: 5px;':'padding: 5px;'}" >
+                            <h:outputText value="#{direccionMgl.dirFormatoIgac}"/>
+                        </div>
+                    </h:column>
+                    <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado" />
+                            </f:facet>
+                        <div align="left"   style="width: 100px; #{direccionMgl.tdiId eq 2?'background: #A4A4A4;padding: 5px;':'padding: 5px;'}" >
+                            <h:outputText value="#{direccionMgl.dirOrigen}" />      </div>                                  
+                    </h:column>
+                    <h:column>  
+                            <f:facet name="header">
+                                <h:outputText value="Comentarios" />
+                            </f:facet>
+                         <div align="left"  style="width: 480px; #{direccionMgl.tdiId eq 2?'background: #A4A4A4;padding: 5px;':'padding: 5px;'}" >
+                            <h:outputText value="#{direccionMgl.dirComentarioSocioeconomico}" />      </div>                                  
+                    </h:column>
+                </h:dataTable>  
+            </div>
+            <div class="buttonArea">
+                <h:commandButton action="#{direccionAlternaMglBean.nuevodireccionMgl()}" value="Adicionar" styleClass="btn"/>
+                <h:commandButton id="direccionalternaModificar" action="#{direccionAlternaMglBean.eliminarlDireccionMgl()}" value="Eliminar" styleClass="btn" disabled="#{direccionAlternaMglBean.iddireccion == null || !direccionAlternaMglBean.tipoDir}"  />
+                <h:commandButton id="direccionalternaEliminar" action="#{direccionAlternaMglBean.goActualizar()}" value="Modificar" styleClass="btn" disabled="#{direccionAlternaMglBean.iddireccion == null || !direccionAlternaMglBean.tipoDir}"/>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

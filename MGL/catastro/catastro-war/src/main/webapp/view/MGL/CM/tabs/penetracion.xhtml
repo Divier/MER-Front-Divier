@@ -1,0 +1,288 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	   xmlns:p="http://primefaces.org/ui">
+
+    <body>
+        <ui:composition template="/view/MGL/template/notasTemplate.xhtml">
+            <ui:define name="content">
+                <h:form> 
+                   
+                    <div align="justify">
+                        <h2 id="myhMmData">Penetración [#{penetracionMglBean.subEdificioMgl.nombreSubedificio}]</h2>
+                    <h:panelGrid style="width: 50%" columns="3">
+                           <h:commandButton value="Nueva tecnología" styleClass="buttonLarge" style="color:#FFFFFF;"
+                                         rendered="#{penetracionMglBean.renderAgregar()}" 
+                                         action="#{penetracionMglBean.addTecnologia()}">
+                            <f:ajax event="change" render="formPenetracion" /> 
+                        </h:commandButton> 
+
+                        <h:commandButton value="Guardar" styleClass="buttonLarge" style="color:#FFFFFF;"
+                                         rendered="#{penetracionMglBean.renderAceptarCancelar()}" 
+                                         action="#{penetracionMglBean.aceptarAddTecnologia()}">
+                            <f:ajax event="change" render="formPenetracion listaPenetracionTecnologiaTable formCMGeneral" /> 
+                        </h:commandButton> 
+                            
+                        <h:commandButton value="Cancelar" styleClass="buttonLarge" style="color:#FFFFFF;"
+                                         rendered="#{penetracionMglBean.renderAceptarCancelar()}"
+                                         action="#{penetracionMglBean.cancelAddTecnologia()}">
+                            <f:ajax event="change" render="formPenetracion listaPenetracionTecnologiaTable formCMGeneral" /> 
+                        </h:commandButton> 
+                    </h:panelGrid>
+
+                    <h:panelGrid style="width: 50%" id="panelCompletoPent">
+                        <h:dataTable id="addTecnologiaMglTable"  class="tablefeel "
+                                     rendered="#{penetracionMglBean.renderAceptarCancelar()}"
+                                     value="" var="" rows="3"                         
+                                     style="width: 100%;"
+                                     >
+                            <h:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="Tecnología" /><BR/>
+                                </f:facet>
+                                <div align="left"  >
+                                    <h:selectOneMenu id="listTecnologias" value="#{penetracionMglBean.tecnologiasStr}" 
+                                                     styleClass="ListaConsulta">
+                                        <f:selectItem itemValue="" itemLabel="" />
+                                        <f:selectItems value="#{penetracionMglBean.tecnologiaList}" var="tec"
+                                                       itemValue="#{tec.basicaId}"
+                                                       itemLabel="#{tec.nombreBasica}"/> 
+                                    </h:selectOneMenu>      
+                                </div>                                  
+                            </h:column>
+                            <h:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="Nodo" /><BR/>
+                                </f:facet>
+                                <div align="left"  >
+                                    <h:inputText value="#{penetracionMglBean.nodoStr}"  />   
+                                </div>                                  
+                            </h:column>
+                            <h:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="Estado" /><BR/>
+                                </f:facet>
+                                <div align="left"  >
+                                    <h:selectOneMenu id="listEstadosCCMM" value="#{penetracionMglBean.estadoStr}" 
+                                                     styleClass="ListaConsulta"
+                                                     >
+                                        <f:selectItem itemValue="#{null}" itemLabel="" />
+                                        <f:selectItems value="#{penetracionMglBean.listTablaBasicaEstadoCM}" var="est"
+                                                       itemValue="#{est.basicaId}"
+                                                       itemLabel="#{est.nombreBasica}"/>
+                                        <f:ajax event="change" execute="@this" />
+                                    </h:selectOneMenu>
+                                </div>                                  
+                            </h:column>
+
+                        </h:dataTable>
+                    </h:panelGrid>
+
+                        <h:panelGrid   style="width: 100%"> 
+                            <h:panelGrid id="listaPenetracionTecnologiaTable"  style="width: 100%"  >
+                                <h:dataTable id="inventarioTecnologiaMglTable"  class="tablefeel"
+                                             value="#{penetracionMglBean.cmtPestanaPenetracionDto.listaPenetracionTecnologias}" var="penetracion" rows="10"                         
+                                             style="width: 100%;"
+                                             >
+                                    <h:column > 
+                                        <f:facet name="header">
+                                            <h:outputText value="Tecnología" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.tecnologia}"  />      
+                                        </div>                                  
+                                    </h:column>
+                                    <h:column > 
+                                        <f:facet name="header">
+                                            <h:outputText value="Estado de Tecnología" /><br/>
+                                   
+                                        </f:facet>
+                                        <div align="left"  >
+                                        <h:outputText value="#{penetracion.estadoTecnologia eq 'Sin Tecnologia' ? 'NA': penetracion.estadoTecnologia}" 
+                                                      rendered="#{!penetracionMglBean.verificarRenderAceCan(penetracion)}"/> 
+                                        <h:panelGrid columns="2" rendered="#{penetracionMglBean.verificarRenderAceCan(penetracion)}">
+                                            <h:outputText value="Nuevo Nodo" />
+                                            <h:inputText value="#{penetracionMglBean.nodoStr}" immediate="true" /> 
+                                            <h:outputText value="Nuevo Estado" />
+                                            <h:selectOneMenu id="listEstadosCCMMNew" value="#{penetracionMglBean.estadoStr}" 
+                                                             styleClass="ListaConsulta"
+                                                             >
+                                                <f:selectItem itemValue="" itemLabel="" />
+                                                <f:selectItems value="#{penetracionMglBean.listTablaBasicaEstadoCM}" var="est"
+                                                               itemValue="#{est.basicaId}"
+                                                               itemLabel="#{est.nombreBasica}"/>
+                                                <f:ajax event="change" execute="@this" />
+                                            </h:selectOneMenu>
+                                        </h:panelGrid>
+                                        </div>                                  
+                                    </h:column>
+                                    <h:column > 
+                                        <f:facet name="header">
+                                            <h:outputText value="Total HHPP" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.cantHhpp}"  />      
+                                        </div>                                  
+                                    </h:column>
+                                    <h:column > 
+                                        <f:facet name="header">
+                                            <h:outputText value="Clientes Activos" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.totalClientes}"  />      
+                                        </div>                                  
+                                    </h:column>
+                                      <h:column rendered="#{penetracionMglBean.subEdificioMgl.estadoSubEdificioObj.basicaId != 50 ? false : true }"> 
+                                        <f:facet name="header">
+                                            <h:outputText value="Renta Mensual" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.rentaMensual}"  />      
+                                        </div>                                  
+                                    </h:column>
+                                    <h:column  rendered="#{penetracionMglBean.subEdificioMgl.estadoSubEdificioObj.basicaId == 50 ? false : true }"> 
+                                        <f:facet name="header">
+                                            <h:outputText value=" % de Penetración" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.porcPenetracion}"  />      
+                                        </div>                                  
+                                    </h:column>
+                                  
+                                    <h:column rendered="#{penetracionMglBean.subEdificioMgl.estadoSubEdificioObj.basicaId == 50 ? false : true }"> 
+                                        <f:facet name="header">
+                                            <h:outputText value="Cumplimiento" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.cumplimiento}"  />      
+                                        </div>                                  
+                                    </h:column>
+                                    <h:column rendered="#{penetracionMglBean.subEdificioMgl.estadoSubEdificioObj.basicaId == 50 ? false : true }"> 
+                                        <f:facet name="header">
+                                            <h:outputText value="Meta" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.meta}"  />      
+                                        </div>                                  
+                                    </h:column>
+                                    <h:column> 
+                                        <f:facet name="header">
+                                            <h:outputText value="Costo de Acometida" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText  style="padding: 3px;" value="#{penetracion.costoAcometida}" > 
+                                                <f:convertNumber pattern="$#,##0" />
+                                            </h:outputText>
+                                        </div>                              
+                                    </h:column>
+                                    <h:column> 
+                                        <f:facet name="header">
+                                            <h:outputText value="Id VT" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.idVt}"  />      
+                                        </div>                                  
+                                    </h:column>
+                                     <h:column rendered="#{penetracionMglBean.subEdificioMgl.estadoSubEdificioObj.basicaId == 50 ? false : true }"> 
+                                        <f:facet name="header">
+                                            <h:outputText value="Id Ot" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.idOt}"  />      
+                                        </div>                                  
+                                    </h:column>
+                                    <h:column > 
+                                        <f:facet name="header">
+                                            <h:outputText value="Costo VT" /><BR/>
+                                        </f:facet>
+                                        <div align="left"  >
+                                              <h:outputText  style="padding: 3px;" value="#{penetracion.costoVT}"  > 
+                                                <f:convertNumber pattern="$#,##0" />
+                                            </h:outputText>
+                                        </div>  
+                                    </h:column>
+                                    <h:column rendered="#{penetracionMglBean.subEdificioMgl.estadoSubEdificioObj.basicaId == 50 ? false : true }"> 
+                                        <f:facet name="header">
+                                            <h:outputText value="Fecha de Habilitación" /><BR/>
+
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.fechaHabilitacion}">
+                                                <f:convertDateTime type="date" pattern="yyyy-MM-dd"/>
+                                            </h:outputText>
+                                               
+                                        </div>                              
+                                    </h:column>
+                                     <h:column rendered="#{penetracionMglBean.subEdificioMgl.estadoSubEdificioObj.basicaId == 50   ? false : true }"> 
+                                        <f:facet name="header">
+                                            <h:outputText value="Tiempo de Recuperación" /><BR/>
+                                  
+                                        </f:facet>
+                                        <div align="left"  >
+                                            <h:outputText value="#{penetracion.tiempoRecuperacion}"  />      
+                                        </div>                                  
+                                    </h:column>
+
+                                <h:column rendered="#{penetracionMglBean.renderColumnaEditar()}"> 
+                                    <f:facet name="header">
+                                        <h:outputText value="Editar" /><BR/>
+                                    </f:facet>
+                                    <div align="left" style="width: 150%;" >
+                                    <p:commandButton  value="" styleClass="btn4" icon="fa fa-fw fa-edit"
+                                       rendered="#{!penetracionMglBean.verificarRenderAceCan(penetracion)}" 
+                                     action="#{penetracionMglBean.editarTecnologia(penetracion)}">
+                                    </p:commandButton>    								
+				    <p:commandButton  value="" styleClass="btn4" icon="fa fa-fw fa-save"
+                                         rendered="#{penetracionMglBean.verificarRenderAceCan(penetracion)}"
+                                         action="#{penetracionMglBean.editarOKTecnologia(penetracion)}" >
+                                    </p:commandButton> 
+                                    <p:commandButton value="" styleClass="btn4" icon="fa fa-fw fa-close"
+                                         rendered="#{penetracionMglBean.verificarRenderAceCan(penetracion)}"
+                                         action="#{penetracionMglBean.editarCancelTecnologia(penetracion)}">
+                                    </p:commandButton> 
+                                    </div>                                  
+                                </h:column>
+
+
+                                    <f:facet name="footer" >
+                                        <h:panelGroup  >
+                                            <div class="pagination2">
+                                                <h:commandButton value= "&#171;"  action="#{penetracionMglBean.pageFirst}" />
+                                                <h:commandButton value= "&#60;" action="#{penetracionMglBean.pagePrevious}" />
+                                                <h:commandButton value= "#{penetracionMglBean.pageActual}"   />
+
+                                                <h:selectOneMenu  value="#{penetracionMglBean.numPagina}" >
+                                                    <f:selectItems value="#{penetracionMglBean.paginaList}" var="pag"
+                                                                   itemValue="#{pag}"
+                                                                   itemLabel="#{pag}"/>    
+                                                    <f:ajax render="@form"  event="change"  listener="#{penetracionMglBean.irPagina()}"  execute="@this" />                                         
+                                                </h:selectOneMenu>  
+                                                <h:commandButton value= "&#62;" action="#{penetracionMglBean.pageNext}"/>
+                                                <h:commandButton value= "&#187;" action="#{penetracionMglBean.pageLast}"/>
+                                            </div>
+                                        </h:panelGroup>
+
+                                    </f:facet>  
+                                </h:dataTable>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </div>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>
+

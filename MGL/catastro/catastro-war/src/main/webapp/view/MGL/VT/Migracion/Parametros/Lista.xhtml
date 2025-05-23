@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+  <ui:composition template="./../../../template/VT/migracionVtTemplate.xhtml">
+
+    <ui:define name="content">
+        <div align = "center">
+      <h:form id="form_list_parametros_calle">
+        <h1>
+          <h:outputText value="Administrador de parámetros (Direcciones)"/>
+        </h1>
+        <br/>
+        <h:commandButton 
+          styleClass="btn"
+          action="#{parametrosCallesController.prepareCreate}" 
+          value="Insertar Tipo"/>
+        <h:commandButton 
+          styleClass="btn"
+          action="#{parametrosCallesController.prepareCreateDato}" 
+          value="Insertar Datos"/>
+        <h:outputLabel value = "Consultar por Tipo: " />
+        <h:selectOneMenu 
+          id="idtiposelect" 
+          value="#{parametrosCallesController.tipoSeleccionado}"
+          valueChangeListener="#{parametrosCallesController.tipoCodeChanged}"
+          styleClass="input">
+          <f:selectItems value="#{parametrosCallesController.tipos}"/>
+          <f:ajax 
+            event="change"  
+            render="idpaneltable"
+            />
+        </h:selectOneMenu>
+        <br/>
+        <br/>
+        <h:panelGroup id="idpaneltable">          
+          <h:outputText 
+            escape="false" value="No hay tipo seleccionado." 
+            rendered="#{parametrosCallesController.items.rowCount == 0}"/>
+          <h:panelGroup rendered="#{parametrosCallesController.items.rowCount > 0}">
+            <div class="fixed-class" style="height: 300px; width: 600px; ">
+              <h:dataTable 
+
+                value="#{parametrosCallesController.items}" 
+                var="item" border="1" 
+                cellpadding="2" 
+                cellspacing="10" 
+                rowClasses="order-table-odd-row, order-table-even-row" 
+                columnClasses="order-table-odd-column, order-table-even-column" 
+                styleClass="order-table" 
+                headerClass="order-table-header"            
+                width="50%" dir="LTR"
+                >
+                <h:column>
+                  <f:facet name="header">
+                    <h:outputText value="Item"/>
+                  </f:facet>
+                  <h:outputText value="#{parametrosCallesController.items.rowIndex + 1}"/>
+                </h:column>
+                <h:column>
+                  <f:facet name="header">
+                    <h:outputText value="Tipo"/>
+                  </f:facet>
+                  <h:outputText value="#{item.idTipo}"/>
+                </h:column>
+                <h:column>
+                  <f:facet name="header">
+                    <h:outputText value="Identificación"/>
+                  </f:facet>
+                  <h:outputText value="#{item.idParametro}"/>
+                </h:column>
+                <h:column>
+                  <f:facet name="header">
+                    <h:outputText value="Descripción"/>
+                  </f:facet>
+                  <h:outputText value="#{item.descripcion}"/>
+                </h:column>
+                <h:column>
+                  <f:facet name="header">
+                    <h:outputText value="&nbsp;"/>
+                  </f:facet>
+                  <h:commandButton 
+                    styleClass="btn"
+                    action="#{parametrosCallesController.prepareEdit}" 
+                    value="Actualizar"/>
+                </h:column>
+                <h:column>
+                  <h:commandButton 
+                    styleClass="btn"
+                    action="#{parametrosCallesController.destroy}" 
+                    value="Eliminar"/>
+                </h:column>
+              </h:dataTable>
+            </div>
+            <br />
+            <h:panelGroup 
+              style = "display:block; text-align:center;"
+              rendered="#{parametrosCallesController.items.rowCount > 0}">
+              <h:outputLabel value="Tamaño de la página"/>
+              <h:outputLabel value="  "/>
+              <h:selectOneMenu 
+                id="idtamPagina" 
+                value="#{parametrosCallesController.tamPagination}"
+                styleClass="input_peq">
+                <f:selectItem itemLabel="5" itemValue="5" />
+                <f:selectItem itemLabel="10" itemValue="10" />
+                <f:selectItem itemLabel="20" itemValue="20" />
+                <f:selectItem itemLabel="40" itemValue="50" />
+                <f:selectItem itemLabel="100" itemValue="100" />
+              </h:selectOneMenu>
+              <h:commandButton                              
+                styleClass="btn"
+                action="#{parametrosCallesController.recargarPagination}"
+                value="..."/>
+              <h:outputLabel value="  "/>
+              <h:commandButton 
+                action="#{parametrosCallesController.start}" 
+                disabled="#{parametrosCallesController.pagination.hasPreviousPage eq false}"
+                value="Inicio"
+                styleClass="btn"/>
+              <h:commandButton 
+                action="#{parametrosCallesController.previous}" 
+                value="Atras" 
+                disabled="#{parametrosCallesController.pagination.hasPreviousPage eq false}"
+                styleClass="btn"/>
+              <h:outputText 
+                value="#{parametrosCallesController.pagination.pageFirstItem}..
+                #{parametrosCallesController.pagination.pageLastItem}/
+                #{parametrosCallesController.pagination.itemsCount}"/>&nbsp;
+              <h:commandButton 
+                action="#{parametrosCallesController.next}" 
+                value="Siguiente" 
+                disabled="#{parametrosCallesController.pagination.hasNextPage eq false}"
+                styleClass="btn"/>
+              <h:commandButton 
+                action="#{parametrosCallesController.end}" 
+                disabled="#{parametrosCallesController.pagination.hasNextPage eq false}"
+                value="Fin"
+                styleClass="btn"/>
+            </h:panelGroup>
+            <br />
+          </h:panelGroup>         
+        </h:panelGroup>      
+      </h:form>
+     </div>
+    </ui:define>
+  </ui:composition>
+</html>

@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/home.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes">
+
+
+
+    <ui:composition template="/view/MGL/template/tempModCM.xhtml">
+        
+        <ui:define name="content" >
+            
+            
+            <h:panelGroup id="groupModCm" >
+                <h3>MODIFICAR DIRECCIÓN</h3>
+                <h:outputText  value="#{encabezadoSolicitudModificacionCMBean.activoCheckModDireccion ? '' : 'Se encuentra desactivada la opción Tipo de Modificación: Dirección' }" style="font-weight: bold; color: #000000 "  />
+                <h:panelGrid columns="1" >
+
+                    <h:panelGroup id ="groupTableDir" rendered="#{encabezadoSolicitudModificacionCMBean.activoCheckModDireccion }" >
+                        <div  class="divTableContent" style="overflow:auto; width:100%; height:200px;" >  
+                            <h:dataTable id="subTable"
+                                         var="dir" 
+                                         value="#{solicitudModificacionCMBean.direccionSolModList}" 
+                                         styleClass="constructGTable2"
+                                         headerClass="constructGTableHeader" 
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        
+                                
+
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Direcci&oacute;n Modificada"/>
+                                    </f:facet>
+
+                                    <h:panelGroup>
+                                        <h:inputText id="idDireccionTextoAltern" value="#{dir.dirFormatoIgac }" 
+                                                     disabled="#{solicitudModificacionCMBean.modoGestion}"
+                                                     size="#{dir.dirFormatoIgac!=null and dir.dirFormatoIgac.length()>0?dir.dirFormatoIgac.length()+10:30}"
+                                                     style= " #{dir.validado == true ? 'color: blue' : 'color: #333'}"
+                                                     maxlength="100" validatorMessage="El campo direcci&oacute;n debe contener m&oacute;s de 2 caracteres" >
+
+                                            <f:ajax event="change" execute="@this" render="idDireccionTextoAltern" listener="#{solicitudModificacionCMBean.verificarValidacionDireccion(dir)}" />
+                                           <!-- <f:validateRegex pattern="((\w|\s|-|#){2,})?"/> -->
+                                        </h:inputText>
+                                        <h:graphicImage id="mostrarComponenteButton" style="width: 13px; " title="Validar direcci&oacute;n" value="/view/img/home.gif" 
+                                                        rendered="#{!solicitudModificacionCMBean.modoGestion}">
+                                            <f:ajax render="@form" execute="@this idDireccionTextoAltern"
+                                                    event="click" listener="#{solicitudModificacionCMBean.irPopUpDireccion(dir)}"/>
+                                        </h:graphicImage>
+                                    </h:panelGroup>
+                                    <h:outputText escape="false" value="#{solicitudModificacionCMBean.estiloObligatorio}Barrio" class="txtLabelsMgl" 
+                                                  rendered="#{solicitudModificacionCMBean.solicitudModCM.ciudadGpo.gpoMultiorigen eq '1' and dir.codTipoDir eq 'CK' and dir.dirFormatoIgac!=''}"/>
+                                    <h:panelGroup rendered="#{solicitudModificacionCMBean.solicitudModCM.ciudadGpo.gpoMultiorigen eq '1' and dir.codTipoDir eq 'CK'}" >                                
+                                        <h:panelGroup id="gupBarrios"  >
+                                            <h:selectOneMenu  id="SelectorBarrios" value="#{solicitudModificacionCMBean.selectedBarrio}" 
+                                                             disabled="#{solicitudModificacionCMBean.modoGestion}"
+                                                              style="width: 100px;"
+                                                             rendered="#{solicitudModificacionCMBean.barrioslist.size()>0 and !solicitudModificacionCMBean.otroBarrio and dir.dirFormatoIgac!='' }">
+                                               <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                               <f:selectItems value="#{solicitudModificacionCMBean.barrioslist}"
+                                                               rendered="#{!solicitudModificacionCMBean.modoGestion}" var="lbar" itemLabel="#{lbar}" itemValue="#{lbar}" />       
+                                          
+                                            </h:selectOneMenu>
+                                            <h:inputText style="width: 100px;" id="barriodigitado" value="#{solicitudModificacionCMBean.selectedBarrio}" 
+                                                         disabled="#{solicitudModificacionCMBean.modoGestion}"
+                                                         rendered="#{(!(solicitudModificacionCMBean.barrioslist.size()>0)  or solicitudModificacionCMBean.otroBarrio) and dir.dirFormatoIgac!=''}" 
+                                                        >
+                                               
+                                            </h:inputText>
+                                            <h:commandButton style="width: 15px !important;" id="mostrarOtroBarrio" 
+                                                             value="#{solicitudModificacionCMBean.otroBarrio?'L':'O'}" 
+                                                             rendered="#{solicitudModificacionCMBean.barrioslist.size()>0}" styleClass="btng">
+                                                <f:ajax render="@form" execute="@this" 
+                                                        event="click" listener="#{solicitudModificacionCMBean.mostrarOtrobarrio()}" />
+                                            </h:commandButton>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                    <h:commandLink immediate="true" action="#{solicitudModificacionCMBean.irCuentaCMdir(dir)}" 
+                                                   rendered="#{dir.mostrarLinkOtraDireccion and dir.dirFormatoIgac!=''}" value="Ir CM Existente" />
+                                </h:column>
+                                
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio Modificado"/>
+                                    </f:facet>
+                                    <h:outputText  value="#{dir.barrio}"/>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Direcci&oacute;n Actual"/>
+                                    </f:facet>
+                                    <h:outputText  value="#{dir.cmtDirObj.direccionObj.dirFormatoIgac}"/>
+
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Ciudad"/>
+                                    </f:facet>
+                                    <h:outputText  value="#{dir.cmtDirObj.direccionObj.ubicacion.gpoIdObj.gpoNombre }"/>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio"/>
+                                    </f:facet>
+                                    <h:outputText  value="#{dir.cmtDirObj.barrio}"/>
+                                </h:column>
+
+
+
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Tipo"  />
+                                    </f:facet>
+                                    <h:outputText  value="#{solicitudModificacionCMBean.obtenerTipoDireccion(dir.cmtDirObj.tdiId)}"/>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Fuente"   />
+                                    </f:facet>
+                                    <h:outputText  value="#{dir.cmtDirObj.direccionObj.dirOrigen}"/>
+                                </h:column>
+
+                            </h:dataTable> 
+
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup id ="groupMod" rendered="#{encabezadoSolicitudModificacionCMBean.activoCheckModDireccion}" >
+         
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:panelGroup>
+        </ui:define>
+
+    </ui:composition>
+</ui:composition>

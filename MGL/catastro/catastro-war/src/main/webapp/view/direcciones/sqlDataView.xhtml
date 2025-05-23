@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/template/home.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Administrador de Sentencias Sql</span></ui:define>
+    <ui:define name="message"><span class="error"> #{sqlDataBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <h:form id="form1">
+        
+        <h:panelGrid columns="4" id="SqlData" styleClass="panelInfo">
+            <h:outputText value="Id Sql" id="IdSqllb"/>
+            <h:inputText id="IdSqlTxt" value="#{sqlDataBean.sqlData.id}"   disabled="#{!( (sqlDataBean.sqlData.id  eq null) or (sqlDataBean.sqlData.id  eq '')  )}"   />    
+            <h:outputText value="Sentencia" id="Sentencialb"/>
+            <h:inputTextarea id="SentenciaTxt" value="#{sqlDataBean.sqlData.sentence}"   rows="3"   style="width: 400px" />    
+            
+
+        
+            <h:commandButton value="Actualizar"  action="#{sqlDataBean.actualizarlSqlData()}"  styleClass="buttonl" rendered="#{!( (sqlDataBean.sqlData.id  eq null) or (sqlDataBean.sqlData.id  eq '')  ) and sqlDataBean.mostrar and sqlDataBean.actualizar }" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+            <h:commandButton value="Guardar" action="#{sqlDataBean.crearlSqlData()}" styleClass="buttonl"  rendered="#{(sqlDataBean.sqlData.id  eq null) or (sqlDataBean.sqlData.id  eq '') or ( !sqlDataBean.actualizar and sqlDataBean.mostrar) }" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+            <h:commandButton value="Eliminar" action="#{sqlDataBean.eliminarlSqlData()}" styleClass="buttonl" rendered="#{!( (sqlDataBean.sqlData.id  eq null) or (sqlDataBean.sqlData.id  eq '')  ) and sqlDataBean.mostrar}" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+            <h:commandButton value="Volver" action="sqlDataListView" styleClass="buttonl" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+
+        </h:panelGrid>
+            
+        </h:form>
+    </ui:define>
+
+
+</ui:composition>
+

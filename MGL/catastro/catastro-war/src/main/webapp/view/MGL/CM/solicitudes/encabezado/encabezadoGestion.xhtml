@@ -1,0 +1,239 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <!-- ***********************************************************
+    *******************SECCION DATOS GESTIONADOR*********************
+    **************************************************************-->
+    <h:panelGroup style="width: 100%" 
+                  rendered="#{encabezadoSolicitudModificacionCMBean.modoGestion
+                              and !encabezadoSolicitudModificacionCMBean.showNotas}" >
+        <h2 id="solModData">DATOS GESTIONADOR</h2> 
+
+        <h:panelGrid  class="formulario3" columns="6"  style="width: 100%">
+
+            <h:panelGroup>
+                <h:outputText value="" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl"   value="Usuario"/> 
+            </h:panelGroup>
+            <h:inputText  id="usuariogGestCM" 
+                          value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitudCreador.usuario}" 
+                          readonly="true" 
+                          style="font-weight: bold;"  />
+            <h:panelGroup>
+                <h:outputText value=" " class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl"  value="Correo Usuario"/>
+            </h:panelGroup>
+            <h:inputText   id="correoUsuarioGestCM"  
+                           value="#{encabezadoSolicitudModificacionCMBean.usuarioSolicitudCreador.email}" 
+                           readonly="true" 
+                           style="font-weight: bold;" />
+
+            <h:outputText class="txtLabelsMgl"  value="Copia a"/>
+            <h:inputText   id="copiaGestCM" 
+                           value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.correoCopiaGestion}"  
+                           required="false" requiredMessage="Campo Copia  es requerido"
+                           validatorMessage="El campo copia a no tiene el formato requerido" >
+                <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?" />
+            </h:inputText>
+
+
+            <h:panelGroup rendered="#{!encabezadoSolicitudModificacionCMBean.solicitudModificacionCM}">
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Acción"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="accion1"  value="#{encabezadoSolicitudModificacionCMBean.accionSelect}" 
+                             styleClass="ListaConsulta" 
+                             required="true"
+                             requiredMessage="Debe Seleccionar una opción para Acción"
+                             rendered="#{!encabezadoSolicitudModificacionCMBean.solicitudModificacionCM}"
+                             disabled="#{encabezadoSolicitudModificacionCMBean.gestionado}">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.accionList}" var="accl"
+                               itemValue="#{accl.tipoBasicaId}"
+                               itemLabel="#{accl.nombreTipo}"/> 
+                <f:ajax event="change" 
+                        execute="@this" 
+                        listener="#{encabezadoSolicitudModificacionCMBean.obtenerResultadoAccion(encabezadoSolicitudModificacionCMBean.accionSelect)}"  
+                        render="selectResultado1"/>
+            </h:selectOneMenu> 
+
+            <h:panelGroup rendered="#{!encabezadoSolicitudModificacionCMBean.solicitudModificacionCM}">
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Resultado Gestión"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="selectResultado1"  
+                             value="#{encabezadoSolicitudModificacionCMBean.respuestaSelect}" 
+                             styleClass="ListaConsulta" 
+                             required="true"
+                             requiredMessage="Debe Seleccionar una opción para resultado de la Gestión"
+                             rendered="#{!encabezadoSolicitudModificacionCMBean.solicitudModificacionCM}"
+                             disabled="#{encabezadoSolicitudModificacionCMBean.gestionado}">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.resultadoGestList}" var="rsel"
+                               itemValue="#{rsel.basicaId}"
+                               itemLabel="#{rsel.nombreBasica}"/>                
+            </h:selectOneMenu> 
+
+
+
+
+            <h:panelGroup rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'DATOSCM' and encabezadoSolicitudModificacionCMBean.activoCheckModDatosCM  }">
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Acción"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="accion2"  value="#{encabezadoSolicitudModificacionCMBean.accionModDatosSelect}" styleClass="ListaConsulta" 
+                             rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'DATOSCM' and encabezadoSolicitudModificacionCMBean.activoCheckModDatosCM }"
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionHhpp!=null}">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.accionGestModDatosCmList}" var="accl"
+                               itemValue="#{accl.tipoBasicaId}"
+                               itemLabel="#{accl.nombreTipo}"/> 
+                <f:ajax event="change" 
+                        execute="@this" 
+                        listener="#{encabezadoSolicitudModificacionCMBean.obtenerResultadoAccion(encabezadoSolicitudModificacionCMBean.accionModDatosSelect)}"  
+                        render="selectResultado2"/>
+            </h:selectOneMenu> 
+
+            <h:panelGroup rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'DATOSCM' and encabezadoSolicitudModificacionCMBean.activoCheckModDatosCM  }">
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Resultado Gestión Datos CM"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="selectResultado2"  value="#{encabezadoSolicitudModificacionCMBean.respuestaModDatosSelect}" styleClass="ListaConsulta"
+                             rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'DATOSCM' and encabezadoSolicitudModificacionCMBean.activoCheckModDatosCM }"
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionHhpp!=null}">
+                <f:selectItem itemValue="0"  itemLabel="" />
+                <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.resultadoGestDatosCmList}" var="rsel"
+                               itemValue="#{rsel.basicaId}"
+                               itemLabel="#{rsel.nombreBasica}"/>                
+            </h:selectOneMenu> 
+
+
+
+
+            <h:panelGroup rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'DIRECCION' and encabezadoSolicitudModificacionCMBean.activoCheckModDireccion }">
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Acción"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="accion3"  value="#{encabezadoSolicitudModificacionCMBean.accionModDireccionSelect}" styleClass="ListaConsulta"
+                             rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'DIRECCION' and encabezadoSolicitudModificacionCMBean.activoCheckModDireccion}"
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionHhpp!=null}">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.accionGestModDireccionList}" var="accl"
+                               itemValue="#{accl.tipoBasicaId}"
+                               itemLabel="#{accl.nombreTipo}"/> 
+                <f:ajax event="change" 
+                        execute="@this" 
+                        listener="#{encabezadoSolicitudModificacionCMBean.obtenerResultadoAccion(encabezadoSolicitudModificacionCMBean.accionModDireccionSelect)}"  
+                        render="selectResultado3"/>
+            </h:selectOneMenu> 
+
+            <h:panelGroup rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'DIRECCION' and encabezadoSolicitudModificacionCMBean.activoCheckModDireccion}">
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Resultado Gestión Direcciones"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="selectResultado3"  value="#{encabezadoSolicitudModificacionCMBean.respuestaModDireccionSelect}"   styleClass="ListaConsulta" 
+                             rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'DIRECCION' and encabezadoSolicitudModificacionCMBean.activoCheckModDireccion}"
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionHhpp!=null}">
+                <f:selectItem itemValue="0"  itemLabel="" />
+                <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.resultadoGestDireccionList}" var="rsel"
+                               itemValue="#{rsel.basicaId}"
+                               itemLabel="#{rsel.nombreBasica}"/>                
+            </h:selectOneMenu> 
+
+
+
+            <h:panelGroup rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'SUBEDIFICIOS' and encabezadoSolicitudModificacionCMBean.activoCheckModSubedificios}">
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Acción"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="accion4"  value="#{encabezadoSolicitudModificacionCMBean.accionModSubEdiSelect}" styleClass="ListaConsulta"
+                             rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'SUBEDIFICIOS' and encabezadoSolicitudModificacionCMBean.activoCheckModSubedificios}"
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionHhpp!=null}">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.accionGestModSubEdiList}" var="accl"
+                               itemValue="#{accl.tipoBasicaId}"
+                               itemLabel="#{accl.nombreTipo}"/> 
+                <f:ajax event="change" 
+                        execute="@this" 
+                        listener="#{encabezadoSolicitudModificacionCMBean.obtenerResultadoAccion(encabezadoSolicitudModificacionCMBean.accionModSubEdiSelect)}"  
+                        render="selectResultado4"/>
+            </h:selectOneMenu> 
+
+            <h:panelGroup rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'SUBEDIFICIOS' and encabezadoSolicitudModificacionCMBean.activoCheckModSubedificios}">
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Resultado Gestión Sub-Edificios"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="selectResultado4"  value="#{encabezadoSolicitudModificacionCMBean.respuestaModSubEdiSelect}"   styleClass="ListaConsulta" 
+                             rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'SUBEDIFICIOS' and encabezadoSolicitudModificacionCMBean.activoCheckModSubedificios}"
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionHhpp!=null}">
+                <f:selectItem itemValue="0"  itemLabel="" />
+                <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.resultadoGestSubEdiList}" var="rsel"
+                               itemValue="#{rsel.basicaId}"
+                               itemLabel="#{rsel.nombreBasica}"/>                
+            </h:selectOneMenu> 
+
+
+
+
+            <h:panelGroup  rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'COBERTURA' and encabezadoSolicitudModificacionCMBean.activoCheckModCobertura}" >
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Acción"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="accion5"  value="#{encabezadoSolicitudModificacionCMBean.accionModCoberturaSelect}" styleClass="ListaConsulta" 
+                             rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'COBERTURA' and encabezadoSolicitudModificacionCMBean.activoCheckModCobertura}" 
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionCobertura!=null}">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.accionGestModCoberturaList}" var="accl"
+                               itemValue="#{accl.tipoBasicaId}"
+                               itemLabel="#{accl.nombreTipo}"/> 
+                <f:ajax event="change" 
+                        execute="@this" 
+                        listener="#{encabezadoSolicitudModificacionCMBean.obtenerResultadoAccion(encabezadoSolicitudModificacionCMBean.accionModCoberturaSelect)}"  
+                        render="selectResultado5"/>
+            </h:selectOneMenu> 
+
+            <h:panelGroup  rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'COBERTURA' and encabezadoSolicitudModificacionCMBean.activoCheckModCobertura}" >
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Resultado Gestión Cobertura"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="selectResultado5"  value="#{encabezadoSolicitudModificacionCMBean.respuestaModCoberturaSelect}"   styleClass="ListaConsulta" 
+                             rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModificacionCM and encabezadoSolicitudModificacionCMBean.selectedTab == 'COBERTURA' and encabezadoSolicitudModificacionCMBean.activoCheckModCobertura}" 
+                             disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionCobertura!=null}">
+                <f:selectItem itemValue="0" itemLabel="" />
+                <f:selectItems value="#{encabezadoSolicitudModificacionCMBean.resultadoGestCoberturaList}" var="rsel"
+                               itemValue="#{rsel.basicaId}"
+                               itemLabel="#{rsel.nombreBasica}"/>                
+            </h:selectOneMenu> 
+
+
+        </h:panelGrid>
+
+
+
+        <h:panelGrid class="formulario3" columns="2"  style="width: 100%">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl"  value="Respuesta Actual (4000 Caracteres)" />
+            </h:panelGroup>
+            <h:inputTextarea id="RespuestaActualGestCM"  style="width:900px; height: 20px;" 
+                             required="true"
+                             requiredMessage="Debe Ingresar Respuesta Actual"
+                             validatorMessage="'Respuesta Actual' Número máximo de caracteres es 4000"
+                             value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.respuestaActual }" 
+                             disabled="#{encabezadoSolicitudModificacionCMBean.gestionado}">
+                <f:validateLength maximum="4000" />                
+            </h:inputTextarea>
+        </h:panelGrid>
+
+
+
+
+    </h:panelGroup>
+    <!-- ***********************************************************
+    *******************FIN SECCION DATOS GESTIONADOR****************
+    **************************************************************-->
+
+</html>

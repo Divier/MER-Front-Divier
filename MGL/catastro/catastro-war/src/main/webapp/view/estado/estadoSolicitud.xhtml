@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/template/home.xhtml"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes">
+
+    <ui:define name="content">
+        <link  rel="stylesheet" type="text/css" href="/Visitas_Tecnicas/resources/stylesheet.css"/> 
+        <div id="espacioTDiv" >
+            <div id="espacioTheaderDiv" style= "background:url('../img/rihc-header_02.png');" >
+                <div id="contenedorespacioTDiv" >
+                    <div id="contenedorespacioTLabelDiv" style= "background-repeat:no-repeat; background-position-y: bottom;height:30px; width:766px; text-align: center; font-size: 13px;padding-top: 8px;"> <b>ESTADO SOLICITUD</b> </div>
+                </div>
+            </div>
+        </div>
+        <h:panelGroup  id="panelGroupEstadoSol">
+            <h:panelGrid columns="4" id="panelInfoSolicitud" style="width: 100%; text-align:center; margin: 0 auto;">
+
+                <h:outputText id="tipoSolicitudLb" value="Tipo Solicitud: "></h:outputText>
+                <h:outputText id="tipoSolicitudTf" 
+                              value="#{estadoSolicitudBean.solicitudSelected.tipoSolicitudStr}"
+                              style="font-weight: bold;">
+                </h:outputText>
+                <h:outputText id="idSolicitudLb" value="Número de la Solicitud: "></h:outputText>
+                <h:outputText id="idSolicitudTf" 
+                              value="#{estadoSolicitudBean.solicitudSelected.idSolicitud}"
+                              style="font-weight: bold;">
+                </h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText id="estadoLb" value="Estado: "></h:outputText>
+                <h:outputText id="estadoTf" 
+                                value="#{estadoSolicitudBean.solicitudSelected.estado}" 
+                                style="color: red;font-weight: bold;">
+                </h:outputText>
+                <h:outputText></h:outputText>
+            </h:panelGrid>
+            <div id="DatosIngresadoDiv" style= "background:url('../img/rihc-header_02.png');" >
+                <div id="DatosIngresadoLabelDiv" style= "background-repeat:no-repeat; background-position-y: bottom;height:30px; width:766px; text-align: center; font-size: 13px;padding-top: 8px;"> <b>DATOS INGRESADOS</b> </div>
+            </div>
+            <h:panelGrid columns="2" id="panelInfoIngresada1" style="width: 20%; text-align:center; margin: 0 auto;">
+                <h:outputText id="RegionalLb" value="Regional: " style="width: 30%; text-align:right;"></h:outputText>
+                <h:outputText id="RegionalTf" value="#{estadoSolicitudBean.solicitudSelected.regional}" style="width: 30%; text-align:left;"></h:outputText>
+                <h:outputText id="CiudadLb" value="Ciudad: " style="width: 30%; text-align:right;"></h:outputText>
+                <h:outputText id="CiudadTf" value="#{estadoSolicitudBean.solicitudSelected.ciudad}" style="width: 30%; text-align:left;"></h:outputText>
+            </h:panelGrid>
+            <h:selectOneRadio id="TipoSolicitudRadioButton" label="Tipo Solicitud" value="#{estadoSolicitudBean.solicitudSelected.cambioDir}" disabled="true" 
+                              style="width: 60%; text-align:center; margin: 0 auto;">
+                <f:selectItem id="tsitemValue0" itemValue="0" itemLabel="Creación HHPP"/>
+                <f:selectItem id="tsitemValue1" itemValue="1" itemLabel="Cambio dirección HHPP"/>
+                <f:selectItem id="tsitemValue3" itemValue="3" itemLabel="Reactivación HHPP"/>
+            </h:selectOneRadio>
+            <hr size="5" width="100%" align="LEFT"/>
+            <!--componente de la direccion tabulada -->
+            <h:panelGroup id="componente">
+                <componentes:componente-direccion />
+            </h:panelGroup>
+            <h:panelGroup id="panelGInfoDirGeo" rendered="#{estadoSolicitudBean.direccionRREntity != null}">
+                <hr size="5" width="100%" align="LEFT" />
+                <h:outputText id="informacionGeoLb" value="Informacion Geo:" 
+                              style="text-align: center; font-weight: bold; margin: 0px auto; font-size: 15px; "/>
+                <h:panelGrid columns="8" id="panelInfoDirGeo" style="width: 80%;text-align:left; margin: 0px auto 0px auto;">
+
+                    <h:outputText id="BarrioLb" value="Barrio: " style="width: 30%; text-align:right; font-weight: bold; "/>
+                    <h:outputText id="BarrioTf" value="#{estadoSolicitudBean.barrioGeo == null ? 'NR':estadoSolicitudBean.barrioGeo}" style="width: 30%; text-align:left;"/>
+                    
+                    <h:outputText id="NivelSocioEcoTf" value="Nivel Socio Economico: " style="width: 30%; text-align:right; font-weight: bold; "/>
+                    <h:outputText id="NivelSocioEcoLb" value="#{estadoSolicitudBean.direccionMgl.dirNivelSocioecono == null ? 'NR':estadoSolicitudBean.direccionMgl.dirNivelSocioecono}" style="width: 30%; text-align:left;"/>
+
+                    <h:outputText id="FuenteLb" value="Fuente: " style="width: 30%; text-align:right; font-weight: bold; "/>
+                    <h:outputText id="FuenteTf" value="#{estadoSolicitudBean.direccionMgl.dirOrigen}" style="width: 30%; text-align:left;"/>
+
+                    <h:outputText id="NodosLb" value="Nodos: " style="width: 30%; text-align:right; font-weight: bold; "/>
+                    <h:selectOneMenu id="listNodos" styleClass="ListaConsulta" style="width: 80px; height:19px;">
+                        <f:selectItems value="#{estadoSolicitudBean.nodosGeoList}" var="nodo"
+                                       itemValue="#{nodo}"
+                                       itemLabel="#{nodo}"/>                                        
+                    </h:selectOneMenu>  
+                   
+                </h:panelGrid>
+            </h:panelGroup>
+            <!--Panel direccion en formato RR-->
+            <h:panelGroup id="panelGInfoDirRR" rendered="#{estadoSolicitudBean.direccionRREntity != null}">
+                <hr size="5" width="100%" align="LEFT" />
+
+                <h:outputText id="DirNuevFormatoRrLb" value="Direccion Nueva, Formato RR:" 
+                              style="text-align: center; font-weight: bold; margin: 0px auto; font-size: 15px; "/>
+                <h:panelGrid columns="6" id="panelInfoDirRR" style="width: 50%;text-align:left; margin: 0 auto;"
+                             rendered="#{estadoSolicitudBean.direccionRREntity != null}">
+
+                    <h:outputText id="CalleNvRrLb" value="Calle: " style="width: 30%; text-align:right; font-weight: bold; "/>
+                    <h:outputText id="CalleNvRrTf" value="#{estadoSolicitudBean.direccionRREntity.calle}" style="width: 30%; text-align:left;"/>
+                    <h:outputText id="PlacaNvRrLb" value="Placa: " style="width: 30%; text-align:right;font-weight: bold;"/>
+                    <h:outputText id="PlacaNvRrTf" value="#{estadoSolicitudBean.direccionRREntity.numeroUnidad}" style="width: 30%; text-align:left;"/>
+                    <h:outputText id="ApartamentoNvRrLb" value="Apartamento: " style="width: 30%; text-align:right;font-weight: bold;"/>
+                    <h:outputText id="ApartamentoNvRrTf"  value="#{estadoSolicitudBean.direccionRREntity.numeroApartamento}" style="width: 30%; text-align:left;"/>
+
+                </h:panelGrid>
+            </h:panelGroup>
+            <!--Datos del cambio-->
+            <h:panelGroup id="panelGDatosCambio" 
+                          rendered="#{estadoSolicitudBean.solicitudSelected.cambioDir == '1'}">
+                <hr size="5" width="100%" align="LEFT" />
+                <h:outputText id="DirAntFormatoRrLb" value="Cambio de Direccion, Direccion antigua:" 
+                              style="text-align: center; font-weight: bold; margin: 0px auto; font-size: 15px; "/>
+                <h:panelGrid columns="6" 
+                             id="panelDatosCambio" 
+                             style="width: 50%;text-align:left; margin: 0 auto;">                    
+                    <h:outputText id="CalleAntRrLb" value="Calle: " style="width: 30%; text-align:right; font-weight: bold; "/>
+                    <h:outputText id="CalleAntRrTf" value="#{estadoSolicitudBean.solicitudSelected.streetName}" style="width: 30%; text-align:left;"/>
+                    <h:outputText id="PlacaAntRrLb" value="Placa: " style="width: 30%; text-align:right;font-weight: bold;"/>
+                    <h:outputText id="PlacaAntRrTf" value="#{estadoSolicitudBean.solicitudSelected.houseNumber}" style="width: 30%; text-align:left;"/>
+                    <h:outputText id="ApartamentoAntRrLb" value="Apartamento: " style="width: 30%; text-align:right;font-weight: bold;"/>
+                    <h:outputText id="ApartamentoAntRrTf" value="#{estadoSolicitudBean.solicitudSelected.aparmentNumber}" style="width: 30%; text-align:left;"/>
+                </h:panelGrid>
+            </h:panelGroup>
+            <!--Panel Unidades en el predio RR-->
+            <h:panelGroup id="panelGUnidadePredioRR" 
+                          rendered="#{estadoSolicitudBean.unidadesPredList != null}"
+                          style="width: 30%; text-align:right; font-weight: bold; ">
+                <hr size="5" width="100%" align="LEFT" />
+                <div id="divUnidadePredioRR" style="overflow: scroll; width: 100%; max-height: 200px;">
+                    <h:panelGrid columns="1" id="panelUnidadePredioRR" style="width: 50%;text-align:left; margin: 0 auto;">
+                        <h:dataTable id="UnidadePredioRRTable" 
+                                     value="#{estadoSolicitudBean.unidadesPredList}" 
+                                     var="unidad" style="width: 500px;"
+                                     styleClass="solicitudesGTable"
+                                     headerClass="solicitudesGTableHeader"
+                                     rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow" >
+                            <f:facet name="header">
+                                <h:outputText value="Unidades en el Predio" />
+                            </f:facet> 
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Calle" />
+                                </f:facet>
+                                <h:outputText value="#{unidad.calleUnidad}"/>  
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Placa" />
+                                </f:facet>
+                                <h:outputText value="#{unidad.casaUnidad}"/>  
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Apartamento" />
+                                </f:facet>
+                                <h:outputText value="#{unidad.aptoUnidad}"/>  
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Nodo" />
+                                </f:facet>
+                                <h:outputText value="#{unidad.nodUnidad}"/>  
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Estado" />
+                                </f:facet>
+                                <h:outputText value="#{unidad.descEstado}"/>  
+                            </h:column>
+
+                        </h:dataTable>
+                    </h:panelGrid>
+                </div>
+            </h:panelGroup>
+            <!--Panel Unidades en el predio Cambio-->
+            <h:panelGroup id="panelGUnidadePredioCambio" 
+                          rendered="#{estadoSolicitudBean.modificacionDirList != null 
+                                      and estadoSolicitudBean.modificacionDirList.size() >0
+                                        and estadoSolicitudBean.direccionRREntity != null}"
+                          style="width: 30%; text-align:right; font-weight: bold; ">
+                <hr size="5" width="100%" align="LEFT" />
+                <div id="divUnidadePredioCambio" style="overflow: scroll; width: 100%; max-height: 200px;">
+                    <h:panelGrid columns="1" id="panelUnidadePredioCambio" style="width: 50%;text-align:left; margin: 0 auto;">
+                        <h:dataTable id="UnidadePredioCambioTable" 
+                                     value="#{estadoSolicitudBean.modificacionDirList}" 
+                                     var="unidadCambio" style="width: 500px;"
+                                     styleClass="solicitudesGTable"
+                                     headerClass="solicitudesGTableHeader"
+                                     rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow" >
+                            <f:facet name="header">
+                                <h:outputText value="Cambios Unidades en el Predio desde Solicitud" />
+                            </f:facet> 
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Calle" />
+                                </f:facet>
+                                <h:outputText value="#{estadoSolicitudBean.direccionRREntity.calle}"/>  
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Placa" />
+                                </f:facet>
+                                <h:outputText value="#{estadoSolicitudBean.direccionRREntity.numeroUnidad}"/>  
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Apartamento Antiguo" />
+                                </f:facet>
+                                <h:outputText value="#{unidadCambio.oldApto}"/>  
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Apartamento Nuevo" />
+                                </f:facet>
+                                <h:outputText value="#{unidadCambio.newApto}"/>  
+                            </h:column>
+                            
+
+                        </h:dataTable>
+                    </h:panelGrid>
+                </div>
+            </h:panelGroup>
+
+
+            <hr size="5" width="100%" align="LEFT"/>
+            <h:panelGrid columns="2" id="panelInfoIngresada2" style="width: 50%;text-align:left; margin: 0 auto;">
+                <h:outputText id="ContactoLb" value="Contacto: "></h:outputText>
+                <h:outputText id="ContactoTf" value="#{estadoSolicitudBean.solicitudSelected.contacto}"></h:outputText>
+                <h:outputText id="telContactoLb" value="Telefono Contacto: "></h:outputText>
+                <h:outputText id="telContactoTf" value="#{estadoSolicitudBean.solicitudSelected.telContacto}"></h:outputText>
+                <h:outputText id="SolicitanteLb" value="Solicitante: "></h:outputText>
+                <h:outputText id="SolicitanteTf" value="#{estadoSolicitudBean.solicitudSelected.solicitante}"></h:outputText>
+                <h:outputText id="CorreoSolicitanteLb" value="Correo Solicitante: "></h:outputText>
+                <h:outputText id="CorreoSolicitanteTf" value="#{estadoSolicitudBean.solicitudSelected.correo}"></h:outputText>
+                <h:outputText id="TelSolicitanteLb" value="Telefono Solicitante: "></h:outputText>
+                <h:outputText id="TelSolicitanteTf" value="#{estadoSolicitudBean.solicitudSelected.telSolicitante}"></h:outputText>
+                <h:outputText id="userGestionadorLb" value="Usuario Gestionador: " rendered="#{estadoSolicitudBean.finalizada}"></h:outputText>
+                <h:outputText id="userGestionadorTf" value="#{estadoSolicitudBean.solicitudSelected.usuario}" rendered="#{estadoSolicitudBean.finalizada}"></h:outputText>
+                <h:outputText id="RestGestionLb" value="Resultado Gestion: " rendered="#{estadoSolicitudBean.finalizada}"></h:outputText>
+                <h:outputText id="RestGestionTf" value="#{estadoSolicitudBean.solicitudSelected.rptGestion}" rendered="#{estadoSolicitudBean.finalizada}"></h:outputText>
+                <h:outputText id="TipoSolLb" value="Tipo Solicitud: "></h:outputText>
+                <h:outputText id="TipoSolTf" value="#{estadoSolicitudBean.solicitudSelected.tipoSol}"></h:outputText>
+                <h:outputText id="FechaSolLb" value="Fecha Solicitud: "></h:outputText>
+                <h:outputText id="FechaSolTf" value="#{estadoSolicitudBean.solicitudSelected.fechaIngreso}">
+                    <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm"/>
+                </h:outputText>
+                <h:outputText id="FechaGestLb" value="Fecha Gestion: " rendered="#{estadoSolicitudBean.finalizada}"></h:outputText>
+                <h:outputText id="FechaGestTf" value="#{estadoSolicitudBean.solicitudSelected.fechaCancelacion}" rendered="#{estadoSolicitudBean.finalizada}">
+                    <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm"/>
+                </h:outputText>
+                <h:outputText id="TiempoEjecucionLb" value="Tiempo de Ejecucion: " rendered="#{estadoSolicitudBean.finalizada}"></h:outputText>
+                <h:outputText id="TiempoEjecucionTf" value="#{estadoSolicitudBean.solicitudSelected.tiempoEjecuion}" rendered="#{estadoSolicitudBean.finalizada}"></h:outputText>
+                <h:outputText id="NodoSolicitudLb" value="Nodo Solicitud: "></h:outputText>
+                <h:outputText id="NodoSolicitudTf" value="#{estadoSolicitudBean.solicitudSelected.nodo}"></h:outputText>
+            </h:panelGrid>
+            <hr size="5" width="100%" align="LEFT" />
+            <h:panelGrid columns="1" id="panelInfoIngresada3" style="width: 100%; text-align:center;">
+                <h:outputText id="ObservacionesEspLb" value="Observaciones Especiales " ></h:outputText>
+                <h:inputTextarea id="ObservacionesEspTf" value="#{estadoSolicitudBean.solicitudSelected.motivo}" rows="4" readonly="true" style="width: 80%"/>
+                <h:outputText id="RespuestaActLb" value="Respuesta Actual " rendered="#{estadoSolicitudBean.finalizada}"></h:outputText>
+                <h:inputTextarea id="RespuestaActTa" value="#{estadoSolicitudBean.solicitudSelected.respuesta}" 
+                                 rendered="#{estadoSolicitudBean.finalizada}"
+                                 rows="4" readonly="true" style="width: 80%"/>
+                <h:panelGrid id="panelGridButton" columns="2" style="width: 100%; text-align:center;">
+                    <h:commandButton value="Volver" id="buttonVolver"
+                                     styleClass="buttonl" style="text-align: center; color:#FFFFFF;" 
+                                     onclick="window.location = '${sessionScope['urlVisitasTecnicas']}/Visitas_Tecnicas/faces/Gestion.jsp'"></h:commandButton> 
+                    <h:commandButton value="Gestionar" id="buttonGestionar" 
+                                     styleClass="buttonl" style="text-align: center; color:#FFFFFF;" 
+                                     rendered="#{!estadoSolicitudBean.finalizada and estadoSolicitudBean.perfilGestionador}"
+                                     onclick="window.location = '${sessionScope['urlVisitasTecnicas']}/Visitas_Tecnicas/faces/${estadoSolicitudBean.formularioGrestion}'"></h:commandButton> 
+                </h:panelGrid>
+            </h:panelGrid>
+            <hr size="5" width="100%" align="LEFT" />
+        </h:panelGroup>
+
+
+    </ui:define>
+
+</ui:composition>

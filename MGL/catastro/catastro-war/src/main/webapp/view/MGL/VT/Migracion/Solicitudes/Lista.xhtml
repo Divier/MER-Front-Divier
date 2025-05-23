@@ -1,0 +1,357 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+  <body>
+
+    <ui:composition template="./../../../template/main.xhtml">
+
+      <ui:define name="content" >
+          <div align="center">
+        <h:form id="form_list_solicitudes">
+
+          <h1><h:outputLabel value="#{controllerListSolicitud.
+                                      prepareList(actionManagedBean.action)}"/>
+          </h1>
+          <h:panelGrid columns="4" style="background:transparent; ">
+            <h:outputLabel value="Buscar Solicitud"/>
+            <h:panelGrid >
+              <h:inputText 
+                id="buscaSolcitud" label="Buscar Solicitud "
+                value="#{controllerListSolicitud.idSolicitudBuscar}"
+                converterMessage="Ingrese valores num&eacute;ricos"  
+                validatorMessage="Error: Solo se puede solicitar valores num&eacute;ricos"
+                >
+                <f:validateRegex pattern="[0-9]*"/>                
+              </h:inputText>
+              <h:message 
+                id="msg_buscaSolcitud" 
+                style="color: red;" 
+                for="buscaSolcitud" />
+            </h:panelGrid>
+            <h:commandButton 
+              action="#{controllerListSolicitud.buscarSolicitud}" 
+              disabled="#{!controllerListSolicitud.validarOpcionBuscar(actionManagedBean.action)}"
+              value="Buscar"
+              styleClass="btn">
+            </h:commandButton>
+            <h:commandButton 
+              action="#{controllerListSolicitud.buscarTodas}" 
+              disabled="#{!controllerListSolicitud.validarOpcionVerTodas(actionManagedBean.action)}"
+              value="Ver Todas"
+              styleClass="btn"/>
+          </h:panelGrid>
+          <div class="fixed-class" >
+            <h:dataTable   
+              id="idtable"
+              value="#{controllerListSolicitud.items}" 
+              rendered="#{controllerListSolicitud.items.rowCount > 0}"
+              var="item" border="1" 
+              cellpadding="2" 
+              cellspacing="10" 
+              rowClasses="order-table-odd-row, order-table-even-row" 
+              columnClasses="order-table-odd-column, order-table-even-column" 
+              styleClass="order-table" 
+              headerClass="order-table-header"            
+              width="50%" dir="LTR"
+              >
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Item"/>
+                </f:facet>
+                <h:outputText value="#{controllerListSolicitud.items.rowIndex+1}"/>
+              </h:column>
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Gestionar"/>
+                </f:facet>
+                <h:commandButton 
+                  id="idgestionar"
+                  styleClass="btn"
+                  action="#{controllerListSolicitud.prepareEdit(1)}"
+                  rendered="#{controllerListSolicitud.disponibilidadSolicitud() 
+                              eq 'Gestionar'}"
+                  disabled="#{!controllerListSolicitud.validarOpcionGestionarDesbloquear()}"
+                  value="#{controllerListSolicitud.disponibilidadSolicitud()}">
+                </h:commandButton>
+                <h:commandButton 
+                  id="iddesbloquear"
+                  styleClass="btn"
+                  actionListener="#{controllerListSolicitud.prepareEdit(0)}"
+                  rendered="#{controllerListSolicitud.disponibilidadSolicitud() 
+                              eq 'Desbloquear'}"
+                  disabled="#{!controllerListSolicitud.validarOpcionGestionarDesbloquear()}"
+                  value="#{controllerListSolicitud.disponibilidadSolicitud()}">
+                </h:commandButton>
+                <h:outputText 
+                  id="idbloquedado"
+                  value="Bloqueado por:
+                  #{controllerListSolicitud.disponibilidadSolicitud()}"
+                  rendered="#{(controllerListSolicitud.disponibilidadSolicitud() 
+                              != 'Gestionar') and
+                              (controllerListSolicitud.disponibilidadSolicitud() 
+                              != 'Desbloquear')}"
+                  />
+              </h:column>  
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Alerta"/>
+                    </f:facet>
+                    <h:graphicImage id="alertaamarillo" value="/view/img/amarillo.gif" 
+                                    rendered="#{controllerListSolicitud.obtenerColorAlerta() eq 'yellow'}"
+                                    style="float: right"/>
+                    <h:graphicImage id="alertaverde" value="/view/img/verde.gif"
+                                    rendered="#{controllerListSolicitud.obtenerColorAlerta() eq 'green'}"
+                                    style="float: right" />                                    
+                    <h:graphicImage id="alertarojo" value="/view/img/rojo.gif" 
+                                    rendered="#{controllerListSolicitud.obtenerColorAlerta() eq 'red'}"
+                                    style="float: right" />
+                </h:column>
+              <h:column>
+                <f:facet name="header">
+                   <h:commandLink >
+                        <h:outputText value="Id Solicitud" />
+                        <f:ajax event="click" render="idtable"
+                                listener="#{controllerListSolicitud.cambiarOrdenMayorMenorListado()}"/> 
+                        </h:commandLink> 
+                  </f:facet>
+                <h:outputText value="#{item.idSolicitud}"/>
+              </h:column>
+                <h:column >
+                    <f:facet name="header">
+                        <h:commandLink >
+                            <h:outputText value="Fecha Ingreso" />
+                            <f:ajax event="click" render="idtable"
+                                    listener="#{controllerListSolicitud.cambiarOrdenMayorMenorListadoFecha()}"/> 
+                        </h:commandLink> 
+                    </f:facet>
+                    <h:outputText value="#{item.fechaIngreso}">
+                  <f:convertDateTime 
+                    pattern="dd-MM-yyyy hh:mm a"  
+                    timeZone="America/Bogota" />
+                </h:outputText>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value=" Estado "/>
+                </f:facet>
+                <h:outputText value="#{item.estado}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Tiempo"/>
+                </f:facet>
+                <h:outputText value="#{controllerListSolicitud.calcularTiempo(item.fechaIngreso)}">
+                </h:outputText>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Tipo Solicitud"/>
+                </f:facet>
+                <h:outputText value="VISITA EDIFICIOS" 
+                              rendered="#{item.tipo.trim() eq 'VTCONJUNTOS'}"/>
+                <h:outputText value="VISITA REPLANTEAMIENTO" 
+                              rendered="#{item.tipo.trim() eq 'REPLANVTCON'}"/>
+                <h:outputText value="VISITA T&Eacute;CNICA EN CASAS" 
+                              rendered="#{item.tipo.trim() eq 'REPLANVTCASA'}"/>
+                <h:outputText value="CREACI&Oacute;N CUENTA MATRIZ" 
+                              rendered="#{item.tipo.trim() eq 'CREACIONCM'}"/>
+                <h:outputText value="HHPP EN CUENTRA MATRIZ" 
+                              rendered="#{item.tipo.trim() eq 'HHPPCMATRIZ'}"/>
+                <h:outputText value="MODIFICAR ELIMINAR CUENTA MATRIZ" 
+                              rendered="#{item.tipo.trim() eq 'VTMODECM'}"/>
+                <h:outputText value="VIABILIDAD INTERNET" 
+                              rendered="#{item.tipo.trim() eq 'VIINTERNET'}"/>
+                <h:outputText value="CAMBIO DE ESTRATO" 
+                              rendered="#{item.tipo.trim() eq 'CAMBIOEST'}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Cuenta Matriz"/>
+                </f:facet>
+                <h:outputText value="#{item.cuentaMatriz}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Cuenta Suscriptor"/>
+                </f:facet>
+                <h:outputText value="#{item.cuentaSuscriptor}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Calle"/>
+                </f:facet>
+                <h:outputText value="#{item.direccion}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Placa"/>
+                </f:facet>
+                <h:outputText value="#{item.numPuerta}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Tipo Vivienda"/>
+                </f:facet>
+                <h:outputText value="#{item.tipoVivienda}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Complemento"/>
+                </f:facet>
+                <h:outputText value="#{item.complemento}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Nodo"/>
+                </f:facet>
+                <h:outputText value="#{item.nodo}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Ciudad"/>
+                </f:facet>
+              <h:outputText value="#{controllerListSolicitud.findNombreCiiudad(item.ciudad)}"/>
+             <h:outputText value="">
+             </h:outputText>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Regional"/>
+                </f:facet>
+               <h:outputText value="#{controllerListSolicitud.findNombreRegional(item.regional)}"/>
+                    <h:outputText value="">
+             </h:outputText>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Solicitante"/>
+                </f:facet>
+                <h:outputText value="#{item.solicitante}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Contacto"/>
+                </f:facet>
+                <h:outputText value="#{item.contacto}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Tel. Contacto"/>
+                </f:facet>
+                <h:outputText value="#{item.telContacto}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Tipo Sol."/>
+                </f:facet>
+                <h:outputText value="#{item.tipoSol}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Corregir HHPP"/>
+                </f:facet>
+                <h:outputText value="#{item.corregirHHPP}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Estrato Antiguo"/>
+                </f:facet>
+                <h:outputText value="#{item.estratoAntiguo}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Estrato Nuevo"/>
+                </f:facet>
+                <h:outputText value="#{item.estratoNuevo}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Nombre Nuevo Edificio"/>
+                </f:facet>
+                <h:outputText value="#{item.nombreNuevoEdificio}"/>
+              </h:column>
+
+              <h:column>
+                <f:facet name="header">
+                  <h:outputText value="Usuario Bloqueo"/>
+                </f:facet>
+                <h:outputText value="#{item.codigoVerificacion}"/>
+              </h:column>
+            </h:dataTable>
+          </div>
+          <h:panelGroup style = "display:block; text-align:center;">
+            <h:outputLabel value="Tamaño de la página"/>
+            <h:outputLabel value="  "/>
+            <h:selectOneMenu 
+              id="idtamPagina" 
+              value="#{controllerListSolicitud.tamPagination}"
+              styleClass="input_peq">
+              <f:selectItem itemLabel="5" itemValue="5" />
+              <f:selectItem itemLabel="10" itemValue="10" />
+              <f:selectItem itemLabel="20" itemValue="20" />
+              <f:selectItem itemLabel="40" itemValue="50" />
+              <f:selectItem itemLabel="100" itemValue="100" />
+            </h:selectOneMenu>
+            <h:commandButton                              
+              styleClass="btn"
+              action="#{controllerListSolicitud.recargarPagination}"
+              value="..."/>
+
+            <h:outputLabel value="  "/>
+
+            <h:commandButton 
+              action="#{controllerListSolicitud.start}" 
+              disabled="#{controllerListSolicitud.pagination.hasPreviousPage eq false}"
+              value="Inicio"
+              styleClass="btn"/>
+            <h:commandButton 
+              action="#{controllerListSolicitud.previous}" 
+              value="Atras" 
+              disabled="#{controllerListSolicitud.pagination.hasPreviousPage eq false}"
+              styleClass="btn"/>
+            <h:outputText value="#{controllerListSolicitud.pagination.pageFirstItem + 1}..
+                          #{controllerListSolicitud.pagination.pageLastItem + 1}/
+                          #{controllerListSolicitud.pagination.itemsCount}"/>&nbsp;
+            <h:commandButton 
+              action="#{controllerListSolicitud.next}" 
+              value="Siguiente" 
+              disabled="#{controllerListSolicitud.pagination.hasNextPage eq false}"
+              styleClass="btn"/>
+            <h:commandButton 
+              action="#{controllerListSolicitud.end}" 
+              disabled="#{controllerListSolicitud.pagination.hasNextPage eq false}"
+              value="Fin"
+              styleClass="btn"/>
+          </h:panelGroup>
+
+        </h:form>
+       </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

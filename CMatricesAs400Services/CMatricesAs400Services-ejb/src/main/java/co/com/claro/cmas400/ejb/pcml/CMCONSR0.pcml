@@ -1,0 +1,16 @@
+<pcml version="4.0">                                                            
+   <!-- RPG program: CMCONSR0  -->                                              
+   <!-- created: 2016-02-24-13.56.10 -->                                        
+   <!-- source: TVCSRC/CMRPGLESRC(CMCONSR0) -->                                 
+   <!-- 36 -->                                                                  
+   <program name="CMCONSR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMCONSR0.PGM">       
+      <data name="PCML" type="char" length="2" usage="inputoutput" />           
+      <data name="PFUNCI" type="char" length="1" usage="inputoutput" />         
+      <data name="PCONFI" type="char" length="1" usage="inputoutput" />         
+      <data name="PUSERID" type="char" length="10" usage="inputoutput" />       
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />        
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />      
+      <data name="TABLARTA" type="char" length="452" count="180" usage="inputoutput" />      
+      <data name="MENSAJE" type="char" length="63" usage="inputoutput" />       
+   </program>                                                                   
+</pcml>      

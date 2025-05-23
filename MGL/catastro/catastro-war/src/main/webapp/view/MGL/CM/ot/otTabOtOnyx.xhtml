@@ -1,0 +1,310 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/otTemplate.xhtml"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title"><span class="TituloSeccion">OT Onyx</span></ui:define>
+
+    <ui:define name="content">
+        <fieldset>
+            <table style="width: 50%; border-spacing: 10px;" >
+                <tr>
+                    <td> 
+                        <h:outputText value="Número OT Hija:" id="incidentIdLabel" />
+                    </td>
+                    <td>
+                        <h:inputText id="incidentId" 
+                                     value="#{OtMglBean.numeroOtHija}"
+                                     converterMessage="Por favor ingrese solo números"
+                                     required="true"
+                                     requiredMessage="Es necesario el número de la orden Hija"/>
+                    </td>
+
+                    <td>    
+                        <h:commandButton value="Consultar" id="consultaOtOnyx"
+                                         rendered="true" styleClass="btn"
+                                         action="#{OtMglBean.consultarOTOnyx()}"
+                                         disabled="#{!OtMglBean.isRolEdicion(OtMglBean.getTAB_OT_ONIX_OT_CCMM())}"/>
+                    </td>
+                    
+                    <td></td>
+                    <td>   
+                        <h:outputText escape="false" value="#{OtMglBean.estiloObligatorio}Complejidad:" />
+                    </td>
+                    <td>
+                        <h:selectOneRadio id="idComplejidad"   required="true" value="#{OtMglBean.onyxComplejidad}" 
+                                          class="radioB" requiredMessage="Campo complejidad obligatorio" >
+                            <f:selectItem itemLabel="Alta" itemValue="A"/>
+                            <f:selectItem itemLabel="Media" itemValue="M"/>
+                            <f:selectItem itemLabel="Baja" itemValue="B"/>
+                        </h:selectOneRadio>
+                    </td>
+                </tr>
+            </table>        
+        </fieldset>
+        <br></br>
+        <fieldset>
+            <legend></legend>
+            <table style="width: 100%; border-spacing: 10px;" >
+                <tr>                    
+                    <td> 
+                        <h:outputText value="NIT Cliente:" id="nitLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="nitTxt"  value="#{OtMglBean.onyxNitCliente}" style="color: blue;"/>
+                    </td>                                        
+
+                    <td> 
+                        <h:outputText value="Nombre Cliente:" id="nomCliLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="nombreClieTxt"  value="#{OtMglBean.onyxNombreCliente}" style="color: blue;"/>
+                    </td>
+
+                    <td> 
+                        <h:outputText value="Nombre OT Hija:" id="nomOtHijaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="nomOtHijaTxt" value="#{OtMglBean.onyxNombreOtHija}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Número OT Hija:" id="otHijaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otHijaTxt" value="#{OtMglBean.onyxNumeroOtHija}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Fecha Creación OT Hija:" id="fecCreaOtHijaLbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="fecCreaOtHijaTxt" value="#{OtMglBean.onyxFechaCreOtHija}" style="color: blue;"/>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td> 
+                        <h:outputText value="Número OT Padre:" id="otPadreLbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="otPadreTxt"  value="#{OtMglBean.onyxNumeroOtPadre}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Fecha Creación OT Padre:" id="padreFechaOtLbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="padrefechaOtTxt" value="#{OtMglBean.onyxFechaCreOtPadre}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Contacto Técnico OT Padre:" id="contTecOtPadreLbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="contTecOtPadreTxt"  value="#{OtMglBean.onyxContactoTecOtPadre}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Teléfono Técnico OT Padre:" id="tlTecOtPadreLbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="tlTecOtPadreTxt"  value="#{OtMglBean.onyxTelContactoTecOtPadre}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Descripción:" id="descripcionLbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="descripcionTxt"  value="#{OtMglBean.onyxDescripcion}" style="color: blue;"/>
+                    </td>
+                </tr>
+                <tr>   
+                    <td> 
+                        <h:outputText value="Dirección:" id="direccionLbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="direccionTxt" value="#{OtMglBean.onyxDireccion}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Segmento:" id="segmentoLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="segmentoTxt"  value="#{OtMglBean.onyxSegmento}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Tipo Servicio:" id="tipoServicioLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="tipoServicioTxt"  value="#{OtMglBean.onyxTipoServicio}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Servicios:" id="serviciosLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="serviciosTxt"  value="#{OtMglBean.onyxServicios}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Recurrente Mensual:" id="recurrenteMenLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="recurrenteMenTxt"  value="#{OtMglBean.onyxRecurrenteMensual}" style="color: blue;"/>
+                    </td>
+                </tr> 
+                <tr> 
+                    <td> 
+                        <h:outputText value="Código Servicio:" id="codServicioLbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="codServicioTxt" value="#{OtMglBean.onyxCodigoServicio}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Vendedor:" id="vendedorLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="vendedorTxt"  value="#{OtMglBean.onyxVendedor}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Teléfono Vendedor:" id="telVendedorLbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="telVendedorTxt"  value="#{OtMglBean.onyxTelefono}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Estado OT Hija:" id="estadoOtHijaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="estadoOtHijaTxt" value="#{OtMglBean.onyxEstadoOtHija}" style="color: blue;"/>
+                    </td>
+
+                    <td> 
+                        <h:outputText value="Estado OT Padre:" id="estadoOtPaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="estadoOtPaTxt" value="#{OtMglBean.onyxEstadoOtPadre}" style="color: blue;"/>
+                    </td>
+
+                </tr> 
+                <tr>
+                    <td> 
+                        <h:outputText value="Fecha Compromiso OT Padre:" id="fecComOtPaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="fecComOtPaTxt" value="#{OtMglBean.onyxFechaCompromisoOtPadre}" style="color: blue;"/>
+                    </td>   
+
+                    <td> 
+                        <h:outputText value="OT Padre Resolución 1:" id="otPadresol1Lbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="otPadresol1Txt" value="#{OtMglBean.onyxCodResolOtPadre1}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="OT Padre Resolución 2:" id="otPadresol2Lbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="otPadresol2Txt" value="#{OtMglBean.onyxCodResolOtPadre2}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="OT Padre Resolución 3:" id="otPadresol3Lbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="otPadresol3Txt"  value="#{OtMglBean.onyxCodResolOtPadre3}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="OT Padre Resolución 4:" id="otPadresol4Lbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="otPadresol4Txt"  value="#{OtMglBean.onyxCodResolOtPadre4}" style="color: blue;"/>
+                    </td>
+                </tr> 
+                <tr>                        
+                    <td> 
+                        <h:outputText value="OT Hija Resolución 1:" id="otHijresol1Lbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="otHijresol1Txt"   value="#{OtMglBean.onyxCodResolOtHija1}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="OT Hija Resolución 2:" id="otHijresol2Lbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="otHijresol2Txt"  value="#{OtMglBean.onyxCodResolOtHija2}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="OT Hija Resolución 3:" id="otHijresol3Lbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="otHijresol3Txt"  value="#{OtMglBean.onyxCodResolOtHija3}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="OT Hija Resolución 4:" id="otHijresol4Lbl" />
+                    </td>
+                    <td>
+                        <h:outputText id="otHijresol4Txt"  value="#{OtMglBean.onyxCodResolOtHija4}" style="color: blue;"/>
+                    </td>
+                </tr> 
+            </table>        
+        </fieldset>
+        <fieldset>
+            <div class="tableContent" >
+                <h:dataTable id="notasOtHijaId" value="#{OtMglBean.lstCmtNotasOtHijaDto}"
+                             var="notasOtHija"  
+                             styleClass="constructGTable" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+                    <h:column>
+                        <f:facet name="header">Usuario Ingresa Nota</f:facet>
+                        <h:outputText value="#{notasOtHija.usuarioIngresaNota}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha Ingreso Nota</f:facet>
+                        <h:outputText value="#{notasOtHija.fechaIngresaNota}">
+                            <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Nota</f:facet>
+                        <h:commandLink value="Ver Nota" action="#{OtMglBean.cargarNota(notasOtHija.descripcionNota)}"/>   
+                    </h:column>
+                    <f:facet name="footer" >
+                        <h:panelGroup>
+                            <div style="text-align: center;">
+                                <h:commandButton title="Primera Página" value=""
+                                                 class="botonTPagInicioCm botonBaselista">
+                                    <f:ajax   render="notasOtHijaId" execute="@this" 
+                                              event="click" listener="#{OtMglBean.pageFirstNotOtHija()}"/>
+                                </h:commandButton>
+                                <h:commandButton title="Página Anterior" value=""
+                                                 class="botonTPagAnteriorCm botonBaselista">
+                                    <f:ajax   render="notasOtHijaId" execute="@this" 
+                                              event="click" listener="#{OtMglBean.pagePreviousNotOtHija()}"/>
+                                </h:commandButton>
+                                <h:commandButton title="Número Páginas" value="#{OtMglBean.pageActualNotOtHija}" styleClass="botonTPagInicio"/>
+                                <h:selectOneMenu id="listTablaNot" value="#{OtMglBean.numPaginaNotOtHij}" 
+                                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{OtMglBean.paginaListNotOtHij}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>
+                                    <f:ajax render="notasOtHijaId" event="change"
+                                            listener="#{OtMglBean.irPaginaNotOtHija()}"
+                                            execute="@this" />
+                                </h:selectOneMenu>
+                                <h:commandButton  title="Página Siguiente" value=""
+                                                  class="botonTPagSiguienteCm botonBaselista">
+                                    <f:ajax   render="notasOtHijaId" execute="@this" 
+                                              event="click" listener="#{OtMglBean.pageNextNotOtHija()}"/>
+                                </h:commandButton>
+                                <h:commandButton title="Última Página" value=""
+                                                 class="botonTPagFinCm botonBaselista">
+                                    <f:ajax   render="notasOtHijaId" execute="@this" 
+                                              event="click" listener="#{OtMglBean.pageLastNotOtHija()}"/>
+                                </h:commandButton>
+                            </div>
+                        </h:panelGroup>
+                    </f:facet>   
+                </h:dataTable>
+            </div>
+        </fieldset>
+    </ui:define>
+</ui:composition>

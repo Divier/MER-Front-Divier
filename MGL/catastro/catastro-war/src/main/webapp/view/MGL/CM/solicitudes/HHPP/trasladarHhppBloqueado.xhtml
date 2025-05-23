@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        template="/view/MGL/template/solicitudHhppTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Solicitud Traslado HHPP Bloqueado</span></ui:define>
+
+    <ui:define name="content">
+
+        <script language="javascript" type="text/javascript">
+            /* validar que sea numero*/
+            function inputIsNumber(event) {
+                var inp = String.fromCharCode(event.keyCode);
+                return (/[0-9]/.test(inp));
+            }
+        </script>
+
+        <h:panelGrid class="formulario3" columns="6" style="width: 100%"
+                     rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null}">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl"/>
+                <h:outputText class="txtLabelsMgl" value="Nivel 5"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="trasListNivel5"
+                             value="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl.opcionNivel5}"
+                             accesskey="" style="width:150px;"
+                             styleClass="ListaConsulta"
+                             disabled="#{!SolicitudHhppCMBean.isHabilitarCrearHhppVirtual()}">
+                <f:selectItem itemValue="" itemLabel=""/>
+                <f:selectItems value="#{SolicitudHhppCMBean.dirNivel5List}" var="listNivel5"
+                               itemValue="#{listNivel5.descripcion}"
+                               itemLabel="#{listNivel5.descripcion}"/>
+            </h:selectOneMenu>
+
+            <h:inputText id="trasIdSubNvl5"
+                         value="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl.valorNivel5}"
+                         required="false" requiredMessage="Campo 'Nivel 5' es requerido"
+                         disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null
+                         || !SolicitudHhppCMBean.isHabilitarCrearHhppVirtual()}"/>
+            <h:panelGroup>
+                <h:outputText value=" " class="txtCamposReqMgl"/>
+                <h:outputText class="txtLabelsMgl" value="Nivel 6"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="trasListNivel6"
+                             value="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl.opcionNivel6}"
+                             accesskey="" style="width:150px;"
+                             styleClass="ListaConsulta"
+                             disabled="#{!SolicitudHhppCMBean.isHabilitarCrearHhppVirtual()}">
+                <f:selectItem itemValue="" itemLabel=""/>
+                <f:selectItems value="#{SolicitudHhppCMBean.dirNivel6List}" var="listNivel6"
+                               itemValue="#{listNivel6.descripcion}"
+                               itemLabel="#{listNivel6.descripcion}"/>
+            </h:selectOneMenu>
+            <h:inputText id="trasIdSubNvl6" colspan="2"
+                         value="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl.valorNivel6}"
+                         required="false" requiredMessage="Campo 'Nivel 6' es requerido"
+                         disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null
+                         || !SolicitudHhppCMBean.isHabilitarCrearHhppVirtual()}"/>
+
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl"/>
+                <h:outputText class="txtLabelsMgl" value="Número de cuenta cliente a trasladar"
+                              disabled="#{!SolicitudHhppCMBean.isHabilitarCrearHhppVirtual()}"/>
+            </h:panelGroup>
+            <h:inputText id="IdSubNumCuentaCliente"
+                         value="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl.numCuentaClienteTraslado}"
+                         required="false" requiredMessage="Campo 'Número de cuenta' es requerido"
+                         disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null
+                         || !SolicitudHhppCMBean.isHabilitarCrearHhppVirtual()}"
+                         onkeypress="return inputIsNumber(event)"/>
+
+            <h:commandButton id="buttonCrearSolTraslHhpp" value="Crear HHPP"
+                             styleClass="btn" disabled="#{!SolicitudHhppCMBean.validarModHhppCM()
+                             || !SolicitudHhppCMBean.isHabilitarCrearHhppVirtual()}"
+                             action="#{SolicitudHhppCMBean.validarDireccionHhppTraslado()}"/>
+
+        </h:panelGrid>
+
+        <h:dataTable id="traslHhppTable"
+                     value="#{SolicitudHhppCMBean.cmtSolicitudHhppMglListToChanges}"
+                     var="trasListHhpp"
+                     class="constructGTable tableViewCont"
+                     rendered="#{(SolicitudHhppCMBean.cmtSolicitudHhppMglListToChanges.size())>0}">
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Tipo Nivel 5"/>
+                </f:facet>
+                <h:outputText value="#{trasListHhpp.opcionNivel5}" rendered="#{trasListHhpp.estadoRegistro == 1}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Valor Nivel 5"/>
+                </f:facet>
+                <h:outputText value="#{trasListHhpp.valorNivel5}" rendered="#{trasListHhpp.estadoRegistro == 1}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Tipo Nivel 6"/>
+                </f:facet>
+                <h:outputText value="#{trasListHhpp.opcionNivel6}" rendered="#{trasListHhpp.estadoRegistro == 1}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Valor Nivel 6"/>
+                </f:facet>
+                <h:outputText value="#{trasListHhpp.valorNivel6}" rendered="#{trasListHhpp.estadoRegistro == 1}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Tipo Operación"/>
+                </f:facet>
+                <h:outputText value="#{trasListHhpp.tipoSolicitud == 1 ? 'Creación':
+                    (trasListHhpp.tipoSolicitud == 2 ?'Modificación' : 'Traslado HHPP Bloqueado')}"
+                              rendered="#{trasListHhpp.estadoRegistro == 1}"/>
+            </h:column>
+            <h:column>
+                <h:commandLink value="Eliminar" style="font-size: 12px;"
+                               immediate="true"
+                               action="#{SolicitudHhppCMBean.eliminaHhpp()}"
+                               rendered="#{trasListHhpp.estadoRegistro == 1}">
+                    <f:setPropertyActionListener
+                            target="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl}"
+                            value="#{trasListHhpp}"/>
+                </h:commandLink>
+            </h:column>
+        </h:dataTable>
+
+    </ui:define>
+
+</ui:composition>

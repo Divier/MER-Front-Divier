@@ -1,0 +1,440 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui"   
+    template="/view/MGL/template/mainUpload.xhtml" >
+
+    <ui:define name="content">
+        #{actionManagedBean.setAction('SOLICITAR_CAMBIO_ESTRATO')}
+        <div  align="center">
+            <h:panelGrid 
+                cellpadding = "10" cellspacing = "10" >
+
+                <f:facet name = "header">
+                    <h:outputText
+                        value = "SOLICITUD DE CAMBIO DE ESTRATO"/>
+                </f:facet>
+                <br></br>
+
+                <h:panelGroup>
+                    <h3>INFORMACION GENERAL</h3>   
+
+                    <h:panelGrid columns="6"
+                                 border = "1"
+                                 cellpadding = "10"
+                                 cellspacing = "10">
+
+                        <h:outputLabel value = "Tipo de Cuenta:" />
+                        <h:panelGrid>
+                            <h:selectOneMenu id="tipoCuenta" value="#{createsolicitud.tipoCuenta}"  
+                                             styleClass="ListaConsulta" 
+                                             required="true"
+                                             requiredMessage="Debe ingresar un valor en el campo Tipo Cuenta">
+                                <f:selectItem itemValue="" itemLabel="Seleccione" />
+                                <f:selectItem itemValue="1" itemLabel="Cuenta Matriz" />
+                                <f:selectItem itemValue="2" itemLabel="Cuenta Suscriptor o HHPP" />
+                                <f:ajax render="VT_RE_msg_tipoCuenta panelCm panelHHPP" 
+                                        event="change" 
+                                        execute="@this" 
+                                        listener="#{createsolicitud.cambiarTipoCuenta()}"/>
+                            </h:selectOneMenu>
+                            <h:message
+                                id="VT_RE_msg_tipoCuenta"
+                                style="color: red;"
+                                for="tipoCuenta" />
+                        </h:panelGrid>
+
+                        <h:outputLabel value = "Tipo Solicitud:" />
+                        <h:panelGrid>
+                            <h:selectOneMenu
+                                id="VT_RE_idtipoSolicitud"
+                                disabled="#{createsolicitud.canCreate eq false}"
+                                value="#{createsolicitud.solicitud.tipoSol}"
+                                required="true"
+                                requiredMessage="Campo Tipo Solicitud es requerido"
+                                styleClass="input">
+                                <f:selectItems
+                                    value="#{createsolicitud.tipoSolicitudesTipoSolicitud}" />
+                                <f:ajax render="VT_RE_msg_tipoSol"/>
+                            </h:selectOneMenu>
+                            <h:message
+                                id="VT_RE_msg_tipoSol"
+                                style="color: red;"
+                                for="VT_RE_idtipoSolicitud" />
+                        </h:panelGrid>
+
+                        <h:outputLabel value = "Regional:" />
+                        <h:panelGrid>
+                            <h:selectOneMenu
+                                id="VT_RE_idregional"
+                                disabled="#{createsolicitud.canCreate eq false}"
+                                value="#{createsolicitud.idRegional}"
+                                valueChangeListener="#{createsolicitud.regionalCodeChanged}"
+                                required="true"
+                                requiredMessage="Campo Regional es requerido"
+                                styleClass="input">
+                                <f:selectItems value="#{createsolicitud.regionales}" />
+                                <f:ajax render="VT_RE_idciudad VT_RE_msg_idregional"/>
+                            </h:selectOneMenu>
+                            <h:message
+                                id="VT_RE_msg_idregional"
+                                style="color: red;"
+                                for="VT_RE_idregional" />
+                        </h:panelGrid>
+
+                        <h:outputLabel value = "Ciudad:" />
+                        <h:panelGrid>
+                            <h:selectOneMenu
+                                id="VT_RE_idciudad"
+                                disabled="#{createsolicitud.canCreate eq false}"
+                                value="#{createsolicitud.ciudadRr}"
+                                required="true"
+                                requiredMessage="Campo Ciudad es requerido"
+                                styleClass="input">
+                                <f:selectItems value="#{createsolicitud.ciudades}"/>
+                                <f:ajax render="VT_RE_msg_idciudad"/>
+                            </h:selectOneMenu>
+                            <h:message
+                                id="VT_RE_msg_idciudad"
+                                style="color: red;"
+                                for="VT_RE_idciudad" />
+                        </h:panelGrid>
+
+                        <h:outputLabel value = "Contacto:" />
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idcontacto"
+                                disabled="#{createsolicitud.canCreate eq false}"
+                                value="#{createsolicitud.solicitud.contacto}"
+                                required="true"
+                                requiredMessage="Campo Contacto es requerido"
+                                styleClass="input">
+                                <f:ajax render="VT_RE_msg_idcontacto"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_idcontacto"
+                                style="color: red;"
+                                for="VT_RE_idcontacto" />
+                        </h:panelGrid>
+                        <h:outputLabel value = "Tel&eacute;fono Contacto:" />
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idtelefonocontacto"
+                                disabled="#{createsolicitud.canCreate eq false}"
+                                value="#{createsolicitud.solicitud.telContacto}"
+                                required="true"
+                                requiredMessage="Campo Telefono Contacto es requerido"
+                                validatorMessage="Ingrese valores númericos"
+                                styleClass="input">
+                                <f:ajax  render="VT_RE_msg_telefonoContacto"/>
+                                <f:validateRegex pattern="[0-9]*"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_telefonoContacto"
+                                style="color: red;"
+                                for="VT_RE_idtelefonocontacto" />
+                        </h:panelGrid>
+
+                        <h:outputLabel value = "Solicitante:" />
+                        <h:outputLabel
+                            value="#{createsolicitud.solicitud.solicitante}"
+                            styleClass="input"/>
+
+                        <h:outputLabel
+                            value = "Correo Solicitante:"/>
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idcorreosolicitante"
+                                disabled="#{createsolicitud.canCreate eq false}"
+                                value="#{createsolicitud.solicitud.correo}"
+                                required="true"
+                                requiredMessage="Campo Correo Solicitante es requerido"
+                                styleClass="input">
+                                <f:ajax render="VT_RE_msg_correosolicitante"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_correosolicitante"
+                                style="color: red;"
+                                for="VT_RE_idcorreosolicitante" />
+                        </h:panelGrid>
+                    </h:panelGrid>
+
+                    <h:outputText value = "Observaciones:"/>
+                    <h:panelGrid style="width:100%;">
+                        <h:inputTextarea
+                            id="VI_idobservaciones"
+                            style="border:1px; background:#DFEDDF; width:100%; height:120px "
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.solicitud.motivo}"
+                            required="true"
+                            requiredMessage="Campo Observacion es requerido">
+                            <f:ajax event="blur" render="VI_msg_idobservaciones"/>
+                        </h:inputTextarea>
+                        <h:message id="VI_msg_idobservaciones"
+                                   style="color: red;"
+                                   for="VI_idobservaciones" />
+                    </h:panelGrid>
+
+                </h:panelGroup>
+               
+                <h:panelGroup id="panelCm">
+                    <h3>ACTUALIZACION DE ESTRATO EN CUENTA MATRIZ</h3>
+                    <br></br>
+                    <h:panelGrid columns="6"
+                                 border = "1"
+                                 cellpadding = "10"
+                                 cellspacing = "10">
+
+                        <h:outputLabel for="idcuentamatriz" value = "Cuenta Matriz:"/>
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idcuentamatriz"
+                                value="#{createsolicitud.solicitud.cuentaMatriz}"
+                                disabled="#{createsolicitud.cambiaEstratoHHPP}"
+                                required="#{createsolicitud.cambiaEstratoCM}"
+                                requiredMessage="Campo Cuenta Matriz es requerido"
+                                validatorMessage="Ingrese valores númericos"
+                                styleClass="input"
+                                maxlength="12">
+                                <f:validateRegex pattern="[0-9]*"/>
+                                <f:ajax render="VT_RE_msg_cuentamatriz"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_cuentamatriz"
+                                style="color:red;"
+                                for="VT_RE_idcuentamatriz" />
+                        </h:panelGrid>
+
+                        <h:outputLabel value = "Estrato Antiguo:" />
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idEstAnt"
+                                value="#{createsolicitud.solicitud.estratoAntiguo}"
+                                disabled="#{createsolicitud.cambiaEstratoHHPP}"
+                                required="#{createsolicitud.cambiaEstratoCM}"
+                                requiredMessage="Campo Estrato Antiguo es requerido"
+                                styleClass="input"
+                                converterMessage="Campo Estrato Antiguo es numerico"  
+                                validatorMessage="Campo Estrato Antiguo debe tener 1 digito">
+                        <f:validateLength minimum="1" maximum="1"/>                       
+                        <f:convertNumber integerOnly="true" type="number" pattern="#0"/>
+                                <f:ajax render="VT_RE_msg_est_ant"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_est_ant"
+                                style="color: red;"
+                                for="VT_RE_idEstAnt" />
+                        </h:panelGrid>
+
+                        <h:outputLabel value = "Estrato Correcto:" />
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idEstCorrecto"
+                                value="#{createsolicitud.solicitud.estratoNuevo}"
+                                disabled="#{createsolicitud.cambiaEstratoHHPP}"
+                                required="#{createsolicitud.cambiaEstratoCM}"
+                                requiredMessage="Campo Estrato Correcto es requerido"
+                                styleClass="input"                        
+                                converterMessage="Campo Estrato Correcto es numerico"  
+                                validatorMessage="Campo Estrato Correcto debe tener 1 digito">
+                                <f:validateLength minimum="1" maximum="1"/>                       
+                                <f:convertNumber integerOnly="true" type="number" pattern="#0"/>
+                                <f:ajax render="VT_RE_msg_est_cor"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_est_cor"
+                                style="color: red;"
+                                for="VT_RE_idEstCorrecto" />
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:panelGroup> 
+
+                <h:panelGroup id="panelHHPP">
+                    <h3>ACTUALIZACION DE ESTRATO EN CASAS</h3>
+                    <br></br>
+                    <h:panelGrid columns="6"
+                                 border = "1"
+                                 cellpadding = "10"
+                                 cellspacing = "10">
+
+                        <h:outputLabel value = "Cuenta Suscriptor:" />
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idCueSus"
+                                value="#{createsolicitud.solicitud.cuentaSuscriptor}"
+                                disabled="#{createsolicitud.cambiaEstratoCM}"
+                                required="#{createsolicitud.cambiaEstratoHHPP}"
+                                requiredMessage="Campo Cuenta Suscriptor es requerido"
+                                styleClass="input">
+                                <f:ajax render="VT_RE_msg_cuenta"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_cuenta"
+                                style="color: red;"
+                                for="VT_RE_idCueSus" />
+                        </h:panelGrid>
+
+                        <h:outputLabel value = "Placa:" />
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idPlaca"
+                                value="#{createsolicitud.solicitud.numPuerta}"
+                                disabled="#{createsolicitud.cambiaEstratoCM}"
+                                required="#{createsolicitud.cambiaEstratoHHPP}"
+                                requiredMessage="Campo Placa es requerido"
+                                styleClass="input">
+                                <f:ajax render="VT_RE_msg_placa"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_placa"
+                                style="color: red;"
+                                for="VT_RE_idPlaca" />
+                        </h:panelGrid>
+
+                        <h:outputLabel value = "Numero Apartamento:" />
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idNumApto"
+                                value="#{createsolicitud.solicitud.houseNumber}"
+                                disabled="#{createsolicitud.cambiaEstratoCM}"
+                                required="#{createsolicitud.cambiaEstratoHHPP}"
+                                requiredMessage="Campo Numero Apartamento es requerido"
+                                styleClass="input">
+                                <f:ajax render="VT_RE_msg_num_apto"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_num_apto"
+                                style="color: red;"
+                                for="VT_RE_idNumApto" />
+                        </h:panelGrid>
+
+                        <h:outputLabel value = "Nombre de Calle:" />
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idNomCalle"
+                                value="#{createsolicitud.solicitud.streetName}"
+                                disabled="#{createsolicitud.cambiaEstratoCM}"
+                                required="#{createsolicitud.cambiaEstratoHHPP}"
+                                requiredMessage="Campo Nombre de Calle es requerido"
+                                styleClass="input">
+                                <f:ajax render="VT_RE_msg_nom_calle"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_nom_calle"
+                                style="color: red;"
+                                for="VT_RE_idNomCalle" />
+                        </h:panelGrid>
+                        <h:outputLabel value = "Estrato Antiguo:" />
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idEstAntHhpp"
+                                value="#{createsolicitud.estAntHhpp}"
+                                disabled="#{createsolicitud.cambiaEstratoCM}"
+                                required="#{createsolicitud.cambiaEstratoHHPP}"
+                                requiredMessage="Campo Estrato Antiguo es requerido"
+                                styleClass="input" 
+                                converterMessage="Campo Estrato Antiguo es numerico"  
+                                validatorMessage="Campo Estrato Antiguo debe tener 1 digito">
+                                <f:validateLength minimum="1" maximum="1"/>                       
+                                <f:convertNumber integerOnly="true" type="number" pattern="#0"/>
+                                <f:ajax render="VT_RE_msg_est_anthhpp"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_est_anthhpp"
+                                style="color: red;"
+                                for="VT_RE_idEstAntHhpp" />
+                        </h:panelGrid>
+                        <h:outputLabel value = "Estrato Nuevo:" />
+                        <h:panelGrid>
+                            <h:inputText
+                                id="VT_RE_idEstNueHhpp"
+                                value="#{createsolicitud.estNueHhpp}"
+                                disabled="#{createsolicitud.cambiaEstratoCM}"
+                                required="#{createsolicitud.cambiaEstratoHHPP}"
+                                requiredMessage="Campo Estrato Nuevo es requerido"
+                                styleClass="input"                                
+                                converterMessage="Campo Estrato Nuevo es numerico"  
+                                validatorMessage="Campo Estrato Nuevo debe tener 1 digito">
+                                <f:validateLength minimum="1" maximum="1"/>                       
+                                <f:convertNumber integerOnly="true" type="number" pattern="#0"/>
+                                <f:ajax render="VT_RE_msg_est_nueHhpp"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_RE_msg_est_nueHhpp"
+                                style="color: red;"
+                                for="VT_RE_idEstNueHhpp" />
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:panelGroup> 
+                <h:panelGroup id="cambioEstrato">
+                    <h3>ADJUNTAR DOCUMENTOS</h3>  
+                    <br/>
+                    <br/>
+                    <h:panelGrid columns="2"
+                                 border = "1"
+                                 cellpadding = "10"
+                                 cellspacing = "10">
+                        
+                        <p:fileUpload
+                                            id="idArchivo"  mode="simple" skinSimple="true"
+                                            label="Seleccionar Documento:" style="display:block;"
+                                            value="#{createsolicitud.fileCambioEstrato}" 
+                                            />
+                        
+                       
+                        <br/>
+                        <h:commandButton value="Guardar Documento" id="btnEditarCostos" rendered="true" 
+                                         styleClass="btn"  action="#{createsolicitud.guardarArchivo()}"
+                                         disabled="#{createsolicitud.creoSolicitud}">
+                        </h:commandButton>          
+                        
+                        <h:dataTable id="tableCargaArchivo"
+                                     rendered="#{createsolicitud.lstArchivosCambiosEstrato != null 
+                                         and createsolicitud.lstArchivosCambiosEstrato.size() > 0}"
+                                     styleClass="constructGTable2"
+                                     headerClass="constructGTableHeader" 
+                                     value="#{createsolicitud.lstArchivosCambiosEstrato}" var="archivosLst"
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre Archivo"/>
+                                </f:facet>
+                                <a href="#{createsolicitud.armarUrl(archivosLst)}" 
+                                   target="blank" id="linkDescarga2" >                                    
+                                        #{createsolicitud.armarNombre(archivosLst)}
+                                </a> 
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Acción"/>
+                                </f:facet>
+                                <h:commandLink id="lnkCancelar"
+                                               value="" title="Eliminar"
+                                               actionListener="#{createsolicitud.eliminarArchivo(archivosLst)}"
+                                               styleClass="btnIconEliminar"
+                                               disabled="#{createsolicitud.creoSolicitud}"
+                                               onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"/>
+                            </h:column>
+                        </h:dataTable> 
+                    </h:panelGrid>
+                </h:panelGroup>
+            </h:panelGrid>
+
+            <h:panelGroup >
+                <h:commandButton
+                    id = "CM_submit"                  
+                    styleClass="btn"
+                    value = "Ingresar Datos"
+                    actionListener="#{createsolicitud.prepareCreate(actionManagedBean.action)}"
+                    disabled="#{createsolicitud.creoSolicitud or !createsolicitud.validarOpcionIngresarDatosCambioEstrato()}">
+                </h:commandButton>               
+            </h:panelGroup>
+
+        </div>
+    </ui:define>
+</ui:composition>

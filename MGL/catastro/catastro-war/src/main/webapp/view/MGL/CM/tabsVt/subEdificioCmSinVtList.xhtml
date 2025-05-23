@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    
+    <h:dataTable id="subEdificiosCmSinVtTable" 
+                 var="subEdiSinVt" style="width: 100%"
+                 value="#{subEdificiosVtBean.subEdificioSinVtList}"
+                 styleClass="constructGTable2"
+                 headerClass="constructGTableHeader" 
+                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+        <h:column> 
+            <f:facet name="header" >
+                <h:outputText value="SubEdificios Sin VT "  />
+            </f:facet>
+            <div title="#{subEdiSinVt.nombreSubedificio}" align="left">
+                <h:outputText value="#{subEdiSinVt.nombreSubedificio}"/>
+            </div>
+        </h:column>
+        <h:column> 
+            <f:facet name="header">
+                <h:outputText value="Agregar" />
+            </f:facet>
+            <div title="#{subEdiVt.numeroPisosCasas}" align="left" >
+                <h:commandLink value="Modificar" 
+                               title="Permite adicionar el SubEdificio sin VT al formulario"
+                               action="#{subEdificiosVtBean.adicionarSubEd(subEdiSinVt)}"
+                               disabled="#{(visitaTecnicaBean.validarEstadoFlujoOT() ||
+                                           (visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA')) ||
+                                           !visitaTecnicaBean.validarCrearMultiedificio()}"/>
+            </div>                                  
+        </h:column>
+        <h:column rendered="#{!subEdificiosVtBean.vt.otObj.cmObj.unicoSubEdificioBoolean}"> 
+            <f:facet name="header">
+                <h:outputText value="Eliminar" />
+            </f:facet>
+            <div title="#{subEdiVt.numeroPisosCasas}" align="left" >
+                <h:commandLink value="Eliminar" 
+                               title="Permite eliminar un sub edificio desde VT"
+                               action="#{subEdificiosVtBean.elminarSubEd(subEdiSinVt)}"
+                               disabled="#{visitaTecnicaBean.validarEstadoFlujoOT() ||
+                                           (visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC') ||
+                                            (visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA')
+                                             || !visitaTecnicaBean.validarEliminarSubEdificioVt()}"/>
+            </div>                                  
+        </h:column>
+    </h:dataTable>
+</ui:composition>

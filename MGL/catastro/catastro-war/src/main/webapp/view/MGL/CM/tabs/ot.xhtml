@@ -1,0 +1,339 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"    
+    template="/view/MGL/template/detalleOtTemplate.xhtml"> 
+    <ui:define name="content">
+        <h:panelGrid columns="3" id="tipoSolPanel"
+                     rendered="#{!listOrdenTrabajoCm.renderAuditoria 
+                                 and !listOrdenTrabajoCm.renderDetalle}">
+            <h:outputText value="Ver" id="TipoSolLabel"/>
+            <h:selectOneMenu id="TipoOtList"  value="#{listOrdenTrabajoCm.tipoVerTabla}"
+                             styleClass="ListaConsulta" style="width: 95%">
+                <f:selectItem itemValue="0" itemLabel="Todas" />
+                <f:selectItem itemValue="1" itemLabel="Ordenes de Trabajo" />
+                <f:selectItem itemValue="2" itemLabel="Solicitudes" />    
+                <f:ajax event="change" execute="TipoOtList" 
+                        listener="#{listOrdenTrabajoCm.listTipoSolChange}" 
+                        render="idPanelGroup"/>
+            </h:selectOneMenu>  
+        </h:panelGrid>
+        <h:panelGroup id="idPanelGroup">
+            <h:panelGrid columns="3" id="tipoSolPanels">
+                <h:commandButton id="idNuevaOt" styleClass="btn" style="height: 21px"
+                                 rendered="#{menuCmBean.rolMenuCreaOtVt and !listOrdenTrabajoCm.renderAuditoria 
+                                             and !listOrdenTrabajoCm.renderDetalle
+                                             and listOrdenTrabajoCm.tipoVerTabla eq '1'}"
+                                 value="Nueva Orden"  action="#{menuCmBean.irMenu('CREAROTVT')}" >
+                </h:commandButton>
+                <h:selectOneMenu id="nuevoTipoSol" value="#{listOrdenTrabajoCm.tipoSolicitudCmSeleccionada}"
+                                 rendered="#{listOrdenTrabajoCm.rolNuevoTipoSolicitudOt
+                                 and !listOrdenTrabajoCm.renderAuditoria 
+                                 and !listOrdenTrabajoCm.renderDetalle
+                                     and listOrdenTrabajoCm.tipoVerTabla eq '2'}"
+                                 styleClass="ListaConsulta" style="width: 95%">
+                    <f:selectItem itemValue="" itemLabel="Seleccione Uno" />
+                    <f:selectItem itemValue="CREACIONSOLICITUDCREACM" itemLabel="Creacion CM" />
+                    <f:selectItem itemValue="CREACIONSOLICITUDMODCM" itemLabel="Modificación CM" />  
+                    <f:selectItem itemValue="SOLICITUDELIMINAIONCM" itemLabel="Eliminar CM" />  
+                    <f:selectItem itemValue="CREACIONSOLICITUDVT" itemLabel="Visita Técnica" /> 
+                    <f:selectItem itemValue="CREACIONSOLICITUHHPP" itemLabel="Creacion/Modificación Hhpp" /> 
+                </h:selectOneMenu>
+                <h:commandButton id="idNuevaSolicitud" styleClass="btn" style="height: 21px"
+                                 rendered="#{listOrdenTrabajoCm.rolNuevaSolicitudOt and !listOrdenTrabajoCm.renderAuditoria
+                                             and !listOrdenTrabajoCm.renderDetalle
+                                             and listOrdenTrabajoCm.tipoVerTabla eq '2'}"
+                                 value="Nueva Solicitud"  action="#{listOrdenTrabajoCm.irMenuNuevaSolCM()}" >
+                </h:commandButton> 
+            </h:panelGrid>
+            <h:panelGrid id="panelListOrdenesTrabajo" 
+                         rendered="#{!listOrdenTrabajoCm.renderAuditoria 
+                                     and !listOrdenTrabajoCm.renderDetalle
+                                     and listOrdenTrabajoCm.tipoVerTabla eq '1'}" 
+                         style="width:100%;">
+                <h:panelGroup>
+                    <h2 id="myhMmData"> Ordenes de Trabajo [#{listOrdenTrabajoCm.selectedCmtSubEdificioMgl.nombreSubedificio}]</h2>
+                </h:panelGroup>
+                <rich:dataTable id="tableOrdenes"
+                        styleClass="constructGTable2" 
+                        headerClass="constructGTableHeader"
+                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                        rows="#{listOrdenTrabajoCm.filasPag}"
+                        value="#{listOrdenTrabajoCm.listWorkOrders}"
+                        var="workOrder">
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="N°OT" />
+                        </f:facet>
+                        <h:commandLink value="#{workOrder.idOt}"
+                                       action="#{ordenTrabajoGestionarBean.goGestionOt(workOrder)}"
+                                       disabled="#{!ordenTrabajoGestionarBean.validarEdicionOt()}"/>
+                    </rich:column> 
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Tipo OT" />
+                        </f:facet>
+                        <h:outputText value="#{workOrder.tipoOtObj.descTipoOt}" />
+                    </rich:column>
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Tecnología" />
+                        </f:facet>
+                        <h:outputText value="#{workOrder.basicaIdTecnologia.nombreBasica}" />
+                    </rich:column>
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Creación" />
+                        </f:facet>
+                        <h:outputText value="#{workOrder.fechaCreacion}" >
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>
+                    </rich:column> 
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Modificación" />
+                        </f:facet>
+                        <h:outputText value="#{workOrder.fechaEdicion}" >
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>
+                    </rich:column> 
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Estado " />
+                        </f:facet>
+                        <h:outputText value="#{listOrdenTrabajoCm.getEstadoExterno(workOrder)}" />
+                    </rich:column> 
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Estado Interno" />
+                        </f:facet>
+                        <h:outputText value="#{workOrder.estadoInternoObj.nombreBasica}" >
+                        </h:outputText>
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="Usuario " />
+                        </f:facet>
+                        <h:outputText value="#{workOrder.usuarioCreacion}" >
+                        </h:outputText>
+                    </rich:column>
+                </rich:dataTable>
+                <rich:dataScroller for="tableOrdenes" maxPages="5" fastStep="3"/>
+            </h:panelGrid>
+            <h:panelGrid id="panelListSolicitudes" 
+                         rendered="#{!listOrdenTrabajoCm.renderAuditoria 
+                                     and !listOrdenTrabajoCm.renderDetalle
+                                     and listOrdenTrabajoCm.tipoVerTabla eq '2'}" 
+                         style="width:100%;">
+                <h:panelGroup >
+                    <h2 id="hMmData">
+                        SOLICITUDES 
+                    </h2>
+                </h:panelGroup>
+                <rich:dataTable id="tableSolicitud"
+                        styleClass="constructGTable2"
+                        headerClass="constructGTableHeader"
+                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                        rows="#{listOrdenTrabajoCm.filasPag}"
+                        value="#{listOrdenTrabajoCm.listSolicitudes}" 
+                        var="solicitud" >
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="N°Solicitud" />
+                        </f:facet>
+                        <h:commandLink value="#{solicitud.solicitudCmId}" immediate="true"
+                                       action="#{listOrdenTrabajoCm.verDetallesSolicitud(solicitud)}" />                    
+                    </rich:column> 
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Solicitud" />
+                        </f:facet>
+                        <h:outputText value="#{solicitud.tipoSolicitudObj.nombreTipo}" />                    
+                    </rich:column> 
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Usuario Creación" />
+                        </f:facet>
+                        <h:outputText value="#{solicitud.usuarioCreacion}" />                    
+                    </rich:column> 
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Fecha creación" />
+                        </f:facet>
+                        <h:outputText value="#{solicitud.fechaCreacion}">
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd"/>
+                        </h:outputText>                    
+                    </rich:column> 
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Estado Interno" />
+                        </f:facet>
+                        <h:outputText value="#{solicitud.estadoSolicitudObj.nombreBasica}" />
+                    </rich:column> 
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="ANS" />
+                        </f:facet>
+                        <h:outputText value="ans" />                    
+                    </rich:column> 
+                    <rich:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Log" />
+                        </f:facet>
+                        <h:commandLink value="Log" 
+                                       actionListener="#{listOrdenTrabajoCm.mostrarAuditoriaSolicitud(solicitud)}" />
+                    </rich:column>
+                </rich:dataTable>
+                <rich:dataScroller for="tableSolicitud" maxPages="5" fastStep="3"/>
+            </h:panelGrid>
+            <h:panelGrid id="panelListAll"
+                     rendered="#{listOrdenTrabajoCm.tipoVerTabla eq '0'}" 
+                     style="width:100%;">
+            <h:panelGroup>
+                <h2 id="myhMmData01"> Ordenes de Trabajo [#{listOrdenTrabajoCm.selectedCmtSubEdificioMgl.nombreSubedificio}]</h2>
+            </h:panelGroup>
+            <rich:dataTable id="tableAll"
+                            styleClass="constructGTable2" 
+                            headerClass="constructGTableHeader"
+                            rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                            rows="#{listOrdenTrabajoCm.filasPag}"
+                            value="#{listOrdenTrabajoCm.listaAll}"
+                            var="allData">
+                <rich:column> 
+                    <f:facet name="header">
+                        <h:outputText value="Numero id" />
+                    </f:facet>
+                    <h:commandLink value="#{allData.numeroOtSol}"
+                        action="#{listOrdenTrabajoCm.goGestionAll(allData)}" />
+                </rich:column> 
+                <rich:column> 
+                    <f:facet name="header">
+                        <h:outputText value="Ot|Sol" />
+                    </f:facet>
+                    <h:outputText value="#{allData.ordSol}" />
+                </rich:column>
+                <rich:column> 
+                    <f:facet name="header">
+                        <h:outputText value="Tipo OT" />
+                    </f:facet>
+                    <h:outputText value="#{allData.tipoOtSol}" />
+                </rich:column>
+                <rich:column> 
+                    <f:facet name="header">
+                        <h:outputText value="Tecnología" />
+                    </f:facet>
+                    <h:outputText value="#{allData.tecnologiaOT}" />
+                </rich:column>
+                <rich:column> 
+                    <f:facet name="header">
+                        <h:outputText value="Fecha Creación" />
+                    </f:facet>
+                    <h:outputText value="#{allData.fechaCreacion}" >
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                    </h:outputText>
+                </rich:column> 
+                <rich:column> 
+                    <f:facet name="header">
+                        <h:outputText value="Fecha Modificación" />
+                    </f:facet>
+                    <h:outputText value="#{allData.fechaEdicion}" >
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                    </h:outputText>
+                </rich:column> 
+                <rich:column> 
+                    <f:facet name="header">
+                        <h:outputText value="Estado " />
+                    </f:facet>
+                    <h:outputText value="#{allData.estadoOT}" />
+                </rich:column> 
+                <rich:column> 
+                    <f:facet name="header">
+                        <h:outputText value="Estado Interno" />
+                    </f:facet>
+                    <h:outputText value="#{allData.estadoInternoOtSol}" >
+                    </h:outputText>
+                </rich:column>
+                <rich:column>
+                    <f:facet name="header">
+                        <h:outputText value="Usuario " />
+                    </f:facet>
+                    <h:outputText value="#{allData.usuario}" >
+                    </h:outputText>
+                </rich:column>
+            </rich:dataTable>
+            <rich:dataScroller for="tableAll" maxPages="5" fastStep="3"/>
+        </h:panelGrid>
+        </h:panelGroup>
+        
+        
+        
+        <h:panelGroup id="panelGroupDetalleOrdenTrabajo" 
+                      rendered="#{listOrdenTrabajoCm.renderDetalle and listOrdenTrabajoCm.tipoVerTabla eq '1'}" 
+                      style="width:100%;">
+            <h:panelGroup >
+                <h2 id="hMmData">
+                    ORDEN DE TRABAJO -
+                    <h:commandLink value=" Crear Orden" immediate="true"
+                                   action="/view/MGL/CM/ot/generalOt.xhtml"
+                                   rendered="#{listOrdenTrabajoCm.validarCreacionOT()}"/>
+                </h2>
+            </h:panelGroup>
+            <h:panelGrid id="panelDetalleOrdenTrabajo" 
+                         rendered="#{listOrdenTrabajoCm.renderDetalle 
+                                     and listOrdenTrabajoCm.tipoVerTabla eq '1'}" 
+                         style="width:100%;" columns="8">
+                <h:outputText value="N° OT" id="numOtLabel"/>
+                <h:inputText label="N° OT" id="numOtInput" style="width: 75%"
+                             value="#{listOrdenTrabajoCm.orderTrabajoSelected.idOt}"
+                             readonly="true" disabled="true"/>
+                <h:outputText value="Tipo de Trabajo" id="tipoTrabajoLabel"/>
+                <h:selectOneMenu id="TipoTrabajoList"  value="TipoTrabajo"
+                                 styleClass="ListaConsulta" style="width: 75%"
+                                 required="true" disabled="true">
+                    <f:selectItem itemValue = "1" itemLabel = "Construccion" />
+                </h:selectOneMenu>
+                <h:outputText value="Tecnología" id="tecLabel"/>
+                <h:selectOneMenu id="TipoTecnologiasList"  value="Tecnologia"
+                                 styleClass="ListaConsulta" style="width: 75%"
+                                 required="true" disabled="false">
+                    <f:selectItem itemValue = "1" itemLabel = "HFC Bidireccional" />               
+                </h:selectOneMenu>
+                <h:outputText value="Estado Externo" id="EstadoExtOtLabel"/>
+                <h:inputText label="Estado Externo" id="EstadoExtOtInput" style="width: 75%"
+                             value="#{listOrdenTrabajoCm.cmtEstadoIntxExtMgl.idEstadoExt.nombreBasica}"
+                             readonly="true" disabled="true"/>
+                <h:outputText value="Fecha Creación" id="FechaCreacionOtLabel"/>
+                <h:inputText label="Fecha Creación" id="FechaCreacionOtInput" style="width: 75%"
+                             value="#{listOrdenTrabajoCm.orderTrabajoSelected.fechaCreacion}"
+                             readonly="true" disabled="true">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                </h:inputText>
+                <h:outputText value="SLA" id="slaOtLabel"/>
+                <h:inputText label="SLA" id="slaOtInput" style="width: 75%"
+                             value="72 Horas"
+                             readonly="true" disabled="true"/>
+                <h:outputText value="Estado SLA" id="EstadoSlaOtLabel"/>
+                <h:inputText label="Estado SLA" id="EstadoSlaOtInput" style="width: 75%"
+                             value="En cumplimiento"
+                             readonly="true" disabled="true"/>
+                <h:outputText value="Estado Interno" id="EstadoIntOtLabel"/>
+                <h:inputText label="Estado Interno" id="EstadoIntOtInput" style="width: 75%"
+                             value="#{listOrdenTrabajoCm.orderTrabajoSelected.estadoInternoObj.nombreBasica}"
+                             readonly="true" disabled="true"/>
+                <h:outputText value="Clase de Orden" id="TipoOtLabel"/>
+                <h:inputText label="Clase de Orden" id="TipoOtInput" style="width: 75%"
+                             value="#{listOrdenTrabajoCm.orderTrabajoSelected.tipoOtObj.descTipoOt}"
+                             readonly="true" disabled="true"/>
+                <h:outputText value="Nodo" id="NodoOtLabel"/>
+                <h:inputText label="Nodo" id="NodoOtInput" style="width: 75%"
+                             value="1332"
+                             readonly="true" disabled="true"/>
+            </h:panelGrid>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/casosTemplate.xhtml"
+    >
+
+    <ui:define name="title"><span class="TituloSeccion">Casos</span></ui:define>
+    <ui:define name="content">
+
+        <h:panelGroup rendered="#{casosCcmmBean.verCasos}">
+            
+           <h2 id="myhMmData">Casos[#{casosCcmmBean.subEdificioMgl.nombreSubedificio}]</h2>
+            <br></br>
+            <div class="tableContent" >
+                <h:dataTable                               
+                    value="#{casosCcmmBean.lstCasosCcmm}" 
+                    var="casos" rows="10"                         
+                    styleClass="constructGTable" 
+                    headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="No Caso" /><BR/>
+                            </f:facet>
+                            <h:commandLink id="sdsInputTxt0" immediate="true" 
+                                           value="#{casos.ticketId}" 
+                                           action="#{casosCcmmBean.verDetalle(casos)}" />
+                        </div>                                  
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Fecha" /><BR/>
+                            </f:facet>
+                            <h:outputText value="#{casosCcmmBean.convertirFecha(casos.ticketStartDate)}"> 
+                               <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss" />    
+                            </h:outputText>         
+                        </div>                                  
+                    </h:column>
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Descripción" /><BR/>
+                            </f:facet>
+                            <h:outputText  value="#{casos.ticketDescription}"  /> 
+                        </div>                                  
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Estado" /><BR/>
+
+                            </f:facet>
+                            <h:outputText  value="#{casos.ticketStatus}"    />   
+                        </div>                                  
+                    </h:column>
+                </h:dataTable>  
+            </div>
+        </h:panelGroup >
+        
+        <h:panelGroup rendered="#{casosCcmmBean.verDetalle}" >
+            <div class="tableContent" >
+                <h1>Notas Caso</h1>    
+          <!--       <h:commandLink id="crearNotaId" 
+                           value="Nueva Nota" 
+                           action="# {casosCcmmBean.crearNota()}" /> -->
+                 <h:dataTable id="tablaNotasId"                              
+                    value="#{casosCcmmBean.notasCaso}" 
+                    var="notas"                         
+                    styleClass="constructGTable" 
+                    rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Usuario" /><BR/>
+                            </f:facet>
+                            <h:outputText   value="#{notas.user}"/>   
+                        </div>                                  
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Fecha Nota" /><BR/>
+                            </f:facet>
+                            <h:outputText   value="#{casosCcmmBean.convertirFecha(notas.date)}">
+                           <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                            </h:outputText>         
+                        </div>                                  
+                    </h:column>
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Descripción" /><BR/>
+                            </f:facet>
+                            <h:outputText  value="#{notas.note}"  /> 
+                        </div>                                  
+                    </h:column>
+                          <f:facet name="footer" >
+                           <h:panelGroup>
+                               <div style="text-align: center;">
+                                   <h:commandButton title="Primera Página" value=""
+                                                    class="botonTPagInicioCm botonBaselista">
+                                       <f:ajax   render="tablaNotasId" execute="@this" 
+                                                 event="click" listener="#{casosCcmmBean.pageFirst()}"/>
+                                   </h:commandButton>
+                                   <h:commandButton title="Página Anterior" value=""
+                                                    class="botonTPagAnteriorCm botonBaselista">
+                                       <f:ajax   render="tablaNotasId" execute="@this" 
+                                                 event="click" listener="#{casosCcmmBean.pagePrevious()}"/>
+                                   </h:commandButton>
+                                   <h:commandButton title="Número Páginas" value="#{casosCcmmBean.pageActual}" styleClass="botonTPagInicio"/>
+                                   <h:selectOneMenu id="listTabla" value="#{casosCcmmBean.numPagina}" 
+                                                    styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                       <f:selectItems value="#{casosCcmmBean.paginaList}" var="pag"
+                                                      itemValue="#{pag}"
+                                                      itemLabel="#{pag}"/>
+                                       <f:ajax render="tablaNotasId" event="change"
+                                               listener="#{casosCcmmBean.irPagina()}"
+                                               execute="@this" />
+                                   </h:selectOneMenu>
+                                   <h:commandButton  title="Página Siguiente" value=""
+                                                     class="botonTPagSiguienteCm botonBaselista">
+                                       <f:ajax   render="tablaNotasId" execute="@this" 
+                                                 event="click" listener="#{casosCcmmBean.pageNext()}"/>
+                                   </h:commandButton>
+                                   <h:commandButton title="Ultima Página" value=""
+                                                    class="botonTPagFinCm botonBaselista">
+                                       <f:ajax   render="tablaNotasId" execute="@this" 
+                                                 event="click" listener="#{casosCcmmBean.pageLast()}"/>
+                                   </h:commandButton>
+                               </div>
+                           </h:panelGroup>
+                     </f:facet> 
+                </h:dataTable>  
+            </div>       
+             <br></br>    
+              <h:panelGrid columns="2" id="panelBotonesCasos" styleClass="panelInfo">
+                    <h:panelGroup id="botonesAcciones">
+                        <h:commandButton value="Volver" styleClass="btn" id="btnAct"
+                                         action="#{casosCcmmBean.volverList()}"/>
+                        <h:commandButton value="Ver Afectaciones" styleClass="btn"
+                                         action="#{casosCcmmBean.verAfectacionesCcmm()}"/>
+                        <h:commandButton value="Ver Detalle" styleClass="btn"
+                                         action="#{casosCcmmBean.verDetalleCaso()}"/>
+                    </h:panelGroup> 
+                </h:panelGrid>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

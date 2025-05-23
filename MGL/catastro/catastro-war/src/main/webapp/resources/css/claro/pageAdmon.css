@@ -1,0 +1,43 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 14/02/2019, 03:48:37 PM
+    Author     : villadiegol
+*/
+.tablaDatosCss  table thead tr .ui-state-default{
+    background: rgb(226, 33, 6);
+}
+
+.tablaDatosCss table thead tr th .ui-column-title{
+    color: #ffffff !important;
+}
+
+.tablaDatosCss table tfoot tr .ui-state-default{
+    background: #DA262C;
+    color: #ffffff !important;
+}
+
+.panelCss div.ui-panel-titlebar {
+    background-color: transparent!important;
+    background-image: none!important;
+    color: dimgray;    
+}
+
+.tabalFiltros div.ui-datatable-header {
+    background-image: none;
+    background-color: darkgray!important;    
+}
+
+.width60Perc
+{
+width: 60% !important;
+}
+
+.width40Perc
+{
+width: 40% !important;
+}
+

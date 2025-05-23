@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core" 
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:panelGroup id="cmData" >
+        <h2 id="hMmData">
+            Cuenta Matriz -<h:commandLink action="/view/MGL/CM/cuentas-matrices.xhtml" value="Regresar consulta" immediate="true"/> 
+        </h2>
+       
+            <table style="width: 100%">
+                <tr><td></td>
+                    <td>  <h:outputText class="txtLabelsMgl" value="Tipo CM"/></td>
+                    <td>  <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.subEdificioGeneral.tipoEdificioObj.nombreBasica}"/></td>
+                    <td> <h:outputText class="txtLabelsMgl" value="Nombre"/></td>
+                    <td> <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.subEdificioGeneral.nombreSubedificio}" 
+                                       title="#{cuentaMatrizBean.cuentaMatriz.subEdificioGeneral.nombreSubedificio}" /></td>
+                    <td>    <h:outputText class="txtLabelsMgl"  value="No Torres"/></td>
+                    <td>  <div class="dropdown">
+                            <button>#{cuentaMatrizBean.selectedCmtSubEdificioMgl.estadoSubEdificioObj.basicaId eq 50?(cuentaMatrizBean.cuentaMatriz.listCmtSubEdificioMgl.size()  eq 1 ? cuentaMatrizBean.cuentaMatriz.listCmtSubEdificioMgl.size():cuentaMatrizBean.selectedCmtSubEdificioMgl.nombreGeneral)
+                                                      :(cuentaMatrizBean.cuentaMatriz.listCmtSubEdificioMgl.size() eq 1?cuentaMatrizBean.cuentaMatriz.listCmtSubEdificioMgl.size():cuentaMatrizBean.selectedCmtSubEdificioMgl.nombreSubedificio)}</button>
+                            <div class="dropdown-content">
+                                <ui:repeat  value="#{cuentaMatrizBean.getListaSubedificios()}"  var="subEdificiosMgl" varStatus="myVarStatus">  
+                                    <h:commandLink   action="#{subEdificiosMglBean.getSelectedTorre(subEdificiosMgl.subEdificioId)}"
+                                                     title="#{subEdificiosMgl.getDireccionSubEdificio()}"> 
+                                        #{subEdificiosMgl.estadoSubEdificioObj.basicaId.toString()  eq '50' ? subEdificiosMgl.nombreGeneral : 
+                                          cuentaMatrizBean.cuentaMatriz.listCmtSubEdificioMgl.size() eq 1 
+                                          and !cuentaMatrizBean.cuentaMatriz.isUnicoSubEdificioBoolean() ? subEdificiosMgl.nombreTorre: subEdificiosMgl.nombreSubedificio}<br></br>
+                                        <f:setPropertyActionListener target="#{subEdificiosMglBean.selectedCmtSubEdificioMgl}" value="#{subEdificiosMgl}"  />                            
+                                    </h:commandLink>
+                                </ui:repeat>
+                                 
+                            </div>
+                        </div></td>
+                    
+                </tr> 
+                
+                <tr><td></td>
+                  <td> <h:outputText class="txtLabelsMgl"  value="No Cuenta RR"/></td>
+                    <td>   <h:outputText style="color: red;font-weight: bold;font-size: 13px" value="#{cuentaMatrizBean.cuentaMatriz.numeroCuenta}" /></td>
+                    <td> <h:outputText class="txtLabelsMgl"  value="No Cuenta MGL"/></td>
+                    <td> <h:outputText  style="color: red;font-weight: bold; font-size: 13px" 
+                                       value="#{cuentaMatrizBean.cuentaMatriz.cuentaMatrizId}" /> </td>  
+                </tr>
+                <tr></tr>
+                <tr><td></td>
+                    <td> <h:outputText class="txtLabelsMgl" value="Dirección"/></td>
+                    <td> <h:outputText class="columnReadForm" value="#{cuentaMatrizBean.cuentaMatriz.direccionPrincipal.direccionObj.dirFormatoIgac}" /></td>
+                    <td> <h:outputText class="txtLabelsMgl" value="Barrio"/></td>
+                    <td> <h:outputText class="columnReadForm" value="#{cuentaMatrizBean.cuentaMatriz.direccionPrincipal.barrio}" /></td>
+                    <td>  <h:outputText class="txtLabelsMgl" value="Departamento"/></td>
+                    <td>  <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.departamento.gpoNombre}" /></td>
+                    <td>  <h:outputText class="txtLabelsMgl" value="Ciudad"/></td>
+                    <td>  <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.municipio.gpoNombre}" /></td>
+                    <td> <h:outputText class="txtLabelsMgl" value="Centro Poblado"/></td>
+                    <td> <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.centroPoblado.gpoNombre}" /></td>
+
+                </tr> 
+                <tr></tr>
+                <tr><td></td>
+                    
+                    <td>  <h:outputText class="txtLabelsMgl" value="Estrato"/></td>
+                    <td>  <h:outputText class="columnReadForm" title="#{cuentaMatrizBean.selectedCmtSubEdificioMgl.estrato.descripcion}" value="#{cuentaMatrizBean.selectedCmtSubEdificioMgl.estrato.nombreBasica}"/></td>
+<!--                    espinosadiea modificaciones numero de cuenta mgl 9/06/18-->
+                    <td />
+                    <td />
+                </tr> 
+                <tr></tr>
+
+            </table>
+            <table>
+            <tr><td></td>
+                    <td>  <h:outputText class="txtLabelsMgl" value="Tecnologías" /></td>
+                    <td>   <ui:repeat var="coberturas" value="#{cuentaMatrizBean.cuentaMatriz.coberturasList}"> 
+                            <h:outputText class="columnReadFormNumero" style="margin-right:0px"
+                                          value="#{consultaCuentasMatricesBean.validarCobertura(coberturas)}" /> 
+                            <h:outputText class="columnReadFormNumero" style="color: red;font-weight: bold; display: inline;" value="#{coberturas}"
+                                          title="#{consultaCuentasMatricesBean.obtenerTooltip(coberturas)}" rendered="#{consultaCuentasMatricesBean.isRojo}" />
+                            <h:outputText class="columnReadFormNumero" style="color: blue;font-weight: bold; display: inline;"
+                                          title="#{consultaCuentasMatricesBean.obtenerTooltip(coberturas)}" value="#{coberturas}" rendered="#{consultaCuentasMatricesBean.isAzul}" /> 
+                            <h:outputText class="columnReadFormNumero" style="color: green;font-weight: bold; display: inline;"
+                                          title="#{consultaCuentasMatricesBean.obtenerTooltip(coberturas)}" value="#{coberturas}" rendered="#{consultaCuentasMatricesBean.isVerde}" /> 
+                        </ui:repeat> </td>
+                </tr>                      
+            </table>
+    </h:panelGroup>
+
+</ui:composition>

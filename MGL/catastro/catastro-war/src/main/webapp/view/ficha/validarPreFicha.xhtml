@@ -1,0 +1,695 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/template/homeFichasTemplate.xhtml"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">
+
+        <span class="TituloSeccion">Validar preficha nodos</span>
+    </ui:define>
+    <ui:define name="contenido">
+        <h:form id="formDatosDT" enctype="multipart/form-data">
+            <h:panelGroup>
+            <div style="overflow:scroll auto;height: auto;max-height: 400px; ">
+                <h:dataTable id="prefichaValidarTable"  binding="#{validarPrefichaBean.dataTable}"
+                             value="#{validarPrefichaBean.preFichaValidarList}" var="preFicha"
+                             styleClass="constructGTable" rows="10"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <f:facet name="header">
+                        <h:outputText value="PreFichas a Validar" />
+                    </f:facet>
+
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="Nodo" />
+                        </f:facet>
+                        <h:outputText value="#{preFicha.nodoMgl.nodCodigo}" />  
+                    </h:column>
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="Archivo Cargado" />
+                        </f:facet>
+                        <h:outputText value="#{preFicha.nombreArchivo}" />  
+                    </h:column>
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="Usuario Generación" />
+                        </f:facet>
+                        <h:outputText value="#{preFicha.prfUsuarioGenera}" />  
+                    </h:column>
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Generación" />
+                        </f:facet>
+                        <h:outputText value="#{preFicha.prfFechaGenera}" >
+                            <f:convertDateTime type="date" pattern="MMM dd, yyyy hh:mm"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="Validar" />
+                        </f:facet>
+
+                        <h:commandButton value="Validar" action="#{validarPrefichaBean.habilitarCargaArchivo()}" styleClass="btn" disabled="#{!validarPrefichaBean.validarOpcionValidarPreficha()}" style="color:#FFFFFF;">
+                            <f:setPropertyActionListener target="#{validarPrefichaBean.idPrefichaSelected}" value="#{preFicha.prfId}"  />                                    
+                        </h:commandButton>
+
+                    </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:selectBooleanCheckbox id="selEliminarTodo"  title="Eliminar" label="Eliminar" value="#{validarPrefichaBean.eliminarTodoSelected}"
+                                                         disabled="#{not validarPrefichaBean.registrosFiltrados or not validarPrefichaBean.filtroAplicado}">
+                                    <f:ajax  event="change" execute="@this" render="formDatosDT pMessagesExterno" listener="#{validarPrefichaBean.marcarTodo()}"/>                                    
+                                </h:selectBooleanCheckbox>
+                                <h:outputText value="Eliminar" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox  id="selEliminar"
+                                                      value="#{preFicha.selected}" disabled="#{validarPrefichaBean.todasLasPreFichasMarcadas or not validarPrefichaBean.rangoFechasValido or not validarPrefichaBean.filtroAplicado}">
+                                <f:ajax  event="change" execute="@this" render="formDatosDT" listener="#{validarPrefichaBean.evaluarSiHayFichasMarcadas()}"/>
+                            </h:selectBooleanCheckbox>
+                        </h:column>
+                    
+                     <f:facet name="footer" >
+                         <h:panelGroup>
+                             <div style="text-align: center;">
+                             <h:commandButton title="Primera Página" value="" id="paginaUno"
+                                                     class="botonTPagInicioCm botonBaselista"
+                                                     disabled="#{not validarPrefichaBean.filtroAplicado}">
+                              <f:ajax render="formDatosDT"
+                                         listener="#{validarPrefichaBean.pageFirst}"
+                                         immediate="true"/>
+                             </h:commandButton>
+                             <h:commandButton title="Página Anterior" value="" id="paginaAnterior"
+                                                     class="botonTPagAnteriorCm botonBaselista"
+                                                     disabled="#{not validarPrefichaBean.filtroAplicado}">
+                             <f:ajax render="formDatosDT"
+                                         listener="#{validarPrefichaBean.pagePrevious}"
+                                         immediate="true"/>
+                             </h:commandButton>
+                             <h:commandButton title="Número Páginas" value="#{validarPrefichaBean.pageActual}" immediate="true" id="numeroPaginas"
+                                                     styleClass="botonTPagInicio"
+                                                     disabled="#{not validarPrefichaBean.filtroAplicado}"/>
+                             <h:selectOneMenu id="listTabla" value="#{validarPrefichaBean.numPagina}" 
+                                              styleClass="ListaConsulta" style="width: 40px; height:19px;"
+                                                     disabled="#{not validarPrefichaBean.filtroAplicado}">
+                                 <f:selectItems value="#{validarPrefichaBean.paginaList}" var="pag"
+                                                itemValue="#{pag}"
+                                                itemLabel="#{pag}"/>
+                                 <f:ajax render="formDatosDT" event="change"
+                                         listener="#{validarPrefichaBean.irPagina()}"
+                                         execute="@this" />
+                             </h:selectOneMenu>
+                             <h:commandButton title="Página Siguiente" value="" id="paginaSiguiente"
+                                                     class="botonTPagSiguienteCm botonBaselista"
+                                                     disabled="#{not validarPrefichaBean.filtroAplicado}">
+                                 <f:ajax render="formDatosDT"
+                                         listener="#{validarPrefichaBean.pageNext}"
+                                         immediate="true"/>
+                             </h:commandButton> 
+                             <h:commandButton title="Última Página" value="" id="pagianUltima"
+                                                     class="botonTPagFinCm botonBaselista"
+                                                     disabled="#{not validarPrefichaBean.filtroAplicado}">
+                             <f:ajax render="formDatosDT"
+                                         listener="#{validarPrefichaBean.pageLast}"
+                                         immediate="true"/>
+                             </h:commandButton>
+                             <h:outputText value="Fecha Inicial"  />                                  
+                                    <h:inputText label="Fecha Inicial" id="fechaInicial" style="width: 9%" disabled="#{validarPrefichaBean.hayFichasSeleccionadas}" 
+                                                 a:type="date" a:min="1900-01-01" a:max="9999-12-31" value="#{validarPrefichaBean.fechaInicial}" >
+                                        <f:convertDateTime type="date" pattern="yyyy-MM-dd"/>
+                                        <f:ajax event="valueChange" execute="@this" listener="#{validarPrefichaBean.fechaAlterada()}" delay="1500"
+                                                render="paginaUno paginaAnterior paginaAnterior 
+                                                numeroPaginas listTabla paginaSiguiente pagianUltima 
+                                                selEliminarTodo btnFiltrar pMessagesExterno fechaFinal
+                                                formDatosDT:prefichaValidarTable:0:selEliminar 
+                                                formDatosDT:prefichaValidarTable:1:selEliminar 
+                                                formDatosDT:prefichaValidarTable:2:selEliminar 
+                                                formDatosDT:prefichaValidarTable:3:selEliminar 
+                                                formDatosDT:prefichaValidarTable:4:selEliminar 
+                                                formDatosDT:prefichaValidarTable:5:selEliminar 
+                                                formDatosDT:prefichaValidarTable:6:selEliminar 
+                                                formDatosDT:prefichaValidarTable:7:selEliminar 
+                                                formDatosDT:prefichaValidarTable:8:selEliminar
+                                                formDatosDT:prefichaValidarTable:9:selEliminar"/>
+                                    </h:inputText>
+                                    <h:outputText value="Fecha Final" />
+                                    <h:inputText label="Fecha Final" id="fechaFinal"  style="width: 9%" disabled="#{validarPrefichaBean.hayFichasSeleccionadas}" 
+                                                 a:type="date" a:min="1900-01-01" a:max="9999-12-31" value="#{validarPrefichaBean.fechaFinal}" >
+                                        <f:convertDateTime type="date" pattern="yyyy-MM-dd"/> 
+                                        <f:ajax event="valueChange" execute="@this" listener="#{validarPrefichaBean.fechaAlterada()}" delay="1500"
+                                                render="paginaUno paginaAnterior paginaAnterior 
+                                                numeroPaginas listTabla paginaSiguiente pagianUltima 
+                                                selEliminarTodo btnFiltrar pMessagesExterno fechaInicial 
+                                                formDatosDT:prefichaValidarTable:0:selEliminar 
+                                                formDatosDT:prefichaValidarTable:1:selEliminar 
+                                                formDatosDT:prefichaValidarTable:2:selEliminar 
+                                                formDatosDT:prefichaValidarTable:3:selEliminar 
+                                                formDatosDT:prefichaValidarTable:4:selEliminar 
+                                                formDatosDT:prefichaValidarTable:5:selEliminar 
+                                                formDatosDT:prefichaValidarTable:6:selEliminar 
+                                                formDatosDT:prefichaValidarTable:7:selEliminar 
+                                                formDatosDT:prefichaValidarTable:8:selEliminar
+                                                formDatosDT:prefichaValidarTable:9:selEliminar"/>
+                                    </h:inputText>
+                                    <h:commandButton id="btnFiltrar"
+
+                                                     value="Filtrar" styleClass="btn"
+                                                     disabled="#{validarPrefichaBean.hayFichasSeleccionadas or not validarPrefichaBean.rangoFechasValido or validarPrefichaBean.filtroAplicado}">
+                                        <f:ajax render="formDatosDT pMessagesExterno"
+                                                listener="#{validarPrefichaBean.filtrarLista}"
+                                                immediate="true"/>
+                                    </h:commandButton>
+
+                                    <h:commandButton id="btnEliminar" title="Eliminar" value="Eliminar"
+                                                     styleClass="btn" style="color:#FFFFFF;"
+                                                     rendered="#{validarPrefichaBean.hayFichasSeleccionadas}"
+                                                     disabled="#{!validarPrefichaBean.validarOpcionEliminarPreficha()}"
+                                                     onclick="return confirm('¿Está seguro que desea eliminar el(los) registro(s) seleccionado(s)?');">
+                                        <f:ajax render="formDatosDT  pMessagesExterno"
+                                                listener="#{validarPrefichaBean.getSelectedFichasPorEliminar}" 
+                                                immediate="true"/>                                       
+                                    </h:commandButton>
+
+                                                  
+                              </div>
+                         </h:panelGroup>
+                     </f:facet>      
+                </h:dataTable>
+            </div>
+            </h:panelGroup>
+        </h:form>
+        <h:form id="formDatos" enctype="multipart/form-data">    
+
+            <br></br>
+            <h:panelGroup rendered="#{validarPrefichaBean.idPrefichaSelected != null}">
+                <h:outputLabel class="EtiquetaConsulta" value="Archivo:"/>  
+                
+                <p:fileUpload id="file" mode="simple" skinSimple="true"
+                                            label="Seleccionar Archivo"   required="true" 
+                                   requiredMessage="Se necesita un archivo"
+                                            value="#{validarPrefichaBean.uploadedFile}" />
+
+                <h:commandButton id="buttonUploadFile"  
+                                 action="#{validarPrefichaBean.uploadFile}" 
+                                 value="Cargar Archivo" styleClass="buttonLarge" style="color:#FFFFFF;">
+                </h:commandButton>
+                <br></br>
+
+            </h:panelGroup>
+            <h:panelGroup rendered="#{validarPrefichaBean.saveAvailable}">                
+                <h:commandButton id="buttonSavePreficha"  
+                                 action="#{validarPrefichaBean.guardarPreficha}" 
+                                 value="Guardar información" styleClass="buttonLarge" style="color:#FFFFFF;">
+                </h:commandButton>
+                <br></br>
+            </h:panelGroup>
+            <br></br>            
+
+            <t:panelTabbedPane selectedIndex="0" style="height: 300px; width: 100%; overflow:scroll;" title="PreFicha Generada" rendered="true">
+
+                <t:panelTab label="EDIFICIOS VT">
+                    <div style="height:300px; overflow:scroll auto;">
+                        <h:dataTable id="edificiosVtXlsTable" 
+                                     value="#{validarPrefichaBean.edificiosVtXls}" var="preFichaXls"
+                                     styleClass="constructGTable"
+                                     headerClass="solicitudesGTableHeader"
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                     rendered="#{validarPrefichaBean.edificiosVtXls.size() >0}">
+
+                            <f:facet name="header">
+                                <h:outputText value="Información Procesada para el Archivo Excel" />
+                            </f:facet>
+
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Id" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.idPfx}" /> 
+                                </div>
+                            </h:column>
+                            <h:column  >   
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre Conjunto" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.nombreConj}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Vía Principal" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.viaPrincipal}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Placa" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.placa}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Total HHPP" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.totalHHPP}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Aptos" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.aptos}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Locales" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.locales}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Oficinas" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.oficinas}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Pisos" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.pisos}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Barrio" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.barrio}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Distribución" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.distribucion}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Información" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="Antes" rendered="#{preFichaXls.modified == false ? 'true':'false'}"/>  
+                                    <h:outputText style="color: red;" value="Después" rendered="#{preFichaXls.modified == true ? 'true':'false'}"/>  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Tipo Dirección" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.idTipoDireccion}" />  
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </t:panelTab>
+                
+                <t:panelTab label="CASAS RED EXTERNA">
+                    <div style="height: 280px; overflow:scroll auto;">
+                        <h:dataTable id="casaRedExtXlsTable" 
+                                     value="#{validarPrefichaBean.casasRedExternaXls}" var="preFichaXls"
+                                     styleClass="constructGTable"
+                                     headerClass="solicitudesGTableHeader"
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                     rendered="#{validarPrefichaBean.casasRedExternaXls.size() >0}">
+
+                            <f:facet name="header">
+                                <h:outputText value="Información Procesada para el Archivo Excel" />
+                            </f:facet>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Id" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.idPfx}" /> 
+                                </div>
+                            </h:column>
+                            
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Vía Principal" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.viaPrincipal}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Placa" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.placa}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Total HHPP" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.totalHHPP}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Aptos" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.aptos}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Locales" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.locales}" />
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Pisos" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.pisos}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Barrio" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.barrio}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Distribución" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.distribucion}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Información" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="Antes" rendered="#{preFichaXls.modified == false ? 'true':'false'}"/>  
+                                    <h:outputText style="color: red;" value="Después" rendered="#{preFichaXls.modified == true ? 'true':'false'}"/>  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Tipo Dirección" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.idTipoDireccion}" />  
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </t:panelTab>
+
+                <t:panelTab label="CONJ CASAS VT">
+                <h:outputText value="No se Procesaron Registros para esta pestaña" 
+                                  rendered="#{validarPrefichaBean.conjCasasVtXls == null || validarPrefichaBean.conjCasasVtXls.size() == 0}" /> 
+                    <div style="height: 280px; overflow:scroll auto;">
+                        <h:dataTable id="conjCasasVtXlsTable" 
+                                     value="#{validarPrefichaBean.conjCasasVtXls}" var="preFichaXls"
+                                     styleClass="constructGTable"
+                                     headerClass="solicitudesGTableHeader"
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                     rendered="#{validarPrefichaBean.conjCasasVtXls.size() >0}">
+
+                            <f:facet name="header">
+                                <h:outputText value="Información Procesada para el Archivo Excel" />
+                            </f:facet>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Id" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.idPfx}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre Conjunto" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.nombreConj}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                   <h:outputText value="Vía Principal" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.viaPrincipal}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Placa" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.placa}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Total HHPP" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.totalHHPP}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Aptos" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.aptos}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Locales" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.locales}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Oficinas" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.oficinas}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Pisos" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.pisos}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Barrio" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.barrio}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Distribución" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.distribucion}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Información" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="Antes" rendered="#{preFichaXls.modified == false ? 'true':'false'}"/>  
+                                    <h:outputText style="color: red;" value="Después" rendered="#{preFichaXls.modified == true ? 'true':'false'}"/>  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Tipo Dirección" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.idTipoDireccion}" />  
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </t:panelTab>
+
+                <t:panelTab label="HHPP SN">
+                <h:outputText value="No se Procesaron Registros para esta pestaña" 
+                                  rendered="#{validarPrefichaBean.hhppSNXls == null || validarPrefichaBean.hhppSNXls.size() == 0}" /> 
+                    <div style="height: 280px; overflow:scroll auto;">
+                        <h:dataTable id="hhppSNXlsTable" 
+                                     value="#{validarPrefichaBean.hhppSNXls}" var="preFichaXls" 
+                                     styleClass="constructGTable"
+                                     headerClass="solicitudesGTableHeader"
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                     rendered="#{validarPrefichaBean.hhppSNXls.size() >0}">
+
+                            <f:facet name="header">
+                                <h:outputText value="Información Procesada para el Archivo Excel" />
+                            </f:facet>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Id" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.idPfx}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre Conjunto" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.nombreConj}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Vía Principal" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.viaPrincipal}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Placa" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.placa}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Total HHPP" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.totalHHPP}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Aptos" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.aptos}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Locales" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.locales}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Oficinas" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.oficinas}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Pisos" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.pisos}" /> 
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Barrio" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.barrio}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Distribución" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.distribucion}" />  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Información" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="Antes" rendered="#{preFichaXls.modified == false ? 'true':'false'}"/>  
+                                    <h:outputText style="color: red;" value="Después" rendered="#{preFichaXls.modified == true ? 'true':'false'}"/>  
+                                </div>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Tipo Dirección" />
+                                </f:facet>
+                                <div style="#{preFichaXls.idPfx % 2 == 0 ? 'background: none repeat scroll 0 0 #f0f0f0;' : ''}">
+                                    <h:outputText value="#{preFichaXls.idTipoDireccion}" />  
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </t:panelTab>
+
+            </t:panelTabbedPane>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

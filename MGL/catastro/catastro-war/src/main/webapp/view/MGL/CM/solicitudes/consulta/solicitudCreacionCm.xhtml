@@ -1,0 +1,460 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"                
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="content">
+        <h:commandButton  id="regresarButton" 
+                          class="btn2 btn2Active" 
+                          value="Regresar" 
+                          action="#{cmtEstadoSolicitudBean.regresarAConsulta()}"
+                          immediate="true" />    
+
+        <h:panelGroup id="panelGroupSolicitudTitle" style="width: 100%">
+            <h2 id="SolicitudTitle">SOLICITUD #{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudObj.nombreTipo}</h2>
+        </h:panelGroup>
+
+        <h:panelGrid columns="6" id="notasMgl" class="formulario3"  style="width:100%;"  > 
+
+            <h:outputText value="Número de Solicitud:" class="EtiquetaConsulta"/>
+            <h:outputText id="ccmsTxt" value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId}"
+                          style="width: 100px;font-size: 14.5px;color:red;font-weight: bold; "   /> 
+
+            <h:outputText value="Estado de la Solicitud:" class="EtiquetaConsulta"/>
+            <h:inputText id="esmsTxt" value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                               estadoSolicitudObj.nombreBasica}" disabled="true" style="width: 100px"/> 
+
+            <h:outputText value="Tiempo Solicitud" class="EtiquetaConsulta"/>
+
+            <h:inputText id="eimsTxt" 
+                         style="width: 100px" 
+                         value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tiempoCreacionSolicitud}"/>
+            
+            <h:outputText id="idtechabiseleccionadaLabel" value="Tecnología Solicitada:"
+                          class="txtLabelsMgl"   /> 
+            
+            <h:outputText id="idtechabiseleccionada" value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.basicaIdTecnologia.nombreBasica}"
+                          class="columnReadForm"   /> 
+            
+
+        </h:panelGrid> 
+
+        <h:panelGrid  class="formulario3"  columns="4">
+            <h:commandButton  id="irSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'SOLICITUD' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Solicitud" 
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('SOLICITUD')}"
+                              disabled="#{cmtEstadoSolicitudBean.selectedTab eq 'SOLICITUD'}"
+                              immediate="true" />
+            <h:commandButton  id="irEstadoSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'TRACK' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Track" 
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('TRACK')}" 
+                              immediate="true" />
+            <h:commandButton  id="irNotasSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Notas"
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('NOTAS')}"
+                              immediate="true" />
+            <h:commandButton  id="irHorarioSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'HORARIO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Horario de Atención"
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('HORARIO')}"
+                              rendered="#{cmtEstadoSolicitudBean.showHorario}"
+                              immediate="true" />
+
+        </h:panelGrid>
+        <BR/><BR/>
+        
+        <h:panelGroup >
+            <h2>DATOS CUENTA MATRIZ</h2>
+            
+            <h:panelGrid columns="8" id="digitarDireccion" styleClass="formularioSol">
+
+           <h:outputText  value="Departamento:" class="txtLabelsMgl"/>
+           <h:outputText id="txtDepartamento"   class="columnReadForm" 
+                          value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                   departamentoGpo.gpoNombre}"/>
+          
+           <h:outputText value="Ciudad:" class="txtLabelsMgl"/>
+           <h:outputText id="txtCiudad"   class="columnReadForm" 
+                          value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                   ciudadGpo.gpoNombre}"/>
+            
+            <h:outputText value="Centro Poblado:" class="txtLabelsMgl"/>
+            <h:outputText id="txtCentro"   class="columnReadForm" 
+                          value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                   centroPobladoGpo.gpoNombre}"/>
+      
+            <h:outputText  value="Dirección:" class="txtLabelsMgl"/>
+            <h:outputText id="txtDireccion"   class="columnReadForm" 
+                          value="#{cmtEstadoSolicitudBean.direccion}"/>
+     
+            <h:outputText value="Barrio:" class="txtLabelsMgl"/>                             
+            <h:outputText id="txtBarrio"   class="columnReadForm" 
+                          value="#{cmtEstadoSolicitudBean.selectedBarrio}"/>
+
+            <h:outputText class="txtLabelsMgl"  value="Nombre Cuenta matriz:"/>
+            <h:outputText id="txtNombreCM"   class="columnReadForm" 
+                          value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.
+                                       nombreSubedificio}"/>
+
+            <h:outputText class="txtLabelsMgl" value="Tipo Edificio:"/>
+            <h:outputText id="txtTipoEdi"   class="columnReadForm" 
+                          value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.
+                                       tipoEdificioObj.nombreBasica}"/>
+
+            <h:outputText class="txtLabelsMgl"  value="Cantidad Torres:"/>
+            <h:outputText id="txtCanTorres"   class="columnReadForm" 
+                          value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.cantidadTorres}"/>
+
+            <h:outputText class="txtLabelsMgl" value="Cantidad Hhpp:" />
+            <h:outputText id="txtCantHhpp"   class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.unidades}"/>
+
+            <h:outputText class="txtLabelsMgl" value="Constructora:" />
+            <h:outputText id="txtConstructora"   class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.
+                                       companiaConstructoraObj.nombreCompania}"/>
+
+            <h:outputText class="txtLabelsMgl" value="Contacto  constructora:" />
+            <h:outputText id="txtContConstructora"   class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.
+                                       contactoConstructora}"/>
+
+            <h:outputText class="txtLabelsMgl" value="Administración:" />
+            <h:outputText id="txtAdministracion"   class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.
+                                       companiaAdministracionObj.nombreCompania}"/>
+    
+            <h:outputText class="txtLabelsMgl"  value="Contacto Administración:" />
+            <h:outputText id="txtContAdministracion"   class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.administrador}"/>
+
+            <h:outputText class="txtLabelsMgl" value="Ascensores:" />
+            <h:outputText id="txtAscensores"   class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.
+                                       companiaAscensorObj.nombreCompania}"/>
+
+             <h:outputText class="txtLabelsMgl" value="Contacto  Ascensores:" />
+             <h:outputText id="txtContAscensores"   class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.
+                                       contactoAcsensores}"/>
+
+             <h:outputText class="txtLabelsMgl" value="Teléfono Portería:" />
+             <h:outputText id="txtPorteria"   class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.telefonoPorteria}"/>
+             
+             <h:outputText class="txtLabelsMgl" value="Teléfono Portería 2:" />
+             <h:outputText id="txtPorteria2"   class="columnReadForm" 
+                           value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.telefonoPorteria2}"/>
+             
+             <h:outputText class="txtLabelsMgl" value="Fecha entrega(yyyy-mm-dd):" />
+             <h:outputText id="txtFechaEntrega"   class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.fechaEntregaEdificio}"/>
+             
+             <h:outputText/>                
+             <h:outputText/>                  
+
+            </h:panelGrid>
+            
+        </h:panelGroup > 
+         
+       <table style="width: 100%" >
+            <td style="width:100%" > <h2 id="solModData" style="margin-top: 0px; margin-left: -12px; margin-right: -14px;">DATOS SOLICITANTE </h2> </td>
+            <td style="width:5%"> 
+                <h:commandButton style="margin:0px 0 11px 0; " id="mostrarComponenteButton" image="/view/img/ocultar.png"
+                     action="#{cmtEstadoSolicitudBean.cambiarVisibleDatosSolicitud}">
+                </h:commandButton>
+            </td>
+        </table>
+        
+        <h:panelGroup id="panelDatosSolicitante" rendered="#{cmtEstadoSolicitudBean.visibleDatosSolicitud}">
+         <h:panelGrid class="formularioSol"  columns="8">
+               
+                <h:outputText class="txtLabelsMgl" id="tipoSolicLabel" value="Tipo solicitud:"/>  
+                <h:outputText id="txtTipoSol"   class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                       origenSolicitud.nombreBasica}"/>
+                       
+                <h:outputText class="txtLabelsMgl" value="Asesor:" />
+                <h:outputText id="txtAsesor"  class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.asesor}"/>
+
+                <h:outputText class="txtLabelsMgl" escape="false" value="Correo:" />
+                <h:outputText id="txtCorreo"  class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.correoAsesor}"/>
+
+                <h:outputText class="txtLabelsMgl" value="Área:" />
+                <h:outputText id="txtArea"  class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.areaSolictud}"/>
+
+                <h:outputText class="txtLabelsMgl" value="Teléfono:" />
+                <h:outputText id="txtTelefono"  class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.telefonoAsesor}"/>
+
+                <h:outputText class="txtLabelsMgl" value="copia a:" />
+                <h:outputText id="txtAsesorCopiaA"  class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.correoCopiaSolicitud}"/>
+
+                <h:outputText value="Usuario" class="txtLabelsMgl"/>
+                <h:outputText id="vistaUsuario" class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.usuarioSolicitud.nombre}"/>
+                
+                <h:outputText value="Correo usuario" class="txtLabelsMgl"/>
+                <h:outputText id="vistaCorreoUsuario"  class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.usuarioSolicitud.email}"/>
+
+                <h:outputText class="txtLabelsMgl" value="" />
+                <h:outputText id="txtB5"   class="columnReadForm" 
+                              value=""/>
+            </h:panelGrid>
+           
+            <h:outputText value="Notas(4000c)" class="txtLabelsMgl" style="margin-left: 5px;"/>
+            <BR/>
+            <h:inputTextarea id="comentariosNota" 
+                             value="#{cmtEstadoSolicitudBean.cmtNotasSolicitudMgl.nota}" 
+                             disabled="true" style="margin-left: 5px; width: 100%;">
+            </h:inputTextarea>
+            <BR/>
+        </h:panelGroup>
+
+        <h:panelGroup >
+            <h2>DATOS DEL GEO</h2>
+            <h:panelGrid columns="8" id="gridDatosGeo" styleClass="formularioSol">
+                <h:outputText class="txtLabelsMgl" value="Dirección Traducida:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.address}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Dirección Antigua:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.alternateaddress}" styleClass="columnReadForm"/>
+                
+                 <h:outputText class="txtLabelsMgl" value="Confiabilidad:"/>
+                 <h:outputText value="#{cmtEstadoSolicitudBean.addressService.reliability}" styleClass="columnReadForm">
+                 <f:convertNumber type="percent" />
+                </h:outputText>
+                <h:outputText class="txtLabelsMgl" value="Fuente:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.source}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Barrio:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.neighborhood}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Nivel Socioeconómico:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.leveleconomic}" styleClass="columnReadFormNumero"/>
+
+                <h:outputText class="txtLabelsMgl" value="Nodo Bi:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.nodoUno}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Nodo Uni 1:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.nodoDos}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Nodo Uni 2:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.nodoTres}" styleClass="columnReadForm"/>
+
+
+                <h:outputText class="txtLabelsMgl" value="Nodo Dth:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.nodoDth}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Nodo Movil:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.nodoMovil}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Nodo Ftth:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.nodoFtth}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Nodo Wifi:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.nodoWifi}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Estado:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.state}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Cx:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.cx}" styleClass="columnReadFormNumero"/>
+
+                <h:outputText class="txtLabelsMgl" value="Cy:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.addressService.cy}" styleClass="columnReadFormNumero"/>
+
+            </h:panelGrid>
+        </h:panelGroup> 
+                 
+        <table style="width: 100%" >
+            <td style="width:100%" > <h2 id="solModDataDireccion" style="margin-top: 0px; margin-left: -12px; margin-right: -14px;">UNIDADES DE LA DIRECCION</h2> </td>
+            <td style="width:5%"> 
+                <h:commandButton style="margin:0px 0 11px 0; " id="mostrarComponenteButtonDir" image="/view/img/ocultar.png"
+                                 action="#{cmtEstadoSolicitudBean.cambiarVisibleDatosDireccion()}">
+                </h:commandButton>
+            </td>
+        </table>
+       
+        <h:panelGroup id="panelDatosDeLaDireccionRender"  rendered="#{cmtEstadoSolicitudBean.visibleDatosDireccion}">
+            <h:panelGroup id="panelDatosEsconderDireccion">
+                <h:dataTable id="UnidadesHHPPsMglTable" 
+                             value="#{cmtEstadoSolicitudBean.unidadesDeLadireccion}" var="unidadesHHP" 
+                             styleClass="constructGTable2" style="width: 100%;"
+                             headerClass="constructGTableHeader" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow" >
+                    <h:column > 
+                        <f:facet name="header">
+                            <h:outputText value="Info.Tecnología" /><BR/>
+                        </f:facet>
+                        <div align="left" >
+                            <h:outputText value="#{unidadesHHP.infoTecHhpp}" /> 
+                        </div> 
+                    </h:column>
+                    <h:column > 
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Nivel 5 Previo" /><BR/>
+                        </f:facet>
+                        <div align="left" >
+                            <h:outputText value="#{unidadesHHP.cmtDireccionDetalladaMgl.cpTipoNivel5}" /> 
+                        </div> 
+                    </h:column>
+                    <h:column > 
+                        <f:facet name="header">
+                            <h:outputText value="Valor Nivel 5 Previo" /><BR/>
+                        </f:facet>
+                        <div align="left" >
+                            <h:outputText value="#{unidadesHHP.cmtDireccionDetalladaMgl.cpValorNivel5}" /> 
+                        </div> 
+                    </h:column>
+                    <h:column > 
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Nivel 5 Nuevo" /><BR/>
+                        </f:facet>                  
+                        <div align="left" >
+                            <h:outputText value="#{unidadesHHP.nivel5TipoNuevo}" /> 
+                        </div> 
+                    </h:column>
+                    <h:column > 
+                        <f:facet name="header">
+                            <h:outputText value="Valor Nivel 5 Nuevo" /><BR/>
+                        </f:facet>
+                        <div align="left" >
+                            <h:inputText value="#{unidadesHHP.nivel5ValorNuevo}" 
+                                         style="width: 70px;"
+                                         disabled="#{!(unidadesHHP.unidadPreviaId eq null)}">
+                            </h:inputText> 
+                        </div> 
+                    </h:column>
+                    <h:column > 
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Nivel 6 Previo" /><BR/>
+                        </f:facet>
+                        <div align="left" >
+                            <h:outputText value="#{unidadesHHP.cmtDireccionDetalladaMgl.cpTipoNivel6}" /> 
+                        </div> 
+                    </h:column>
+                    <h:column > 
+                        <f:facet name="header">
+                            <h:outputText value="Valor Nivel 6 Previo" /><BR/>
+                        </f:facet>
+                        <div align="left" >
+                            <h:outputText value="#{unidadesHHP.cmtDireccionDetalladaMgl.cpValorNivel6}" /> 
+                        </div> 
+                    </h:column>
+                    <h:column > 
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Nivel 6 Nuevo" /><BR/>
+                        </f:facet>
+                        <div align="left" >
+                            <h:outputText value="#{unidadesHHP.nivel6TipoNuevo}" /> 
+                        </div>
+                    </h:column>
+                    <h:column > 
+                        <f:facet name="header">
+                            <h:outputText value="Valor Nivel 6 Nuevo" /><BR/>
+                        </f:facet>
+                        <div align="left" >
+                            <h:inputText value="#{unidadesHHP.nivel6ValorNuevo}" 
+                                         style="width: 70px;" disabled="#{!(unidadesHHP.unidadPreviaId eq null)}" > 
+                            </h:inputText> 
+                        </div> 
+                    </h:column>
+                </h:dataTable>
+            </h:panelGroup>
+        </h:panelGroup>
+
+        <h:panelGrid columns="2" id="gridDatosGestinar" styleClass="formularioSol">
+            <h:panelGrid columns="6">
+
+                <h:outputText class="txtLabelsMgl" value="Nivel Socio-económico:"/>
+                <h:outputText class="txtLabelsMgl" value="#{cmtEstadoSolicitudBean.solSubEdificioCreaCM.estratoSubEdificioObj.nombreBasica}"/>
+
+                <h:outputText class="txtLabelsMgl" value="Usuario Gestión:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.usuarioGestSolicitudCm.nombre}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Correo Gestión:"/>
+                <h:outputText value="#{cmtEstadoSolicitudBean.usuarioGestSolicitudCm.email}" styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="copia a" />
+                <h:inputText id="txtAsesorCopiaASol"
+                             value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.correoCopiaGestion}" 
+                             maxlength="100" disabled="true">
+                </h:inputText>
+
+
+                <h:outputText class="txtLabelsMgl" escape="false" value="Acción:" />
+                <h:outputText class="txtLabelsMgl" escape="false" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.resultGestion.tipoBasicaObj.nombreTipo}" />
+
+
+                <h:outputText class="txtLabelsMgl" escape="false" value="Resultado de la gestión" />
+                <h:outputText class="txtLabelsMgl" escape="false" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.resultGestion.nombreBasica}" />
+
+            </h:panelGrid>
+            <h:panelGrid columns="1">
+                <h:dataTable id="subTable"
+                             var="tec" 
+                             value="#{cmtEstadoSolicitudBean.listTablaNodosSolicitud}"     
+                             styleClass="constructGTable2"
+                             headerClass="constructGTableHeader" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                             rows="10">
+
+                    <h:column>
+                        <f:facet name="header" >
+                            <h:outputText value="Tecnología"  />
+                        </f:facet>
+                        <h:outputText  value="#{tec.tipoTecnologiaObj.nombreBasica}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nodo Gestión"/>
+                        </f:facet>
+                        <h:outputText  value="#{tec.nodoMglObj.nodCodigo}"/>
+                    </h:column>
+                </h:dataTable>  
+
+            </h:panelGrid>
+        </h:panelGrid>
+        <h:panelGroup >
+            <h:panelGrid columns="2">
+                <h:outputText value="Notas Gestión(4000c)" class="txtLabelsMgl"/>
+                <h:inputTextarea id="comentariosNotaGestion" disabled="true"
+                                 value="#{cmtEstadoSolicitudBean.cmtNotasGestionSolicitudMgl.nota}"/>
+
+                <h:outputText escape="false" value="Archivo Soporte:" rendered="#{!(cmtEstadoSolicitudBean.urlArchivoSoporte eq '' or cmtEstadoSolicitudBean.urlArchivoSoporte eq null)}" />
+                <h:outputText escape="false" value="#{cmtEstadoSolicitudBean.urlArchivoSoporte}" rendered="#{!(cmtEstadoSolicitudBean.urlArchivoSoporte eq '' or cmtEstadoSolicitudBean.urlArchivoSoporte eq null)}" />
+
+            </h:panelGrid>
+            </h:panelGroup>
+       
+
+        <h:commandButton id="detalleCm"
+                         action="#{cmtEstadoSolicitudBean.goCuentaMatriz}"   
+                         rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.estadoSolicitudObj.nombreBasica eq 'FINALIZADO' 
+                                     and cmtEstadoSolicitudBean.cuentaMatriz.estadoRegistro eq 1}"
+                         styleClass="btn"  value="Ir al Detalle CM" />
+        
+         <h:commandButton id="irCM"
+                         action="#{cmtEstadoSolicitudBean.regresarCM}"   
+                         rendered="true"
+                         styleClass="btn"  value="Finalizar"
+                          disabled="#{!cmtEstadoSolicitudBean.rolFinalizar}"/>
+
+    </ui:define> 
+</ui:composition>    

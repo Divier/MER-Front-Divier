@@ -1,0 +1,243 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/main.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Reglas Validacion</span></ui:define>
+    <ui:define name="content">
+        <h3>Reglas Validación</h3>
+        <h:panelGrid id="filtroReglaValidacion" 
+                     columns="3" style="width: 100%" 
+                     rendered="true">
+            <h:outputText value="Proyecto" />
+            <h:selectOneMenu id="proyectoFiltroList"  
+                             styleClass="ListaConsulta" 
+                             value="#{reglaValidacionBean.proyectoFiltroSelected}"
+                             onchange="submit();"
+                             valueChangeListener="#{reglaValidacionBean.obtenerReglaValidacionFiltro}">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{reglaValidacionBean.basicaProyectoList}" 
+                               var="proyecto"
+                               itemValue="#{proyecto.basicaId}"
+                               itemLabel="#{proyecto.nombreBasica}"/>
+
+            </h:selectOneMenu>
+            <h:commandButton  id="verTodasReglarButton" 
+                              class="btn" 
+                              value="Ver Todas" 
+                              rendered="false"
+                              action="#{reglaValidacionBean.verTodas()}"/>
+            <h:commandButton  id="crearNuevaReglaButton"
+                              class="btn" value="Crear nueva  Regla"
+                              action="#{reglaValidacionBean.goCrear()}"
+                              disabled="#{!reglaValidacionBean.validarOpcionNuevaReglaRol()}"/>
+        </h:panelGrid>
+        <div id="divTableRegla" style="text-align: center;width: 100%">
+            <h:dataTable id="reglaValidacionTable" 
+                         value="#{reglaValidacionBean.reglaValidacionList}" 
+                         var="reglaValidacion" rows="#{reglaValidacionBean.filasPag}"                         
+                         styleClass="constructGTable"
+                         headerClass="constructGTableHeader" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                         style="width: 45%">
+
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Regla Id" />
+                    </f:facet>
+                    <h:commandLink value="#{reglaValidacion.reglaValidacion.reglaValidacionId}"
+                                   action="#{reglaValidacionBean.goActualizar(reglaValidacion)}"
+                                   disabled="#{!reglaValidacionBean.validarOpcionReglaIdRol()}"
+                                   title="Ir Detalle">
+                    </h:commandLink>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Proyecto" />
+                    </f:facet>
+                    <h:outputText value="#{reglaValidacion.reglaValidacion.proyecto.nombreBasica}"/>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Validaciones Regla" />
+                    </f:facet>
+                    <h:dataTable id="validacionesReglaTable" 
+                                 value="#{reglaValidacion.tipoValidacionList}" 
+                                 var="tipoValidacionRegla" 
+                                 style="width: 100%;"
+                                 styleClass="constructGTable"
+                                 headerClass="constructGTableHeader" 
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Tipo Validaci&oacute;n" />
+                            </f:facet>
+                            <h:outputText value="#{tipoValidacionRegla.tipoValidacion.tipoBasicaObj.nombreTipo}"/>
+                        </h:column>
+                        <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Valor Validaci&oacute;n" />
+                            </f:facet>
+                            <h:outputText value="#{tipoValidacionRegla.valueValidacion}"/>
+                        </h:column>
+                        <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Acci&oacute;n" />
+                            </f:facet>
+                            <h:commandLink id="lnkEliminarTipoVal" value=""
+                                           title="Eliminar" styleClass="btnIconEliminar"
+                                           disabled="#{!reglaValidacionBean.validarOpcionEliminarRol()}"
+                                           action="#{reglaValidacionBean.eliminarTipoValidacion(tipoValidacionRegla, reglaValidacion)}"
+                                           onclick="return confirm('¿Est&aacute; seguro que desea Eliminar el registro?');"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Acción" />
+                    </f:facet>
+                    <h:commandLink id="lnkEliminar" value=""
+                                   title="Eliminar" styleClass="btnIconEliminar"
+                                   disabled="#{!reglaValidacionBean.validarOpcionEliminarRol()}"
+                                   action="#{reglaValidacionBean.eliminarReglaFromTable(reglaValidacion)}"
+                                   onclick="return confirm('¿Est&aacute; seguro que desea Eliminar el registro?');"/>
+                </h:column>
+
+                <f:facet name="footer" >
+                    <h:commandButton value="" action="#{reglaValidacionBean.pageFirst}"
+                                     class="botonTPagInicioCm botonBaselista"/>
+                    <h:commandButton value="" action="#{reglaValidacionBean.pagePrevious}"
+                                     class="botonTPagAnteriorCm botonBaselista"/>
+                    <h:commandButton value="#{reglaValidacionBean.pageActual}" styleClass="botonTPagInicio"    />
+                    <h:selectOneMenu id="listTabla" value="#{reglaValidacionBean.numPagina}" 
+                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                        <f:selectItems value="#{reglaValidacionBean.paginaList}" var="pag"
+                                       itemValue="#{pag}"
+                                       itemLabel="#{pag}"/>    
+                        <f:ajax render="@this reglaValidacionTable" 
+                                event="change"  
+                                listener="#{reglaValidacionBean.irPagina()}"  
+                                execute="@this " />                                         
+                    </h:selectOneMenu>  
+                    <h:commandButton value="" action="#{reglaValidacionBean.pageNext}"
+                                     class="botonTPagSiguienteCm botonBaselista"/>
+                    <h:commandButton value="" action="#{reglaValidacionBean.pageLast}"
+                                     class="botonTPagFinCm botonBaselista"/>
+                </f:facet>
+            </h:dataTable>
+        </div>
+        <h:outputText value="&#160;" id="blancoSepReglasTable" style="width: 100%"/>
+        <h:panelGroup id="panelDetalleRegla" 
+                      style="width: 100%" 
+                      rendered="#{reglaValidacionBean.renderDetalle}">
+            <h1>Detalle Regla</h1>
+            <h:outputText value="&#160;" id="blancoSepDepRegla" style="width: 100%"/>
+
+            <h:outputText value="Id Regla"/>
+            <h:inputText id="idReglaSelected"
+                         disabled="true"
+                         readonly="true"
+                         rendered="#{reglaValidacionBean.reglaValidacionDtoSelected.reglaValidacion.reglaValidacionId != null}"
+                         value="#{reglaValidacionBean.reglaValidacionDtoSelected.reglaValidacion.reglaValidacionId}"/>
+
+            <h:panelGrid id="panelAddTipoValidacion"
+                         style="width: 50%" columns="5"
+                         rendered="#{reglaValidacionBean.validarAdicionValidacion()}">
+                <h:outputText value="Tipo Validaci&oacute;n" />
+                <h:selectOneMenu id="tipoValidacionDetalleList"  
+                                 styleClass="ListaConsulta" 
+                                 value="#{reglaValidacionBean.tipoValidacionDetalleSelected}">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{reglaValidacionBean.tipoValidacionList}" 
+                                   var="tValidacion"
+                                   itemValue="#{tValidacion.idTipoValidacion}"
+                                   itemLabel="#{tValidacion.tipoBasicaObj.nombreTipo}"/>
+                </h:selectOneMenu>
+                <h:outputText value="Valor Validaci&oacute;n" />
+                <h:selectOneMenu id="valorValidacionDetalleList"  
+                                 styleClass="ListaConsulta" 
+                                 value="#{reglaValidacionBean.valorValidacionDetalleSelected}">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItem itemValue="Y" itemLabel="Requerido" />
+                    <f:selectItem itemValue="N" itemLabel="No Requerido" />
+                    <f:selectItem itemValue="P" itemLabel="Requiere Proceso" />
+                    <f:selectItem itemValue="R" itemLabel="Restringido" />
+                    <f:selectItem itemValue="NA" itemLabel="No Aplica" />
+                </h:selectOneMenu>
+                <h:commandButton id="addValidacionReglaButton" 
+                                 class="btn" 
+                                 value="Adicionar Validaci&oacute;n" 
+                                 action="#{reglaValidacionBean.addValidacionToRegla()}">
+                    <f:ajax execute="@form" render="validacionesReglaDetalleTable"/>
+                </h:commandButton>
+            </h:panelGrid>
+            <h:panelGrid id="panelDetalleProyectoRegla"
+                         columns="2">
+                <h:outputText value="Proyecto"/>
+                <h:selectOneMenu id="proyectoDetalleList"  
+                                 styleClass="ListaConsulta" 
+                                 disabled="#{reglaValidacionBean.reglaValidacionDtoSelected.reglaValidacion.reglaValidacionId != null}"
+                                 value="#{reglaValidacionBean.proyectoDetalleSelected}">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{reglaValidacionBean.basicaProyectoList}" 
+                                   var="proyecto"
+                                   itemValue="#{proyecto.basicaId}"
+                                   itemLabel="#{proyecto.nombreBasica}"/>
+
+                    <f:ajax event="change" execute="@this" render="validacionesReglaDetalleTable" 
+                            listener="#{reglaValidacionBean.adicionarReglas()}"/>
+
+                </h:selectOneMenu>
+            </h:panelGrid>
+            <h:dataTable id="validacionesReglaDetalleTable" 
+                         value="#{reglaValidacionBean.reglaValidacionDtoSelected.tipoValidacionList}" 
+                         var="tipoValidacionReglaDet" 
+                         style="width: 30%;"
+                         styleClass="constructGTable"
+                         headerClass="constructGTableHeader" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Tipo Validaci&oacute;n" />
+                    </f:facet>
+                    <h:outputText value="#{tipoValidacionReglaDet.tipoValidacion.tipoBasicaObj.nombreTipo}"/>
+                </h:column>
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Valor Validaci&oacute;n" />
+                    </f:facet>
+                    <h:selectOneMenu id="vValDetalleList" styleClass="ListaConsulta" 
+                                     value="#{tipoValidacionReglaDet.valueValidacion}"
+                                     disabled="#{!reglaValidacionBean.validarEdicionValidacion()}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItem itemValue="Y" itemLabel="Requerido" />
+                        <f:selectItem itemValue="N" itemLabel="No Requerido" />
+                        <f:selectItem itemValue="P" itemLabel="Requiere Proceso" />
+                        <f:selectItem itemValue="R" itemLabel="Restringido" />
+                        <f:selectItem itemValue="NA" itemLabel="No Aplica" />
+                    </h:selectOneMenu>
+                </h:column>
+            </h:dataTable>
+            <h:commandButton  id="crearReglaButton" class="btn"
+                              action="#{reglaValidacionBean.crearRegla()}" value="Crear Regla"
+                              rendered="#{reglaValidacionBean.validarCreacion() and
+                                          reglaValidacionBean.reglaValidacionDtoSelected.reglaValidacion.reglaValidacionId == null}" />
+            <h:commandButton  id="actualizarReglaButton"
+                              class="btn" value="Actualizar Regla"
+                              action="#{reglaValidacionBean.actualizarRegla()}"
+                              rendered="#{reglaValidacionBean.reglaValidacionDtoSelected.reglaValidacion.reglaValidacionId != null}" />
+            <h:commandButton  id="eliminarReglaButton"
+                              class="btn" value="Eliminar Regla"
+                              action="#{reglaValidacionBean.eliminarRegla()}"
+                              onclick="return confirm('¿Est&aacute; seguro que desea Eliminar el registro?');"
+                              rendered="#{reglaValidacionBean.validarBorrado() and
+                                          reglaValidacionBean.reglaValidacionDtoSelected.reglaValidacion.reglaValidacionId != null}"/>
+        </h:panelGroup>
+
+    </ui:define>
+
+
+
+</ui:composition>

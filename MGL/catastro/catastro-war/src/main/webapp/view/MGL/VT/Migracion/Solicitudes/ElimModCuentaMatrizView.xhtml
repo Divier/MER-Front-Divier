@@ -1,0 +1,356 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/main.xhtml" >
+
+    <ui:define name="content">
+     #{actionManagedBean.setAction('SOLICITAR_MODIFICAR_ELIMINACION_CUENTA_MATRIZ')}
+            <div  align="center">
+           
+           <h:panelGrid
+              cellpadding = "10" cellspacing = "10">
+              <f:facet name = "header">
+                <h:outputText value = "SOLICITUD MODIFICAR ELIMINAR CUENTAS MATRICES"/>
+              </f:facet>
+              <h:panelGrid cellpadding = "10" border = "1" >
+
+                <h:panelGrid columns="2" cellpadding = "10" cellspacing = "10" border = "1">
+                  <h:outputLabel
+                    rendered="#{createsolicitud.canCreate eq false}"
+                    value = "Id Solicitud"/>
+                  <h:outputLabel
+                    id="ME_CM_idSolicitud"
+                    rendered="#{createsolicitud.canCreate eq false}"
+                    value = "#{createsolicitud.solicitud.idSolicitud}" />
+                  <h:outputLabel
+                    rendered="#{createsolicitud.canCreate eq false}"
+                    value = "Estado Solicitud"/>
+                  <h:outputLabel
+                    id="ME_CM_idestado"
+                    rendered="#{createsolicitud.canCreate eq false}"
+                    value = "#{createsolicitud.solicitud.estado}" />
+                </h:panelGrid>
+
+                <h:panelGrid>
+                  <h:outputLabel for="idcuentamatriz" value = "Cuenta Matriz"/>
+                  <h:panelGrid>
+                    <h:inputText
+                      id="ME_CM_idcuentamatriz"
+                      value="#{createsolicitud.solicitud.cuentaMatriz}"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Cuenta Matriz"
+                      validatorMessage="Debe ingresar valores numéricos en el campo Cuenta Matriz"
+                      styleClass="input"
+                      maxlength="12">
+                      <f:validateRegex pattern="[0-9]*"/>
+                      <f:ajax event="blur" render="ME_CM_msg_cuentamatriz"/>
+                    </h:inputText>
+                    <h:message
+                      id="ME_CM_msg_cuentamatriz"
+                      style="color:red;"
+                      for="ME_CM_idcuentamatriz" />
+                  </h:panelGrid>
+
+                  <h:panelGrid columns="2">
+                    <f:facet name = "header">
+                      <h:outputText value = "Dirección nueva"/>
+                    </f:facet>
+                    <h:panelGrid >
+                      <h:outputLabel value="Tipo de Calle"/>
+                      <h:selectOneMenu
+                        id="ME_CM_idtipocalle"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.dirTipoCalleCompleta}"
+                        styleClass="input">
+                        <f:selectItems value="#{createsolicitud.tiposDeVias}"/>
+                        <f:ajax render="ME_CM_msg_tipo_calle"/>
+                      </h:selectOneMenu>
+                      <h:message id="ME_CM_msg_tipo_calle"
+                                 style="color: red;"
+                                 for="ME_CM_idtipocalle" />
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2">
+                      <h:panelGrid>
+                        <h:outputLabel value = "Número de Calle" />
+                        <h:inputText
+                          id="ME_CM_dircallecompleta"
+                          disabled="#{createsolicitud.canCreate eq false}"
+                          value="#{createsolicitud.dirCalleCompleta}"
+                          required="true"
+                          requiredMessage="Debe ingresar un valor en el campo Número de Calle"
+                          styleClass="input_peq"
+                          >
+                          <f:ajax event="blur" render="ME_CM_msg_dircallecompleta"/>
+                        </h:inputText>
+                        <h:message id="ME_CM_msg_dircallecompleta"
+                                   style="color: red;"
+                                   for="ME_CM_dircallecompleta" />
+                      </h:panelGrid>
+                      <h:panelGrid>
+                        <h:outputLabel  value = "Placa" />
+                        <h:panelGrid columns="3">
+                          <h:panelGrid>
+                            <h:inputText
+                              id="ME_CM_numPuertaUno"
+                              disabled="#{createsolicitud.canCreate eq false}"
+                              value="#{createsolicitud.numPuertaUno}"
+                              styleClass="input_mas_peq"
+                              required="true"
+                              requiredMessage="Debe ingresar un valor en el campo Placa"
+                              >
+                              <f:ajax event="blur" render="ME_CM_msg_numPuertaUno"/>
+                            </h:inputText>
+                            <h:message id="ME_CM_msg_numPuertaUno"
+                                       style="color: red;"
+                                       for="ME_CM_numPuertaUno" />
+                          </h:panelGrid>
+                          <h:outputLabel value = "-" />
+                          <h:panelGrid>
+                            <h:inputText
+                              id="ME_CM_numPuertaDos"
+                              disabled="#{createsolicitud.canCreate eq false}"
+                              value="#{createsolicitud.numPuertaDos}"
+                              styleClass="input_mas_peq"
+                              required="true"
+                              requiredMessage="Debe ingresar un valor en el campo Placa"
+                              >
+                              <f:ajax event="blur" render="ME_CM_msg_numPuertaDos"/>
+                            </h:inputText>
+                            <h:message id="ME_CM_msg_numPuertaDos"
+                                       style="color: red;"
+                                       for="ME_CM_numPuertaDos" />
+                          </h:panelGrid>
+                        </h:panelGrid>
+                      </h:panelGrid>
+                    </h:panelGrid>
+                  </h:panelGrid>
+                  <br/>
+                  <h:panelGrid >
+                    <h:outputLabel value="Nombre Nuevo"/>
+                    <h:inputText
+                      id="ME_CM_idNombreNuevoEdificio"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.nombreNuevoEdificio}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Nombre Nuevo"
+                      styleClass="input_grande"
+                      >
+                      <f:ajax  render="ME_CM_msg_nombre_edificio"/>
+                    </h:inputText>
+                    <h:message id="ME_CM_msg_nombre_edificio"
+                               style="color: red;"
+                               for="ME_CM_idNombreNuevoEdificio" />
+                  </h:panelGrid>
+
+                  <h:panelGrid columns="2">
+
+                    <h:panelGrid>
+                      <h:outputLabel value = "Producto Nuevo." />
+                      <h:selectOneMenu
+                        id="ME_CM_idproductonuevo"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.solicitud.nuevoProducto}"
+                        required="true"
+                        requiredMessage="Debe seleccionar un valor en el campo Producto Nuevo"
+                        styleClass="input">
+                        <f:selectItems value="#{createsolicitud.productosNuevos}" />
+                        <f:ajax  render="ME_CM_msg_producto_nuevo"/>
+                      </h:selectOneMenu>
+                      <h:message id="ME_CM_msg_producto_nuevo"
+                                 style="color: red;"
+                                 for="ME_CM_idproductonuevo" />
+                    </h:panelGrid>
+
+                    <h:panelGrid>
+                      <h:outputLabel value = "Corregir distribución HHPP" />
+                      <h:selectOneRadio
+                        id="ME_CM_idcorregirHhpp"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.solicitud.corregirHHPP}"
+                        required="true"
+                        requiredMessage="Debe selecionar un valor en el campo Corregir distribución HHPP"
+                        styleClass="input">
+                        <f:ajax render="ME_CM_msg_corregir_hhpp"/>
+                        <f:selectItem itemValue = "SI" itemLabel = "Si" />
+                        <f:selectItem itemValue = "NO" itemLabel = "No" />
+                      </h:selectOneRadio>
+                      <h:message id="ME_CM_msg_corregir_hhpp"
+                                 style="color: red;"
+                                 for="ME_CM_idcorregirHhpp" />
+                    </h:panelGrid>
+
+                  </h:panelGrid>
+
+                </h:panelGrid>
+                <h:panelGrid>
+                  <h:panelGrid>
+                    <h:outputLabel value = "Nodo Nuevo" />
+                    <h:inputText
+                      id="ME_CM_idNodo" value="#{createsolicitud.solicitud.cambioNodo}"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Nodo Nuevo"
+                      styleClass="input">
+                      <f:ajax event="blur" render="ME_CM_msg_nodo"/>
+                    </h:inputText>
+                    <h:message id="ME_CM_msg_nodo" style="color: red;" for="ME_CM_idNodo" />
+                  </h:panelGrid>
+                  <h:outputText/>
+
+                  <h:panelGrid columns="2">
+                    <h:panelGrid>
+                      <h:outputLabel value = "Regional" />
+                      <h:selectOneMenu
+                        id="ME_CM_idregional"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.idRegional}"
+                        valueChangeListener="#{createsolicitud.regionalCodeChanged}"
+                        required="true"
+                        requiredMessage="Debe seleccionar un valor en el campo Regional"
+                        styleClass="input">
+                          <f:selectItems value="#{createsolicitud.regionales}" />
+                        <f:ajax  render="ME_CM_idciudad ME_CM_msg_regional"/>
+                      </h:selectOneMenu>
+                      <h:message
+                        id="ME_CM_msg_regional"
+                        style="color: red;"
+                        for="ME_CM_idregional" />
+                    </h:panelGrid>
+
+                    <h:panelGrid>
+                      <h:outputLabel value = "Ciudad" />
+                      <h:selectOneMenu
+                        id="ME_CM_idciudad"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.ciudadRr}"
+                        title="Ciudad"
+                        required="true"
+                        requiredMessage="Debe seleccionar un valor en el campo Ciudad"
+                        styleClass="input">
+                        <f:ajax event="blur" render="ME_CM_msg_ciudad"/>
+                        <f:selectItems value="#{createsolicitud.ciudades}"/>
+                      </h:selectOneMenu>
+                      <h:message id="ME_CM_msg_ciudad" style="color: red;" for="ME_CM_idciudad" />
+                    </h:panelGrid>
+                  </h:panelGrid>
+
+                  <h:panelGrid>
+                    <h:outputLabel value = "Tipo solicitud" />
+                    <h:selectOneMenu
+                      id="ME_CM_idtipoSolicitud"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.tipoSol}"
+                      required="true"
+                      requiredMessage="Debe seleccionar un valor en el campo Tipo solicitud"
+                      styleClass="input">
+                      <f:ajax render="ME_CM_msg_idtiposolicitud"/>
+                      <f:selectItems
+                        value="#{createsolicitud.tipoSolicitudesTipoSolicitud}" />
+                    </h:selectOneMenu>
+                    <h:message id="ME_CM_msg_idtiposolicitud" style="color: red;" for="ME_CM_idtipoSolicitud" />
+                  </h:panelGrid>
+
+                  <h:panelGrid columns="2">
+                    <h:panelGrid>
+                      <h:outputLabel value = "Solicitante" />
+                      <h:inputText
+                        id="ME_CM_idSolicitante"
+                        disabled="true"
+                        value="#{createsolicitud.solicitud.solicitante}"
+                        styleClass="input"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid>
+                      <h:outputLabel
+                        value = "Correo Solicitante"/>
+                      <h:inputText
+                        id="ME_CM_idcorreosolicitante"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.solicitud.correo}"
+                        required="true"
+                        requiredMessage="Requerido"
+                        styleClass="input">
+                        <f:ajax render="ME_CM_msg_correosolicitante"/>
+                      </h:inputText>
+                      <h:message id="ME_CM_msg_correosolicitante"
+                                 style="color: red;"
+                                 for="ME_CM_idcorreosolicitante" />
+                    </h:panelGrid>
+
+                    <h:panelGrid>
+                      <h:outputLabel value = "Aprobación" />
+                      <h:inputText
+                        id="ME_CM_idAprobacion"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.solicitud.supervisor}"
+                        required="true"
+                        requiredMessage="Debe ingresar un valor en el campo Aprobación"
+                        styleClass="input">
+                        <f:ajax render="ME_CM_msg_idAprobacion"/>
+                      </h:inputText>
+                      <h:message id="ME_CM_msg_idAprobacion"
+                                 style="color: red;"
+                                 for="ME_CM_idAprobacion" />
+                    </h:panelGrid>
+
+                    <h:panelGrid>
+                      <h:outputLabel
+                        value = "Correo Aprobación"/>
+                      <h:inputText
+                        id="ME_CM_idcorreo_aprobacioin"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        required="true"
+                        requiredMessage="Debe ingresar un valor en el campo Correo Aprobación"
+                        styleClass="input">
+                        <f:ajax event="blur" render="ME_CM_msg_correo_aprobacion"/>
+                      </h:inputText>
+                      <h:message id="ME_CM_msg_correo_aprobacion"
+                                 style="color: red;"
+                                 for="ME_CM_idcorreo_aprobacioin" />
+                    </h:panelGrid>
+                  </h:panelGrid>
+                </h:panelGrid>
+              </h:panelGrid>
+
+              <h:panelGrid style="width:100%;">
+                <f:facet name = "header">
+                  <h:outputText value = "Observaciones"/>
+                </f:facet>
+                <h:inputTextarea
+                  id="ME_CM_idmotivo"
+                  style="border:1px; background:#DFEDDF; width:100%; height:120px "
+                  disabled="#{createsolicitud.canCreate eq false}"
+                  value="#{createsolicitud.solicitud.motivo}"
+                  required="true"
+                  requiredMessage="Debe ingresar un valor en el campo Observaciones">
+                  <f:ajax event="blur" render="ME_CM_msg_motivos"/>
+                </h:inputTextarea>
+                <h:message id="ME_CM_msg_motivos"
+                           style="color: red;"
+                           for="ME_CM_idmotivo" />
+              </h:panelGrid>
+            </h:panelGrid>
+         
+        
+              <h:panelGroup >
+                <h:commandButton
+                  id = "CM_submit"                  
+                  styleClass="btn"
+                  value = "Ingresar Datos"
+                  disabled="#{!createsolicitud.validarOpcionIngresarDatosEliminarCuentaMatriz()}"
+                  actionListener="#{createsolicitud.prepareCreate(actionManagedBean.action)}">
+                 </h:commandButton>               
+              </h:panelGroup>
+                </div>
+       
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,22 @@
+<pcml version="4.0">                                                            
+  <!-- RPG program: CMONEFR0  -->                                              
+  <!-- created: 2016-03-16-16.48.04 -->                                        
+  <!-- source: TVCSRC/CMRPGLESRC(CMONEFR0) -->                                 
+  <!-- 79 -->                                                                  
+  <program name="CMONEFR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMONEFR0.PGM">       
+     <data name="EDIFICIO" type="char" length="9" usage="inputoutput" />       
+     <data name="NOTA" type="char" length="5" usage="inputoutput" />           
+     <data name="PNESTA" type="char" length="25" usage="inputoutput" />        
+     <data name="PNNIED" type="char" length="50" usage="inputoutput" />        
+     <data name="PNCALL" type="char" length="50" usage="inputoutput" />        
+     <data name="PNNOTI" type="char" length="30" usage="inputoutput" />        
+     <data name="PCML" type="char" length="2" usage="inputoutput" />           
+      <data name="FUNCION" type="char" length="1" usage="inputoutput" />        
+      <data name="PCONFI" type="char" length="2" usage="inputoutput" />         
+      <data name="PUSERID" type="char" length="10" usage="inputoutput" />       
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />        
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />      
+      <data name="TABLARTA" type="char" length="121" count="500" usage="inputoutput" />      
+      <data name="MENSAJE" type="char" length="63" usage="inputoutput" />       
+   </program>                                                                   
+</pcml> 

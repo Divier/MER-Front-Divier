@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+    <ui:composition template="/view/template/home.xhtml">
+        <ui:define name="title"> Detalle HHPP que se solicita modificar </ui:define>
+        <ui:define name="message">#{gestionarSolicitudNegocioMBean.message}</ui:define>
+        <ui:define name="content">
+            <f:view>
+                <script type="text/javascript">
+                    function popAlert(){
+                        document.getElementById("formulario:showPopUpOk").style.display='none'; 
+                        document.getElementById("formulario:msj").style.display='none'; 
+                        document.getElementById("formulario:contador").style.display='none'; 
+                        var showOk=document.getElementById("formulario:showPopUpOk").value;
+                        var mesj=document.getElementById("formulario:msj").value;
+                        var conta=document.getElementById("formulario:contador").value;
+                        var mensaje="";
+                        if((showOk == 'false') ){
+                            document.getElementById("formulario:gestionarb").style.display='none';
+                            document.getElementById("formulario:showPopUpOk").style.display='none';
+                            return " "; 
+                        }
+                        if(showOk =='true'){
+                            mensaje="Esta seguro de gestionar la solicitud?";    
+                        }
+                        if(mensaje!=""){
+                            if (!confirm(mensaje+" Por favor de click en Gestionar.")){
+                                //aqui entra cuando es NO
+                                document.getElementById("formulario:gestionarb").style.display='none';
+                                document.getElementById("formulario:showPopUpOk").style.display='none';
+
+                                if(mesj!=""){
+                                    history.go(-conta);
+                                    return " ";
+                                }else{
+                                    history.go(-conta);
+                                    return " ";
+                                }
+                            }else{
+                                document.getElementById("formulario:gestionarb").style.display='block';
+                                document.getElementById("formulario:showPopUpOk").style.display='none';
+                                return " ";
+                            }
+                        }
+                    }
+                </script>
+                <h:form id="formulario">
+                    <f:view>
+                        <script>document.getElementById("formulario:showPopUpOk").style.display='none'; </script>
+                    </f:view>
+                    <h:panelGroup id="principal">
+                        <h:outputLink onclick="window.open('../direcciones/consultaEspecifica.jsf', 'popupWindowName', 'dependent=yes, menubar=no, toolbar=no,fullscreen=yes,resizable=yes'); return false;" value="Consulta Especifica">
+                            <h:outputText value="Consulta Especifica" />
+                        </h:outputLink>
+                        <h:panelGrid id="main">
+                            <h:panelGrid id="encabezado" columns="2">
+                                <h:outputText value="Numero de Solicitud" styleClass="contenidoLf"/>
+                                <h:inputText value="#{gestionarSolicitudNegocioMBean.solicitud.sonId}" styleClass="contenidodf" 
+                                             disabled="true"/>
+                                <h:outputText value="Tipo de Solicitud" styleClass="contenidoLf"/> 
+                                <h:inputText value="#{gestionarSolicitudNegocioMBean.sonTipoSolicitud}" styleClass="contenidodf" disabled="true"/>
+                                <h:outputLabel value="Direccion" styleClass="contenidoLf"/>
+                                <h:inputText value="#{gestionarSolicitudNegocioMBean.solicitud.sonNostandar}" styleClass="contenidodfB" disabled="true"/>
+                            </h:panelGrid>
+                            <h:panelGrid id="detail" columns="4">
+                                <h:outputLabel value="Pais" styleClass="contenidoLf"/>
+                                <h:inputText value="#{gestionarSolicitudNegocioMBean.solicitud.geograficoPolitico.gpoNombre}" styleClass="contenidodf" disabled="true"/>
+
+                                <h:outputLabel value="Departamento" styleClass="contenidoLf"/>
+                                <h:inputText value="#{gestionarSolicitudNegocioMBean.solicitud.geograficoPolitico.geograficoPolitico.gpoNombre}" styleClass="contenidodf" disabled="true"/>
+
+                                <h:outputLabel value="Ciudad" styleClass="contenidoLf"/>
+                                <h:inputText value="#{gestionarSolicitudNegocioMBean.solicitud.geograficoPolitico.geograficoPolitico.geograficoPolitico.gpoNombre}" styleClass="contenidodf" disabled="true"/>
+
+                                <h:outputLabel value="Barrio" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{gestionarSolicitudNegocioMBean.sonBarrio}" styleClass="contenidodf" disabled="true"/>
+
+                                <h:outputLabel value="Código Nodo Asignado:" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{gestionarSolicitudNegocioMBean.sonNodoCodigo}" styleClass="contenidodf"/>
+
+                                <h:outputLabel value="Código Nodo Usuario:" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{gestionarSolicitudNegocioMBean.solicitud.sonNodoUsuario}" styleClass="contenidodf" disabled="true"/>
+
+                                <h:outputLabel value="Tipo Unidad" styleClass="contenidoLf"/>
+                                <h:inputText value="#{gestionarSolicitudNegocioMBean.solicitud.tipoHhpp.thhValor}" styleClass="contenidodf" disabled="true"/>
+
+                                <h:outputLabel value="Area Solicitante" styleClass="contenidoLf"/>
+                                <h:inputText value="#{gestionarSolicitudNegocioMBean.solicitud.sonAreaSolicitante}" styleClass="contenidodf" disabled="true"/>
+
+                                <h:outputLabel value="Motivo" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{gestionarSolicitudNegocioMBean.solicitud.sonMotivo}" styleClass="contenidodf" disabled="true"/>
+
+                                <h:outputLabel value="Codigo Solicitante" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{gestionarSolicitudNegocioMBean.solicitud.sonCodSolicitante}" styleClass="contenidodf" 
+                                              disabled="true"/>
+
+                                <h:outputLabel value="Nombre Solicitante" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{gestionarSolicitudNegocioMBean.solicitud.sonNomSolicitante}" styleClass="contenidodf" 
+                                              disabled="true"/>
+                                <h:outputLabel value="Correo Solicitante" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{gestionarSolicitudNegocioMBean.solicitud.sonEmailSolicitante}" styleClass="contenidodf" disabled="true"/>
+
+                                <h:outputLabel value="Celular Solicitante" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{gestionarSolicitudNegocioMBean.solicitud.sonCelSolicitante}" styleClass="contenidodf" disabled="true"/>
+
+                                <h:outputLabel value="Nombre Contacto" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{gestionarSolicitudNegocioMBean.solicitud.sonContacto}" styleClass="contenidodf" disabled="true"/> 
+
+                                <h:outputLabel value="Telefono Contacto" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{gestionarSolicitudNegocioMBean.solicitud.sonTelContacto}" styleClass="contenidodf" disabled="true"/>
+                            </h:panelGrid>
+                            <h:panelGrid  columns="2">
+                                <h:outputLabel value="Observaciones" styleClass="contenidoLf" style="border:1px !important;"/>
+                                <h:inputTextarea value="#{gestionarSolicitudNegocioMBean.solicitud.sonObservaciones}" styleClass="textarea" disabled="true"/>
+                            </h:panelGrid>
+                            <h:panelGrid id="informacionGestion" columns="4">
+                                <h:outputLabel value="Tipo Red" styleClass="contenidoLf"/>
+                                <h:selectOneMenu id="lsttred" value="#{gestionarSolicitudNegocioMBean.son_tipo_red}" styleClass="onemenu">
+                                    <f:selectItem itemValue="0" itemLabel="#{gestionarSolicitudNegocioMBean.seleccionar}" />
+                                    <f:selectItems value="#{gestionarSolicitudNegocioMBean.listTred}"/>
+                                </h:selectOneMenu>
+
+                                <h:outputLabel value="Tipo Conexión" styleClass="contenidoLf"/>
+                                <h:selectOneMenu id="lsttconx" value="#{gestionarSolicitudNegocioMBean.son_tipo_conexion}" styleClass="onemenu">
+                                    <f:selectItem itemValue="0" itemLabel="#{gestionarSolicitudNegocioMBean.seleccionar}" />
+                                    <f:selectItems value="#{gestionarSolicitudNegocioMBean.listTconexion}"/>
+                                </h:selectOneMenu>
+
+                                <h:outputLabel value="Tipo BlackList" styleClass="contenidoLf"/>
+                                <h:selectOneMenu id="lsttblack" value="#{gestionarSolicitudNegocioMBean.son_blackl}" styleClass="onemenu">
+                                    <f:selectItem itemValue="0" itemLabel="#{gestionarSolicitudNegocioMBean.seleccionar}" />
+                                    <f:selectItems value="#{gestionarSolicitudNegocioMBean.listTblackL}"/>
+                                </h:selectOneMenu>
+
+                                <h:outputLabel value="Tipo de Respuesta" styleClass="contenidoLf"/>
+                                <h:selectOneMenu id="lstres" value="#{gestionarSolicitudNegocioMBean.sonTipoSolucion}" styleClass="onemenu">
+                                    <f:selectItem itemValue="0" itemLabel="#{gestionarSolicitudNegocioMBean.seleccionar}" />
+                                    <f:selectItems value="#{gestionarSolicitudNegocioMBean.lstTRespuesta}"/>
+                                </h:selectOneMenu>
+                            </h:panelGrid>
+                            <h:panelGrid id="justificacion" columns="2">
+                                <h:outputLabel value="Justificación Respuesta" styleClass="contenidoLf"/>
+                                <h:inputTextarea value="#{gestionarSolicitudNegocioMBean.son_resGestion}" styleClass="textarea" />
+                            </h:panelGrid>
+                        </h:panelGrid>
+
+                        <h:panelGrid  id="botones" styleClass="panel-grid-botones" columns="3">
+                            <h:commandButton id="validar" value="Validar" action="#{gestionarSolicitudNegocioMBean.onActionValidar}" 
+                                             styleClass="buttonm" rendered="#{gestionarSolicitudNegocioMBean.showValidar}" >
+                            </h:commandButton>
+                            <h:commandButton id="gestionarb" value="Gestionar" styleClass="buttonm" 
+                                             rendered="#{gestionarSolicitudNegocioMBean.showPopUp}" action="#{gestionarSolicitudNegocioMBean.onActionGestionar}">
+                            </h:commandButton>
+                            <h:commandButton id="cancelarb" value="Cancelar" action="#{gestionarSolicitudNegocioMBean.onActionCancelGestion}" 
+                                             styleClass="buttonm" >
+                            </h:commandButton>
+                        </h:panelGrid>
+                        <h:panelGrid id="gestionarInfo" rendered="#{gestionarSolicitudNegocioMBean.showPopUp}">
+                            <h:inputText id="showPopUpOk" value="#{gestionarSolicitudNegocioMBean.showPopUp}"/>
+                            <h:inputText id="msj" value="#{gestionarSolicitudNegocioMBean.message}"/>
+                            <h:inputText id="contador" value="#{gestionarSolicitudNegocioMBean.contador}"/>
+                            <f:view>
+                                <script>popAlert();</script>
+                            </f:view>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </h:form>
+            </f:view>
+        </ui:define>
+    </ui:composition>
+</ui:composition>

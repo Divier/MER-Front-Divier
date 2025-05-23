@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/vt.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>
+    <!-- <ui:define name="message"><span class="error"> # {direccionAlternaMglBean.message}</span></ui:define> -->
+    <ui:define name="content">
+        <script>
+            jQuery(document).ready(function() {
+                jQuery("#divCostosTotales table").find('span').each(function() {
+                    var str = jQuery(this).html();
+                    if (str.indexOf('Total') > 0) {
+                        jQuery(this).parent().parent().css({"background-color": "#d52b1e", "color": "white", "font-weight": "bold"});
+                    }
+                });
+            });
+        </script>
+        <h2>Costos</h2>
+        <h4>Costos Cableado Edificio</h4>
+        <h:panelGrid columns="1" class="formulario2" width="100%">
+            <h:dataTable id="tblCabEdi" style="width:100%;margin:0 auto;"
+                         styleClass="constructGTable"
+                         headerClass="constructGTableHeader" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="No Aptos" />
+                    </f:facet>
+                    <h:inputText/> 
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Cant" />
+                    </f:facet>
+                    <h:inputText/> 
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Primer Pto" />
+                    </f:facet>
+                    <h:inputText/> 
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Cant" />
+                    </f:facet>
+                    <h:inputText/> 
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Adicionales" />
+                    </f:facet>
+                    <h:inputText/> 
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Total Puntos" />
+                    </f:facet>
+                    <h:inputText/> 
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Total" />
+                    </f:facet>
+                    <h:inputText/> 
+                </h:column>
+            </h:dataTable>
+        </h:panelGrid>
+
+        <div align="center" id="divCostosTotales" style="width: 100%;padding-top: 1%;">
+            <h2>Costos Totales</h2>
+            <div style="width: 100%; padding: 10px">
+
+                <h:panelGrid columns="2" id="panelGridCostosInfra" style="display: block; float: left; margin-right: 10px; width: 350px">
+                    <h:outputText id="lblCtoMatInfPreCab" style="width: 100%" value="Costo Materiales Infraestructura: "/> 
+                <h:inputText id="CtoMatInfPreCab" style="width: 97%;padding: 3px;" value="#{itemVtBean.vt.ctoMaterialesRed}" 
+                      disabled="#{itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"       
+                             converterMessage="Costo Materiales Infraestructura es num&eacute;rico"   >
+                    <f:convertNumber pattern="#,##0" />
+                    </h:inputText>
+
+                    <h:outputText id="lblCtoTotalObraInf" style="width: 100%" value="Costo Mano Obra Infraestructura: ($)"/> 
+                <h:inputText id="CtoTotalObraInf" style="width: 97%;padding: 3px;" value="#{itemVtBean.vt.ctoManoObra}" 
+                             disabled="#{itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             converterMessage="Costo Mano Obra Infraestructura es num&eacute;rico"  >
+                    <f:convertNumber pattern="#,##0" />
+                    </h:inputText>
+
+                    <h:outputText id="lblCtoTotalInf" value="Costo Total Infraestructura"/> 
+                    <h:outputText id="CtoTotalInf" style="padding: 3px;" value="#{itemVtBean.ctoTotalInf}">
+                    <f:convertNumber pattern="$#,##0" />
+                    </h:outputText>
+
+                    <h:outputText id="lblCtoMatDis" value="Costo Material Diseño ($)"/> 
+                      <h:inputText id="CtoMatDis" style="width: 97%;padding: 3px;" value="#{itemVtBean.vt.costoMaterialesDiseno}" 
+                                   disabled="#{itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                   converterMessage="Costo Material Diseño es num&eacute;rico" required="true" requiredMessage="Costo Material Diseño es obligatorio"> 
+                    <f:convertNumber pattern="#,##0" />
+                    </h:inputText>
+
+                    <h:outputText id="lblCtoMoDis" value="Costo Mano de Obra Diseño ($)"/> 
+                <h:inputText id="CtoMoDis" style="width: 97%;padding: 3px;" value="#{itemVtBean.vt.costoManoObraDiseno}" 
+                                disabled="#{itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             converterMessage=" Costo Mano de Obra Diseño es num&eacute;rico" required="true" requiredMessage="Costo Mano de Obra Diseño es obligatorio"> 
+                    <f:convertNumber pattern="#,##0" />
+                    </h:inputText>
+
+                    <h:outputText id="lblCtoTotalDis" value="Costo Total Diseño"/> 
+                <h:outputText id="CtoTotalDis" style="padding: 3px;" value="#{itemVtBean.costoTotalDiseno}" > 
+                    <f:convertNumber pattern="$#,##0" />
+                    </h:outputText>
+
+                    <h:outputText id="lblTotalAcometida" value="Costo Total Acometida"/> 
+                    <h:outputText id="TotalAcometida" style="padding: 3px;" value="#{itemVtBean.costoTotalAcometida}">
+                    <f:convertNumber pattern="$#,##0" />
+                    </h:outputText>
+                </h:panelGrid>   
+                <h:panelGroup id="cmDataDos" style="display: block; float: left; margin-right: 10px; width: 350px" >
+                    <div id="idDivTabNodo" style="overflow-y: #{subEdificiosVtBean.subEdificioVtList != null and subEdificiosVtBean.subEdificioVtList.size() > 5 ? 'scroll' : 'hidden'}; height: 120px;" >
+                        <h:dataTable id="tableSubEdi"
+                                     rendered="#{subEdificiosVtBean.subEdificioVtList != null and subEdificiosVtBean.subEdificioVtList.size() > 0}"
+                                     value="#{subEdificiosVtBean.subEdificioVtList}" var="subEdiLst"
+                                     styleClass="constructGTable2" style="width:100%;margin:0 auto;"
+                                     headerClass="constructGTableHeader" 
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Torres"/>
+                                </f:facet>
+                                <h:outputText value="&#160;" />
+                                <h:inputText id="txtNivel1"  
+                                             disabled="#{!empty subEdiLst.codigoRr ||subEdiLst.vtObj.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                             style="width: 40%"  title="#{subEdiLst.getDirSubEdificioVT()}"
+                                             value="#{subEdiLst.nombreSubEdificio}" readonly="true"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nodo"/>
+                                </f:facet>
+                                <h:inputText id="idNodo"    disabled="#{subEdiLst.vtObj.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                             style="width: 55%"
+                                             value="#{subEdiLst.codigoNodo}"/>
+                            </h:column>
+                        </h:dataTable> 
+              
+                    </div>
+                </h:panelGroup>
+
+                <h:panelGroup id="loadFile" style="display: block; float: left; margin-right: 10px; width: 350px" >
+                    <p:fileUpload  id="idArchivo"  disabled="#{subEdiLst.vtObj.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            itemVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                   label="Seleccionar Archivo"  
+                                   value="#{itemVtBean.uploadedFile}" rendered="#{itemVtBean.activacionUCM}" 
+                                   mode="simple" skinSimple="true"/>
+                    <h:dataTable id="tableCargaArchivo"
+                                 rendered="#{itemVtBean.lstArchivosVtMgls != null 
+                                         and itemVtBean.lstArchivosVtMgls.size() > 0}"
+                                 styleClass="constructGTable2"
+                                 style="width: 290px"
+                                 headerClass="constructGTableHeader" 
+                                 value="#{itemVtBean.lstArchivosVtMgls}" var="archivosLst"
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Archivo VT"/>
+                            </f:facet>
+                            <h:outputText value="&#160;" />
+                            <h:outputText value="#{archivosLst.idArchivosVt}" />  
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Nombre Archivo"/>
+                            </f:facet>
+                            <h:outputText escape="false" 
+                                          value="#{itemVtBean.armarUrl(archivosLst)}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Acci&oacute;n"/>
+                            </f:facet>
+                            <h:commandLink id="lnkCancelar"
+                                           value="" title="Eliminar"
+                                           actionListener="#{itemVtBean.eliminarArchivo(archivosLst)}"
+                                           styleClass="btnIconEliminar"
+                                           onclick="return confirm('¿Est&oacute; seguro que desea Eliminar el registro?');"/>
+                        </h:column>
+                    </h:dataTable> 
+                </h:panelGroup>
+            </div>   
+        </div>
+        <hr style="clear: both; visibility: hidden"></hr>
+    </ui:define>
+</ui:composition>

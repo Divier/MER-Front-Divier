@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                template="/view/MGL/template/cm.xhtml">
+
+    <ui:define name="content">
+          <h2 id="myhMmData">Constructoras [#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.nombreSubedificio}]</h2>
+        <ul id="nav">
+            <li ><h:commandLink action="gestion-administracion" value="Compañías Administración" immediate="true" /></li>
+            <li class="active"><h:commandLink action="gestion-constructoras" value="Compañías Constructoras" /></li>
+            <li><h:commandLink action="gestion-ascensores" value="Compañías de Ascensores" immediate="true"/></li>
+        </ul>
+        <h:panelGroup id="formAdmin">
+            <h:panelGrid id="tipo_3" rendered="#{gestionCompaniaConstructoraBean.vistas.view eq 'Compania'}" class="formulario" columns="4">
+
+                <h:outputText class="txtLabelsMgl" escape="false" value="Compañía Constructora" />
+                <h:panelGroup>
+                    <h:selectOneMenu required="true" id="nombreCompania"  value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.companiaId}" requiredMessage="Seleccione una compañia" >
+                        <f:selectItem itemLabel="" itemValue="0"/>
+                        <f:selectItems value="#{gestionCompaniaConstructoraBean.listCmtCompaniaMgl}" var="com"
+                                       itemValue="#{com.companiaId}"
+                                       itemLabel="#{com.nombreCompania}"/>    
+                        <f:ajax event="change"  execute="@this" render="formAdmin"  listener="#{gestionCompaniaConstructoraBean.asignarCompania}" />
+                    </h:selectOneMenu> 
+                </h:panelGroup>   
+                <h:outputText class="txtLabelsMgl" value="Departamento" />
+                <h:outputText class="columnReadForm" id="depto"  value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.departamento.gpoNombre}"  />
+                <h:outputText class="txtLabelsMgl" value="Código" />
+                <h:outputText class="columnReadForm" id="codigo" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.codigoRr}" />
+                <h:outputText class="txtLabelsMgl" value="Municipio" />
+                <h:outputText class="columnReadForm" id="muni" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.municipio.gpoNombre}"/>
+                <h:outputText class="txtLabelsMgl" value="NIT" />
+                <h:outputText class="columnReadForm" id="nit" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.nitCompania}" />
+                <h:outputText class="txtLabelsMgl" value="Centro Poblado" />
+                <h:outputText class="columnReadForm"  id="centp" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.centroPoblado.gpoNombre}"/>
+                <h:outputText class="txtLabelsMgl" value="Abreviatura" />
+                <h:outputText class="columnReadForm"  id="abrev" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.abreviatura}" />
+                <h:outputText class="txtLabelsMgl" value="Barrio" />
+                <h:outputText class="columnReadForm"  id="barrio" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.barrio}" />
+                <h:outputText class="txtLabelsMgl" value="Nombre Contacto" />
+                <h:outputText class="columnReadForm"  id="contacto" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.nombreContacto}" />
+                <h:outputText class="txtLabelsMgl" value="Dirección" />
+                <h:outputText class="columnReadForm"  id="dir" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.direccion}" />
+                <h:outputText class="txtLabelsMgl" value="Teléfonos" />
+                <h:outputText class="columnReadForm" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.telefonos}"  id="tel1" />
+                <h:outputText class="txtLabelsMgl" value="E-mail" />
+                <h:outputText class="columnReadForm" id="email" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.email}" />
+                <h:outputText class="txtLabelsMgl" value="Página WEB" />
+                <h:outputText class="columnReadForm" id="pagWeb" value="#{gestionCompaniaConstructoraBean.cmtSubEdificioMgl.companiaConstructoraObj.paginaWeb}" />
+                <h:outputText value="" />
+                <h:outputText value="" />
+                <h:commandButton value="Guardar" action="#{gestionCompaniaConstructoraBean.guardarAsociacion}" class="btn" style="width: 70px;" disabled="#{!gestionCompaniaConstructoraBean.rolEditar}"/>
+                <h:commandButton value="Horarios" action="#{gestionCompaniaConstructoraBean.irHorarios}" class="btn" style="width: 70px;"/>
+                <h:commandButton value="Establecimientos" action="#{gestionCompaniaConstructoraBean.irEstablesimientos}" class="btn" style="width: 140px;"/>
+            </h:panelGrid>
+            <h:panelGroup id="pnlHorarios" rendered="#{gestionCompaniaConstructoraBean.vistas.view eq 'Horario'}">
+                <cc:componente-horario id="compHorarios" horarioRestriccion="#{gestionCompaniaConstructoraBean.horarioRestriccion}" horarioEditable="L"
+                                       permisoCreacion="true" permisoEliminacion="#{gestionCompaniaConstructoraBean.rolEliminar}"/>
+                <h:commandButton value="Volver" action="#{gestionCompaniaConstructoraBean.volverACompania}" class="btn" style="width: 70px;"/>
+            </h:panelGroup>
+            <h:panelGroup id="pnlEstablesimientos" rendered="#{gestionCompaniaConstructoraBean.vistas.view eq 'Establesimientos'}">
+                <h:panelGrid columns="6">
+                    <h:outputText class="txtLabelsMgl" escape="false" value="#{gestionCompaniaConstructoraBean.estiloObligatorio}Tipo" />
+                    <h:selectOneMenu value="#{gestionCompaniaConstructoraBean.establecimientoNuevo.tipoEstbObj.basicaId}" 
+                                     id="selectTipoEstablesimiento"
+                                     required="true"
+                                     requiredMessage="Se requiere el tipo de establesimiento"
+                                     style="width: 150px"
+                                     >
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems  value="#{gestionCompaniaConstructoraBean.listBasicaTiposEstablesimiento}" var="tipEst" 
+                                        itemLabel="#{tipEst.nombreBasica}" itemValue="#{tipEst.basicaId}"  />
+                        <f:ajax event="change" execute="@this" 
+                                listener="#{gestionCompaniaConstructoraBean.asignarEstablesimiento}" render="@this"/>
+
+                    </h:selectOneMenu>                                
+                    <h:outputText class="txtLabelsMgl" escape="false" value="#{gestionCompaniaConstructoraBean.estiloObligatorio}Contacto" />
+                    <h:inputText  id="contactoEstablesimiento" required="true" style="width: 150px" maxlength="100" value="#{gestionCompaniaConstructoraBean.establecimientoNuevo.contacto}"  requiredMessage="El contacto es obligatorio"/>                
+                    <h:outputText class="txtLabelsMgl" escape="false" value="#{gestionCompaniaConstructoraBean.estiloObligatorio}Telefono" />
+                    <h:inputText id="telefonoContacotoEstablesimiento" style="width: 150px" required="true" maxlength="10" value="#{gestionCompaniaConstructoraBean.establecimientoNuevo.telefono}"  requiredMessage="El teléfono es obligatorio" converterMessage="El teléfono es numérico.">
+                        <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                    </h:inputText>
+                    <h:outputText class="txtLabelsMgl" value="Mail" />
+                    <h:inputText id="emailContacotoEstablesimiento" style="width: 150px" maxlength="100" value="#{gestionCompaniaConstructoraBean.establecimientoNuevo.email}" validatorMessage="El correo digitado no tiene formato correcto">
+                        <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>
+                    </h:inputText>
+                    <h:outputText class="txtLabelsMgl" escape="false" value="#{gestionCompaniaConstructoraBean.estiloObligatorio}Departamento" />
+                    <h:selectOneMenu value="#{gestionCompaniaConstructoraBean.establecimientoNuevo.departamentoObj.gpoId}" 
+                                     id="departametoEstablesimiento"
+                                     required="true"
+                                     style="width: 150px"
+                                     requiredMessage="Se requiere Departamento"
+                                     >
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems  value="#{gestionCompaniaConstructoraBean.listGeograficoDepartamentos}"  var="selDep" 
+                                        itemLabel="#{selDep.gpoNombre}" itemValue="#{selDep.gpoId}"  />
+                        <f:ajax event="change" execute="@this" 
+                                listener="#{gestionCompaniaConstructoraBean.consultarCiudades}"  render="@this CiudadEstablesimeinto selectCentroPoblado"/>
+
+                    </h:selectOneMenu>                                
+                    <h:outputText class="txtLabelsMgl" escape="false" value="#{gestionCompaniaConstructoraBean.estiloObligatorio}Ciudad" />
+
+                    <h:selectOneMenu value="#{gestionCompaniaConstructoraBean.establecimientoNuevo.ciudadObj.gpoId}" 
+                                     id="CiudadEstablesimeinto"
+                                     required="true"
+                                     style="width: 150px"
+                                     requiredMessage="Se requiere Ciudad"
+                                     >
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems  value="#{gestionCompaniaConstructoraBean.listGeograficoCiudades}"  var="selCiu" 
+                                        itemLabel="#{selCiu.gpoNombre}" itemValue="#{selCiu.gpoId}"  />
+                        <f:ajax event="change" execute="@this" 
+                                listener="#{gestionCompaniaConstructoraBean.consultarCentrosPoblados}"  render="@this selectCentroPoblado"/>
+                    </h:selectOneMenu>                              
+                    <h:outputText class="txtLabelsMgl" escape="false" value="#{gestionCompaniaConstructoraBean.estiloObligatorio}Centro Poblado" />
+                    <h:selectOneMenu value="#{gestionCompaniaConstructoraBean.establecimientoNuevo.centroPobladoObj.gpoId}" 
+                                     id="selectCentroPoblado"
+                                     required="true"
+                                     style="width: 150px"
+                                     requiredMessage="Se requiere Departamento"
+                                     >
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems  value="#{gestionCompaniaConstructoraBean.listGeograficoCentrosPoblados}"  var="selCen" 
+                                        itemLabel="#{selCen.gpoNombre}" itemValue="#{selCen.gpoId}"  />
+                        <f:ajax event="change" execute="@this" 
+                                listener="#{gestionCompaniaConstructoraBean.asignarCentroPoblado}"  render="@this"/>
+
+                    </h:selectOneMenu>                                
+                    <h:outputText class="txtLabelsMgl" escape="false" value="#{gestionCompaniaConstructoraBean.estiloObligatorio}Direccion" />
+                    <h:panelGroup>
+                        <h:inputText style="width: 150px" id="direccionContacotoEstablesimiento" maxlength="100" value="#{gestionCompaniaConstructoraBean.establecimientoNuevo.direccion}" >
+                            <f:ajax event="change" execute="@this contactoEstablesimiento emailContacotoEstablesimiento telefonoContacotoEstablesimiento" 
+                                    listener="#{gestionCompaniaConstructoraBean.avisaCambiaDireccion}" render="avaDireccion guardarEstablesimiento actualizarEstablesimiento"/>
+                        </h:inputText>
+                        <h:commandButton id="avaDireccion"  image="#{gestionCompaniaConstructoraBean.botonCrearHabilitado ? '../../../../img/ok.png':'../../../../img/busqueda.png'}" 
+                                         style="width: 15px; height: 15px"  title="Validar dirección" immediate="true">
+                            <f:ajax render="@form" execute="@this contactoEstablesimiento emailContacotoEstablesimiento telefonoContacotoEstablesimiento" 
+                                    event="click" listener="#{gestionCompaniaConstructoraBean.validarDireccion}"/>
+                        </h:commandButton>
+                    </h:panelGroup>                
+                    <h:outputText class="txtLabelsMgl" value="Barrio" />
+                    <h:selectOneMenu value="#{gestionCompaniaConstructoraBean.establecimientoNuevo.barrio}"  
+                                     id="selectBarrios"
+                                     style="width: 150px"
+                                     >
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems  value="#{gestionCompaniaConstructoraBean.listBarrios}"  var="tipEst" 
+                                        itemLabel="#{tipEst}" itemValue="#{tipEst}"  />
+                    </h:selectOneMenu>                                
+
+                    <h:commandButton id="guardarEstablesimiento" value="Guardar"  class="btn" style="width: 65px;" 
+                                     action="#{gestionCompaniaConstructoraBean.guardarNuevo}" 
+                                     disabled="#{!(gestionCompaniaConstructoraBean.botonCrearHabilitado
+                                     and (gestionCompaniaConstructoraBean.establecimientoNuevo.establecimientoId eq null)) and !gestionCompaniaConstructoraBean.isRolEditar()}"/>
+                    <h:commandButton value="Limpiar"  class="btn" style="width: 65px;"  immediate="true" >
+                        <f:ajax render="@form" execute="@this" 
+                                event="click" listener="#{gestionCompaniaConstructoraBean.crearNuevo()}"/>
+                    </h:commandButton>
+                    <h:commandButton value="Volver" action="#{gestionCompaniaConstructoraBean.volverACompania}" class="btn" style="width: 65px;" immediate="true"/>
+                    <h:commandButton id="actualizarEstablesimiento" value="Actualizar"  class="btn" style="width: 75px;" 
+                                     action="#{gestionCompaniaConstructoraBean.guardarCambio}" 
+                                     disabled="#{!(gestionCompaniaConstructoraBean.botonCrearHabilitado and !(gestionCompaniaConstructoraBean.establecimientoNuevo.establecimientoId eq null))}"/>
+
+                </h:panelGrid>
+                <div id="listaEsta" style="overflow: auto;height: 120px;" >
+                    <h:dataTable id="EstablesimientosMglTable" 
+                                 value="#{gestionCompaniaConstructoraBean.listCmtEstablecimientoCmMgls}" var="establesimiento"                         
+                                 styleClass="constructGTable2" style="width: 100%;"
+                                 headerClass="constructGTableHeader"  rowClasses="constructGTableEvenRow, constructGTableOddRow" >
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Tipo" />
+                            </f:facet>
+                            <div align="left"  >
+                                <h:commandLink immediate="true" style="font-size: xx-small" value="#{establesimiento.tipoEstbObj.nombreBasica}">
+                                    <f:ajax render="@form" execute="@this" 
+                                            event="click" listener="#{gestionCompaniaConstructoraBean.editarEstablesimiento(establesimiento.establecimientoId.toString())}"/>
+                                </h:commandLink>
+                            </div>                                  
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Contacto" />
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText style="font-size: xx-small" value="#{establesimiento.contacto}"/>
+                            </div>                                  
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Teléfono" />
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText style="font-size: xx-small" value="#{establesimiento.telefono}" />
+                            </div>                                  
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="E-mail" />
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText style="font-size: xx-small" value="#{establesimiento.email}"  />
+                            </div>                                  
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Departamento" />
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText style="font-size: xx-small" value="#{establesimiento.departamentoObj.gpoNombre}" />
+                            </div>                                  
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Ciudad" />
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText style="font-size: xx-small" value="#{establesimiento.ciudadObj.gpoNombre}" />
+                            </div>                                  
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Centro Poblado" />
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText style="font-size: xx-small" value="#{establesimiento.centroPobladoObj.gpoNombre}" />
+                            </div>                                  
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Dirección" />
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText style="font-size: xx-small" value="#{establesimiento.direccion}" />
+                            </div>                                  
+                        </h:column>
+                        <h:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Barrio" />
+                            </f:facet>
+                            <div align="left"  >
+                                <h:outputText style="font-size: xx-small" value="#{establesimiento.barrio}" />
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="E" />
+                                </f:facet>
+                                <h:commandLink immediate="true" style="font-size: xx-small" value="E" >
+                                    <f:ajax render="@form" execute="@this" 
+                                            event="click" listener="#{gestionCompaniaConstructoraBean.eliminarEstablesimiento(establesimiento.establecimientoId.toString())}"/>
+                                </h:commandLink>
+                            </div>  
+                        </h:column>                    
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Log" />
+                                </f:facet>
+                                <h:commandLink immediate="true" action="#{gestionCompaniaConstructoraBean.irAuditoriaEstablesimiento(establesimiento)}"  style="font-size: xx-small" value="Log" />      
+                            </div>                                  
+                        </h:column>                    
+                    </h:dataTable>
+                </div> 
+            </h:panelGroup>
+
+            <h:panelGroup id="pnlEstablesimientosAud" rendered="#{gestionCompaniaConstructoraBean.vistas.view eq 'AuditoriaEst'}">
+                <cc:componente-auditoria auditoriaDto="#{gestionCompaniaConstructoraBean.informacionAuditoria}">
+                </cc:componente-auditoria>          
+                <h:commandButton value="Volver" action="#{gestionCompaniaConstructoraBean.volverEstablesimientos}" class="btn" style="width: 90px;"/>
+            </h:panelGroup>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

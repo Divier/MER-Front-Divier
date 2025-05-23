@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"
+          charset="UTF-8"/>
+    <meta name="description" content="MÓDULO EXPANSIÓN DE RED"/>
+    <meta name="author" content="HITSS"/>
+    <meta name="keywords" content="HITSS; GRF; INSPIRA; CLARO"/>
+
+    <!-- TITLE - FAVICON -->
+    <title>MER - Claro</title>
+    <link rel="shortcut icon" type="image/x-icon"
+          href="#{resource['images/favicon.ico']}"/>
+
+    <!-- Fonts And Icons -->
+    <h:outputStylesheet name="/font-awesome-5/css/fontawesome-all.min.css"
+                        library="vendor"/>
+    <h:outputStylesheet name="font-face.css" library="css"/>
+
+    <!-- Bootstrap CSS-->
+    <h:outputStylesheet name="bootstrap-4.1/bootstrap.min.css"
+                        library="vendor"/>
+
+    <!-- Vendor CSS-->
+    <h:outputStylesheet name="animsition/animsition.min.css" library="vendor"/>
+    <h:outputStylesheet
+            name="bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css"
+            library="vendor"/>
+    <h:outputStylesheet name="wow/animate.css" library="vendor"/>
+    <h:outputStylesheet name="css-hamburgers/hamburgers.min.css"
+                        library="vendor"/>
+    <h:outputStylesheet name="perfect-scrollbar/perfect-scrollbar.css"
+                        library="vendor"/>
+
+    <!-- Main CSS-->
+    <h:outputStylesheet name="theme.css" library="css"/>
+
+    <!-- Master Edit Only This CSS-->
+    <h:outputStylesheet name="master.css" library="css"/>
+    <h:outputStylesheet name="select2/select2.min.css" library="vendor"/>
+
+    <!-- LOGINS -->
+    <h:outputStylesheet name="styleLogin1.css" library="css"/>
+    <h:outputStylesheet name="utilLogin1.css" library="css"/>
+    <h:outputStylesheet name="styleLogin2.css" library="css"/>
+
+    <!-- Jquery JS-->
+    <h:outputScript name="jquery-3.2.1.min.js" library="vendor"/>
+</h:head>
+<h:body onload="limpiarStorage()" class="animsition animated fadeIn">
+
+    <!-- LOGIN ACTUAL -->
+    <div class="limiter">
+        <div class="container-login100 loginFondo contNewLogin">
+            <div class="imageLogin wrap-login100 p-l-50 p-r-50 p-t-72 p-b-50 col-lg-7 col-md-7 col-sm-12 col-xs-12 hidden-sm hidden-xs">
+                <div class="logoClaroLogin hidden-sm hidden-xs">
+                    <h:graphicImage styleClass="hidden-sm hidden-xs"
+                                    library="images" name="Claro-rojo.svg"
+                                    style="width: auto;height: 110px;"/>
+                </div>
+            </div>
+            <div class="formLogin wrap-login100 p-l-50 p-r-50 p-t-72 p-b-50 col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                <h:form prependId="false">
+                    <div style="text-align: center;">
+                        <div class="login adaptableLogin">
+                            <h:graphicImage
+                                    styleClass="animsition animated bounceIn"
+                                    library="images"
+                                    name="mujer-login.png"
+                                    style="width: auto;height: 150px;"/>
+                            <header class="header">
+                                <strong class="titulolgn"
+                                        style="font-size: x-large; color: #dc3545;">Módulo de Expansión de Red</strong>
+                                <br/>
+                                <h:panelGroup id="idServerNodoLogin">
+                                    <!-- Servidor y nodo -->
+                                    <h:outputText
+                                            value="Servidor: &lt;b&gt;#{ApplicationBean.hostName}&lt;/b&gt;"
+                                            style="font-size: 10px;"
+                                            styleClass="upperCase"
+                                            escape="false"/>
+                                    <br/>
+                                    <h:outputText
+                                            value="Nodo: &lt;b&gt;#{ApplicationBean.serverWlName}&lt;/b&gt;"
+                                            style="font-size: 10px;"
+                                            styleClass="upperCase"
+                                            escape="false"/>
+                                </h:panelGroup>
+                                <br/>
+                                <strong class="titulolgn">Bienvenido</strong>
+                                <p class="txtlgn"> Un solo login para todas tus
+                                    <br/>aplicaciones Claro.</p>
+                                <div class="espacio"> </div>
+                                <span class="loader"> </span>
+                            </header>
+
+                            <ui:insert name="content"/>
+
+                            <div class="register-link">
+                                <p id="marcoAuditoria">
+                                    <h:messages id="messagesPop"
+                                                globalOnly="false"
+                                                errorClass="errorMessage messageLogin"
+                                                infoClass="infoMessage"
+                                                warnClass="warnMessage"
+                                                fatalClass="successMessage"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+            </div>
+            <div class="footer-general">
+                <h:panelGroup style="background: black !important">
+                    <div style="text-align: center;">
+                        <h:graphicImage library="images" name="Claro-blanco.png"
+                                        class="imageFo"/>
+                        <div class="versionProyecto">Compilación #{ApplicationBean.metadataProyecto.version}
+                            - #{ApplicationBean.metadataProyecto.fechaVersion}
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS-->
+    <h:outputScript name="bootstrap-4.1/popper.min.js" library="vendor"/>
+    <h:outputScript name="bootstrap-4.1/bootstrap.min.js" library="vendor"/>
+    <h:outputScript name="bootstrap-datepicker.js" library="js"/>
+    <h:outputScript name="bootstrap-datepicker.es.js" library="js"/>
+
+    <!-- Vendor JS -->
+    <h:outputScript name="wow/wow.min.js" library="vendor"/>
+    <h:outputScript name="animsition/animsition.min.js" library="vendor"/>
+    <h:outputScript name="bootstrap-progressbar/bootstrap-progressbar.min.js"
+                    library="vendor"/>
+    <h:outputScript name="counter-up/jquery.waypoints.min.js" library="vendor"/>
+    <h:outputScript name="counter-up/jquery.counterup.min.js" library="vendor"/>
+    <h:outputScript name="circle-progress/circle-progress.min.js"
+                    library="vendor"/>
+    <h:outputScript name="perfect-scrollbar/perfect-scrollbar.min.js"
+                    library="vendor"/>
+    <h:outputScript name="chartjs/Chart.bundle.min.js" library="vendor"/>
+    <h:outputScript name="select2.full.min.js" library="js"/>
+    <h:outputScript name="i18n/es.js" library="js"/>
+
+    <!-- Main JS-->
+    <h:outputScript name="main.js" library="js"/>
+
+</h:body>
+</html>

@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>        
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/script.js"></script>
+      
+
+    </h:head>
+    <h:body>
+        
+    
+      
+        <h:form id="formPrincipal">
+  <ui:include src="../../CM/panelMensajes.xhtml" />
+            <div id="header">
+                <ui:include src="../../CM/name.xhtml" />
+            </div>
+            <div id="cssmenu">
+                <ui:include src="../../template/menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../../CM/version.xhtml" />
+            </div>
+            <div id="content">
+                <div id="subcontent">
+                    <section class="tabs">
+                        <div id="contenido">
+                            <ui:insert name="content">
+                                <h:panelGroup id ="panelForm"  style="width: 100%; text-align: center;" rendered="#{reportesSolCMBean.panelFormulario}">
+                                    <fieldset style="width: 100%">
+                                        <legend>Reporte Compromiso Comercial</legend>
+                                        <div id="slaTipoOt">
+                                            <table style="width: 100%">
+                                                <tr>
+                                                    <td>   <h:outputText value="*" class="txtCamposReqMgl" />
+                                                        <h:outputText value="Tecnolog&iacute;a" id="tecLabel" /> 
+                                                    </td>
+                                                    <td>   <h:selectOneMenu id="tecnologiasList"  value="#{reportesCompComercialBean.tecnologia}"
+                                                                            label="Tecnolog&iacute;a"
+                                                                            style="width: 80%" styleClass="ListaConsulta" 
+                                                                            required="true" requiredMessage="Es necesaria la tecnolog&iacute;a para generar el reporte." 
+                                                                            >
+                                                            <f:selectItem itemValue="" itemLabel="" />
+                                                            <f:selectItems value="#{reportesCompComercialBean.listTablaBasicaTecnologias}" var="tec"
+                                                                           itemValue="#{tec.basicaId}"
+                                                                           itemLabel="#{tec.nombreBasica}"/>
+
+                                                        </h:selectOneMenu>
+                                                    </td>
+                                                    
+
+                                                </tr> 
+                                                <tr>
+                                                    <td>  <h:outputText value="*" class="txtCamposReqMgl" />
+                                                        <h:outputText id="slaOtDesText1" value="Fecha Habilitaci&oacute;n Inicial"  /></td>
+                                                    <td>    <h:inputText id="FprogramacionOtInput1"  style="width: 75%"
+                                                                         label="Fecha Habilitaci&oacute;n Inicial"
+                                                                         value="#{reportesCompComercialBean.fechaInicio}"
+                                                                         readonly="false" disabled="false" styleClass="datepicker"
+                                                                         validatorMessage="Formato de fecha incorrecto en el campo Fecha Inicial.">
+                                                            <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                                                        </h:inputText>
+                                                    </td>
+
+
+                                                    <td> <h:outputText value="*" class="txtCamposReqMgl" />
+                                                        <h:outputText id="lblfechaFinal" value="Fecha Habilitaci&oacute;n Final" /></td>
+                                                    <td>    
+                                                        <h:inputText  id="fechaFInal"  style="width: 75%"
+                                                                      label="Fecha Final"
+                                                                      value="#{reportesCompComercialBean.fechaFinal}"
+                                                                      readonly="false" disabled="false" styleClass="datepicker"
+                                                                      validatorMessage="Formato de fecha incorrecto en el campo Fecha Final.">
+                                                            <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                                                        </h:inputText>
+                                                       
+                                                    </td>
+
+
+                                                </tr> 
+                                                <tr> 
+                                                    <td> <h:outputText  value="Nodo" escape="false"/>  </td>
+                                                    <td>    <h:inputText label="Nodo" id="nodotxt"  style="width: 80%"
+                                                                         value="#{reportesCompComercialBean.nodo}" />
+                                                    </td>
+                                                    <td> <h:outputText escape="false" value="Estrato" />  </td>
+                                                    <td> <h:selectOneMenu id="listaEstratos"  value="#{reportesCompComercialBean.estrato}"
+                                                                          style="width: 80%" styleClass="ListaConsulta" 
+                                                                          label="Estrato"
+                                                                          >
+                                                            <f:selectItem itemValue="" itemLabel="" />
+                                                            <f:selectItems value="#{reportesCompComercialBean.listaTablaBasicaEstratos}" var="tec"
+                                                                           itemValue="#{tec.basicaId}"
+                                                                           itemLabel="#{tec.nombreBasica}"/>
+
+                                                        </h:selectOneMenu> 
+                                                    </td>
+
+                                                </tr> 
+                                                
+
+                                            </table>
+                                        </div>
+                                    </fieldset>
+                                </h:panelGroup>
+                                <br></br>
+
+                                <h:panelGrid columns="4" id="btnreporte" style="text-align: center;" >
+                                    <h:panelGroup id="botonesReporte" style="text-align: center;">
+                                        <h:commandButton value="Reporte" styleClass="btn" style=" text-align: center;" disabled="#{reportesCompComercialBean.progress 
+                                                                                                                                   or !reportesCompComercialBean.validarReporteCompCom()}"
+                                                         action="#{reportesCompComercialBean.getReporte()}" rendered="#{reportesCompComercialBean.btnReporte}"
+                                                         />
+                                    </h:panelGroup>
+
+                                </h:panelGrid>
+                                
+                                
+                                <br></br>  
+
+                               
+                                <br></br>  
+
+                                <h:panelGroup id="procesoRegistros"  style="color:red; width: 100%; text-align: center;"  rendered="#{reportesCompComercialBean.numRegistrosResultado > 0}" >
+                                    <h2 class="reporteCM">COMPROMISO COMERCIAL</h2> 
+                                    <fieldset>
+                                        <legend>Estado del Reporte</legend>
+                                        <div>
+                                            <h:outputText id="mesage"  style="color:red; width: 100%; font-size: 1.5em; font-weight: bold;width: 50%; text-align: center;"  
+                                                          value="Resultado   #{reportesCompComercialBean.numRegistrosResultado}  "  />
+                                        </div>
+                                       
+
+                                    </fieldset>
+                                </h:panelGroup>
+
+
+                                <br></br>
+                                <br></br>
+                                <h:panelGrid columns="2" id="panelExportar" style="text-align: center;" >
+                                    <h:panelGroup id="botonesExportar" style="text-align: center;">
+
+                                        <h:commandButton value="Exportar .xls" styleClass="btn unblockClaro" style="text-align: center;"  
+                                                         rendered="#{reportesCompComercialBean.btnExcel}"
+                                                         onclick="stop();"   disabled="#{reportesCompComercialBean.numRegistrosResultado > reportesCompComercialBean.cantMaxRegExcel}" 
+                                                         action="#{reportesCompComercialBean.exportExcel() }"
+                                                         />
+                                        <h:commandButton value="Exportar .csv" styleClass="btn unblockClaro" style="text-align: center;"   
+                                                         rendered="#{reportesCompComercialBean.btnCvsTxt}"
+                                                         onclick="stop();"  disabled="#{reportesCompComercialBean.numRegistrosResultado > reportesCompComercialBean.cantMaxRegCvs}"
+                                                         action="#{reportesCompComercialBean.downloadCvsTxt('csv')}"
+                                                         />
+                                        <h:commandButton value="Exportar .txt" styleClass="btn unblockClaro" style="text-align: center;"   
+                                                         rendered="#{reportesCompComercialBean.btnCvsTxt}"
+                                                         onclick="stop();"  disabled="#{reportesCompComercialBean.numRegistrosResultado > reportesCompComercialBean.cantMaxRegCvs}"
+                                                         action="#{reportesCompComercialBean.downloadCvsTxt('txt')}"
+                                                         />
+                                        <h:commandButton value="Limpiar" styleClass="btn" style="text-align: center;"   
+                                                        rendered="#{reportesCompComercialBean.btnCvsTxt}"
+                                                        onclick="stop();" 
+                                                         action="#{reportesCompComercialBean.volverList()}"
+                                                         />
+
+
+
+                                    </h:panelGroup>
+
+                                </h:panelGrid>   
+
+                             
+
+                            </ui:insert>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </h:form>
+        <div id="footer">
+             <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

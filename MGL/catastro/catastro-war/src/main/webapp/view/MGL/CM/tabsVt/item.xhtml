@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"     
+    template="/view/MGL/template/vt.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>   
+    <ui:define name="content">
+
+        <h:panelGroup id="panelGroupCostosTotalesInfra" 
+                      >
+            <h:panelGrid id="panelGridCostosTotalesInfra" 
+                         columns="2" style="width: 50%"
+                         rendered="#{itemVtBean.tipoItem eq 'MO' or itemVtBean.tipoItem eq 'MT'}">
+                <h:outputText id="lblCtoMO" value="Costo mano de Obra"
+                              rendered="#{itemVtBean.tipoItem eq 'MO'}"/> 
+                <h:inputText id="CtoMo" value="#{itemVtBean.vt.ctoManoObra}"
+                             rendered="#{itemVtBean.tipoItem eq 'MO'}"/> 
+
+                <h:outputText id="lblCtoMt" value="Costo Material de Diseño"
+                              rendered="#{itemVtBean.tipoItem eq 'MT'}"/> 
+                <h:inputText id="CtoMt" value="#{itemVtBean.vt.ctoMaterialesRed}"
+                             rendered="#{itemVtBean.tipoItem eq 'MT'}"/> 
+
+                <t:inputFileUpload id="fileVtMo" 
+                                   styleClass="btn"
+                                   label="Seleccionar Archivo"  
+                                   value="#{itemVtBean.uploadedFile}" />
+            </h:panelGrid>
+        </h:panelGroup>
+        
+        <h:panelGrid id="panelGridCostosTotalesDiseno" 
+                     columns="2" style="width: 50%"
+                     rendered="#{itemVtBean.tipoItem eq 'DM' or itemVtBean.tipoItem eq 'DO'}">
+            <h:outputText id="lblCtoMatDis" value="Costo Material Diseño"
+                          rendered="#{itemVtBean.tipoItem eq 'DM'}"/> 
+            <h:inputText id="CtoMatDis" value="#{itemVtBean.vt.costoMaterialesDiseno}"
+                         rendered="#{itemVtBean.tipoItem eq 'DM'}"/> 
+         
+            <h:outputText id="lblCtoMoDis" value="Costo Mano de Obra Diseño"
+                          rendered="#{itemVtBean.tipoItem eq 'DO'}"/> 
+            <h:inputText id="CtoMoDis" value="#{itemVtBean.vt.costoManoObraDiseno}"
+                         rendered="#{itemVtBean.tipoItem eq 'DO'}"/> 
+               <h:outputText id="lblNodo" value="Nodo"
+                          rendered="#{itemVtBean.tipoItem eq 'DO'}"/> 
+            <h:selectOneMenu id="idNodo"   
+                             style="width: 75%;" rendered="#{itemVtBean.tipoItem eq 'DO'}">
+                <f:selectItem itemValue="1" itemLabel="HSDJF" />
+                <f:selectItem itemValue="0" itemLabel="IUERI" />
+            </h:selectOneMenu> 
+            <t:inputFileUpload id="fileVtDiseno" 
+                               styleClass="btn"
+                               label="Seleccionar Archivo"  
+                               value="#{itemVtBean.uploadedFile}" />
+
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

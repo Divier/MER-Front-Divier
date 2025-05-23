@@ -1,0 +1,543 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <cc:interface componentType="co.com.claro.mgl.war.components.controler.MglScheduleControler">
+        <cc:attribute name="mglSchedule" id="mglSchedule" type="co.com.claro.mgl.war.components.dtos.schedule.MglScheduleComponetDto" shortDescription="Componente que representa el calendario"  required="true" />
+    </cc:interface> 
+
+    <cc:implementation>
+        <f:view id="viewScheduleComponent">
+            <link href="${facesContext.externalContext.requestContextPath}/resources/css/claro-mgl-styles.css" rel="stylesheet" type="text/css" />
+            <table class="scheduleTable" style="width: 100%"  >
+                <tr>
+                    <td class="exampleAvailable">
+                        Disponible
+                    </td>
+                    <td class="exampleUnAbailable">
+                        No disponible
+                    </td>
+                    <td class="exampleSelected">
+                        Seleccionado
+                    </td>
+                    <td class="exampleUsed">
+                        Utilizado
+                    </td>
+                </tr>
+            </table>
+            <h:panelGroup id="gurpoCalendarioExitoso" rendered="#{!cc.attrs.mglSchedule.hasError}">
+                <h:dataTable id="mglScheduleTable" 
+                             styleClass="scheduleTable" 
+                             headerClass="scheduleTableHeader" 
+                             rowClasses="scheduleTableRow,scheduleTableRow"
+                             value="#{cc.attrs.mglSchedule.mglHoursOfDayList}" 
+                             var="iterator" style="width: 100%">
+
+                    <h:column id="CoMglTimeSlotColumn">
+                        <f:facet name="header" >
+                            <div >
+                                <h:commandLink title="back" id="viewScheduleComponentBack" value="&lt;&lt;" action="#{cc.goBackMoveADay()}" disabled="#{cc.attrs.mglSchedule.firstDayToShow eq 0}"/>
+                                <h:commandLink title="Next" id="viewScheduleComponentNext" value="&nbsp;&nbsp;&gt;&gt;" action="#{cc.goMoveADay()}" disabled="#{cc.isLastColumnDay()}"/>
+                            </div> 
+                            <div> 
+                                <h:outputText  value="SEMANA"/>
+                            </div> 
+                        </f:facet>    
+                        <h:outputText  value="#{iterator.timeSlot}"/>
+                    </h:column>    
+
+                    <h:column id="MglFirstDayColumnShedule">
+                        <f:facet name="header" >
+                            <h:panelGroup id="MglFirstDayHeadPanelGrid" >
+                                <div class="headerStyleDays">
+                                    <font color="white">
+                                        <h:outputText id="HMglFirstDayTableHeadDate" value="#{ cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).weekNameDay}"/>
+                                    </font>
+                                </div>
+                                <div>
+                                    <font color="gray" size="5">
+                                        <h:outputText id="HMglFirstDayTableHeadMonth" value="#{cc.getMonthName(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).dayDate)}&nbsp;"/>
+                                        <h:outputText id="HMglFirstDayTableHeadNameWeekDay" value="#{cc.getNumbers(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).dayDate.substring(8))}"/> 
+                                    </font>
+                                </div>
+                            </h:panelGroup>
+                        </f:facet> 
+                        <h:panelGroup rendered="#{!(iterator.timeSlot eq 'Total')}">
+                            <h:panelGroup rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div class="#{cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null? '':cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used eq true?'slotUsed':cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.scheduled eq false ?'slotAvailable':'slotSelected'}">
+                                    <h:outputText value="#{cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available} cupos"/>
+                                    <h:commandLink value="#{(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                            or cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)?'&nbsp;':'&nbsp;'}"  
+                                                   action="#{cc.changueSelected(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour)}"
+                                                   disabled="#{(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                               or cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)}">
+                                    </h:commandLink>
+                                    <h:graphicImage value="${facesContext.externalContext.requestContextPath}/../resources/images/warring.png" 
+                                                    width="15px" 
+                                                    height="15px"                                                  
+                                                    rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)}"
+                                                    title="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)?
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.getRestrictionText():''}"/>
+
+                                </div>
+                            </h:panelGroup>    
+                            <h:panelGroup rendered="#{(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div id="pgdia1SinSlot" 
+                                     class="slotUnAvailable">
+                                    <h:outputText value="0 cupos"/>
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{iterator.timeSlot eq 'Total'}">
+                            <div>
+                                <font size="1">
+                                    <h:outputText value="T&nbsp;#{cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).totalQuota}"/>
+                                </font>
+                            </div>
+                            <div>
+                                <font size="1" color="green">
+                                    <h:outputText value="D&nbsp;#{cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                            <div>
+                                <font size="1" color="red">
+                                    <h:outputText value="U&nbsp;#{100-cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(0+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                        </h:panelGroup>
+                    </h:column>    
+                    <h:column id="MglSecondDayColumnShedule">
+                        <f:facet name="header" >
+                            <h:panelGroup id="MglSecondDayHeadPanelGrid" >
+                                <div class="headerStyleDays">
+                                    <font color="white">
+                                        <h:outputText id="HMglSecondDayTableHeadDate" value="#{cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).weekNameDay}"/>
+                                    </font>
+                                </div>
+                                <div>
+                                    <font color="gray" size="5">
+                                        <h:outputText id="HMglSecondDayTableHeadMonth" value="#{cc.getMonthName(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).dayDate)}&nbsp;"/>
+                                        <h:outputText id="HMglSecondDayTableHeadNameWeekDay" value="#{cc.getNumbers(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).dayDate.substring(8))}"/> 
+                                    </font>
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>    
+                        <h:panelGroup rendered="#{!(iterator.timeSlot eq 'Total')}">
+                            <h:panelGroup rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div class="#{cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null? '':cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used eq true?'slotUsed':cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.scheduled eq false ?'slotAvailable':'slotSelected'}">
+                                    <h:outputText value="#{cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available} cupos"/>
+                                    <h:commandLink value="#{(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                            or cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)?'&nbsp;':'&nbsp;'}"  
+                                                   action="#{cc.changueSelected(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour)}"
+                                                   disabled="#{(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                               or cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)}">
+                                    </h:commandLink>
+                                    <h:graphicImage value="${facesContext.externalContext.requestContextPath}/../resources/images/warring.png" 
+                                                    width="15px" 
+                                                    height="15px"                                                  
+                                                    rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)}"
+                                                    title="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)?
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.getRestrictionText():''}"/>                                    
+                                </div>
+                            </h:panelGroup>    
+                            <h:panelGroup rendered="#{(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div id="pgdia1SinSlot" 
+                                     class="slotUnAvailable">
+                                    <h:outputText value="0 cupos"/>
+                                </div>
+                            </h:panelGroup>                    
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{iterator.timeSlot eq 'Total'}">
+                            <div>
+                                <font size="1">
+                                    <h:outputText value="T&nbsp;#{cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).totalQuota}"/>
+                                </font>
+                            </div>
+                            <div>
+                                <font size="1" color="green">
+                                    <h:outputText value="D&nbsp;#{cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                            <div>
+                                <font size="1" color="red">
+                                    <h:outputText value="U&nbsp;#{100-cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(1+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                        </h:panelGroup>
+                    </h:column>    
+                    <h:column id="MglThirdDayColumnShedule">
+                        <f:facet name="header" >
+                            <h:panelGroup id="MglThirdDayHeadPanelGrid">
+                                <div class="headerStyleDays">
+                                    <font color="white">
+                                        <h:outputText id="HMglThirdDayTableHeadDate" value="#{cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).weekNameDay}"/>
+                                    </font>
+                                </div>
+                                <div>
+                                    <font  color="gray" size="5">
+                                        <h:outputText id="HMglThirdDayTableHeadMonth" value="#{cc.getMonthName(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).dayDate)}&nbsp;"/>
+                                        <h:outputText id="HMglThirdDayTableHeadNameWeekDay" value="#{cc.getNumbers(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).dayDate.substring(8))}"/> 
+                                    </font>
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>    
+                        <h:panelGroup rendered="#{!(iterator.timeSlot eq 'Total')}">
+                            <h:panelGroup rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div class="#{cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null? '':cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used eq true?'slotUsed':cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.scheduled eq false ?'slotAvailable':'slotSelected'}">
+                                    <h:outputText value="#{cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available} cupos"/>
+                                    <h:commandLink value="#{(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                            or cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)?'&nbsp;':'&nbsp;'}"  
+                                                   action="#{cc.changueSelected(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour)}"
+                                                   disabled="#{(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                               or cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)}">
+                                    </h:commandLink>
+                                    <h:graphicImage value="${facesContext.externalContext.requestContextPath}/../resources/images/warring.png" 
+                                                    width="15px" 
+                                                    height="15px"                                                  
+                                                    rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)}"
+                                                    title="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)?
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.getRestrictionText():''}"/>                                    
+                                </div>
+                            </h:panelGroup>    
+                            <h:panelGroup rendered="#{(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div id="pgdia1SinSlot" 
+                                     class="slotUnAvailable">
+                                    <h:outputText value="0 cupos"/>
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{iterator.timeSlot eq 'Total'}">
+                            <div>
+                                <font size="1">
+                                    <h:outputText value="T&nbsp;#{cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).totalQuota}"/>
+                                </font>
+                            </div>
+                            <div>
+                                <font size="1" color="green">
+                                    <h:outputText value="D&nbsp;#{cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                            <div>
+                                <font size="1" color="red">
+                                    <h:outputText value="U&nbsp;#{100-cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(2+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                        </h:panelGroup>
+                    </h:column>    
+                    <h:column id="MglFourthDayColumnShedule">
+                        <f:facet name="header" >
+                            <h:panelGroup id="MglFourthDayHeadPanelGrid"  >
+                                <div class="headerStyleDays">
+                                    <font color="white">
+                                        <h:outputText id="HMglFourthDayTableHeadDate" value="#{cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).weekNameDay}"/>
+                                    </font>                                    
+                                </div>
+                                <div>
+                                    <font  color="gray" size="5">
+                                        <h:outputText id="HMglFourthDayTableHeadMonth" value="#{cc.getMonthName(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).dayDate)}&nbsp;"/>
+                                        <h:outputText id="HMglFourthDayTableHeadNameWeekDay" value="#{cc.getNumbers(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).dayDate.substring(8))}"/> 
+                                    </font>                                    
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>    
+                        <h:panelGroup rendered="#{!(iterator.timeSlot eq 'Total')}">
+                            <h:panelGroup rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div class="#{cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null? '':cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used eq true?'slotUsed':cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.scheduled eq false ?'slotAvailable':'slotSelected'}">
+                                    <h:outputText value="#{cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available} cupos"/>
+                                    <h:commandLink value="#{(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                            or cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)?'&nbsp;':'&nbsp;'}"  
+                                                   action="#{cc.changueSelected(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour)}"
+                                                   disabled="#{(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                               or cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)}">
+                                    </h:commandLink>
+                                    <h:graphicImage value="${facesContext.externalContext.requestContextPath}/../resources/images/warring.png" 
+                                                    width="15px" 
+                                                    height="15px"                                                  
+                                                    rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)}"
+                                                    title="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)?
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.getRestrictionText():''}"/>                                    
+                                </div>
+                            </h:panelGroup>    
+                            <h:panelGroup rendered="#{(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div id="pgdia1SinSlot" 
+                                     class="slotUnAvailable">
+                                    <h:outputText value="0 cupos"/>
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{iterator.timeSlot eq 'Total'}">
+                            <div>
+                                <font size="1">
+                                    <h:outputText value="T&nbsp;#{cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).totalQuota}"/>
+                                </font>
+                            </div>
+                            <div>
+                                <font size="1" color="green">
+                                    <h:outputText value="D&nbsp;#{cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                            <div>
+                                <font size="1" color="red">
+                                    <h:outputText value="U&nbsp;#{100-cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(3+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                        </h:panelGroup>
+                    </h:column>    
+                    <h:column id="MglFifthDayColumnShedule">
+                        <f:facet name="header" >
+                            <h:panelGroup id="MglFifthDayHeadPanelGrid" >
+                                <div class="headerStyleDays">
+                                    <font color="white">
+                                        <h:outputText id="HMglFifthDayTableHeadDate" value="#{cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).weekNameDay}"/>
+                                    </font>                                    
+                                </div>
+                                <div>
+                                    <font  color="gray" size="5">
+                                        <h:outputText id="HMglFifthDayTableHeadMonth" value="#{cc.getMonthName(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).dayDate)}&nbsp;"/>
+                                        <h:outputText id="HMglFifthDayTableHeadNameWeekDay" value="#{cc.getNumbers(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).dayDate.substring(8))}"/> 
+                                    </font>                                    
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>    
+                        <h:panelGroup rendered="#{!(iterator.timeSlot eq 'Total')}">
+                            <h:panelGroup rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div class="#{cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null? '':cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used eq true?'slotUsed':cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.scheduled eq false ?'slotAvailable':'slotSelected'}">
+                                    <h:outputText value="#{cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available} cupos"/>
+                                    <h:commandLink value="#{(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                            or cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)?'&nbsp;':'&nbsp;'}"  
+                                                   action="#{cc.changueSelected(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour)}"
+                                                   disabled="#{(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                               or cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)}">
+                                    </h:commandLink>
+                                    <h:graphicImage value="${facesContext.externalContext.requestContextPath}/../resources/images/warring.png" 
+                                                    width="15px" 
+                                                    height="15px"                                                  
+                                                    rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)}"
+                                                    title="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)?
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.getRestrictionText():''}"/>                                    
+                                </div>
+                            </h:panelGroup>    
+                            <h:panelGroup rendered="#{(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div id="pgdia1SinSlot" 
+                                     class="slotUnAvailable">
+                                    <h:outputText value="0 cupos"/>
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{iterator.timeSlot eq 'Total'}">
+                            <div>
+                                <font size="1">
+                                    <h:outputText value="T&nbsp;#{cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).totalQuota}"/>
+                                </font>
+                            </div>
+                            <div>
+                                <font size="1" color="green">
+                                    <h:outputText value="D&nbsp;#{cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                            <div>
+                                <font size="1" color="red">
+                                    <h:outputText value="U&nbsp;#{100-cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(4+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                        </h:panelGroup>
+                    </h:column>    
+                    <h:column id="MglSixthDayColumnShedule">
+                        <f:facet name="header">
+                            <h:panelGroup  id="MglSixthDayHeadPanelGrid" >
+                                <div class="headerStyleDays">
+                                    <font color="white" >                                    
+                                        <h:outputText id="HMglSixthDayTableHeadDate" value="#{cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).weekNameDay}"/>
+                                    </font>                                    
+                                </div>
+                                <div>
+                                    <font  color="gray" size="5">
+                                        <h:outputText id="HMglSixthDayTableHeadMonth" value="#{cc.getMonthName(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).dayDate)}&nbsp;"/>
+                                        <h:outputText id="HMglSixthDayTableHeadNameWeekDay" value="#{cc.getNumbers(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).dayDate.substring(8))}"/> 
+                                    </font>                                    
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>    
+                        <h:panelGroup rendered="#{!(iterator.timeSlot eq 'Total')}">
+                            <h:panelGroup rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div class="#{cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null? '':cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used eq true?'slotUsed':cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.scheduled eq false ?'slotAvailable':'slotSelected'}">
+                                    <h:outputText value="#{cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available} cupos"/>
+                                    <h:commandLink value="#{(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                            or cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)?'&nbsp;':'&nbsp;'}"  
+                                                   action="#{cc.changueSelected(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour)}"
+                                                   disabled="#{(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                               or cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)}">
+                                    </h:commandLink>
+                                    <h:graphicImage value="${facesContext.externalContext.requestContextPath}/../resources/images/warring.png" 
+                                                    width="15px" 
+                                                    height="15px"                                                  
+                                                    rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)}"
+                                                    title="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)?
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.getRestrictionText():''}"/>                                    
+                                </div>
+                            </h:panelGroup>    
+                            <h:panelGroup rendered="#{(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div id="pgdia1SinSlot" 
+                                     class="slotUnAvailable">
+                                    <h:outputText value="0 cupos"/>
+                                </div>
+                            </h:panelGroup>                 
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{iterator.timeSlot eq 'Total'}">
+                            <div>
+                                <font size="1">
+                                    <h:outputText value="T&nbsp;#{cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).totalQuota}"/>
+                                </font>
+                            </div>
+                            <div>
+                                <font size="1" color="green">
+                                    <h:outputText value="D&nbsp;#{cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                            <div>
+                                <font size="1" color="red">
+                                    <h:outputText value="U&nbsp;#{100-cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(5+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                        </h:panelGroup>
+                    </h:column>    
+
+                    <h:column id="MglSeventhDayColumnShedule">
+                        <f:facet name="header" >
+                            <h:panelGroup id="MglSeventhDayHeadPanelGrid" >
+                                <div class="headerStyleDays">
+                                    <font color="white">
+                                        <h:outputText id="HMglSeventhDayTableHeadDate" value="#{cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).weekNameDay}"/>
+                                    </font>
+                                </div>
+                                <div>
+                                    <font  color="gray" size="5">
+                                        <h:outputText id="HMglSeventhDayTableHeadMonth" value="#{cc.getMonthName(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).dayDate)}&nbsp;"/>
+                                        <h:outputText id="HMglSeventhDayTableHeadNameWeekDay" value="#{cc.getNumbers(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).dayDate.substring(8))}"/> 
+                                    </font>
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>    
+                        <h:panelGroup rendered="#{!(iterator.timeSlot eq 'Total')}">
+                            <h:panelGroup rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div class="#{cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null? '':cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used eq true?'slotUsed':cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.scheduled eq false ?'slotAvailable':'slotSelected'}">
+                                    <h:outputText value="#{cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available} cupos"/>
+                                    <h:commandLink value="#{(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                            or cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)?'&nbsp;':'&nbsp;'}"  
+                                                   action="#{cc.changueSelected(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour)}"
+                                                   disabled="#{(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null
+                                                               or cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.used)}">
+                                    </h:commandLink>
+                                    <h:graphicImage value="${facesContext.externalContext.requestContextPath}/../resources/images/warring.png" 
+                                                    width="15px" 
+                                                    height="15px"                                                  
+                                                    rendered="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                                cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)}"
+                                                    title="#{!(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or 
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction eq null or
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.restriction.size() eq 0)?
+                                                             cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.getRestrictionText():''}"/>                                    
+                                </div>
+                            </h:panelGroup>    
+                            <h:panelGroup rendered="#{(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement eq null or cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).mglHourOfDayList.get(iterator.slotPotition).scheduleByHour.capacityElement.available eq 0)}">
+                                <div id="pgdia1SinSlot" 
+                                     class="slotUnAvailable">
+                                    <h:outputText value="0 cupos"/>
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{iterator.timeSlot eq 'Total'}">
+                            <div>
+                                <font size="1">
+                                    <h:outputText value="T&nbsp;#{cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).totalQuota}"/>
+                                </font>
+                            </div>
+                            <div>
+                                <font size="1" color="green">
+                                    <h:outputText value="D&nbsp;#{cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                            <div>
+                                <font size="1" color="red">
+                                    <h:outputText value="U&nbsp;#{100-cc.percentCalculte(cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).totalAvailable,cc.attrs.mglSchedule.mglColumnDayList.get(6+cc.attrs.mglSchedule.firstDayToShow).totalQuota)}%"/>
+                                </font>
+                            </div>                            
+                        </h:panelGroup>
+                    </h:column>    
+                    <h:column>
+                        <f:facet name="header" >
+                            <h:panelGroup id="MglTotalDaiesHeadPanelGrid" >
+                                <div class="headerStyleDays">
+                                    <font color="white">
+                                        <h:outputText id="HMglTotalDaiesTableHeadDate" value="Total"/>
+                                    </font>
+                                </div>
+                                <div>
+                                    <font  color="gray" size="5">
+                                        <h:outputText id="HMglTotalDaiesDaysTableHeadMonth" value="&nbsp;"/>
+                                        <h:outputText id="HMglTotalDaiesTableHeadNameWeekDay" value="&nbsp;"/> 
+                                    </font>
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>    
+                        <h:panelGroup rendered="#{!(iterator.timeSlot eq 'Total')}">
+                            <h:panelGroup >
+                                <div>
+                                    <font size="1">
+                                        <h:outputText value="T&nbsp;#{iterator.totalQuota}"/>
+                                    </font>
+                                </div>
+                                <div>
+                                    <font size="1" color="green">
+                                        <h:outputText value="D&nbsp;#{cc.percentCalculte(iterator.totalAvailable,iterator.totalQuota)}%"/>
+                                    </font>
+                                </div>                            
+                                <div>
+                                    <font size="1" color="red">
+                                        <h:outputText value="U&nbsp;#{100-cc.percentCalculte(iterator.totalAvailable,iterator.totalQuota)}%"/>
+                                    </font>
+                                </div>                            
+                            </h:panelGroup>
+                        </h:panelGroup>    
+                    </h:column>
+                </h:dataTable>    
+            </h:panelGroup>
+            <h:panelGroup id="gurpoCalendarioNoExitoso" rendered="#{cc.attrs.mglSchedule.hasError}">
+                <h:panelGrid id="gurpoCalendarioNoExitosoErrores">
+                    <h:outputText id="componenteCalendarioError" value="No se puede pintar el Calendario, #{cc.attrs.mglSchedule.errorMessage}"/>
+                </h:panelGrid>
+            </h:panelGroup>
+            <h:outputScript library="js" name="jquery-1.3.2.js"/>          
+            <h:outputScript library="js" name="MglJsComponents.js"/>
+        </f:view> 
+    </cc:implementation> 
+</html>

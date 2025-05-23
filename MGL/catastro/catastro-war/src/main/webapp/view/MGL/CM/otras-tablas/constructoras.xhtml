@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"     
+    template="/view/MGL/template/main.xhtml">
+    <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+    <ui:define name="content">
+        <h2>Compañías Constructoras</h2>
+        <h:panelGroup rendered="#{!constructorasBean.renderAuditoria}">      
+            <div  class="tableContent">
+                <h:dataTable binding="#{constructorasBean.dataTable}" id="consTable" var="cons" value="#{constructorasBean.companyListTable}" styleClass="constructGTable"
+                             headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                             rendered="true" rows="15" >
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="ID"/>
+                        </f:facet>
+                        <h:commandLink value="#{cons.companiaId}"
+                                       action="#{constructorasBean.cargarConstructoraMod(cons)}"
+                                       disabled="#{!constructorasBean.validarIdRol()}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="CÓDIGO"/>
+                        </f:facet>
+                        <h:outputText value="#{cons.codigoRr}"/>
+                    </h:column>                    
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="NOMBRE COMPAÑÍA"/><BR/>
+                            <h:inputText maxlength="30" id="nombreConsulta" style="width: 105px" value="#{constructorasBean.filtroConsultaCompaniasDto.nombre}">
+                                <f:ajax listener="#{constructorasBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:inputText>
+                        </f:facet>
+                        <h:outputText value="#{cons.nombreCompania}"/>
+                    </h:column>
+                    <h:column >
+                        <f:facet name="header">
+                            <h:outputText value="NIT"/><BR/>
+                            <h:inputText maxlength="10" id="nitConsulta" style="width: 60px" value="#{constructorasBean.filtroConsultaCompaniasDto.nit}">
+                                <f:ajax listener="#{constructorasBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:inputText>
+                        </f:facet>
+                        <h:outputText  value="#{cons.nitCompania}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="DEPARTAMENTO"/><BR/>
+                            <h:selectOneMenu id="deptoConsulta" style="width: 90px" value="#{constructorasBean.filtroConsultaCompaniasDto.departamento}" >
+                                <f:selectItem itemValue="" itemLabel="Todos" />
+                                <f:selectItems value="#{constructorasBean.departamentoListConsulta}" var="depto"
+                                               itemValue="#{depto.gpoId}"
+                                               itemLabel="#{depto.gpoNombre}"/>    
+                                <f:ajax listener="#{constructorasBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{cons.departamento.gpoNombre}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="MUNICIPIO"/><BR/>
+                            <h:selectOneMenu id="municipioConsulta" style="width: 90px" value="#{constructorasBean.filtroConsultaCompaniasDto.municipio}" >
+                                <f:selectItem itemValue="" itemLabel="Todos" />
+                                <f:selectItems value="#{constructorasBean.ciudadListConsulta}" var="muni"
+                                               itemValue="#{muni.gpoId}"
+                                               itemLabel="#{muni.gpoNombre}"/>    
+                                <f:ajax listener="#{constructorasBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{cons.municipio.gpoNombre}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="CENTRO POBLADO"/><BR/>
+                            <h:selectOneMenu id="centPobladoConsulta" style="width: 90px" value="#{constructorasBean.filtroConsultaCompaniasDto.centroPoblado}" >
+                                <f:selectItem itemValue="" itemLabel="Todos" />
+                                <f:selectItems value="#{constructorasBean.centroPobladoListConsulta}" var="centp"
+                                               itemValue="#{centp.gpoId}"
+                                               itemLabel="#{centp.gpoNombre}"/>    
+                                <f:ajax listener="#{constructorasBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{cons.centroPoblado.gpoNombre}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="BARRIO"/><BR/>
+                            <h:inputText maxlength="30" id="barrioConsulta" style="width: 80px" value="#{constructorasBean.filtroConsultaCompaniasDto.barrio}">
+                                <f:ajax listener="#{constructorasBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:inputText>
+                        </f:facet>
+                        <h:outputText value="#{cons.barrio}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/><BR/>
+                            <h:selectOneMenu id="consultaListEstadoBasica"   
+                                             styleClass="ListaConsulta"
+                                             style="width: 61px"
+                                             value="#{constructorasBean.filtroConsultaCompaniasDto.estado}">
+                                <f:selectItem itemValue="" itemLabel="Todos" />
+                                <f:selectItem itemValue="Y" itemLabel="Activo" />
+                                <f:selectItem itemValue="N" itemLabel="Inactivo" />
+                                <f:ajax listener="#{constructorasBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:selectOneMenu>  
+                        </f:facet>
+                        <h:outputText value="#{cons.activado eq 'Y' ? 'Activo': 'Inactivo'}"/>
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Log" />
+                            </f:facet>
+                            <h:commandLink value="Log" actionListener="#{constructorasBean.mostrarAuditoria(cons)}" />      </div>                                  
+                    </h:column>                    
+                    <f:facet name="footer">
+                        <h:panelGroup>
+                         <h:commandButton value= ""  action="#{constructorasBean.pageFirst}" class="botonTPagInicioCm botonBaselista"/>
+                                       <h:commandButton  value= "" action="#{constructorasBean.pagePrevious}" class="botonTPagAnteriorCm botonBaselista"/>
+                                       <h:commandButton value="#{constructorasBean.pageActual}" />
+                                       <h:selectOneMenu  value="#{constructorasBean.numPagina}" 
+                                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                           <f:selectItems value="#{constructorasBean.paginaList}" var="pag"
+                                                          itemValue="#{pag}"
+                                                          itemLabel="#{pag}"/>    
+                                           <f:ajax render="consTable"  event="change"  listener="#{constructorasBean.irPagina()}"  execute="@this" />                                         
+                                       </h:selectOneMenu>  
+                                       <h:commandButton  value= "" action="#{constructorasBean.pageNext}" class="botonTPagSiguienteCm botonBaselista"/>
+                                       <h:commandButton  value= "" action="#{constructorasBean.pageLast}" class="botonTPagFinCm botonBaselista"/>
+                        </h:panelGroup>
+                    </f:facet>
+                </h:dataTable>
+            </div>
+            <div class="buttonArea">
+                <h:commandButton value="Crear Registro" styleClass="btn"
+                                 action="#{constructorasBean.cargarConstructora()}"
+                                 disabled="#{!constructorasBean.validarCrearRol()}"/>
+                <h:commandButton  action="#{constructorasBean.exportExcel()}"
+                                  disabled="#{!constructorasBean.validarOpcionExportar()}"
+                                  value="Exportar" styleClass="btn unblockClaro"/>
+            </div>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{constructorasBean.renderAuditoria}">
+            <span class="TituloSeccion">Auditoria de tipo Compania[#{constructorasBean.tipoCompaniaDescripcion}], Registro [#{constructorasBean.descripcionCompania}]</span>
+            <cc:componente-auditoria auditoriaDto="#{constructorasBean.informacionAuditoria}">
+
+            </cc:componente-auditoria>
+            <h:commandLink value="Volver" actionListener="#{constructorasBean.ocultarAuditoria}" />     
+        </h:panelGroup>   
+    </ui:define>
+</ui:composition>

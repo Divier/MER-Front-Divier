@@ -1,0 +1,354 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>        
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/script.js"></script>
+        <style type="text/css">
+            .ui-g div {
+                background-color: #ededed;
+                text-align: center;
+                border: 1px solid #fafafa;
+                
+            }
+            .calendarClass input{
+                 margin-left: 10px;
+                 width: 85px
+            }
+        </style>
+
+    </h:head>
+    <h:body>
+
+
+
+        <h:form id="formPrincipal">
+            <ui:include src="../../CM/panelMensajes.xhtml" />
+            <div id="header">
+                <ui:include src="../../CM/name.xhtml" />
+            </div>
+            <div id="cssmenu">
+                <ui:include src="../../template/menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../../CM/version.xhtml" />
+            </div>
+            <div id="content">
+                <div id="subcontent">
+                    <section class="tabs">
+                        <div id="contenido">
+                            <ui:insert name="content">
+
+                                <h:form>
+                                    <p:growl id="msgs" showDetail="true" />
+
+                                    <p:panel id="basic" header="Historico Estado Actual CCMM Y Direcciones" footer="Reportes CCMM y Direcciones" style="margin-bottom:20px">
+		                     <h3 style="margin-top: 0">Regional/Ciudad</h3>
+                                        <div class="ui-g">
+                                            <div class="ui-g-6"> 
+                                                <h:outputText id="lblRegional" value="Regional" />
+
+                                                <p:selectCheckboxMenu id="regional" value="#{historicoOtDirBean.listRegionalSelected}" label="Regional"
+                                                                      valueChangeListener="#{historicoOtDirBean.regionalCodeChanged}" 
+                                                                      filter="true" filterMatchMode="startsWith" >
+                                                    <f:selectItems value="#{historicoOtDirBean.regionales}"
+                                                                   var="reg"  
+                                                                   itemValue="#{reg.regionalRrId}" 
+                                                                   itemLabel="#{reg.nombreRegional}"/>
+                                                    <f:ajax render="ciudad regional"/>
+                                                </p:selectCheckboxMenu>
+                                            </div>
+                                            <div class="ui-g-6"> 
+                                                <h:outputText id="lblCiudad" value="Ciudad" />
+                                                <p:selectCheckboxMenu id="ciudad" value="#{historicoOtDirBean.listRrCiudadesSelected}" label="Ciudad"
+                                                                      filter="true" filterMatchMode="startsWith" >
+                                                    <f:selectItems value="#{historicoOtDirBean.rrCiudades}"
+                                                                   var="cd"  
+                                                                   itemValue="#{cd.comunidadRrId}" 
+                                                                   itemLabel="#{cd.nombreComunidad}"/>
+                                                </p:selectCheckboxMenu>
+
+                                            </div>
+
+                                        </div>
+									
+									
+									
+									
+                                       <h3 style="margin-top: 0">Rango de Fechas</h3>
+                                        <div class="ui-g">
+                                            <div class="ui-g-6"> 
+                                                <h:outputText  value="Filtro Fechas" escape="false"/>
+                                                <h:selectOneMenu id="filtroFechas" value="#{historicoOtDirBean.filtroFechas}" style="width:125px">
+                                                    <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                                    <f:selectItem itemLabel="Creacion OT" itemValue="Creacion OT" />
+                                                     <f:selectItem itemLabel="Creación ONYX Hija" itemValue="Creacion ONYX Hija" />
+                                                    <f:selectItem itemLabel="Agendamiento OFSC" itemValue="Agendamiento OFSC" />
+                                                    <f:selectItem itemLabel="Asignación Técnico OFSC" itemValue="Asignacion tecnico OFSC" />
+                                                    <f:selectItem itemLabel="Cierre Agenda OFSC" itemValue="Cierre agenda OFSC" />
+                                                    <f:selectItem itemLabel="Cancelación OFSC" itemValue="Cancelacion OFSC" />
+                                                    <f:selectItem itemLabel="Reagendamiento OFSC" itemValue="Reagendamiento OFSC" />
+                                                    <f:selectItem itemLabel="Suspensión OFSC" itemValue="Suspension OFSC" />
+                                                    
+                                                </h:selectOneMenu>
+                                            </div>
+                                        <div class="ui-g-6">
+                                                  <!-- primera fila fecha -->
+                                      
+                                        <h:panelGroup id="creacionOt"  rendered="#{historicoOtDirBean.panelCreacionOt}" >
+                                           
+                                                <div class="ui-g-6"> 
+                                                    <h:outputText id="slaOtDesText1"  value="Fecha Inicio"  />
+                                                    <p:calendar id="initDate" styleClass="calendarClass" readonlyInput="true"
+                                                                value="#{historicoOtDirBean.fechaInicioOt}"
+                                                                readonly="false" 
+                                                                showOn="both">
+                                                        <f:convertDateTime pattern="dd/MM/yy" />   
+                                                    </p:calendar>     
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <h:outputText id="lblfechaFinal"  value="Fecha Fin" />
+                                                    <p:calendar id="fechaFInalOnyx" styleClass="calendarClass" readonlyInput="true"
+                                                                value="#{historicoOtDirBean.fechaFinOt}"
+                                                                readonly="false" 
+                                                                showOn="both">
+                                                        <f:convertDateTime pattern="dd/MM/yy" />   
+                                                    </p:calendar> 
+                                                </div>
+                                           
+                                        </h:panelGroup>
+
+                                            </div>
+                                        </div>
+                                       <!-- primera fila-->
+                                       <h3 style="margin-top: 0">Ordenes</h3>
+                                       <div class="ui-g">
+                                           <div class="ui-g-6"> <h:outputText  value="Número OT Inicial" escape="false"/>
+                                               <p:inputText placeholder="Número OT Inicial"
+                                                            converterMessage="Por favor ingrese solo números"
+                                                            value="#{historicoOtDirBean.otIni}" />      
+                                           </div>
+                                           <div class="ui-g-6"><h:outputText  value="Número OT Final" escape="false"/>
+                                               <p:inputText placeholder="Número OT Final"
+                                                            converterMessage="Por favor ingrese solo números"
+                                                            value="#{historicoOtDirBean.otFin}" /> 
+                                           </div>
+                                       </div>
+                                       <h3 style="margin-top: 0">Filtros varios</h3>
+                                       <div class="ui-g">
+                                           <div class="ui-g-6"> 
+                                               <h:outputText  value="Filtro de Consulta" escape="false"/>
+                                               <h:selectOneMenu id="filtroVarios" value="#{historicoOtDirBean.filtroVarios}" style="width:125px">
+                                                   <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                                   <f:selectItem itemLabel="Código de proyecto " itemValue="Codigo de proyecto" />
+                                                   <f:selectItem itemLabel="Nit del cliente" itemValue="Nit del cliente" />
+                                                   <f:selectItem itemLabel="Numero de Ot Padre" itemValue="Numero de Ot Padre" />
+                                                   <f:selectItem itemLabel="Numero de Ot Hija" itemValue="Numero de Ot Hija" />
+                                                   <f:selectItem itemLabel="Nombre del cliente" itemValue="Nombre del cliente" />
+                                               </h:selectOneMenu>  
+                                           </div>
+                                           <div class="ui-g-6">
+                                               <p:inputText placeholder="Valor" 
+
+                                                            value="#{historicoOtDirBean.valor}" />  
+                                           </div>
+                                       </div>
+                                                                                                                                        
+                                                                                                                                                                                
+					<h3 style="margin-top: 0">Tipos de Ordenes</h3>
+                                         <div class="ui-g">
+
+                                             <div class="ui-g-3"> 
+                                                 <h:outputText id="lblTiposOrdenes" value="Tipos de órdenes " />
+                                                 <p:selectCheckboxMenu id="tiposSubOrdenes" value="#{historicoOtDirBean.subTipoOrden}" label="Tipos de Ordenes"
+                                                                       filter="true" filterMatchMode="startsWith" >
+                                                     <f:selectItems value="#{historicoOtDirBean.tipoGeneralOrdenTrabajo}"
+                                                                    var="ot"  
+                                                                    itemValue="#{ot.basicaId}" 
+                                                                    itemLabel="#{ot.nombreBasica}"/>
+                                                 </p:selectCheckboxMenu> 
+
+                                             </div>
+                                             <div class="ui-g-3"> 
+                                                 <h:outputText id="lblSubTiposOrdenes" value="Sub Tipos de órdenes " />
+                                                  <p:selectCheckboxMenu id="tiposOrdenes" value="#{historicoOtDirBean.tipoOrden}" label="Sub  Tipos de Ordenes"
+                                                                       filter="true" filterMatchMode="startsWith" >
+                                                     <f:selectItems value="#{historicoOtDirBean.listTipoOtMgl}"
+                                                                    var="otMgl"  
+                                                                    itemValue="#{otMgl.idTipoOt}" 
+                                                                    itemLabel="#{otMgl.nombre}"/>
+                                                 </p:selectCheckboxMenu> 
+
+
+                                             </div>
+                                            <div class="ui-g-3">
+                                                  <h:outputText id="lbltipoOrdenesTrabajo" value="Tipos de órdenes OFSC" />
+                                                  <p:selectCheckboxMenu id="tipoTrabajo" value="#{historicoOtDirBean.tipoOrdenOfscSelected}" label="tipo de Trabajo"
+                                                                        filter="true" filterMatchMode="startsWith" >
+                                                      <f:selectItems value="#{historicoOtDirBean.tipoGeneralOrdenTrabajo}"
+                                                                     var="st"  
+                                                                     itemValue="#{st.basicaId}" 
+                                                                     itemLabel="#{st.nombreBasica}"/>
+                                                  </p:selectCheckboxMenu>
+                                              </div>
+                                              <div class="ui-g-3">  
+                                                  <h:outputText id="lblSubTipoOrdenesTrabajo" value="Sub Tipos de órdenes OFSC" />
+                                                
+                                                  <p:selectCheckboxMenu id="SubTipoTrabajo" value="#{historicoOtDirBean.subTipoOrdenOfscSelected}" label="SubTipo de Trabajo"
+                                                                         filter="true" filterMatchMode="startsWith" >
+                                                       <f:selectItems value="#{historicoOtDirBean.listBasicaFinalSubtipoOrdenOFSC}"
+                                                                    var="st"  
+                                                                    itemValue="#{st.codigoBasica}" 
+                                                                    itemLabel="#{st.descripcion}"/>
+                                                  </p:selectCheckboxMenu>
+                                                
+                                              </div>
+                                              
+                                          </div> 
+                           
+                                        <h3 style="margin-top: 0">Estados / Tipo Solucion / Segmento</h3>
+                                        <div class="ui-g">
+
+                                            <div class="ui-g-3"> 
+                                                <h:outputText  id="lblestadoInterno" value="Estado Interno Ot" />
+
+                                                 <p:selectCheckboxMenu id="estadoInterno" value="#{historicoOtDirBean.estadoInternolist}" label="Estado Interno Orden"
+                                                                      filter="true" filterMatchMode="startsWith" >
+                                                    <f:selectItems value="#{historicoOtDirBean.listTablaBasicaEstadoInternoOt}"
+                                                                   var="st"  
+                                                                   itemValue="#{st.basicaId}" 
+                                                                   itemLabel="#{st.nombreBasica}"/>
+                                                </p:selectCheckboxMenu>
+
+                                            </div>
+                                            <div class="ui-g-3"> 
+                                                <h:outputText id="lblEstado" value="Estado Ot" />
+                                                <p:selectCheckboxMenu id="estado" value="#{historicoOtDirBean.listEstadosSelected}" label="Estado Orden"
+                                                                      filter="true" filterMatchMode="startsWith" >
+                                                    <f:selectItems value="#{historicoOtDirBean.listaEstadosOt}"
+                                                                   var="otMgl"  
+                                                                   itemValue="#{otMgl.basicaId}" 
+                                                                   itemLabel="#{otMgl.nombreBasica}"/>
+                                                </p:selectCheckboxMenu> 
+
+
+                                            </div>
+                                            <div class="ui-g-3">
+                                                <h:outputText  value="Tipo Solucion" escape="false"/>
+                                                <h:selectOneMenu id="solucion" value="#{historicoOtDirBean.tipoSolucionSelected}" style="width:125px">
+                                                    <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                                    <f:selectItem itemLabel="Estandar" itemValue="Estandar" />
+                                                    <f:selectItem itemLabel="No Estandar" itemValue="No Estandar" />
+
+                                                </h:selectOneMenu>  
+                                            </div>
+                                            <div class="ui-g-3">  
+                                                <h:outputText id="lblSegmento" value="Segmento" />
+
+                                                <p:selectCheckboxMenu id="seg" value="#{historicoOtDirBean.listSegmentoSelected}" label="Segmento"
+                                                                      filter="true" filterMatchMode="startsWith" >
+                                                    <f:selectItems value="#{historicoOtDirBean.listaSegmentos}"
+                                                                   var="seg"  
+                                                                   itemValue="#{seg.idSegmento}" 
+                                                                   itemLabel="#{seg.nombreSegmento}"/>
+
+                                                </p:selectCheckboxMenu>
+
+                                            </div>
+
+                                        </div> 
+   
+                                    </p:panel>
+                                </h:form>
+
+                                <br></br>  
+                                <p:panel id="basicEstado" header="ESTADO ACTUAL ÓRDENES CCMM Y AGENDAS" footer="Proceso" style="margin-bottom:20px" rendered="#{historicoOtDirBean.numRegistrosResultado > 0}">
+                                    <h:panelGroup id="procesoRegistros"  style="color:red; width: 100%; text-align: center;"   >
+
+                                        <fieldset>
+                                            <legend>Estado del Reporte</legend>
+                                            <div>
+                                                <h:outputText id="mesage"  style="color:red; width: 100%; font-size: 1.5em; font-weight: bold;width: 50%; text-align: center;"  
+                                                              value="Procesando:   #{historicoOtDirBean.numRegistrosResultado} "  />
+                                            </div>
+                                           
+
+                                        </fieldset>
+                                    </h:panelGroup>
+                                </p:panel>
+                                <p:panel id="basic3"  footer="Limite de Registros" style="margin-bottom:20px" rendered="#{historicoOtDirBean.cantRegistros}">
+                                    <h:panelGroup id="obs"  style="color:red; width: 100%; text-align: center;"   >
+
+                                        <fieldset>
+                                            <legend></legend>
+
+                                            <div>
+                                                <h:outputText id="nota3"  style="width: 100%; font-size: 1.0em; font-weight: bold;width: 50%; text-align: center;"  
+                                                              value="Nota :     Numero Maximo de registros a procesar para archivo XLS:  #{historicoOtDirBean.cantMaxRegExcel} "/>
+                                                <br/>
+                                                <h:outputText id="nota4"  style="width: 100%; font-size: 1.0em; font-weight: bold;width: 50%; text-align: center;"  
+                                                              value="Nota :     Numero Maximo de registros a procesar para archivos CSV y TXT:  #{historicoOtDirBean.cantMaxRegCvs} "  />
+                                            </div>
+
+                                        </fieldset>
+                                    </h:panelGroup>
+                                </p:panel>
+                                
+                                <p:toolbar>
+                                    <f:facet name="left">
+                                        <h:commandButton value="Reporte" styleClass="btn" style=" text-align: center;" 
+                                                         action="#{historicoOtDirBean.getReporte()}" rendered="#{historicoOtDirBean.btnReporte}"
+                                                         disabled="#{!historicoOtDirBean.validarOpcionReporte()}" />
+
+                                        <span class="ui-separator">
+                                            <span class="ui-icon pi pi-ellipsis-v" />
+                                        </span>
+                                                <h:commandButton value="Exportar .csv" styleClass="btn unblockClaro" style="text-align: center;"   
+                                                                 rendered="#{historicoOtDirBean.btnCvsTxt}"
+                                                                 onclick="stop();"  disabled="#{historicoOtDirBean.numRegistrosResultado > historicoOtDirBean.cantMaxRegCvs}"
+                                                                 action="#{historicoOtDirBean.downloadCvsTxt()}"
+                                                                 />
+                                                 <h:commandButton value="Exportar .xls" styleClass="btn unblockClaro" style="text-align: center;"  
+                                                         rendered="#{historicoOtDirBean.btnExcel}"
+                                                         onclick="stop();"   disabled="#{historicoOtDirBean.numRegistrosResultado > historicoOtDirBean.cantMaxRegExcel}" 
+                                                         action="#{historicoOtDirBean.exportExcelDet() }"/>
+                                              
+                                                <h:commandButton value="Limpiar" styleClass="btn" style="text-align: center;"   
+                                                                 onclick="stop();" 
+                                                                 action="#{historicoOtDirBean.volverList()}"
+                                                                 />
+                                       
+                                    </f:facet>
+                                </p:toolbar>
+                            </ui:insert>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </h:form>
+        <div id="footer">
+            <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

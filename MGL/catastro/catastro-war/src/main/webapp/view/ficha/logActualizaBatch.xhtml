@@ -1,0 +1,757 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/template/homeFichasLogTemplate.xhtml"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">      
+        <span class="TituloSeccion"></span>
+    </ui:define>
+    <ui:define name="contenido">
+        <h:form id="formDatosDT" enctype="multipart/form-data">
+            <div style="text-align: left;">
+                <h:panelGroup>
+                    <h:outputText value="Fecha Inicial"  />                                  
+                    <h:inputText label="Fecha Inicial" id="fechaInicial" style="width: 9%" 
+                                 a:type="date" a:min="1900-01-01" a:max="9999-12-31" value="#{logActualizaBean.fechaInicial}">
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd"/>
+                        <p:ajax event="valueChange" listener="#{logActualizaBean.fechaAlterada()}" delay="1500"
+                                update="formDatosDT"/>
+                    </h:inputText>
+                    <h:outputText value="Fecha Final" />
+                    <h:inputText label="Fecha Final" id="fechaFinal"  style="width: 9%" 
+                                 a:type="date" a:min="1900-01-01" a:max="9999-12-31" value="#{logActualizaBean.fechaFinal}" >
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd"/> 
+                        <p:ajax event="valueChange" listener="#{logActualizaBean.fechaAlterada()}" delay="1500"
+                                update="formDatosDT"/>
+                    </h:inputText>
+                    <h:commandButton id="btnFiltrar"
+                                     disabled="#{not logActualizaBean.rangoFechasValido or logActualizaBean.filtroAplicado}"
+                                     value="Filtrar" styleClass="btn">
+                        <p:ajax update="formDatosDT"
+                                listener="#{logActualizaBean.filtrarLista()}"/>
+                    </h:commandButton>
+
+                </h:panelGroup>
+            </div>
+            <h:panelGroup>
+                <div style="overflow:scroll auto;height: auto;max-height: 400px; ">
+                    <h:dataTable id="fichaValidarTable"  binding="#{logActualizaBean.dataTable}"
+                                 value="#{logActualizaBean.logActualizaList}" var="log"
+                                 styleClass="constructGTable" rows="10"                                    
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        <f:facet name="header">
+                            <h:outputText value=" " />
+                        </f:facet>  
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Troncal"/>
+                                <h:selectOneMenu id="troncalSel" value="#{logActualizaBean.troncal}" disabled="#{not logActualizaBean.inputTroncal}" style="width: 100px;">
+                                    <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                    <f:selectItems value="#{logActualizaBean.logActualizaTroncalList}" var="tron" itemValue="#{tron}" itemLabel="#{tron}"/>
+                                    <p:ajax event="change" update="formDatosDT" listener="#{logActualizaBean.filtrarListaV2()}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                            <div style="text-align: center;">
+                                <h:outputText value="#{log.troncal}" style="font-weight: bold;"/> 
+                            </div>
+                             
+                        </h:column>
+
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Tipo Tecnologia" />
+                                <h:selectOneMenu id="tipoTecnologiaSel" value="#{logActualizaBean.tipoTecnologia}" disabled="#{not logActualizaBean.inputTipoTecnologia}" style="width: 100px;">
+                                    <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                    <f:selectItems value="#{logActualizaBean.logActualizaTipoTecList}" var="tipoTec" itemValue="#{tipoTec}" itemLabel="#{tipoTec}"/>
+                                    <p:ajax event="change" update="formDatosDT" listener="#{logActualizaBean.filtrarListaV2()}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                            <h:outputText value="#{log.tipoTecnologia}" />  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Nombre Archivo" />
+                                <h:inputText id="nombreArchivoSel" value="#{logActualizaBean.nombreArchivo}" disabled="#{not logActualizaBean.inputNombreArchivo}" style="width: 100px;">
+                                    <p:ajax event="change" listener="#{logActualizaBean.filtrarListaV2()}" update="formDatosDT"/>
+                                </h:inputText>
+                            </f:facet>                        
+                            <h:outputText value="#{log.nombreArchivo}" />  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Departamento" />
+                                <h:selectOneMenu id="departamentoSel" value="#{logActualizaBean.departamento}" disabled="#{not logActualizaBean.inputDepartamento}" style="width: 100px;">
+                                    <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                    <f:selectItems value="#{logActualizaBean.logActualizaDepartamentoList}" var="dep" itemValue="#{dep}" itemLabel="#{dep}"/>
+                                    <p:ajax event="change" update="formDatosDT" listener="#{logActualizaBean.filtrarListaV2()}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                            <h:outputText value="#{log.departamento}"/>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Ciudad" />
+                                <h:selectOneMenu id="ciudadSel" value="#{logActualizaBean.ciudad}" disabled="#{not logActualizaBean.inputCiudad}" style="width: 100px;">
+                                    <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                    <f:selectItems value="#{logActualizaBean.logActualizaCiudadList}" var="ciu" itemValue="#{ciu}" itemLabel="#{ciu}"/>
+                                    <p:ajax event="change" update="formDatosDT" listener="#{logActualizaBean.filtrarListaV2()}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                            <h:outputText value="#{log.ciudad}" />  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Centro Poblado" />
+                                <h:selectOneMenu id="centroPobladoSel" value="#{logActualizaBean.centroPoblado}" disabled="#{not logActualizaBean.inputCentroPoblado}" style="width: 100px;">
+                                    <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                    <f:selectItems value="#{logActualizaBean.logActualizaCentroPobladoList}" var="cen" itemValue="#{cen}" itemLabel="#{cen}"/>
+                                    <p:ajax event="change" update="formDatosDT" listener="#{logActualizaBean.filtrarListaV2()}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                            <h:outputText value="#{log.centroPoblado}" />  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Usuario Creacion" />
+                                <h:inputText id="usuarioCreacionSel" value="#{logActualizaBean.usuarioCreacion}" disabled="#{not logActualizaBean.inputUsuarioCreacion}" style="width: 50px;" >
+                                    <p:ajax event="change" listener="#{logActualizaBean.filtrarListaV2()}" update="formDatosDT"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{log.usuarioCreacion}" />  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header"><h:outputText value="Fecha Creacion" /></f:facet>
+                            <h:outputText value="#{log.fechaRegistro}">
+                                 <f:convertDateTime type="date" pattern="MMM dd, yyyy hh:mm"/>
+                            </h:outputText>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header"><h:outputText value="ACTIVIDAD" /></f:facet>
+                            <div style="text-align: center;">
+                                <h:outputText value="#{log.actividad}" style="font-weight: bold;" /> 
+                            </div>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header"><h:outputText value="Total Registros" /></f:facet>
+                            <div style="text-align: center;">
+                                <h:outputText value="#{log.totalRegistros}" style="text-align: center; color: #00a2e3; font-weight: bold;" />  
+                            </div>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header"><h:outputText value="Registros Procesados" /></f:facet>
+                            <div style="text-align: center;">
+                                <h:outputText value="#{log.registrosProcesados}" style="text-align: center; color: #00a2e3; font-weight: bold;" />  
+                            </div>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header"><h:outputText value="Registros No Procesados" /></f:facet>
+                            <div style="text-align: center;">
+                                <h:outputText value="#{log.registrosNoProcesados}" style="text-align: center; color: #00a2e3; font-weight: bold;" />  
+                            </div>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header"><h:outputText value="Detalle"/></f:facet>
+                            <h:commandButton value="DETALLE" action="#{logActualizaBean.cargarDetalleLog(log)}"
+                               styleClass="btnInvertido">
+                            </h:commandButton>
+                        </h:column> 
+                        <f:facet name="footer" >
+                            <h:panelGroup>
+                                <div style="text-align: center;">
+                                    <h:commandButton title="Primera Página" value="" id="paginaUno"
+                                                     class="botonTPagInicioCm botonBaselista"
+                                                     disabled="#{not logActualizaBean.filtroAplicado}">
+                                        <p:ajax update="formDatosDT"
+                                                listener="#{logActualizaBean.pageFirst()}"/>
+                                    </h:commandButton>
+                                    <h:commandButton title="Página Anterior" value="" id="paginaAnterior"
+                                                     class="botonTPagAnteriorCm botonBaselista"
+                                                     disabled="#{not logActualizaBean.filtroAplicado}">
+                                        <p:ajax update="formDatosDT"
+                                                listener="#{logActualizaBean.pagePrevious()}"/>
+                                    </h:commandButton>
+                                    <h:commandButton title="Número Páginas" value="#{logActualizaBean.pageActual}" immediate="true" id="numeroPaginas"
+                                                     styleClass="botonTPagInicio"
+                                                     disabled="#{not logActualizaBean.filtroAplicado}"/>
+                                    <h:selectOneMenu id="listTabla" value="#{logActualizaBean.numPagina}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;"
+                                                     disabled="#{not logActualizaBean.filtroAplicado}">
+                                        <f:selectItems value="#{logActualizaBean.paginaList}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>
+                                        <p:ajax update="formDatosDT" event="change"
+                                                listener="#{logActualizaBean.irPagina()}"/>
+                                    </h:selectOneMenu>
+                                    <h:commandButton title="Página Siguiente" value="" id="paginaSiguiente"
+                                                     class="botonTPagSiguienteCm botonBaselista"
+                                                     disabled="#{not logActualizaBean.filtroAplicado}">
+                                        <p:ajax update="formDatosDT"
+                                                listener="#{logActualizaBean.pageNext()}"/>
+                                    </h:commandButton> 
+                                    <h:commandButton title="Última Página" value="" id="pagianUltima"
+                                                     class="botonTPagFinCm botonBaselista"
+                                                     disabled="#{not logActualizaBean.filtroAplicado}">
+                                        <p:ajax update="formDatosDT"
+                                                listener="#{logActualizaBean.pageLast()}"/>
+                                    </h:commandButton>                                
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>      
+                    </h:dataTable>
+                </div>
+            </h:panelGroup>
+        </h:form>
+        <h:form id="formDatos">  
+
+            <h:panelGroup id="panelHHPPProcesados">
+
+                <t:panelTabbedPane id="panelResultadoRegistros" selectedIndex="0" style="height: 300px; width: 100%; overflow:scroll;" 
+                                   title="Detalle Log" rendered="#{logActualizaBean.totalRegistros.size() > 0}">
+
+                    <t:panelTab label="REGISTROS NO PROCESADOS">
+                        <div style="height: 280px;width: 100%; overflow:scroll;">
+                            <h:dataTable id="regNoProcesadosList" 
+                                         value="#{logActualizaBean.registrosNoProcesados}" var="noProcesados"
+                                         styleClass="constructGTableFijo"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         >
+
+                                <f:facet name="header">
+                                    <h:outputText value="#{logActualizaBean.labelHeaderTableLists}" />
+                                </f:facet>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="HANDLE" value="HANDLE" />
+                                    </f:facet>
+                                    <h:outputText  value="#{noProcesados.handle}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="BLOCKNAME" value="BLOCKNAME" />
+                                    </f:facet>
+                                    <h:outputText  value="#{noProcesados.blockname}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="DIRECCION" value="DIRECCION" />
+                                    </f:facet>
+                                    <h:outputText  value="#{noProcesados.dirreccion}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORD-X" value="CORD-X" />
+                                    </f:facet>
+                                    <h:outputText  value="#{noProcesados.cordX}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORD-Y" value="CORD-Y" />
+                                    </f:facet>
+                                    <h:outputText  value="#{noProcesados.cordY}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NPCD" value="NPCD" />
+                                    </f:facet>
+                                    <h:outputText  value="#{noProcesados.npcd}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRE_CONJ" value="NOMBRE_CONJ" />
+                                    </f:facet>
+                                    <h:outputText  value="#{noProcesados.nombreConjunto}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRECALL" value="NOMBRECALL" />
+                                    </f:facet>
+                                    <h:outputText  value="#{noProcesados.nombreCall}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="PLACAUNIDA" value="PLACAUNIDA" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.placaUnida}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NUM_CASAS" value="NUM_CASAS" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.numCasas}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="APTOS" value="APTOS" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="LOCALES" value="LOCALES" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="PISOS" value="PISOS" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="BARRIO" value="BARRIO" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="INT" value="INT" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.interior}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRECALLANT2" value="NOMBRECALLANT2" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.nombreCallAnt2}" />
+                                </h:column>  
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="PLACAUNIDAANT2" value="PLACAUNIDAANT2" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.placaUnidaAnt2}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRECALLANT3" value="NOMBRECALLANT3" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.nombreCallAnt3}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText title="PLACAUNIDAANT3" value="PLACAUNIDAANT3" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.placaUnidaAnt3}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText title="DISTRIBUCION" value="DISTRIBUCION" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="AMP" value="AMP" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.amp}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORDX" value="CORDX" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.cordx}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORDY" value="CORDY" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.cordy}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="TRONCAL" value="TRONCAL" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.troncal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NAP" value="NAP" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.nap}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="ESTADO_TRANSACCION" value="ESTADO_TRANSACCION" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.estadoTransaccion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="DETALLE" value="DETALLE" />
+                                    </f:facet>
+                                    <h:outputText value="#{noProcesados.detalle}" />
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+                    </t:panelTab>
+
+
+                    <t:panelTab label="REGISTROS PROCESADOS">
+                        <div style="height: 280px;width: 100%; overflow:scroll;">
+                            <h:dataTable id="regNoProcesadosList" 
+                                         value="#{logActualizaBean.registrosProcesados}" var="procesados"
+                                         styleClass="constructGTableFijo"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         >
+
+                                <f:facet name="header">
+                                    <h:outputText value="#{logActualizaBean.labelHeaderTableLists}" />
+                                </f:facet>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="HANDLE" value="HANDLE" />
+                                    </f:facet>
+                                    <h:outputText  value="#{procesados.handle}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="BLOCKNAME" value="BLOCKNAME" />
+                                    </f:facet>
+                                    <h:outputText  value="#{procesados.blockname}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="DIRECCION" value="DIRECCION" />
+                                    </f:facet>
+                                    <h:outputText  value="#{procesados.dirreccion}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORD-X" value="CORD-X" />
+                                    </f:facet>
+                                    <h:outputText  value="#{procesados.cordX}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORD-Y" value="CORD-Y" />
+                                    </f:facet>
+                                    <h:outputText  value="#{procesados.cordY}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NPCD" value="NPCD" />
+                                    </f:facet>
+                                    <h:outputText  value="#{procesados.npcd}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRE_CONJ" value="NOMBRE_CONJ" />
+                                    </f:facet>
+                                    <h:outputText  value="#{procesados.nombreConjunto}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRECALL" value="NOMBRECALL" />
+                                    </f:facet>
+                                    <h:outputText  value="#{procesados.nombreCall}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="PLACAUNIDA" value="PLACAUNIDA" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.placaUnida}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NUM_CASAS" value="NUM_CASAS" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.numCasas}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="APTOS" value="APTOS" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="LOCALES" value="LOCALES" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="PISOS" value="PISOS" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="BARRIO" value="BARRIO" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="INT" value="INT" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.interior}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRECALLANT2" value="NOMBRECALLANT2" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.nombreCallAnt2}" />
+                                </h:column> 
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="PLACAUNIDAANT2" value="PLACAUNIDAANT2" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.placaUnidaAnt2}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRECALLANT3" value="NOMBRECALLANT3" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.nombreCallAnt3}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText title="PLACAUNIDAANT3" value="PLACAUNIDAANT3" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.placaUnidaAnt3}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText title="DISTRIBUCION" value="DISTRIBUCION" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="AMP" value="AMP" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.amp}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORDX" value="CORDX" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.cordx}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORDY" value="CORDY" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.cordy}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="TRONCAL" value="TRONCAL" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.troncal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NAP" value="NAP" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.nap}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="ESTADO_TRANSACCION" value="ESTADO_TRANSACCION" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.estadoTransaccion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="DETALLE" value="DETALLE" />
+                                    </f:facet>
+                                    <h:outputText value="#{procesados.detalle}" />
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+
+                    </t:panelTab>
+
+                    <t:panelTab label="TOTAL REGISTROS">
+                        <div style="height: 280px;width: 100%; overflow:scroll;">
+                            <h:dataTable id="regNoProcesadosList" 
+                                         value="#{logActualizaBean.totalRegistros}" var="total"
+                                         styleClass="constructGTableFijo"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         >
+
+                                <f:facet name="header">
+                                    <h:outputText value="#{logActualizaBean.labelHeaderTableLists}" />
+                                </f:facet>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="HANDLE" value="HANDLE" />
+                                    </f:facet>
+                                    <h:outputText  value="#{total.handle}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="BLOCKNAME" value="BLOCKNAME" />
+                                    </f:facet>
+                                    <h:outputText  value="#{total.blockname}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="DIRECCION" value="DIRECCION" />
+                                    </f:facet>
+                                    <h:outputText  value="#{total.dirreccion}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORD-X" value="CORD-X" />
+                                    </f:facet>
+                                    <h:outputText  value="#{total.cordX}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORD-Y" value="CORD-Y" />
+                                    </f:facet>
+                                    <h:outputText  value="#{total.cordY}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NPCD" value="NPCD" />
+                                    </f:facet>
+                                    <h:outputText  value="#{total.npcd}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRE_CONJ" value="NOMBRE_CONJ" />
+                                    </f:facet>
+                                    <h:outputText  value="#{total.nombreConjunto}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRECALL" value="NOMBRECALL" />
+                                    </f:facet>
+                                    <h:outputText  value="#{total.nombreCall}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="PLACAUNIDA" value="PLACAUNIDA" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.placaUnida}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NUM_CASAS" value="NUM_CASAS" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.numCasas}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="APTOS" value="APTOS" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="LOCALES" value="LOCALES" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="PISOS" value="PISOS" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="BARRIO" value="BARRIO" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="INT" value="INT" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.interior}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRECALLANT2" value="NOMBRECALLANT2" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.nombreCallAnt2}" />
+                                </h:column> 
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="PLACAUNIDAANT2" value="PLACAUNIDAANT2" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.placaUnidaAnt2}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText title="NOMBRECALLANT3" value="NOMBRECALLANT3" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.nombreCallAnt3}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText title="PLACAUNIDAANT3" value="PLACAUNIDAANT3" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.placaUnidaAnt3}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText title="DISTRIBUCION" value="DISTRIBUCION" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="AMP" value="AMP" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.amp}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORDX" value="CORDX" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.cordx}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="CORDY" value="CORDY" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.cordy}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="TRONCAL" value="TRONCAL" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.troncal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="NAP" value="NAP" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.nap}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="ESTADO_TRANSACCION" value="ESTADO_TRANSACCION" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.estadoTransaccion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText title="DETALLE" value="DETALLE" />
+                                    </f:facet>
+                                    <h:outputText value="#{total.detalle}" />
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+
+                    </t:panelTab>
+                </t:panelTabbedPane>
+
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/template/gestion.xhtml"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes">
+    <ui:define name="title"><span class="TituloSeccion">Modificación de HHPP</span></ui:define>
+    <ui:define name="message"><span class="error"> </span></ui:define>
+    <ui:define name="content">
+        <h:form id="form">
+            #{modificacionHhppGestionBean.consultarHHPP()}VCVBVBCBV
+            <h:messages id="messges"  globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="solicitud" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="regional" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="ciudad" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="tipoSolicitud" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="contacto" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="telContacto" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="solicitante" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="telSolicitante" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="correoSolicitante" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="observaciones" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="respuesta" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>            
+            <h:messages for="selectResultado" globalOnly="true" errorClass="errorMessage" />
+            <h:messages for="nuevoNodo" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>            
+            <h:panelGrid columns="6">
+                <h:outputText value="Solicitud No."/>
+                <h:inputText id="numSol" value="#{modificacionHhppGestionBean.solicitud.idSolicitud}" required="true" readonly="true"/>
+                <h:outputText value="Regional:"/>
+                <h:inputText id="regional" value="#{modificacionHhppGestionBean.solicitud.regional}" required="true" readonly="true"/>
+                <h:outputText  value="Ciudad:" />
+                <h:inputText id="ciudad" value="#{modificacionHhppGestionBean.solicitud.ciudad}" required="true" readonly="true"/>
+            </h:panelGrid>
+            <hr size="5" width="100%" align="LEFT"/>
+            <componentes:componente-direccion  />
+
+            <hr size="5" width="100%" align="LEFT"/>
+            <t:panelGrid columns="4">
+
+                <t:panelGroup colspan="1"><h:outputText value="Tipo Solicitud" /></t:panelGroup>
+                <t:panelGroup colspan="1">
+                    <h:inputText readonly="true" required="true" requiredMessage="" id="tipoSolicitud" value="#{modificacionHhppGestionBean.solicitud.tipoSol}"/>
+                </t:panelGroup>
+
+                <t:panelGroup colspan="1"><h:outputText value="Contacto:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText id="contacto" value="#{modificacionHhppGestionBean.solicitud.contacto}" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Teléfono Contacto:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText id="telContacto" value="#{modificacionHhppGestionBean.solicitud.telContacto}" /></t:panelGroup>
+
+                <t:panelGroup colspan="1"><h:outputText value="Solicitante:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText id="solicitante" value="#{modificacionHhppGestionBean.solicitud.solicitante}" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Teléfono Solicitante:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText id="telSolicitante" value="#{modificacionHhppGestionBean.solicitud.telSolicitante}" /></t:panelGroup>
+
+                <t:panelGroup colspan="1"><h:outputText value="Correo Solicitante:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText  id="correoSolicitante" value="#{modificacionHhppGestionBean.solicitud.correo}" /></t:panelGroup>
+
+                <t:panelGroup colspan="1"><h:outputText value="Observaciones Especiales:" /></t:panelGroup>
+                <t:panelGroup colspan="3"><h:inputTextarea disabled="true" required="true" id="observaciones" style="width: 400px; height: 50px;" value="#{modificacionHhppGestionBean.solicitud.motivo}" /></t:panelGroup>
+
+
+
+            </t:panelGrid>
+            <hr size="5" width="100%" align="LEFT"/>
+            <h:outputText value="Modificaciones a realizar sobre el HHPP:" class="EtiquetaConsulta" rendered="true"/>
+            <h:outputText value="Dirección Estandarizada en Formato RR:" class="EtiquetaConsulta" rendered="true"/>
+            <t:panelGrid columns="6">
+                <t:panelGroup colspan="1"><h:outputText value="Nombre de Calle:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText readonly="true" value="#{modificacionHhppGestionBean.streetNameStr}" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Placa:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText readonly="true" value="#{modificacionHhppGestionBean.houseNumberStr}" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Número de Apartamento:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText readonly="true" value="#{modificacionHhppGestionBean.aptoStr}" /></t:panelGroup>                
+            </t:panelGrid>
+            <h:outputText value="Dirección Antigua Estandarizada en Formato RR:" class="EtiquetaConsulta" rendered="#{modificacionHhppGestionBean.cambioDirRender}"/>
+            <t:panelGrid columns="6" rendered="#{modificacionHhppGestionBean.cambioDirRender}">
+                <t:panelGroup colspan="1"><h:outputText value="Nombre de Calle:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText readonly="true" value="#{modificacionHhppGestionBean.antStreetNameStr}" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Placa:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText readonly="true" value="#{modificacionHhppGestionBean.antHouseNumberStr}" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Número de Apartamento:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText readonly="true" value="#{modificacionHhppGestionBean.antAptoStr}" /></t:panelGroup>                
+            </t:panelGrid>
+
+            #{modificacionHhppGestionBean.obtenerListaEstadoHhpp()}
+            <t:panelGrid columns="1" >
+                <t:panelGrid columns="4" rendered="#{modificacionHhppGestionBean.nodoRender}">
+                    <h:outputText value="Nodo Antiguo:" />
+                    <h:inputText readonly="true" value="#{modificacionHhppGestionBean.solicitud.nodo}" />
+                    <h:outputText value="Nodo Asesor:" />
+                    <h:inputText readonly="true" value="#{modificacionHhppGestionBean.nodoSolicitud}" />
+                </t:panelGrid>
+                <t:panelGrid columns="5" rendered="#{modificacionHhppGestionBean.nodoRender}">
+                    <h:outputText value="Nodo Geo:" />
+                    <h:selectOneMenu  id="nodoGeo" value="#{modificacionHhppGestionBean.solicitud.cambioNodo}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{modificacionHhppGestionBean.nodoGeoList}" var="nodo" itemLabel="#{nodo}" itemValue="#{nodo}"/>
+                        <f:ajax render="nuevoNodo" execute="nodoGeo" />
+                    </h:selectOneMenu>
+                    <h:outputText value="Nodo Nuevo:" />
+                    <h:inputText  required="#{modificacionHhppGestionBean.nodoRender}" requiredMessage="Ingrese nodo a Validar" id="nuevoNodo" value="#{modificacionHhppGestionBean.solicitud.cambioNodo}" />
+                    <h:commandButton id="botonValidar"  action="#{modificacionHhppGestionBean.validarNodo()}" value="Validar Nodo"/>
+                </t:panelGrid>
+
+                <t:panelGrid columns="4" rendered="#{modificacionHhppGestionBean.estadoRender}">
+                    <h:outputText value="Estado Antiguo:" />
+                    <h:inputText readonly="true" value="#{modificacionHhppGestionBean.obtenerEstado(modificacionHhppGestionBean.solicitud.estadoHhpp)}"/>
+                    <h:outputText value="Estado Nuevo:" />
+                    <h:inputText readonly="true" value="#{modificacionHhppGestionBean.obtenerEstado(modificacionHhppGestionBean.solicitud.estadoHhppNuevo)}" />
+                </t:panelGrid>
+            </t:panelGrid>
+            <hr size="5" width="100%" align="LEFT"/>
+            <t:panelGrid columns="2" id="nodoEstado">
+                <t:panelGroup colspan="1"><h:outputText value="Resultado de la gestión: " id="resultado"/></t:panelGroup>
+                <t:panelGroup colspan="1">
+                    <h:selectOneMenu id="selectResultado"
+                                     rendered="true"  requiredMessage="Ingrese Resultado"
+                                     value="#{modificacionHhppGestionBean.resultado}">
+                        <f:selectItem itemValue="" itemLabel=""/>     
+                        <f:selectItems value="#{modificacionHhppGestionBean.obtenerDireccionPorTipo('RESULTADO_GESTION_MODIFICACION')}" 
+                                       var="result" itemLabel="#{result.idParametro}" itemValue="#{result.idParametro}" />
+                        <f:ajax render="respuesta" execute="selectResultado" listener="#{modificacionHhppGestionBean.addResultadoToRespuesta()}" />
+
+                    </h:selectOneMenu>
+
+                </t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Respuesta Actual: " /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputTextarea required="true" requiredMessage="Ingrese Respuesta para continuar" value="#{modificacionHhppGestionBean.respuesta}"  id="respuesta" style="width: 500px; height: 50px;" /></t:panelGroup>
+                <t:panelGroup colspan ="2"><h:commandButton id="botonFinalizar" rendered="#{modificacionHhppGestionBean.botonCrear}" action="#{modificacionHhppGestionBean.finalizar()}" value="Finalizar"/></t:panelGroup>
+            </t:panelGrid>
+        </h:form>
+
+
+        <hr size="5" width="100%" align="LEFT"/>
+
+    </ui:define>
+
+</ui:composition>

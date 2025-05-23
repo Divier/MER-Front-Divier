@@ -1,0 +1,360 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:t="http://myfaces.apache.org/tomahawk"              
+                template="/view/MGL/template/otHhppTemplate.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"    
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" >
+    
+    <ui:define name="title"><span class="TituloSeccion">OT Onyx Hhpp</span></ui:define>
+
+    <ui:define name="content">
+         <h2 style="text-align: center;">EDITOR DE OT</h2>
+        <br/>
+
+        <h:panelGrid id="panelTabs" class="formulario3"  columns="7" style="margin-top: -20px">
+            <h:commandButton  id="irGeneral"  
+                              class="#{otOnixHhppBean.selectedTab == 'GENERAL' ? 'btn2 btn2Active':'btn2'}" 
+                              value="General"                              
+                              disabled="#{!otOnixHhppBean.selectedTab eq 'GENERAL'}" >            
+                <f:ajax event="click" execute="@this" listener="#{otOnixHhppBean.cambiarTab('GENERAL')}"
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton> 
+            <h:commandButton  id="irAgendamiento" 
+                              class="#{otOnixHhppBean.selectedTab == 'AGENDAMIENTO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Agendamiento"                               
+                              rendered="#{otOnixHhppBean.otHhppSeleccionado.tipoOtHhppId.agendable eq 1 
+                                          and otOnixHhppBean.otHhppSeleccionado.estadoGeneral.
+                                             identificadorInternoApp eq '@B_EGA(@TB_RAB)'}" >
+                <f:ajax event="click" execute="@this" listener="#{otOnixHhppBean.cambiarTab('AGENDAMIENTO')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irNotas"
+                              class="#{otOnixHhppBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Notas">
+                <f:ajax event="click" execute="@this" listener="#{otOnixHhppBean.cambiarTab('NOTAS')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irOnyx" 
+                              class="#{otOnixHhppBean.selectedTab == 'ONYX' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Onyx"                               
+                              rendered="#{otOnixHhppBean.otHhppSeleccionado.tipoOtHhppId.requiereOnyx eq 'Y'}" >
+                <f:ajax event="click" execute="@this" listener="#{otOnixHhppBean.cambiarTab('ONYX')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+             <h:commandButton  id="irHistorico" 
+                              class="#{otOnixHhppBean.selectedTab == 'HISTORICO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Histórico Agendas">
+                <f:ajax event="click" execute="@this" listener="#{otOnixHhppBean.cambiarTab('HISTORICO')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irBitacora" 
+                              class="#{otOnixHhppBean.selectedTab == 'BITACORA' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Bitácora">
+                <f:ajax event="click" execute="@this" listener="#{otOnixHhppBean.cambiarTab('BITACORA')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+        </h:panelGrid>
+        <h2 style="text-align: center;">OT HIJA ONYX</h2>
+        <br/>
+        
+        <fieldset>
+            <table style="width: 30%; border-spacing: 10px;" >
+                <tr>
+                    <td> 
+                        <h:outputText rendered="#{!otOnixHhppBean.otCerradaAnulada}" value="Número Ot Hija:" id="incidentIdLabel" /> 
+                    </td>
+                    <td>
+                        <h:inputText id="incidentId" rendered="#{!otOnixHhppBean.otCerradaAnulada}"
+                                     value="#{otOnixHhppBean.numeroOtHija}"
+                                     converterMessage="Por favor ingrese solo números" 
+                                     required="true"
+                                     requiredMessage="Es necesario el número de la orden Hija"/>                        
+                    </td>
+
+                    <td>    
+                        <h:commandButton value="Consultar" id="consultaOtOnyx"
+                                         rendered="#{!otOnixHhppBean.otCerradaAnulada}" styleClass="btn"
+                                         action="#{otOnixHhppBean.consultarOTOnyx()}"
+                                         disabled="#{!otOnixHhppBean.isRolEditar()}"/>
+                    </td>
+                     <td></td>
+                    <td>   
+                        <h:outputText escape="false" rendered="#{!otOnixHhppBean.otCerradaAnulada}" value="#{otOnixHhppBean.estiloObligatorio}Complejidad:" />
+                    </td>
+                     <td>
+                        <h:selectOneRadio rendered="#{!otOnixHhppBean.otCerradaAnulada}" 
+                                          id="idComplejidad" style="width:  130px !important;"  required="true" value="#{otOnixHhppBean.otHhppSeleccionado.complejidadServicio}" 
+                                          class="radioB" requiredMessage="Complejidad campo obligatorio" >
+                            <f:selectItem itemLabel="Alta" itemValue="A"/>
+                            <f:selectItem itemLabel="Media" itemValue="M"/>
+                            <f:selectItem itemLabel="Baja" itemValue="B"/>
+                        </h:selectOneRadio>
+                    </td>
+                </tr>
+            </table>        
+        </fieldset>
+        <br></br>
+        <fieldset>
+            <legend></legend>
+            <table style="width: 100%; border-spacing: 10px;" >
+                <tr>                    
+                    <td> 
+                        <h:outputText value="NIT Cliente:" id="nitLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="nitTxt"  value="#{otOnixHhppBean.onyxNitCliente}" style="color: blue;"/>
+                    </td>                                        
+
+                    <td> 
+                        <h:outputText value="Nombre Cliente:" id="nomCliLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="nombreClieTxt"  value="#{otOnixHhppBean.onyxNombreCliente}" style="color: blue;"/>
+                    </td>
+
+                    <td> 
+                        <h:outputText value="Nombre Ot Hija:" id="nomOtHijaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="nomOtHijaTxt" value="#{otOnixHhppBean.onyxNombreOtHija}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Número OT Hija:" id="otHijaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otHijaTxt" value="#{otOnixHhppBean.onyxNumeroOtHija}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Fecha Creación Ot Hija:" id="fecCreaOtHijaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="fecCreaOtHijaTxt" value="#{otOnixHhppBean.onyxFechaCreOtHija}" style="color: blue;"/>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td> 
+                        <h:outputText value="Número OT Padre:" id="otPadreLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otPadreTxt"  value="#{otOnixHhppBean.onyxNumeroOtPadre}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Fecha Creación Ot Padre:" id="padreFechaOtLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="padrefechaOtTxt" value="#{otOnixHhppBean.onyxFechaCreOtPadre}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Contacto Técnico Ot Padre:" id="contTecOtPadreLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="contTecOtPadreTxt"  value="#{otOnixHhppBean.onyxContactoTecOtPadre}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Teléfono Técnico Ot Padre:" id="tlTecOtPadreLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="tlTecOtPadreTxt"  value="#{otOnixHhppBean.onyxTelContactoTecOtPadre}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Descripción:" id="descripcionLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="descripcionTxt"  value="#{otOnixHhppBean.onyxDescripcion}" style="color: blue;"/>
+                    </td>
+                </tr>
+                <tr>   
+                    <td> 
+                        <h:outputText value="Dirección:" id="direccionLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="direccionTxt" value="#{otOnixHhppBean.onyxDireccion}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Segmento:" id="segmentoLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="segmentoTxt"  value="#{otOnixHhppBean.onyxSegmento}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Tipo Servicio:" id="tipoServicioLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="tipoServicioTxt"  value="#{otOnixHhppBean.onyxTipoServicio}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Servicios:" id="serviciosLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="serviciosTxt"  value="#{otOnixHhppBean.onyxServicios}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Recurrente Mensual:" id="recurrenteMenLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="recurrenteMenTxt"  value="#{otOnixHhppBean.onyxRecurrenteMensual}" style="color: blue;"/>
+                    </td>
+                </tr> 
+                <tr> 
+                    <td> 
+                        <h:outputText value="Código Servicio:" id="codServicioLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="codServicioTxt" value="#{otOnixHhppBean.onyxCodigoServicio}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Vendedor:" id="vendedorLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="vendedorTxt"  value="#{otOnixHhppBean.onyxVendedor}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Teléfono Vendedor:" id="telVendedorLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="telVendedorTxt"  value="#{otOnixHhppBean.onyxTelefono}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Estado Ot Hija:" id="estadoOtHijaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="estadoOtHijaTxt" value="#{otOnixHhppBean.onyxEstadoOtHija}" style="color: blue;"/>
+                    </td>
+
+                    <td> 
+                        <h:outputText value="Estado Ot Padre:" id="estadoOtPaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="estadoOtPaTxt" value="#{otOnixHhppBean.onyxEstadoOtPadre}" style="color: blue;"/>
+                    </td>
+
+                </tr> 
+                <tr>
+                    <td> 
+                        <h:outputText value="Fecha Compromiso Ot Padre:" id="fecComOtPaLbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="fecComOtPaTxt" value="#{otOnixHhppBean.onyxFechaCompromisoOtPadre}" style="color: blue;"/>
+                    </td>   
+
+                    <td> 
+                        <h:outputText value="Ot Padre Resolución 1:" id="otPadresol1Lbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otPadresol1Txt" value="#{otOnixHhppBean.onyxCodResolOtPadre1}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Ot Padre Resolución 2:" id="otPadresol2Lbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otPadresol2Txt" value="#{otOnixHhppBean.onyxCodResolOtPadre2}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Ot Padre Resolución 3:" id="otPadresol3Lbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otPadresol3Txt"  value="#{otOnixHhppBean.onyxCodResolOtPadre3}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Ot Padre Resolución 4:" id="otPadresol4Lbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otPadresol4Txt"  value="#{otOnixHhppBean.onyxCodResolOtPadre4}" style="color: blue;"/>
+                    </td>
+                </tr> 
+                <tr>                        
+                    <td> 
+                        <h:outputText value="Ot Hija Resolución 1:" id="otHijresol1Lbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otHijresol1Txt"   value="#{otOnixHhppBean.onyxCodResolOtHija1}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Ot Hija Resolución 2:" id="otHijresol2Lbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otHijresol2Txt"  value="#{otOnixHhppBean.onyxCodResolOtHija2}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Ot Hija Resolución 3:" id="otHijresol3Lbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otHijresol3Txt"  value="#{otOnixHhppBean.onyxCodResolOtHija3}" style="color: blue;"/>
+                    </td>
+                    <td> 
+                        <h:outputText value="Ot Hija Resolución 4:" id="otHijresol4Lbl" /> 
+                    </td>
+                    <td>
+                        <h:outputText id="otHijresol4Txt"  value="#{otOnixHhppBean.onyxCodResolOtHija4}" style="color: blue;"/>
+                    </td>   
+                </tr> 
+            </table>        
+        </fieldset>
+        <fieldset>
+            <div class="tableContent" >
+                <h:dataTable id="notasOtHijaId" value="#{otOnixHhppBean.lstCmtNotasOtHijaDto}"
+                             var="notasOtHija"  
+                             styleClass="constructGTable" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+                    <h:column>
+                        <f:facet name="header">Usuario Ingresa Nota</f:facet>
+                        <h:outputText value="#{notasOtHija.usuarioIngresaNota}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha Ingreso Nota</f:facet>
+                        <h:outputText value="#{notasOtHija.fechaIngresaNota}">
+                            <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Nota</f:facet>
+                        <h:commandLink value="Ver Nota" action="#{otOnixHhppBean.cargarNota(notasOtHija.descripcionNota)}"/>   
+                    </h:column>
+                    <f:facet name="footer" >
+                        <h:panelGroup>
+                            <div style="text-align: center;">
+                                <h:commandButton title="Primera Página" value=""
+                                                 class="botonTPagInicioCm botonBaselista">
+                                    <f:ajax   render="notasOtHijaId" execute="@this" 
+                                              event="click" listener="#{otOnixHhppBean.pageFirstNotOtHija()}"/>
+                                </h:commandButton>
+                                <h:commandButton title="Página Anterior" value=""
+                                                 class="botonTPagAnteriorCm botonBaselista">
+                                    <f:ajax   render="notasOtHijaId" execute="@this" 
+                                              event="click" listener="#{otOnixHhppBean.pagePreviousNotOtHija()}"/>
+                                </h:commandButton>
+                                <h:commandButton title="Número Páginas" value="#{otOnixHhppBean.pageActualNotOtHija}" styleClass="botonTPagInicio"/>
+                                <h:selectOneMenu id="listTablaNot" value="#{otOnixHhppBean.numPaginaNotOtHij}" 
+                                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{otOnixHhppBean.paginaListNotOtHij}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>
+                                    <f:ajax render="notasOtHijaId" event="change"
+                                            listener="#{otOnixHhppBean.irPaginaNotOtHija()}"
+                                            execute="@this" />
+                                </h:selectOneMenu>
+                                <h:commandButton  title="Página Siguiente" value="" 
+                                                  class="botonTPagSiguienteCm botonBaselista">
+                                    <f:ajax   render="notasOtHijaId" execute="@this" 
+                                              event="click" listener="#{otOnixHhppBean.pageNextNotOtHija()}"/>
+                                </h:commandButton>
+                                <h:commandButton title="Última Página" value=""
+                                                 class="botonTPagFinCm botonBaselista">
+                                    <f:ajax   render="notasOtHijaId" execute="@this" 
+                                              event="click" listener="#{otOnixHhppBean.pageLastNotOtHija()}"/>
+                                </h:commandButton>
+                            </div>
+                        </h:panelGroup>
+                    </f:facet>   
+                </h:dataTable>
+            </div>
+        </fieldset>
+    </ui:define>
+</ui:composition>

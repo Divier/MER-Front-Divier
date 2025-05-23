@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:panelGroup id="dirComponente3">
+        <div rendered="#{casosCcmmBean.mostrarPopupSub}" >
+            <fieldset id="validacion" rendered="#{casosCcmmBean.mostrarPopupSub}">
+                <legend>Detalle Incidente</legend>
+                <h:panelGroup id="panelDatos">
+                    <h2 style="margin-top: 0px; margin-left: -12px">DATOS DEL CASO CCMM</h2>
+                    <h:panelGrid columns="8" id="gridDatos" styleClass="formularioSol">
+                        <h:outputText class="txtLabelsMgl" value="Plataforma Afecteds:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.affectedPlataforms}" styleClass="columnReadForm"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Servicios Afecteds:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.affectedServices}" styleClass="columnReadForm"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Tecnología:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.affectedTecnicalLocations}" styleClass="columnReadForm"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Fecha Final Estimada:"/>
+                        <h:outputText value="#{casosCcmmBean.convertirFecha(casosCcmmBean.casoSelected.estimatedEndDate)}" styleClass="columnReadForm">
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>         
+
+                        <h:outputText class="txtLabelsMgl" value="Tiempo Estimado Solución:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.estimatedSolutionTime}" styleClass="columnReadForm">
+                        </h:outputText>         
+
+                        <h:outputText class="txtLabelsMgl" value="Causa Falla:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.failureCause}" styleClass="columnReadFormNumero"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Observaciones:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.script}" styleClass="columnReadForm"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Interacción Identificación:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.interactionId}" styleClass="columnReadForm"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Reporter Group:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.reporterGroup}" styleClass="columnReadForm"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Reporter User:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.reporterUser}" styleClass="columnReadForm"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Tipo Caso:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.ticketCategory}" styleClass="columnReadForm"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Descripción Caso:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.ticketDescription}" styleClass="columnReadForm"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Fecha Fin Caso:"/>
+                        <h:outputText value="#{casosCcmmBean.convertirFecha(casosCcmmBean.casoSelected.ticketEndDate)}" styleClass="columnReadForm">
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>             
+
+                        <h:outputText class="txtLabelsMgl" value="Identificación del Caso:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.ticketId}" styleClass="columnReadForm"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Solución caso:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.ticketSolution}" styleClass="columnReadFormNumero"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Estado Caso:"/>
+                        <h:outputText value="#{casosCcmmBean.casoSelected.ticketStatus}" styleClass="columnReadFormNumero"/>
+                    </h:panelGrid>
+
+                    <h:commandLink id="volverAtrasId" 
+                                   value="Volver" 
+                                   action="#{casosCcmmBean.cerrarPopup()}" />
+
+                </h:panelGroup>
+            </fieldset>
+        </div>
+    </h:panelGroup>        
+</ui:composition>

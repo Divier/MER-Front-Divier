@@ -1,0 +1,812 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="/view/template/homeFichasTemplate.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui">
+    
+    
+    <ui:define name="title"><span class="TituloSeccion">Detalle Historico Ficha</span></ui:define>
+    <ui:define name="contenido">
+        <h:form id="form_detalle_historico">
+            
+            <h:commandButton value="Volver Historico" action="#{menuVtBean.irMenu('HISTORICOEXPORTFICHAS')}" styleClass="buttonLarge" style="color:#FFFFFF;float:left"></h:commandButton>
+            <br></br>
+            
+            <h:panelGrid columns="8" style="width:100%;margin-top: 2%;">
+                <h:outputLabel value="Id Preficha:" style="font-weight: bold;font-family: Arial;font-size: 13px"></h:outputLabel>
+                <h:outputText value="#{fichaDetalleHistoricoBean.historicoExportSeleccionado.prefichaId.prfId}" style="font-family: Arial;font-size: 13px"/>
+                <h:outputLabel value="Nodo:" style="font-weight: bold;font-family: Arial;font-size: 13px"></h:outputLabel>
+                <h:outputText value="#{fichaDetalleHistoricoBean.historicoExportSeleccionado.nodo.nodNombre}" style="font-family: Arial;font-size: 13px"/>
+                <h:outputLabel value="Tipo Tecnología:" style="font-weight: bold;font-family: Arial;font-size: 13px"></h:outputLabel>
+                <h:outputText value="#{fichaDetalleHistoricoBean.historicoExportSeleccionado.tipoTecnologiaId.descripcion}" style="font-family: Arial;font-size: 13px"/>
+                <h:outputLabel value="Nombre Archivo:" style="font-weight: bold;font-family: Arial;font-size: 13px"></h:outputLabel>
+                <h:outputText value="#{fichaDetalleHistoricoBean.historicoExportSeleccionado.nombreArchivo}" style="font-family: Arial;font-size: 13px"/>
+                <h:outputLabel value="Departamento:" style="font-weight: bold;font-family: Arial;font-size: 13px"></h:outputLabel>
+                <h:outputText value="#{fichaDetalleHistoricoBean.historicoExportSeleccionado.departamento.gpoNombre}" style="font-family: Arial;font-size: 13px"/>
+                <h:outputLabel value="Ciudad:" style="font-weight: bold;font-family: Arial;font-size: 13px"></h:outputLabel>
+                <h:outputText value="#{fichaDetalleHistoricoBean.historicoExportSeleccionado.ciudad.gpoNombre}" style="font-family: Arial;font-size: 13px"/>
+                <h:outputLabel value="Centro Poblado:" style="font-weight: bold;font-family: Arial;font-size: 13px"></h:outputLabel>
+                <h:outputText value="#{fichaDetalleHistoricoBean.historicoExportSeleccionado.centroPoblado.gpoNombre}" style="font-family: Arial;font-size: 13px"/>
+                <h:outputLabel value="Fecha Creación:" style="font-weight: bold;font-family: Arial;font-size: 13px"></h:outputLabel>
+                <h:outputText value="#{fichaDetalleHistoricoBean.historicoExportSeleccionado.fechaCreacion}" style="font-family: Arial;font-size: 13px"/>
+            </h:panelGrid>
+            
+            <br></br>
+            <t:panelTabbedPane id="panelResultadoHHPP" selectedIndex="0" style="height: 300px; width: 100%; overflow:scroll;" title="HHPP Obtneidos" >
+                 <t:panelTab label="EDIFICIOS VT">
+                     <div style="height: 280px;width: 100%; overflow:scroll;">
+                         <h:dataTable id="edificiosVTList" value="#{fichaDetalleHistoricoBean.edificiosVtHistorico}" var="edificio"
+                                         styleClass="constructGTable" rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         rendered="#{fichaDetalleHistoricoBean.edificiosVtHistorico.size()>0}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="HHPP procesados a partir de la Preficha" />
+                                </f:facet>
+
+                                <h:column  >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Conjunto" />
+                                    </f:facet>
+                                    <h:outputText  value="#{edificio.nombreConj}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Obtenidas" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{edificio.direccionStrList}" var="direccionFichaXls" style="min-width: 250px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{edificio.direccionStrList.size() >0}">
+                                        <h:column >
+                                            <h:outputText value="#{direccionFichaXls}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="HHPP Obtenidos" />
+                                    </f:facet>
+                                    <h:dataTable value="#{edificio.hhppList}" var="hhpprr" style="width: 345px;"
+                                                 styleClass="constructGTable" rowClasses="constructGTableEvenRow, constructGTableOddRow" rendered="#{edificio.hhppList.size() > 0}">
+                                        <h:column>
+                                            <h:outputText value="#{hhpprr}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Clasificación" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.clasificacion}" />
+                                </h:column>
+                            </h:dataTable>
+                     </div>
+                 </t:panelTab>
+                
+                <t:panelTab label="CASAS RED EXTERNA">
+                        <div style="height: 280px;width: 100%; overflow:scroll;">
+                            <h:dataTable id="casasRedExternaList"  value="#{fichaDetalleHistoricoBean.casasRedExternaHistorico}" var="casa"
+                                         styleClass="constructGTable"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         rendered="#{fichaDetalleHistoricoBean.casasRedExternaHistorico.size() > 0}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="HHPP procesados a partir de la Preficha" />
+                                </f:facet>
+
+                                <h:column  >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Conjunto" />
+                                    </f:facet>
+                                    <h:outputText  value="#{casa.nombreConj}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Obtenidas" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{casa.direccionStrList}" var="direccionFichaXls" style="min-width: 250px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{casa.direccionStrList.size() >0}">
+                                        <h:column >
+                                            <h:outputText value="#{direccionFichaXls}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="HHPP Obtenidos" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{casa.hhppList}" var="hhpp" style="width: 345px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{casa.hhppList.size() >0}">
+                                        <h:column>
+                                            <h:outputText value="#{hhpp}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Clasificación" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.clasificacion}" />
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+
+                    </t:panelTab>
+                
+                   <t:panelTab label="CONJUNTO CASAS VT">
+                        <div style="height: 280px;width: 100%; overflow:scroll;">
+                            <h:dataTable id="conjuntoCasasList" value="#{fichaDetalleHistoricoBean.conjuntasCasasHistorico}" var="conjunto" 
+                                         styleClass="constructGTable"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         rendered="#{fichaDetalleHistoricoBean.conjuntasCasasHistorico.size() > 0}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="HHPP procesados a partir de la Preficha" />
+                                </f:facet>
+
+                                <h:column  >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Conjunto" />
+                                    </f:facet>
+                                    <h:outputText  value="#{conjunto.nombreConj}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Obtenidas" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{conjunto.direccionStrList}" var="direccionFichaXls" style="min-width: 250px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{conjunto.direccionStrList.size() >0}">
+                                        <h:column >
+                                            <h:outputText value="#{direccionFichaXls}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="HHPP Obtenidos / Tipo de Vivienda" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{conjunto.hhppList}" var="hhpp" style="width: 345px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{conjunto.hhppList.size() >0}">
+                                        <h:column>
+                                            <h:outputText value="#{hhpp}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column> 
+                                    <f:facet name="header">
+                                        <h:outputText value="Clasificación" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.clasificacion}" />
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+
+                    </t:panelTab>
+             </t:panelTabbedPane>
+            
+             <br></br>
+             
+             <h:panelGroup  style="margin-top:2%;">
+                <hr size="5" width="100%" align="LEFT"/>
+                <h:panelGrid columns="4">
+                    <h:outputLabel class="EtiquetaConsulta" value="Marca CCMM 1:"/> 
+                    <h:outputText value="#{fichaDetalleHistoricoBean.blackListCCM1}"/>
+                    <h:outputLabel class="EtiquetaConsulta" value="Marca CCMM 2:"/> 
+                    <h:outputText value="#{fichaDetalleHistoricoBean.blackListCCM2}"/>
+                    <h:outputLabel class="EtiquetaConsulta" value="Marca HHPP 1:"/> 
+                    <h:outputText value="#{fichaDetalleHistoricoBean.blackListHHPP1}"/>
+                    <h:outputLabel class="EtiquetaConsulta" value="Marca HHPP 2:"/> 
+                    <h:outputText value="#{fichaDetalleHistoricoBean.blackListHHPP2}"/>
+                    
+                    <h:outputLabel class="EtiquetaConsulta" value="Notas"/> 
+                </h:panelGrid>
+                <h:inputTextarea id="comentariosNota"  value="#{fichaDetalleHistoricoBean.historicoExportSeleccionado.prefichaId.nota}" readonly="true" style="margin-left: 5px; width: 100%;"/>
+            </h:panelGroup>
+            
+            <br></br>
+            
+             <t:panelTabbedPane id="pnl_preficha_georeferencia" selectedIndex="0" style="height: 300px; width: 100%; overflow:scroll;"  title="Ficha A Generar">
+                 <t:panelTab label="EDIFICIOS VT">
+                        <div style="height: 280px; max-width:1290px; overflow:scroll;">
+                            <h:dataTable id="edificiosVtHistorico" value="#{fichaDetalleHistoricoBean.edificiosVtHistorico}" var="edificio"
+                                         styleClass="constructGTable" rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         rendered="#{fichaDetalleHistoricoBean.edificiosVtHistorico.size()>0}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="Información de Georreferenciación" />
+                                </f:facet>
+
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Conjunto" />
+                                    </f:facet>
+                                    <h:outputText  value="#{edificio.nombreConj}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio Geo" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.neighborhood}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estrato" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.levelEconomic}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dirección" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.address}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Clasificación" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.clasificacion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Fuente" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.source}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Alterna" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.alternateAddress}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Localidad" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.locality}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Manzana" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.appletStandar}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CX" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.cx}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CY" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.cy}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Resultado" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.resultadoGeorref}" />
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Asignar Estrato" />
+                                    </f:facet>
+                                    <h:outputText value="#{edificio.fichaGeorreferenciaMgl.cambioEstrato}" />
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+                    </t:panelTab>
+                 
+                    <t:panelTab label="CASAS RED EXTERNA">
+                        <div style="height: 280px; max-width:1290px; overflow:scroll;">
+                            <h:dataTable id="edificiosVtXlsTable" value="#{fichaDetalleHistoricoBean.casasRedExternaHistorico}" var="casa" 
+                                         styleClass="constructGTable" rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         rendered="#{fichaDetalleHistoricoBean.casasRedExternaHistorico.size() >0}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="Información de Georreferenciación" />
+                                </f:facet>
+
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio Geo" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.neighborhood}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estrato" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.levelEconomic}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dirección" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.address}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Fuente" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.source}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Alterna" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.alternateAddress}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Localidad" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.locality}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Manzana" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.appletStandar}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CX" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.cx}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CY" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.cy}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Resultado" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.resultadoGeorref}" />
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Asignar Estrato" />
+                                    </f:facet>
+                                    <h:outputText value="#{casa.fichaGeorreferenciaMgl.cambioEstrato}" />
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+                    </t:panelTab>
+                 
+                 <t:panelTab label="CONJUNTO CASAS VT">
+                        <div style="height: 280px; max-width:1290px; overflow:scroll;">
+                            <h:dataTable id="edificiosVtXlsTable" value="#{fichaDetalleHistoricoBean.conjuntasCasasHistorico}" var="conjunto"
+                                         styleClass="constructGTable" rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         rendered="#{fichaDetalleHistoricoBean.conjuntasCasasHistorico.size()>0}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="Información de Georreferenciación" />
+                                </f:facet>
+
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Conjunto" />
+                                    </f:facet>
+                                    <h:outputText  value="#{conjunto.nombreConj}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio Geo" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.neighborhood}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estrato" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.levelEconomic}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dirección" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.address}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Fuente" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.source}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Alterna" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.alternateAddress}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Localidad" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.locality}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Manzana" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.appletStandar}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CX" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.cx}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CY" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.cy}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Resultado" />
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.resultadoGeorref}" />
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Asignar Estrato"/>
+                                    </f:facet>
+                                    <h:outputText value="#{conjunto.fichaGeorreferenciaMgl.cambioEstrato}" />
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+                    </t:panelTab>
+             </t:panelTabbedPane>
+        </h:form>
+    </ui:define>
+</ui:composition>

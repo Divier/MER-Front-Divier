@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"      
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <body>
+        <ui:composition template="/view/MGL/template/main.xhtml">
+            <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+            <ui:define name="content">
+                <h2>Relación Estado CM – Tipo GA</h2>
+                <h:panelGroup rendered="#{!relacionEstadoCmTipoGaBean.renderAuditoria}">
+                    <h:panelGroup id="panelTableList" rendered="#{!relacionEstadoCmTipoGaBean.isDetalle}">
+                        <h:panelGrid id="panelFiltros" class="formulario" columns="2" style="width: 60%" >
+                            <h:outputText value="C&oacute;digo" />
+                            <h:inputText id="CodigoFiltro" value="#{relacionEstadoCmTipoGaBean.codigoFiltro}"/>
+                            <h:outputText value="Estado Cuenta Matriz" />
+                            <h:selectOneMenu id="estadoCmFiltro" value="#{relacionEstadoCmTipoGaBean.estadoCmFiltro}">
+                                <f:selectItem itemValue="0" itemLabel="" />
+                                <f:selectItems value="#{relacionEstadoCmTipoGaBean.estadoCmList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+                            <h:outputText value="Tipo de Gesti&oacute;n de Avanzada" />
+                            <h:selectOneMenu id="tipoGaFiltroF" value="#{relacionEstadoCmTipoGaBean.tipoGaFiltro}">
+                                <f:selectItem itemValue="0" itemLabel="" />
+                                <f:selectItems value="#{relacionEstadoCmTipoGaBean.tipoGaList}" var="tipGa"
+                                               itemValue="#{tipGa.basicaId}"
+                                               itemLabel="#{tipGa.nombreBasica}"/>
+                            </h:selectOneMenu>
+                            <h:outputText value="Descripci&oacute;n" />
+                            <h:inputTextarea value="#{relacionEstadoCmTipoGaBean.descripcionFiltro}" 
+                                             rows="3"/>
+                            <h:outputText value="Estado" />
+                            <h:selectOneRadio id="estadoFiltro"  class="radioB" 
+                                              value="#{relacionEstadoCmTipoGaBean.estadoFiltro}" >
+                                <f:selectItem itemLabel="Activo" itemValue="Y"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="N"/>
+                            </h:selectOneRadio>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">                        
+                            <h:commandButton value="Filtrar" styleClass="btn"
+                                             disabled="#{!relacionEstadoCmTipoGaBean.validarCodigoRol()}"
+                                             actionListener="#{relacionEstadoCmTipoGaBean.filtrarTabla()}"/> 
+                            <h:commandButton value="Limpiar" styleClass="btn"
+                                             actionListener="#{relacionEstadoCmTipoGaBean.limpiarFiltro()}"/>
+                        </h:panelGrid>
+
+                        <div  class="tableContent">
+                            <h:dataTable id="prefichaValidarTable"  
+                                         value="#{relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgList}" var="relacion"
+                                         styleClass="constructGTable"
+                                         headerClass="constructGTableHeader" 
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                                <h:column >
+                                    <f:facet name="header">
+                                        <h:outputText value="C&oacute;digo"/>
+                                    </f:facet>
+                                    <h:commandLink value="#{relacion.codigo}"
+                                                   disabled="#{!relacionEstadoCmTipoGaBean.validarCodigoRol()}"
+                                                   actionListener="#{relacionEstadoCmTipoGaBean.actualizarDetalle(relacion)}"/>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">                            
+
+                                        <h:outputText value="Estado CM" />
+                                    </f:facet>
+                                    <h:outputText value="#{relacion.basicaEstadoCMObj.nombreBasica}" />  
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header" >
+                                        <h:outputText value="Tipo GA"/>
+                                    </f:facet>
+                                    <h:outputText value="#{relacion.basicaTiipoGa.nombreBasica}"/>                                
+                                </h:column>
+                                <h:column>
+                                    <f:facet name ="header">
+                                        <h:outputText value="Descripci&oacute;n"/>
+                                    </f:facet>
+                                    <h:outputText value="#{relacion.descripcion}"/>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <f:facet name ="header">
+                                            <h:outputText value="Estado"/>
+                                        </f:facet>
+                                        <h:outputText value="#{relacion.estado}"/>
+                                    </f:facet>
+                                </h:column>
+                                <h:column>  
+                                    <f:facet name="header">
+                                        <h:outputText value="Log" />
+                                    </f:facet>
+                                    <h:commandLink value="Log" actionListener="#{relacionEstadoCmTipoGaBean.mostrarAuditoria(relacion)}" />
+                                </h:column>
+
+                            </h:dataTable>
+                        </div>
+
+                        <h:panelGrid id="panelBtnTable" columns="5">
+                            <h:commandButton value="Crear Registro" styleClass="btn"
+                                             disabled="#{!relacionEstadoCmTipoGaBean.validarCrearRol()}"
+                                             actionListener="#{relacionEstadoCmTipoGaBean.crearNuevoRegistro()}"/> 
+                            <h:commandButton id="exportBtnTable" value="Exportar" styleClass="btn unblockClaro" 
+                                             disabled="#{!relacionEstadoCmTipoGaBean.validarExportarRol()}"
+                                             actionListener="#{relacionEstadoCmTipoGaBean.exportExcel()}"/>
+                        </h:panelGrid>                    
+                    </h:panelGroup>
+                    <h:panelGroup id="panelDetalle" rendered="#{relacionEstadoCmTipoGaBean.isDetalle}">
+                        <h:panelGrid class="formulario" columns="2" style="width: 60%">
+                            <h:outputText value="C&oacute;digo" />
+                            <h:inputText value="#{relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.codigo}" 
+                                         required="true" id="codigo"
+                                         disabled="#{!(relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.estadoCmTipoGaId  eq null)}"
+                                         requiredMessage="El c&oacute;digo es obligatorio" 
+                                         maxlength="10"
+                                         validatorMessage="El c&oacute;digo es ul campo alfanum&eacute;rico no puede contener espacios ni caracteres especiales">
+                                <f:validateRegex  pattern="^[0-9a-zA-Z]*" />
+                            </h:inputText> 
+                            <h:outputText value="Estado Cuenta Matriz" />
+                            <h:selectOneMenu id="ListEstadoCm" 
+                                             value="#{relacionEstadoCmTipoGaBean.estadoCm}" 
+                                             required="true" 
+                                             requiredMessage="Ingrese Estado CM">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{relacionEstadoCmTipoGaBean.estadoCmList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>                        
+                            <h:outputText value="Tipo de Gesti&oacute;n de Avanzada" />
+                            <h:selectOneMenu id="ListtipoGa" 
+                                             value="#{relacionEstadoCmTipoGaBean.tipoGa}" 
+                                             required="true" 
+                                             requiredMessage="Seleccione el Tipo GA">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{relacionEstadoCmTipoGaBean.tipoGaList}" var="tipGa"
+                                               itemValue="#{tipGa.basicaId}"
+                                               itemLabel="#{tipGa.nombreBasica}"/>
+                            </h:selectOneMenu>
+                            <h:outputText value="Descripci&oacute;n" />
+                            <h:inputTextarea value="#{relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.descripcion}" 
+                                             required="true" requiredMessage="Ingrese Descripci&oacute;n"
+                                             rows="3">
+                                <f:validateLength maximum="500" />
+                            </h:inputTextarea>
+                            <h:outputText value="Estado" />
+                            <h:selectOneRadio id="estado" required="true"  class="radioB" requiredMessage="Estado obligatorio"
+                                              value="#{relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.estado}" disabled="#{relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.estadoCmTipoGaId  eq null}">
+                                <f:selectItem itemLabel="Activo" itemValue="Y"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="N"/>
+                            </h:selectOneRadio>
+                            <h:outputText value="Justificaci&oacute;n" 
+                                          rendered="#{!(relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.estadoCmTipoGaId eq null)}"/>
+                            <h:inputTextarea id="txaJustificacion" required="true"
+                                             value="#{relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.justificacion}" 
+                                             rendered="#{!(relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.estadoCmTipoGaId eq null)}"
+                                             rows="3"
+                                             requiredMessage="Se debe d&iacute;gitar una justificaci&oacute;n para modificaci&oacute;n o eliminaci&oacute;n del registro.">
+                                <f:validateLength maximum="500"/>
+                            </h:inputTextarea>
+
+
+                        </h:panelGrid> 
+                        <h:panelGrid id="panelBotonesDetalle" columns="4">
+                            <h:commandButton value="Crear" styleClass="btn" 
+                                             rendered="#{(relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.estadoCmTipoGaId eq null)}" 
+                                             actionListener="#{relacionEstadoCmTipoGaBean.crearRelacion()}"
+                                             onclick="if (!confirm('Est&aacute; seguro que desea Adicionar este registro'))
+                                                         return false;"/>                        
+                            <h:commandButton value="Actualizar" styleClass="btn" 
+                                             rendered="#{relacionEstadoCmTipoGaBean.validarEdicion() and
+                                                         !(relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.estadoCmTipoGaId eq null)}" 
+                                             actionListener="#{relacionEstadoCmTipoGaBean.actualizarRelacion()}"
+                                             onclick="if (!confirm('Est&aacute; seguro que desea Modificar el registro'))
+                                                         return false;"/>
+                            <h:commandButton value="Eliminar" styleClass="btn" 
+                                             rendered="#{relacionEstadoCmTipoGaBean.validarBorrado() and
+                                                         !(relacionEstadoCmTipoGaBean.relacionEstadoCmTipoGaMgl.estadoCmTipoGaId eq null)}" 
+                                             actionListener="#{relacionEstadoCmTipoGaBean.eliminarRelacion()}"
+                                             onclick="if (!confirm('Est&aacute; seguro que desea Eliminar el registro'))
+                                                         return false;"/>
+                            <h:commandButton value="Volver" styleClass="btn" 
+                                             rendered="true"  immediate="true"
+                                             actionListener="#{relacionEstadoCmTipoGaBean.volver()}"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{relacionEstadoCmTipoGaBean.renderAuditoria}">
+                    <span class="TituloSeccion">Auditoria de Registro [#{relacionEstadoCmTipoGaBean.descripcionEstadoCmTipoGa}]</span>
+                    <cc:componente-auditoria auditoriaDto="#{relacionEstadoCmTipoGaBean.informacionAuditoria}">
+                    </cc:componente-auditoria>
+                    <h:commandLink value="Volver" actionListener="#{relacionEstadoCmTipoGaBean.ocultarAuditoria}" />     
+                </h:panelGroup>     
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

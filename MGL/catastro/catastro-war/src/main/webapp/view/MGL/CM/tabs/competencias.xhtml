@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"    
+      template="/view/MGL/template/main.xhtml">
+
+    <body>
+        <ui:composition template="/view/MGL/template/cm.xhtml">
+            <ui:define name="title"><span class="TituloSeccion">Competencias</span></ui:define>
+            <ui:define name="content">
+                <h3>COMPETENCIA</h3>
+                <h:panelGrid id="panelCompetenciasTable" 
+                             columns="1" style="width: 100%;"
+                             rendered="#{!competenciaMglBean.renderDetalle 
+                                         and !competenciaMglBean.renderAuditoria}">
+                    <div align="CENTER">
+                        <h:dataTable id="CompetenciaMglTable" 
+                                     value="#{competenciaMglBean.competenciaSubEdificioList}" 
+                                     var="competencia" rows="6"                         
+                                     styleClass="constructGTable" 
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+
+                                     style="width: 100%">
+                            <h:column>
+                                <div align="CENTER">
+                                <f:facet name="header">
+                                    <h:outputText value="ID" />
+                                </f:facet>
+                                    <h:outputText value="#{competencia.competenciaId}"/>
+                                </div>
+                            </h:column>
+                            <h:column>
+                                <div align="CENTER">
+                                <f:facet name="header">
+                                    <h:outputText value="PROVEEDOR" />
+                                </f:facet>
+                                <h:outputText value="#{competencia.competenciaTipo.proveedorCompetencia.nombreBasica}"/>
+                                </div>
+                            </h:column>
+                            <h:column>
+                                <div align="CENTER">
+                                <f:facet name="header">
+                                    <h:outputText value="SERVICIO" />
+                                </f:facet>
+                                <h:outputText value="#{competencia.competenciaTipo.servicioCompetencia.nombreBasica}"/>
+                                </div>
+                            </h:column>
+                            <h:column>
+                                <div align="CENTER">
+                                <f:facet name="header">
+                                    <h:outputText value="Auditor&iacute;a" />
+                                </f:facet>
+                                <h:commandLink value="Ver Log" 
+                                actionListener="#{competenciaMglBean.mostrarAuditoriaCompetencia(competencia)}" />
+                                </div>
+                            </h:column>
+                            <h:column>
+                                <div align="CENTER">
+                                <f:facet name="header">
+                                    <h:outputText value="Eliminar" />
+                                </f:facet>
+                                <h:commandLink value="Eliminar" 
+                                               actionListener="#{competenciaMglBean.eliminarCompetencia(competencia)}"
+                                               onclick="return confirm('¿Est&aacute; seguro que desea Eliminar el registro?');" />
+                                </div>
+                            </h:column>
+                            <f:facet name="footer">
+                                <h:panelGroup>
+                                    <h:commandButton value="" action="#{competenciaMglBean.pageFirst}"
+                                                     class="botonTPagInicioCm botonBaselista"/>
+                                    <h:commandButton value="" action="#{competenciaMglBean.pagePrevious}"
+                                                     class="botonTPagAnteriorCm botonBaselista"/>
+                                    <h:commandButton value="#{competenciaMglBean.pageActual}" styleClass="botonTPagInicio"    />
+                                    <h:selectOneMenu id="listTabla" value="#{competenciaMglBean.numPagina}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                        <f:selectItems value="#{competenciaMglBean.paginaList}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>    
+                                        <f:ajax render="@form"  event="change"  listener="#{competenciaMglBean.irPagina()}"  execute="@this" />                                         
+                                    </h:selectOneMenu>  
+                                    <h:commandButton value="" action="#{competenciaMglBean.pageNext}"
+                                                     class="botonTPagSiguienteCm botonBaselista"/>
+                                    <h:commandButton value="" action="#{competenciaMglBean.pageLast}"
+                                                     class="botonTPagFinCm botonBaselista"/>
+                                </h:panelGroup>
+                            </f:facet> 
+                        </h:dataTable>
+                    </div>
+                    <h:commandButton action="#{competenciaMglBean.irCrearCompetencia()}" value="Crear" styleClass="btn"/>
+                </h:panelGrid>
+                <div align="center">
+                    <h:panelGroup id="panelGroupDetalle" 
+                                  rendered="#{competenciaMglBean.renderDetalle}">
+                        <h:panelGrid id="panelDetalleCompetencia" style="width: 50% "
+                                     rendered="#{competenciaMglBean.renderDetalle}"  columns="4" >
+                            <h:outputText value="Competencia Tipo" id="txtDescb" />
+                            <h:selectOneMenu  id="proveedorCompetenciaList" 
+                                              styleClass="ListaConsulta" style="width: 95%"
+                                              value="#{competenciaMglBean.competenciaTipo.competenciaTipoId}"
+                                              required="true" requiredMessage="Seleccione un valor de la lista">
+                                <f:selectItem itemValue="" itemLabel="" /> 
+                                <f:selectItems value="#{competenciaMglBean.competenciaTipoList}" var="tp"
+                                               itemValue="#{tp.competenciaTipoId}"
+                                               itemLabel="#{tp.proveedorCompetencia.nombreBasica} - #{tp.servicioCompetencia.nombreBasica}"/>
+                            </h:selectOneMenu>   
+
+                        </h:panelGrid>
+                        <h:panelGrid id="panelBotonesDetalle" columns="3">
+                            <h:commandButton action="#{competenciaMglBean.crearCompetencia()}" 
+                                             rendered="#{competenciaMglBean.competenciaSelected.competenciaId == null}"
+                                             value="Crear" styleClass="btn"/>
+                            <h:commandButton action="#{competenciaMglBean.eliminarCompetencia()}" 
+                                             rendered="#{competenciaMglBean.competenciaSelected.competenciaId != null}"
+                                             value="Eliminar" styleClass="btn"/>
+                            <h:commandButton action="#{competenciaMglBean.volver()}" 
+                                             immediate="true"
+                                             value="Volver" styleClass="btn"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </div>
+                <h:panelGrid id="panelAuditoriaC" 
+                             rendered="#{competenciaMglBean.renderAuditoria}" 
+                             style="width:100%;">
+                    <h1>Auditoria Competencia</h1>
+                    <cc:componente-auditoria auditoriaDto="#{competenciaMglBean.listAuditoria}">
+
+                    </cc:componente-auditoria>
+                    <h:commandButton id="buttonVolverAudOt" value="Volver" 
+                                     action="#{competenciaMglBean.volver()}"
+                                     styleClass="btn" />
+                </h:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+    </body>
+</html>
+

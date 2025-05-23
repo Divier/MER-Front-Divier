@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Administrador COMUNIDADES</span></ui:define>
+    <ui:define name="message"><span class="error"> #{comunidadesBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <fieldset>
+            <legend>ADMINISTRACIÓN COMUNIDADES</legend>
+            <br></br>
+
+            <h:panelGrid columns="4" id="comunidadesMgl" class="EtiquetaConsulta" width="100%">
+                <h:outputText value="Comunidad id" id="com_idlb" rendered="false" />
+                <h:inputText id="IdTxt" value="#{comunidadesBean.cmtComunidadRr.comunidadRrId}" disabled="true" rendered="false" /> 
+
+                <h:outputText value="Codigo comunidad" id="com_codlb"/>
+                <h:inputText id="com_codTxt" value="#{comunidadesBean.cmtComunidadRr.codigoRr}" maxlength="3"
+                             disabled="#{!(comunidadesBean.cmtComunidadRr.comunidadRrId eq 0)}"/>
+
+                <h:outputText value="Nombre comunidad" id="com_nomlb"/>
+                <h:inputText id="com_nomTxt" value="#{comunidadesBean.cmtComunidadRr.nombreComunidad}" maxlength="50" />
+
+                <h:outputText value="Nombre corto regional" id="com_nomCorReglb"/>
+                <h:inputText id="com_nomCorRegTxt" value="#{comunidadesBean.cmtComunidadRr.nombreCortoRegional}" maxlength="3"/>                                
+
+                <h:outputText escape="false" value="#{comunidadesBean.estiloObligatorio}Departamento " id="gpo_idlb"/>
+                <h:selectOneMenu id="listGeograficoPoliticoMgl" value="#{comunidadesBean.geograficoPoliticoMglDpto}"
+                                 styleClass="ListaConsulta" required="true"
+                                 requiredMessage="Campo Departamento es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{comunidadesBean.listGeograficoPoliticoMgl}" var="lgp"
+                                   itemValue="#{lgp.gpoId}"
+                                   itemLabel="#{lgp.gpoNombre}"/>
+                    <f:ajax event="change" execute="@this"
+                            listener="#{comunidadesBean.consultarCiudades()}" render="listGeograficoMgl"/>
+                </h:selectOneMenu>
+
+                <h:outputText escape="false" value="#{comunidadesBean.estiloObligatorio}Ciudad " id="geo_idlb"/>
+                <h:selectOneMenu id="listGeograficoMgl" value="#{comunidadesBean.geograficoMgl}"
+                                 styleClass="ListaConsulta"
+                                 required="true"
+                                 requiredMessage="Campo ciudad es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{comunidadesBean.listGeograficoMgl}" var="lg"
+                                   itemValue="#{lg.gpoId}"
+                                   itemLabel="#{lg.gpoNombre}"/>
+                    <f:ajax event="change" execute="@this"
+                            render="listCentroPobladoMgl"
+                            listener="#{comunidadesBean.consultarCentrosPoblados()}" />
+                </h:selectOneMenu>
+
+                <h:outputText escape="false" value="#{comunidadesBean.estiloObligatorio}Centro poblado " id="cp_idlb"/>
+                <h:selectOneMenu id="listCentroPobladoMgl"
+                                 value="#{comunidadesBean.centroPoblado}"
+                                 styleClass="ListaConsulta" required="true"
+                                 requiredMessage="Campo centro poblado es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{comunidadesBean.listCentrosPoblados}" var="cp"
+                                   itemValue="#{cp.gpoId}"
+                                   itemLabel="#{cp.gpoNombre}"/>
+                </h:selectOneMenu>
+
+                <h:outputText escape="false" value="#{comunidadesBean.estiloObligatorio}Tecnología regional" id="com_tecReglb"/>
+                <h:selectOneMenu id="com_tecRegTxt" value="#{comunidadesBean.tecnologia}" 
+                                 styleClass="ListaConsulta" required="true" 
+                                 requiredMessage="Campo tecnología regional es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{comunidadesBean.listBasicaMgl}" var="ld"
+                                   itemValue="#{ld.basicaId}"
+                                   itemLabel="#{ld.nombreBasica}"/> 
+                </h:selectOneMenu> 
+
+                <h:outputText escape="false" value="#{comunidadesBean.estiloObligatorio}Regional" id="reg_idlb"/>
+                <h:selectOneMenu id="listRegionalId" value="#{comunidadesBean.regional}"
+                                 styleClass="ListaConsulta" required="true"
+                                 requiredMessage="Campo Regional es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{comunidadesBean.listRegional}" var="reg"
+                                   itemValue="#{reg.regionalRrId}"
+                                   itemLabel="#{reg.nombreRegional}"/>
+                </h:selectOneMenu>
+
+                <h:outputText value="Código postal" id="com_codPoslb"/>
+                <h:inputText id="com_codPosTxt" value="#{comunidadesBean.cmtComunidadRr.codigoPostal}" />
+
+                <h:outputText escape="false" value="#{comunidadesBean.estiloObligatorio}Ubicación " id="ubicacion"/>
+                <h:selectOneMenu id="listUbicacionMgl" value="#{comunidadesBean.cmtComunidadRr.ubicacion}"
+                                 styleClass="ListaConsulta" required="true"
+                                 requiredMessage="Campo Ubicación es requerido">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItem itemValue="1" itemLabel="Rural"/>
+                    <f:selectItem itemValue="2" itemLabel="Urbano"/>
+                </h:selectOneMenu>
+
+            </h:panelGrid>
+            <br></br><br></br>
+            <h:panelGrid columns="4" id="comunididaMgl" styleClass="panelInfo">
+
+                <h:commandButton value="Actualizar" action="#{comunidadesBean.actualizarlComunidadesMgl()}"
+                                 styleClass="buttonl" rendered="#{!(comunidadesBean.cmtComunidadRr.comunidadRrId eq 0)}"
+                                 style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+                <h:commandButton value="Guardar" action="#{comunidadesBean.crearComunidadesMgl()}"
+                                 styleClass="buttonl" rendered="#{(comunidadesBean.cmtComunidadRr.comunidadRrId eq 0)}"
+                                 disabled="#{(comunidadesBean.guardado)}" style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+                <h:commandButton value="Eliminar"
+                                 styleClass="buttonl" immediate="true"
+                                 action="#{comunidadesBean.eliminarlComunidadesMgl()}"
+                                 style="text-align: center; color:#FFFFFF;"
+                                 rendered="#{!(comunidadesBean.cmtComunidadRr.comunidadRrId eq 0)}">
+                </h:commandButton>
+                <h:commandButton value="Volver" action="comunidadesMglViewList" immediate="true"
+                                 styleClass="buttonl" style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+
+            </h:panelGrid>
+
+        </fieldset>
+    </ui:define>
+
+</ui:composition>

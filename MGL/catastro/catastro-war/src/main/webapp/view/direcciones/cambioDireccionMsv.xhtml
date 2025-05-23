@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/view/MGL/template/mainUpload.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Cambio de Dirección Masiva</span></ui:define>
+    <ui:define name="message"><span class="error"> </span></ui:define>
+
+    <ui:define name="content">
+        <link  rel="stylesheet" type="text/css" href="../MGL/css/stylesheet.css"/>
+        <h:form id="formCargueArchivo" enctype="multipart/form-data">
+            <h:panelGrid id="panelCargueArchivo" columns="4">
+                <p:fileUpload id="file"
+                                required="true" 
+                                label="Seleccionar Archivo:"
+                                value="#{cambioDireccionMasivo.uploadedFile}"
+                                mode="simple" skinSimple="true"/>
+
+                <h:commandButton id="buttonUploadFile" 
+                                 action="#{cambioDireccionMasivo.uploadFile}" 
+                                 value="Exportar a Excel" styleClass="buttonLarge" style="color:#FFFFFF;">
+                </h:commandButton>
+                <h:messages />
+            </h:panelGrid>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes" >
+
+    <h:commandButton id="regresarButton"
+                     class="btn2 btn2Active"
+                     value="Regresar"
+                     action="#{encabezadoSolicitudModificacionCMBean.regresar(encabezadoSolicitudModificacionCMBean.solicitudModCM)}"
+                     immediate="true" />
+
+    <h:panelGroup id="panelGroupSolicitudTitle" style="width: 100%"
+                  rendered="#{!encabezadoSolicitudModificacionCMBean.modoGestion}">
+        <h2 id="SolicitudTitle">SOLICITUD #{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudObj.nombreTipo}</h2>
+    </h:panelGroup>
+    <h:panelGroup id="panelGroupGestionTitle" style="width: 100%"
+                  rendered="#{encabezadoSolicitudModificacionCMBean.modoGestion}">
+        <h2 id="GestionTitle">GESTIÓN #{encabezadoSolicitudModificacionCMBean.solicitudModCM.tipoSolicitudObj.nombreTipo}</h2>
+    </h:panelGroup>
+
+    <h:panelGrid columns="6" id="notasMgl" class="formulario3" style="width:100%;" >
+
+        <h:outputText value="Número de Solicitud" class="EtiquetaConsulta"/>
+        <h:outputText id="ccmsTxt" value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId}"  style="width: 100px; font-size: 12px;color:red;" />
+
+        <h:outputText value="Estado de la Solicitud" class="EtiquetaConsulta"/>
+        <h:inputText id="esmsTxt" value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.estadoSolicitudObj.nombreBasica}" disabled="true" style="width: 200px" />
+
+        <h:outputText value="Inicio Solicitud" class="EtiquetaConsulta"
+                      rendered="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null}"/>
+
+        <h:inputText id="eimsTxt"
+                     style="width: 100px"
+                     value="#{encabezadoSolicitudModificacionCMBean.timeSol}"
+                     rendered="#{ (encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)
+                                  or (encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null
+                                  and encabezadoSolicitudModificacionCMBean.modoGestion
+                                  and encabezadoSolicitudModificacionCMBean.solicitudModCM.estadoSolicitudObj.nombreBasica eq 'PENDIENTE')}"/>
+        <h:inputText id="eimsTxtPendiente" style="width: 100px" value="#{solicitudSolicitudCMBean.cmtSolicitudCmMgl.tempSolicitud}" disabled="true"
+                     rendered="#{!encabezadoSolicitudModificacionCMBean.solicitudModCM.estadoSolicitudObj.nombreBasica eq 'PENDIENTE'}" />
+
+        <h:inputHidden id="inicio" value="#{encabezadoSolicitudModificacionCMBean.tmpInicio}" />
+        <h:inputHidden id="fin" value="#{encabezadoSolicitudModificacionCMBean.tmpFin}" />
+
+    </h:panelGrid>
+
+    <h:panelGrid class="formulario3" columns="4">
+        <h:commandButton id="irSolicitudCM"
+                         class="#{encabezadoSolicitudModificacionCMBean.selectedTab == 'SOLICITUD' ? 'btn2 btn2Active':'btn2'}"
+                         value="Solicitud"
+                         action="#{encabezadoSolicitudModificacionCMBean.cambiarTab('SOLICITUD')}"
+                         disabled="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'SOLICITUD'}"
+                         immediate="true" />
+        <h:commandButton id="irEstadoSolicitudCM"
+                         class="#{encabezadoSolicitudModificacionCMBean.selectedTab == 'TRACK' ? 'btn2 btn2Active':'btn2'}"
+                         value="Track"
+                         action="#{encabezadoSolicitudModificacionCMBean.cambiarTab('TRACK')}"
+                         disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null
+                                     or encabezadoSolicitudModificacionCMBean.selectedTab eq 'TRACK'}"
+                         immediate="true" />
+        <h:commandButton id="irNotasSolicitudCM"
+                         class="#{encabezadoSolicitudModificacionCMBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}"
+                         value="Notas"
+                         action="#{encabezadoSolicitudModificacionCMBean.cambiarTab('NOTAS')}"
+                         disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null
+                                     or encabezadoSolicitudModificacionCMBean.selectedTab eq 'NOTAS'}"
+                         immediate="true" />
+    </h:panelGrid>
+</ui:composition>

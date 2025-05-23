@@ -1,0 +1,281 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/MGL/template/main.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Administrador Nodo</span></ui:define>
+    <ui:define name="message"><span class="error"> #{nodoMglBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <fieldset>
+            <legend>ADMINISTRACIÓN NODOS</legend>
+            <br></br>
+
+            <h:panelGrid columns="4" id="nodoMgl" class="EtiquetaConsulta" width="100%">
+                <h:outputText value="Id Nodo" id="nod_idlb" rendered="false" />
+                <h:inputText id="IdSqlTxt" value="#{nodoMglBean.nodoMgl.nodId}" disabled="true" rendered="false" /> 
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Código nodo:" id="nod_codigolb"/>
+                <h:inputText id="nod_codigoTxt" value="#{nodoMglBean.nodoMgl.nodCodigo}" maxlength="6"
+                             requiredMessage="Campo Código nodo es requerido" required="true"
+                              converter="toUpperCaseConverter">
+                             <f:ajax event="blur" render="@this" />
+                </h:inputText>
+               
+                <h:outputText escape="false"  value="#{nodoMglBean.estiloObligatorio} Nombre nodo:" id="nod_nombrelb"/>
+                <h:inputText id="nod_nombreTxt"  value="#{nodoMglBean.nodoMgl.nodNombre}" maxlength="21" 
+                             required="true" requiredMessage="Campo Nombre nodo es requerido"
+                             converter="toUpperCaseConverter">
+                             <f:ajax event="blur" render="@this" />
+                </h:inputText>
+
+                 <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Fecha Apertura:" id="fec_aperturalb"/>
+                 
+                 <h:panelGroup id="panelGruopFEApertura">
+                 <h:inputText label="Fecha Apertura" id="nod_fecha_activacionTxt" style="width: 140px"
+                               value="#{nodoMglBean.nodoMgl.nodFechaActivacion}"  
+                               required="true" requiredMessage="Campo Fecha apertura es obligatorio"
+                               readonly="false"  disabled="false" styleClass="datepicker"
+                               validatorMessage="Formato de fecha incorrecto en el campo Fecha Apertura">  <!--required="true" requiredMessage="Campo 'Fecha entrega' es requerido"-->
+                      <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                  </h:inputText>
+                 </h:panelGroup> 
+                
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Costo red:" id="nod_costo_red_lb"/>
+                <h:inputText id="costo_red" maxlength="20"  
+                             value="#{nodoMglBean.nodoMgl.costoRed}" converterMessage="El campo Costo red debe ser númerico"
+                             required="true" requiredMessage="Campo Costo red es obligatorio">
+                 <f:convertNumber pattern="#,##0"  />
+                </h:inputText>
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Límites:" id="nod_limites_lb"/>
+                <h:inputText id="nod_limitesTxt" maxlength="50" value="#{nodoMglBean.nodoMgl.limites}"
+                required="true" requiredMessage="Campo Límites es obligatorio">
+                </h:inputText>
+     
+                <h:outputText value="Fecha creación:" id="nod_fecha_creacionlb"/>
+                <h:inputText id="nod_fecha_creacionTxt" value="#{nodoMglBean.nodoMgl.nodFechaCreacion}"  disabled="true" />
+
+                <h:outputText value="Usuario creación nodo:" id="nod_usuario_creacionlb"/>
+                <h:inputText id="nod_usuario_creacionTxt" value="#{nodoMglBean.nodoMgl.nodUsuarioCreacion}"  disabled="true" />
+
+                <h:outputText value="Fecha modificación:" id="nod_fecha_modificacionlb"/>
+                <h:inputText id="nod_fecha_modificacionTxt" value="#{nodoMglBean.nodoMgl.nodFechaModificacion}" disabled="true"/>
+
+                <h:outputText value="Usuario modificación nodo:" id="nod_usuario_modificacionlb"/>
+                <h:inputText id="nod_usuario_modificacionTxt" value="#{nodoMglBean.nodoMgl.nodUsuarioModificacion}" disabled="true" />
+
+                <h:outputText  escape="false" value="Head end:" id="nod_head_endlb"/>
+                <h:inputText id="nod_head_endTxt" value="#{nodoMglBean.nodoMgl.nodHeadEnd}" maxlength="7">  
+                </h:inputText>
+
+                <h:outputText value="OPERA:" id="operalb"/>
+                <h:selectOneMenu id="listBasicaOpera" value="#{nodoMglBean.nodoMgl.opera}" 
+                                 styleClass="ListaConsulta" required="false">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.listBasicaOpera}" var="itemOpera"
+                                   itemValue="#{itemOpera.nombreBasica}"
+                                   itemLabel="#{itemOpera.nombreBasica}"/> 
+                </h:selectOneMenu> 
+                
+                <h:outputText value="OLT:" id="oltlb"/>
+                <h:inputText id="oltTxt" value="#{nodoMglBean.nodoMgl.olt}"
+                              validatorMessage="El campo OLT debe contener entre 1 y 7 caracteres alfanuméricos.">
+                    <f:validateRegex pattern="^$|^[a-zA-Z0-9]{1,7}$"/>
+                    <f:ajax event="change" execute="@this" render="msgOlt" />
+                </h:inputText>
+
+                <h:outputText value="OLT/NODO:" id="oltNodolb"/>
+                <h:inputText id="oltNodoTxt" value="#{nodoMglBean.nodoMgl.oltNodo}" 
+                             validatorMessage="El campo OLT/NODO debe contener entre 1 y 6 caracteres alfanuméricos.">
+                    <f:validateRegex pattern="^$|^[a-zA-Z0-9]{1,6}$"/>
+                    <f:ajax event="change" execute="@this" render="msgOltNodo" />
+                </h:inputText>
+
+                <h:outputText value="UUID" id="otlb" />
+                <h:inputText id="UUIDNodoTxt" value="#{nodoMglBean.nodoMgl.ot}"
+                             validatorMessage="El campo UUID debe contener exactamente 30 caracteres alfanuméricos.">
+                    <f:validateRegex pattern="^$|^[a-zA-Z0-9-]{1,30}$"/>
+                    <f:ajax event="change" execute="@this" render="msgUUIDNodo" />
+                </h:inputText>
+
+                <h:outputText value="SDS/BTS BACKUP:" id="nod_campo_adicional5lb"/>
+                <h:inputText id="nod_campo_adicional5Txt" value="#{nodoMglBean.nodoMgl.nodCampoAdicional5}"/>                
+                
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Tipo de Tecnología:" id="nod_tipolb"/>
+
+                <h:selectOneMenu id="listBasica" value="#{nodoMglBean.nodoTipo}" 
+                                 styleClass="ListaConsulta" required="true" requiredMessage="Campo Tipo nodo es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.listBasica}" var="ld"
+                                   itemValue="#{ld.basicaId}"
+                                   itemLabel="#{ld.nombreBasica}"/> 
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{nodoMglBean.listBasicaChange()}" render="listArea"/>
+                </h:selectOneMenu> 
+
+                <h:outputText escape="false"  value="#{nodoMglBean.estiloObligatorio} Comunidad RR:"
+                              id="com_idlb"/>
+                <h:inputText id="com_idTxt" value="#{nodoMglBean.codigoComunidadRR}" maxlength="3"
+                           required="true" requiredMessage="Campo codigo de comunidad obligatorio"  />            
+         
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Unidad de gestión:" 
+                              id="uge_idlb"/>
+                <h:selectOneMenu id="listUnidadGestion" value="#{nodoMglBean.unidadGestion}" 
+                                 styleClass="ListaConsulta" required="true" 
+                                 requiredMessage="Campo Unidad de gestión es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.listBasicaUnidadGestion}" var="lug"
+                                   itemValue="#{lug.basicaId}"
+                                   itemLabel="#{lug.nombreBasica}"/>
+                </h:selectOneMenu> 
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Divisional:" id="div_idlb"/>
+                <h:selectOneMenu id="listDivisional" value="#{nodoMglBean.divisional}" 
+                                 styleClass="ListaConsulta" required="true" requiredMessage="Campo Divisional es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.listBasicaDivicional}" var="ld"
+                                   itemValue="#{ld.basicaId}"
+                                   itemLabel="#{ld.nombreBasica}"/> 
+                </h:selectOneMenu>
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Área:" id="are_idlb"/>
+                <h:selectOneMenu id="listArea" value="#{nodoMglBean.area}" 
+                                 styleClass="ListaConsulta" required="true" requiredMessage="Campo Área es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.listBasicaArea}" var="la"
+                                   itemValue="#{la.basicaId}"
+                                   itemLabel="#{la.nombreBasica}"/>
+                </h:selectOneMenu>
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Distrito:" id="dis_idlb"/>
+                <h:selectOneMenu id="listDistrito" value="#{nodoMglBean.distrito}" 
+                                 styleClass="ListaConsulta" required="true" requiredMessage="Campo Distrito es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.listBasicaDistrito}" var="ldi"
+                                   itemValue="#{ldi.basicaId}"
+                                   itemLabel="#{ldi.nombreBasica}"/>
+                </h:selectOneMenu>
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Zona:" id="zon_idlb"/>
+                <h:selectOneMenu id="listZona" value="#{nodoMglBean.zona}"
+                                 styleClass="ListaConsulta" required="true" requiredMessage="Campo Zona es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.listBasicaZona}" var="lz"
+                                   itemValue="#{lz.basicaId}"
+                                   itemLabel="#{lz.nombreBasica}"/>
+                </h:selectOneMenu>
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Departamento :" id="gpo_idlb"/>
+                <h:selectOneMenu id="listGeograficoPoliticoMgl" value="#{nodoMglBean.geograficoPoliticoMgl}"
+                                 styleClass="ListaConsulta" required="true"
+                                 requiredMessage="Campo Departamento es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.listGeograficoPoliticoMgl}" var="lgp"
+                                   itemValue="#{lgp.gpoId}"
+                                   itemLabel="#{lgp.gpoNombre}"/>
+                    <f:ajax event="change" execute="@this"
+                            listener="#{nodoMglBean.consultarCiudades()}" render="listGeograficoMgl"/>
+                </h:selectOneMenu>
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Ciudad :" id="geo_idlb"/>
+                <h:selectOneMenu id="listGeograficoMgl" value="#{nodoMglBean.geograficoMgl}"
+                                 styleClass="ListaConsulta"
+                                 required="true"
+                                 requiredMessage="Campo ciudad es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.listGeograficoMgl}" var="lg"
+                                   itemValue="#{lg.gpoId}"
+                                   itemLabel="#{lg.gpoNombre}"/>
+                    <f:ajax event="change" execute="@this"
+                            render="listCentroPobladoMgl"
+                            listener="#{nodoMglBean.consultarCentrosPoblados()}" />
+                </h:selectOneMenu>
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Centro poblado :" id="cp_idlb"/>
+                <h:selectOneMenu id="listCentroPobladoMgl"
+                                 value="#{nodoMglBean.centroPoblado}"
+                                 styleClass="ListaConsulta" required="true"
+                                 requiredMessage="Campo centro poblado es requerido">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.listCentrosPoblados}" var="cp"
+                                   itemValue="#{cp.gpoId}"
+                                   itemLabel="#{cp.gpoNombre}"/>
+                </h:selectOneMenu>
+
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Estado:" id="certificado_idlb"/>
+                 <h:selectOneMenu id="listEstados" value="#{nodoMglBean.estado}" 
+                                    styleClass="ListaConsulta" required="true" requiredMessage="Campo Estado es requerido">
+                       <f:selectItem itemValue="" itemLabel="" />
+                       <f:selectItems value="#{nodoMglBean.listBasicaEstadoNodos}" var="est"
+                                      itemValue="#{est.basicaId}"
+                                      itemLabel="#{est.nombreBasica}"/> 
+                   </h:selectOneMenu>
+
+                
+                <h:outputText escape="false" value="#{nodoMglBean.estiloObligatorio} Aliado :" id="Aliado_idlb"/>
+                   <h:selectOneMenu id="listAliados" value="#{nodoMglBean.aliado}" 
+                                    styleClass="ListaConsulta" required="true" requiredMessage="Campo Aliado es requerido">
+                       <f:selectItem itemValue="" itemLabel="" />
+                       <f:selectItems value="#{nodoMglBean.listBasicaAliados}" var="al"
+                                      itemValue="#{al.basicaId}"
+                                      itemLabel="#{al.nombreBasica}"/> 
+                   </h:selectOneMenu>
+                
+                <h:outputText  value="Factibilidad :" id="Fact_idlb"/>
+                <h:selectOneMenu id="listFact" value="#{nodoMglBean.factibilidad}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItem itemLabel="P-POSITIVA" itemValue="P"/>
+                    <f:selectItem itemLabel="N-NEGATIVA" itemValue="N"/>
+                   </h:selectOneMenu>
+                
+                <h:outputText value="Proyecto :" id="nod_campo_proyectolb" />
+                <h:inputText id="nod_campo_proyectoTxt" value="#{nodoMglBean.nodoMgl.proyecto}"/>
+
+                <h:outputText value="Ancho de Banda:" id="Ancho_idlb"/>
+                <h:selectOneMenu id="listAnchoBAnda" value="#{nodoMglBean.anchoBanda}"
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{nodoMglBean.anchoBandaList}" var="al"
+                                   itemValue="#{al.basicaId}"
+                                   itemLabel="#{al.nombreBasica}"/>
+                </h:selectOneMenu>
+
+                <div style="width: 150px" >
+                    <h:inputHidden id="nodHid" value="hid" ></h:inputHidden>
+                </div>
+                <div style="width: 150px" ></div>
+
+            </h:panelGrid>
+            <br></br><br></br>
+            <h:panelGrid columns="4" id="nodoMgl2" styleClass="panelInfo">
+
+                <h:commandButton value="Actualizar" action="#{nodoMglBean.actualizarlNodoMgl()}"
+                                 styleClass="buttonl" rendered="#{!(nodoMglBean.guardado)}"
+                                 style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+                <h:commandButton value="Guardar" action="#{nodoMglBean.crearNodoMgl()}"
+                                 styleClass="buttonl" rendered="#{(nodoMglBean.guardado)}"
+                                 disabled="" style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+                <h:commandButton value="Eliminar"
+                                 styleClass="buttonl" immediate="true"
+                                 action="#{nodoMglBean.eliminarlNodoMgl()}"
+                                 style="text-align: center; color:#FFFFFF;"
+                                 rendered="#{!(nodoMglBean.guardado)}"
+                                 onclick="return confirm('¿Esta seguro de eliminar el registro seleccionado ${nodoMglBean.nodoMgl.nodNombre} ?');"  >
+                </h:commandButton>
+                <h:commandButton value="Volver" action="nodoMglListView" immediate="true"
+                                 styleClass="buttonl" style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+
+            </h:panelGrid>
+
+        </fieldset>
+    </ui:define>
+
+</ui:composition>

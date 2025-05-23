@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/cm.xhtml"
+    xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes">
+
+    <ui:define name="title"><span class="TituloSeccion">Direcciones Alternas</span></ui:define>
+    <ui:define name="message"><span class="error"> #{direccionAlternaMglBean.message}</span></ui:define>
+    <ui:define name="content">
+        <h:form id="form1">
+            <h:messages id="messages"  globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+
+            <h:panelGrid columns="4" id="direccionesAlternasMgl" class="formulario"  width="100%">
+
+                <h:outputText value="Departamento " id="gpo_idlb" style="visibility: hidden;"/>
+                <h:selectOneMenu id="listGeograficoPoliticoMgl" style="visibility: hidden;" value="#{direccionAlternaMglBean.geograficoPoliticoMgl}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{direccionAlternaMglBean.listGeograficoPoliticoMgl}" var="lgp"
+                                   itemValue="#{lgp.gpoId}"
+                                   itemLabel="#{lgp.gpoNombre}"/>    
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{direccionAlternaMglBean.consultarCiudades()}" render="listGeograficoMgl"/>
+                </h:selectOneMenu>            
+
+                <h:outputText value="Municipio " id="geo_idlb" style="visibility: hidden;"/>
+                <h:selectOneMenu id="listGeograficoMgl" style="visibility: hidden;" value="#{direccionAlternaMglBean.geograficoMgl}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{direccionAlternaMglBean.listGeograficoMgl}" var="lg"
+                                   itemValue="#{lg.gpoId}"
+                                   itemLabel="#{lg.gpoNombre}"/>                
+                </h:selectOneMenu>  
+
+            </h:panelGrid>           
+
+            <br></br><br></br>
+
+            <h:panelGrid columns="4" id="direccionAlternaMgl"  width="100%">                
+
+                <componentes:componente-direccion-alterna  />
+
+                <div><h:inputHidden  id="nodHid" value="hid" ></h:inputHidden> </div><div></div>
+            </h:panelGrid>
+            <h:panelGrid columns="4" id="direccionAlternaMgl2" styleClass="panelInfo">
+
+                <h:commandButton value="Validar Direcci&oacute;n" action="#{direccionAlternaMglBean.validarDireccion()}" styleClass="btn"></h:commandButton>
+                <h:commandButton value="Guardar" action="#{direccionAlternaMglBean.creardireccionMgl()}" styleClass="btn" 
+                                 rendered="#{!((direccionAlternaMglBean.direccionMgl.dirId eq null)) 
+                                             and direccionAlternaMglBean.noUbi }"
+                                 disabled="#{direccionAlternaMglBean.addressFound
+                                             || direccionAlternaMglBean.addressAltFound
+                                             || direccionAlternaMglBean.requestFound}">
+                </h:commandButton>
+                <h:commandButton value="Crear" action="#{direccionAlternaMglBean.creardireccionMgl()}" styleClass="btn"  
+                                 rendered="#{(direccionAlternaMglBean.direccionMgl.dirId eq null) 
+                                             and direccionAlternaMglBean.noUbi}"
+                                 disabled="#{direccionAlternaMglBean.addressFound
+                                             || direccionAlternaMglBean.addressAltFound
+                                             || direccionAlternaMglBean.requestFound}">
+                </h:commandButton>
+                <h:commandButton value="Volver" action="#{applicationDataMB.cambiarTab(12)}" styleClass="btn" ></h:commandButton>
+
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

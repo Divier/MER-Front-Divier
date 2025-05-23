@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/CM/cm/template/cmTemplate.xhtml">
+    <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+    <ui:define name="content">
+        <ul id="nav">
+            <li ><h:commandLink action="gestion-administracion" value="Compañ&iacute;as Administraci&oacute;n" /></li>
+            <li class="active"><h:commandLink action="gestion-constructoras" value="Compañ&iacute;as Constructoras" /></li>
+            <li ><h:commandLink action="gestion-ascensores" value="Compañ&iacute;as de Ascensores" /></li>
+        </ul>
+        #{constructorasBean.proyectoSettings()}
+        <h:panelGroup id="form_proyecto">
+            <h:messages id="messges"  globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+            <h:panelGrid  class="formulario" columns="4" >
+                <h:outputText value="Departamento" />
+                <h:selectOneMenu id="depto" value="#{constructorasBean.departamento}" required="true"  requiredMessage="Ingrese departamento">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{constructorasBean.departamentoList}" var="depto"
+                                   itemValue="#{depto.gpoId}"
+                                   itemLabel="#{depto.gpoNombre}"/>    
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{constructorasBean.consultarCiudades()}" render="@form"/>
+                </h:selectOneMenu>
+                <h:outputText value="Municipio" />
+                <h:selectOneMenu id="muni" value="#{constructorasBean.ciudad}" required="true" disabled="#{constructorasBean.departamento == null}" requiredMessage="Ingrese municipio">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{constructorasBean.ciudadList}" var="ciudad"
+                                   itemValue="#{ciudad.gpoId}"
+                                   itemLabel="#{ciudad.gpoNombre}"/>
+                    <f:ajax event="change" execute="@this" render="@form"/>
+                </h:selectOneMenu>
+                <h:outputText value="Centro Poblado" />
+                <h:selectOneMenu id="centroP" value="#{constructorasBean.constructora.centroPoblado}" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <!--<f:selectItems value="#-{modificacionHHPPMBean.ciudadesList}" 
+                                   var="ciudad"  itemValue="#-{ciudad.codigo}" itemLabel="#-{ciudad.nombre}"/>-->
+                </h:selectOneMenu>
+                <h:outputText value="Barrio" />
+                <h:selectOneMenu id="barrio" value="#{constructorasBean.tipoEstablecimiento.barrio}" disabled="#{constructorasBean.ciudad == null}" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{constructorasBean.barrioList}" 
+                                   var="barrio"  itemValue="#{barrio}" itemLabel="#{barrio}"/>
+                </h:selectOneMenu>
+                <h:outputText value="Direcci&oacute;n"/>
+                <h:inputText  id="direccion" value="#{constructorasBean.constructora.direccionNoStandar}" required="true" requiredMessage="Ingrese direcci&oacute;n"/>             
+            </h:panelGrid>
+            <div class="buttonArea">  
+                <h:commandButton value="Validar Direcci&oacute;n"  styleClass="btn" >
+                    <f:ajax render="form_proyecto" execute="direccion" listener="#{constructorasBean.validarDireccion()}"/>
+                </h:commandButton>
+                <h:commandButton value="Cancelar"  styleClass="btn" action="gestion-constructoras" />
+            </div>
+            <h:panelGrid class="formulario" columns="4">
+                <h:outputText value="Tipo Establecimiento" />
+                <h:selectOneMenu id="tipoEst" value="#{constructorasBean.tipoEstablecimiento.estTipo}" >
+                    <f:selectItem itemValue="C" itemLabel="Campamento"/>
+                    <f:selectItem itemValue="S" itemLabel="Sala de Venta"/>
+                    <!--<f:selectItems value="#-{modificacionHHPPMBean.ciudadesList}" 
+                                   var="ciudad"  itemValue="#-{ciudad.codigo}" itemLabel="#-{ciudad.nombre}"/>-->
+                </h:selectOneMenu>
+                <h:outputText value="Contacto" />
+                <h:inputText value="#{constructorasBean.tipoEstablecimiento.estContacto}" />
+                <h:outputText value="Tel&eacute;fono" />
+                <h:inputText value="#{constructorasBean.tipoEstablecimiento.estTelefono}" />
+                <h:outputText value="Email" />
+                <h:inputText value="#{constructorasBean.tipoEstablecimiento.estEmail}" />
+            </h:panelGrid>
+            <div class="buttonArea">  
+                <h:commandButton value="Aceptar"  styleClass="btn" actionListener="#{constructorasBean.crearProyecto()}" />
+
+            </div>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

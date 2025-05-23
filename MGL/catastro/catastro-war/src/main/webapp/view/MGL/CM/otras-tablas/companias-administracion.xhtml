@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"      
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+    <ui:define name="content">
+        <h2>Compañías de Administración</h2>          
+        <h:panelGroup rendered="#{!companiasAdministracionBean.renderAuditoria}">               
+
+
+            <h:panelGrid class="comboCenter">
+                <h:selectOneMenu class="comboCenter" value="#{companiasAdministracionBean.tipo}">
+                    <f:selectItem itemLabel="Compañía de Administración" itemValue="3" />
+                    <f:selectItem itemLabel="Administradores (Persona Natural)" itemValue="4" />
+                    <f:ajax render="consTable" execute="@this" event="change" listener="#{companiasAdministracionBean.consultDir()}"/>
+                </h:selectOneMenu>
+            </h:panelGrid>
+            <div  class="tableContent">
+                <h:dataTable  binding="#{companiasAdministracionBean.dataTable}" id="consTable" var="admin" value="#{companiasAdministracionBean.companyListTable}" styleClass="constructGTable"
+                              headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                              rendered="true" rows="15">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="ID"/>
+                        </f:facet>
+                        <h:commandLink value="#{admin.companiaId}"
+                                       action="#{companiasAdministracionBean.cargarAdminMod(admin)}"
+                                       disabled="#{!companiasAdministracionBean.validarIdRol()}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="CODIGO"/>
+                        </f:facet>
+                        <h:outputText value="#{admin.codigoRr}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="NOMBRE COMPAÑÍA"/><BR/>
+                            <h:inputText maxlength="30" id="nombreConsulta" style="width: 105px" value="#{companiasAdministracionBean.filtroConsultaCompaniasDto.nombre}">
+                                <f:ajax listener="#{companiasAdministracionBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:inputText>
+                        </f:facet>
+                        <h:outputText value="#{admin.nombreCompania}"/>
+                    </h:column>
+                    <h:column >
+                        <f:facet name="header">
+                            <h:outputText value="NIT"/><BR/>
+                            <h:inputText maxlength="10" id="nitConsulta" style="width: 60px" value="#{companiasAdministracionBean.filtroConsultaCompaniasDto.nit}">
+                                <f:ajax listener="#{companiasAdministracionBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:inputText>
+                        </f:facet>
+                        <h:outputText  value="#{admin.nitCompania}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="DEPARTAMENTO"/><BR/>
+                            <h:selectOneMenu id="deptoConsulta" style="width: 90px" value="#{companiasAdministracionBean.filtroConsultaCompaniasDto.departamento}" >
+                                <f:selectItem itemValue="" itemLabel="Todos" />
+                                <f:selectItems value="#{companiasAdministracionBean.departamentoListConsulta}" var="depto"
+                                               itemValue="#{depto.gpoId}"
+                                               itemLabel="#{depto.gpoNombre}"/>    
+                                <f:ajax listener="#{companiasAdministracionBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{admin.departamento.gpoNombre}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="MUNICIPIO"/><BR/>
+                            <h:selectOneMenu id="municipioConsulta" style="width: 90px" value="#{companiasAdministracionBean.filtroConsultaCompaniasDto.municipio}" >
+                                <f:selectItem itemValue="" itemLabel="Todos" />
+                                <f:selectItems value="#{companiasAdministracionBean.ciudadListConsulta}" var="muni"
+                                               itemValue="#{muni.gpoId}"
+                                               itemLabel="#{muni.gpoNombre}"/>    
+                                <f:ajax listener="#{companiasAdministracionBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{admin.municipio.gpoNombre}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="CENTRO POBLADO"/><BR/>
+                            <h:selectOneMenu id="centPobladoConsulta" style="width: 90px" value="#{companiasAdministracionBean.filtroConsultaCompaniasDto.centroPoblado}" >
+                                <f:selectItem itemValue="" itemLabel="Todos" />
+                                <f:selectItems value="#{companiasAdministracionBean.centroPobladoListConsulta}" var="centp"
+                                               itemValue="#{centp.gpoId}"
+                                               itemLabel="#{centp.gpoNombre}"/>    
+                                <f:ajax listener="#{companiasAdministracionBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{admin.centroPoblado.gpoNombre}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="BARRIO"/><BR/>
+                            <h:inputText maxlength="30" id="barrioConsulta" style="width: 80px" value="#{companiasAdministracionBean.filtroConsultaCompaniasDto.barrio}">
+                                <f:ajax listener="#{companiasAdministracionBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:inputText>
+                        </f:facet>
+                        <h:outputText value="#{admin.barrio}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="ESTADO"/><BR/>
+                            <h:selectOneMenu id="consultaListEstadoBasica"   
+                                             styleClass="ListaConsulta"
+                                             style="width: 61px"
+                                             value="#{companiasAdministracionBean.filtroConsultaCompaniasDto.estado}">
+                                <f:selectItem itemValue="" itemLabel="Todos" />
+                                <f:selectItem itemValue="Y" itemLabel="Activo" />
+                                <f:selectItem itemValue="N" itemLabel="Inactivo" />
+                                <f:ajax listener="#{companiasAdministracionBean.findByFiltro}" event="change" execute="@this" render="consTable"/>
+                            </h:selectOneMenu>  
+                        </f:facet>
+                        <h:outputText value="#{admin.activado eq 'Y' ? 'Activo': 'Inactivo'}"/>
+                    </h:column>
+                    <h:column>   <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Log" />
+                            </f:facet>
+                            <h:commandLink value="Log" actionListener="#{companiasAdministracionBean.mostrarAuditoria(admin)}" />      </div>                                  
+                    </h:column>                    
+                    <f:facet name="footer">
+                        <h:panelGroup>
+                           <h:commandButton value= ""  action="#{companiasAdministracionBean.pageFirst}" class="botonTPagInicioCm botonBaselista"/>
+                                       <h:commandButton  value= "" action="#{companiasAdministracionBean.pagePrevious}" class="botonTPagAnteriorCm botonBaselista"/>
+                                       <h:commandButton value="#{companiasAdministracionBean.pageActual}" />
+                                       <h:selectOneMenu  value="#{companiasAdministracionBean.numPagina}" 
+                                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                           <f:selectItems value="#{companiasAdministracionBean.paginaList}" var="pag"
+                                                          itemValue="#{pag}"
+                                                          itemLabel="#{pag}"/>    
+                                           <f:ajax render="consTable"  event="change"  listener="#{companiasAdministracionBean.irPagina()}"  execute="@this" />                                         
+                                       </h:selectOneMenu>  
+                                       <h:commandButton  value= "" action="#{companiasAdministracionBean.pageNext}" class="botonTPagSiguienteCm botonBaselista"/>
+                                       <h:commandButton  value= "" action="#{companiasAdministracionBean.pageLast}" class="botonTPagFinCm botonBaselista"/>
+                        </h:panelGroup>
+                    </f:facet>
+                </h:dataTable>
+            </div>
+            <div class="buttonArea">
+                <h:commandButton value="Crear Registro" styleClass="btn"
+                                 action="#{companiasAdministracionBean.cargarCompania()}"
+                                 disabled="#{!companiasAdministracionBean.validarCrearRol()}"/>
+                <h:commandButton value="Exportar" styleClass="btn unblockClaro"
+                                 disabled="#{!companiasAdministracionBean.validarOpcionExportar()}"
+                                 action="#{companiasAdministracionBean.exportExcel()}" />
+            </div>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{companiasAdministracionBean.renderAuditoria}">
+            <span class="TituloSeccion">Auditoria de tipo Companía[#{companiasAdministracionBean.tipoCompaniaDescripcion}], Registro [#{companiasAdministracionBean.descripcionCompania}]</span>
+            <cc:componente-auditoria auditoriaDto="#{companiasAdministracionBean.informacionAuditoria}">
+
+            </cc:componente-auditoria>
+            <h:commandLink value="Volver" actionListener="#{companiasAdministracionBean.ocultarAuditoria}" />     
+        </h:panelGroup>                     
+    </ui:define>
+</ui:composition>
+
+

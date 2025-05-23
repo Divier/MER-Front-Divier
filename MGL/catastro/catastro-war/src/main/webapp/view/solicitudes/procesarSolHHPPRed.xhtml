@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+ 
+<ui:composition template="/view/template/home.xhtml">
+<ui:define name="title">Procesar Solicitudes HHPP - Diseño Red</ui:define>
+<ui:define name="message"> #{procesarSolModHHPPSolRedMBean.message}</ui:define>
+<ui:define name="content">
+   <f:view>
+                <script type="text/javascript">
+              function NewWindow(){
+                        document.getElementById("formulario:panelPopup").style.display='none'; 
+                        document.getElementById("formulario:procesar").style.display='none';
+                        var showOk=document.getElementById("formulario:procesar").value;
+                        var cantSol = document.getElementById("formulario:cantSolCreadas").value;
+
+                  if(showOk == 'false'){
+                      document.getElementById("formulario:confirmar").style.display='none';
+                      document.getElementById("formulario:modificar").style.display='block'; 
+                      return " ";
+                  }else{
+                      if (!confirm("¿Hay " + cantSol + "  solicitudes por procesar, desea continuar? Por favor de click en Confirmar.")){
+                          //no
+                          document.getElementById("formulario:confirmar").style.display='none'; 
+                          document.getElementById("formulario:cantSolCreadas").style.display='none';
+                          document.getElementById("formulario:descargar").style.display='none';
+                          document.getElementById("formulario:modificar").style.display='block';
+                          return " ";
+                      }else{
+                          document.getElementById("formulario:confirmar").style.display='block'; 
+                          document.getElementById("formulario:modificar").style.display='none';
+                          document.getElementById("formulario:descargar").style.display='none';
+                          return " ";
+                      }
+                  }    
+               }
+                </script>
+                <h:form id="formulario">
+                    <f:view>
+                        <script>document.getElementById("formulario:showPopUp").style.display='none'; </script>
+                    </f:view>
+                    <h:outputLabel value="#{procesarSolModHHPPSolRedMBean.messageUser}" styleClass="contenidoIntDereDir"/>
+                    <h:panelGrid styleClass="panel-grid-botones">
+                        <h:commandButton  id="modificar" value="Procesar" styleClass="buttonl" style="color:#FFFFFF;"
+                                          rendered="#{procesarSolModHHPPSolRedMBean.showBotonProcesar}"
+                                          actionListener="#{procesarSolModHHPPSolRedMBean.doHabilitarConfirmar}">
+                        </h:commandButton>
+                        <h:commandButton  id="confirmar" value="Confirmar" styleClass="buttonl" style="color:#FFFFFF;"
+                                          rendered="#{procesarSolModHHPPSolRedMBean.showBotonConfirmar}"
+                                          actionListener="#{procesarSolModHHPPSolRedMBean.doProcesarSolicitudesCreadas}">
+                        </h:commandButton>
+                        <h:commandButton  id="descargar" value="Descargar" styleClass="buttonl" style="color:#FFFFFF;"
+                                          rendered="#{procesarSolModHHPPSolRedMBean.showBotonDescargar}"
+                                          actionListener="#{procesarSolModHHPPSolRedMBean.doExportarArchivo}">
+                        </h:commandButton>
+                    </h:panelGrid>
+                    <h:panelGrid id="panelPopup" rendered="#{procesarSolModHHPPSolRedMBean.showPopUp}">
+                        <h:inputText id="procesar" value="#{procesarSolModHHPPSolRedMBean.showPopUp}"/>
+                        <h:inputText id="cantSolCreadas" value="#{procesarSolModHHPPSolRedMBean.cantidadSolCreadas}"/>
+                        <f:view>
+                            <script>NewWindow();</script>
+                        </f:view>
+                    </h:panelGrid>
+                    <!--Solicitudes con un Nodo invalido-->
+               <h:panelGrid id="rtaSencilla" style="text-align: center" columns="2" rendered="#{procesarSolModHHPPSolRedMBean.showTablaResultado}">
+                   <rich:dataTable id="tablaRes" var="consulta" value="#{procesarSolModHHPPSolRedMBean.solicitudeRedRechazadas}"
+                                                rowKeyVar="numeroRegistro" 
+                                                styleClass="altrowstable" 
+                                                rendered="true"
+                                                rows="10">
+                                    <f:facet name="header">
+                                        <rich:columnGroup>
+                                            <rich:column styleClass="titulotabla"><h:outputLabel value="ID Solicitud Red"/></rich:column>
+                                            <rich:column styleClass="titulotabla"><h:outputLabel value="Descripción"/></rich:column>
+                                        </rich:columnGroup>
+                                    </f:facet>
+                                    <rich:column>
+                                        <h:outputText value="#{consulta.id_SolRed}" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <h:outputText value="#{consulta.mensaje}" />
+                                    </rich:column>
+                                    <f:facet name="footer">
+                                        <rich:dataScroller id="sc2" for="tablaRes" 
+                                               rendered="#{procesarSolModHHPPSolRedMBean.showTablaResultado}"
+                                               page="#{procesarSolModHHPPSolRedMBean.scrollerPage}" 
+                                               renderIfSinglePage="true"
+                                               stepControls="show" 
+                                               boundaryControls="auto" 
+                                               maxPages="5" 
+                                               fastControls="auto" 
+                                               fastStep="5">
+                                            <f:facet name="first">
+                                                <h:outputText value="Primero"/>
+                                            </f:facet>
+                                            <f:facet name="last">
+                                                <h:outputText value="Último"/>
+                                            </f:facet>
+                                        </rich:dataScroller>
+                                    </f:facet>  
+                                </rich:dataTable>
+                            </h:panelGrid>
+                </h:form>
+            </f:view>
+</ui:define>    
+</ui:composition>
+</ui:composition>

@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:t="http://myfaces.apache.org/tomahawk"              
+                template="/view/MGL/template/otHhppTemplate.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"    
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" 
+                xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="title"><span class="TituloSeccion">Editar Ot Hhpp</span></ui:define>        
+    <ui:define name="content">
+        <h2 style="text-align: center;">EDITOR DE OT</h2>
+        <br/>
+
+        <h:panelGrid id="panelTabs" class="formulario3"  columns="7" style="margin-top: -20px">
+            <h:commandButton  id="irGeneral"  
+                              class="#{notasOtHhppBean.selectedTab == 'GENERAL' ? 'btn2 btn2Active':'btn2'}" 
+                              value="General"                              
+                              disabled="#{!notasOtHhppBean.selectedTab eq 'GENERAL'}" >            
+                <f:ajax event="click" execute="@this" listener="#{notasOtHhppBean.cambiarTab('GENERAL')}"
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton> 
+            <h:commandButton  id="irAgendamiento" 
+                              class="#{notasOtHhppBean.selectedTab == 'AGENDAMIENTO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Agendamiento"                               
+                              rendered="#{notasOtHhppBean.otHhppSeleccionado.tipoOtHhppId.agendable eq 1 
+                                          and notasOtHhppBean.otHhppSeleccionado.estadoGeneral.
+                                             identificadorInternoApp eq '@B_EGA(@TB_RAB)'}" >
+                <f:ajax event="click" execute="@this" listener="#{notasOtHhppBean.cambiarTab('AGENDAMIENTO')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irNotas"
+                              class="#{notasOtHhppBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Notas">
+                <f:ajax event="click" execute="@this" listener="#{notasOtHhppBean.cambiarTab('NOTAS')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irOnyx" 
+                              class="#{notasOtHhppBean.selectedTab == 'ONYX' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Onyx"                               
+                              rendered="#{notasOtHhppBean.otHhppSeleccionado.tipoOtHhppId.requiereOnyx eq 'Y'}" >
+                <f:ajax event="click" execute="@this" listener="#{notasOtHhppBean.cambiarTab('ONYX')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irHistorico" 
+                              class="#{notasOtHhppBean.selectedTab == 'HISTORICO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Histórico Agendas">
+                <f:ajax event="click" execute="@this" listener="#{notasOtHhppBean.cambiarTab('HISTORICO')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irBitacora" 
+                              class="#{notasOtHhppBean.selectedTab == 'BITACORA' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Bitácora">
+                <f:ajax event="click" execute="@this" listener="#{notasOtHhppBean.cambiarTab('BITACORA')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+        </h:panelGrid>
+        <h2 style="text-align: center;">NOTAS</h2>
+        <br/>
+        <h:panelGrid style="width: 100%" class="formulario3"  id="tabsWrap"> 
+
+            <h:panelGroup style="width: 100%"  id="notasTab" rendered="true">
+
+
+                <h:panelGroup id="panelGroupDetalleNota"  >
+                    <h:panelGrid id="panelNotaInfo" columns="6" style="width: 100%;">
+
+                        <h:outputText value="Descripción" id="DescripcionNotaOtLabel"/>
+                        <h:inputText label="Descripción" id="DescripcionNotaOtInput" 
+                                     maxlength="200" 
+                                     value="#{notasOtHhppBean.cmtNotasOtHhppMgl.descripcion}"
+                                     readonly="#{notasOtHhppBean.cmtNotasOtHhppMgl.notasId != null}" />
+
+                        <h:outputText value="Tipo Nota" id="TipoNotaOtLabel"/>
+                        <h:selectOneMenu id="TipoNotaOtList"  value="#{notasOtHhppBean.tipoNotaSelected.basicaId}"
+                                         styleClass="ListaConsulta" 
+                                         disabled="#{notasOtHhppBean.cmtNotasOtHhppMgl.notasId  != null}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{notasOtHhppBean.tipoNotaList}" var="ld"
+                                           itemValue="#{ld.basicaId}"
+                                           itemLabel="#{ld.nombreBasica}"/>                 
+                        </h:selectOneMenu>
+
+                        <h:outputText id="lblAgendaActualizar" value="Agenda para actualizar: " />
+
+                        <p:selectCheckboxMenu id="agendaslist"  value="#{notasOtHhppBean.agendasList}" label="Agendas"
+                                              filter="true" filterMatchMode="startsWith" style="width: 180px;" >
+                            <f:selectItems value="#{notasOtHhppBean.agendasListConsulta}"
+                                           var="agenda"  
+                                           itemValue="#{agenda.agendaId}"
+                                           itemLabel="#{agenda.ofpsOtId} - (#{agenda.basicaIdEstadoAgenda.nombreBasica}/#{notasOtHhppBean.devuelveFechaFormater(agenda.fechaAgenda)})"/>
+                            <f:ajax event="change" render="@form"
+                                    listener="#{notasOtHhppBean.validarUpdateAgenda()}"
+                                    execute="@this" />
+                        </p:selectCheckboxMenu>
+
+                    </h:panelGrid>
+                    <h:panelGrid id="panelDescNotaInfo" columns="1" style="width: 100%;">
+                        <h:outputText value="Nota (4000 Caracteres)" id="NotaOtLabel"/>
+
+                        <h:inputTextarea label="Nota" id="NotaOtInput" 
+                                         style="width: 100%; resize: none; overflow-y: scroll;" rows="2" 
+                                         value="#{notasOtHhppBean.cmtNotasOtHhppMgl.nota}" 
+                                         readonly="#{notasOtHhppBean.cmtNotasOtHhppMgl.notasId != null}" 
+                                         >
+                         
+                        </h:inputTextarea>
+                    </h:panelGrid>
+
+                    <h:panelGrid id="panelComentarioNota" 
+                                 rendered="#{notasOtHhppBean.cmtNotasOtHhppMgl.notasId != null}"
+                                 columns="1" style="width: 100%;" >
+                        <h:outputText value="Comentario (4000 Caracteres)" id="ComentarioNotaOtLabel"/>
+
+                        <h:inputTextarea label="Comentario" id="ComentarioNotaOtInput"
+                                         style="width: 100%; resize: none; overflow-y: scroll;" rows="1" 
+                                         value="#{notasOtHhppBean.notaComentarioStr}"                                      
+                                         validatorMessage="'Comentario' Número máximo de caracteres es 4000">
+                            <f:validateLength maximum="4000" />
+                        </h:inputTextarea>
+                    </h:panelGrid>
+
+                    <h:panelGrid id="panelBotonesNotaInfo" columns="3" style="width: 100%; margin: 0 auto;">
+                        <h:commandButton value="Guardar Nota" id="CrearNotaOtButton" 
+                                         rendered="#{notasOtHhppBean.cmtNotasOtHhppMgl.notasId == null and !notasOtHhppBean.otCerradaAnulada}" styleClass="btn"
+                                         action="#{notasOtHhppBean.guardarNota()}" disabled="#{!notasOtHhppBean.isRolCrear()}"/>
+                        <h:commandButton value="Guardar Comentario" id="CrearComentarioNotaButton"
+                                         rendered="#{notasOtHhppBean.cmtNotasOtHhppMgl.notasId != null}" styleClass="btn"
+                                         action="#{notasOtHhppBean.guardarComentarioNota()}"
+                                         disabled="#{!notasOtHhppBean.isRolCrear()}"/>
+                        <h:commandButton value="Limpiar Campos" id="limpiarButton" 
+                                         rendered="true" styleClass="btn" immediate="true">
+                            <f:ajax render="tabsWrap" execute="@this" 
+                                    event="click" listener="#{notasOtHhppBean.limpiarCamposNota()}"/>
+                        </h:commandButton>
+                    </h:panelGrid>
+
+                </h:panelGroup>
+
+                <h:panelGroup id="panelGroupHistorialNotas" style="width: 100%;">
+                    <div style="width: 100%; height: 200px; overflow-y: scroll;">
+
+                        <h:dataTable class="AligSpan" id="HistorialNotasTable" style="width:100%;margin:0 auto;"
+                                     var="ntHhpp"
+                                     value="#{notasOtHhppBean.notasOtHhppList}"
+                                     headerClass="solicitudesGTableHeader" >
+                            <f:facet name="header">
+                                <h:outputText value="Historial Notas" />
+                            </f:facet>
+                            <h:column>  
+                                <h:panelGroup >
+                                    <h:panelGrid columns="8" style="width: 100%; border: none;">
+                                        <h:outputText value="Tipo Nota:" style="font-weight: bold;" />
+                                        <h:outputText value="#{ntHhpp.tipoNotaObj.nombreBasica}" class="labelnotastipo" />
+
+                                        <h:outputText value="Usuario:" style="font-weight: bold"/>
+                                        <h:outputText value="#{ntHhpp.usuarioCreacion}" class="labelnotasuser"/>
+
+                                        <h:outputText value="Fecha Creación:" style="font-weight: bold"/>
+                                        <h:outputText value="#{ntHhpp.fechaCreacion}">
+                                            <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+                                        </h:outputText>
+                                        <h:commandLink value=""                                                   
+                                                       action="#{notasOtHhppBean.mostarComentario(ntHhpp)}">
+                                            <h:graphicImage value="../../images/icon_plus_red.png" />
+
+                                        </h:commandLink>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="1" style="width: 100%">
+                                        <h:outputText value="#{ntHhpp.nota}"/>                            
+                                    </h:panelGrid>
+
+                                    <h:dataTable  rendered="true"
+                                                  style="width:100%"
+                                                  value="#{ntHhpp.comentarioList}" var="cmNtSol">
+
+                                        <h:column>
+                                            <h:outputText value="#{cmNtSol.nota}" style="width: 100%;"/>
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:panelGroup>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </h:panelGroup>
+
+            </h:panelGroup>  
+        </h:panelGrid>
+
+    </ui:define>
+</ui:composition>

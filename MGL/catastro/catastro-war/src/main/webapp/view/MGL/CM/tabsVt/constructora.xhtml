@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/vt.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>
+    <ui:define name="content">
+        <h4><h:outputText id="lblItem" value="Constructora"/></h4>
+        <h:panelGroup>
+            <h:panelGrid columns="4" class="formulario2"  width="100%">
+                <h:outputText id="lblConstructora" value="Compañía constructora"/>
+                <h:outputText id="lblTxtConstructora" value="#{constructoraVtBean.vt.companiaConstructora.nombreCompania}"/>
+                <h:outputText id="lblFecEntregaEdi" value="Fecha entrega edificio"/>
+                <h:panelGroup id="panelGruoptxtFecEntregaEdi">
+                    <h:inputText label="Fecha entrega edificio" id="txtFecEntregaEdi" style="width: 88%"
+                                 value="#{constructoraVtBean.vt.fechaEntregaEdificio}"
+                                 readonly="false" disabled="#{constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}" styleClass="datepicker">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                    </h:inputText>
+                </h:panelGroup>
+                <h:outputText id="lblEstado" value="Estado"/>
+                <h:outputText id="txtEstado"  
+                              value="#{constructoraVtBean.vt.otObj.cmObj.subEdificioGeneral.estadoSubEdificioObj.nombreBasica}"/>
+
+                <h:outputText id="lblOrigenDatos" value="Origen de datos"/>
+                <h:selectOneMenu id="origenDatosList" disabled="#{constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                 value="#{constructoraVtBean.vt.origenDatos.basicaId}"
+                                 styleClass="ListaConsulta"
+                                 required="false" 
+                                 requiredMessage="El campo Origen de datos es requerido">
+                    <f:selectItem itemValue="0" itemLabel="- Seleccionar -" />
+                    <f:selectItems value="#{constructoraVtBean.origenDatosList}" var="od"
+                                   itemValue="#{od.basicaId}" 
+                                   itemLabel="#{od.nombreBasica}" />                                        
+                </h:selectOneMenu>
+                <h:outputText id="lblTipoProyecto" value="Tipo de proyecto"/>
+                <h:selectOneMenu id="tipoProyectoList"  disabled="#{constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                 value="#{constructoraVtBean.vt.tipoProyecto.basicaId}"
+                                 styleClass="ListaConsulta"
+                                 required="false" 
+                                 requiredMessage="El campo Tipo de proyecto es requerido">
+                    <f:selectItem itemValue="0" itemLabel="- Seleccionar -" />
+                    <f:selectItems value="#{constructoraVtBean.tipoProyectoList}" var="tp"
+                                   itemValue="#{tp.basicaId}" 
+                                   itemLabel="#{tp.nombreBasica}" /> 
+                </h:selectOneMenu>
+               
+                <h:outputText id="lblUniPlaneadas" value="Total unidades planeadas"/>
+                <h:inputText id="txtUniPlaneadas"  disabled="#{constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{constructoraVtBean.vt.uniPlan}"
+                             maxlength="5"
+                             required="false" 
+                             requiredMessage="El campo Total unidades planeadas es requerido"
+                             validatorMessage="El campo Total unidades planeadas, es un campo numérico">
+                    <f:validateRegex pattern="[0-9]*"/>
+                </h:inputText>
+                
+                <h:outputText id="lblNombreAsesor" value="Nombre Asesor"/>              
+                <h:inputText id="txtNombreAsesor" disabled="#{constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{constructoraVtBean.vt.asesorConstructora}"
+                             required="false" 
+                             requiredMessage="El campo Nombre Asesor es requerido"
+                             maxlength="200"
+                             validatorMessage="Nombre Asesor: Los nombres solo aceptan letras y espacios">
+                    <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+                </h:inputText>
+                
+                <h:outputText id="lblCodAsesor" value="Código Asesor"/>
+                <h:inputText id="txtCodAsesor"  disabled="#{constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{constructoraVtBean.vt.codAsesorConst}"
+                             required="false" 
+                             requiredMessage="El campo Código Asesor es requerido"
+                             maxlength="20"/>  
+                
+                <h:outputText id="lblNombreEspecialista" value="Nombre Especialista"/>
+                <h:inputText id="txtNombreEspecialista" disabled="#{constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{constructoraVtBean.vt.especialistaConstructora}" 
+                             maxlength="200"
+                             validatorMessage="el campo Nombre Especialista solo acepta letras y espacios">
+                    <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+                </h:inputText>
+                
+                <h:outputText id="lblCodEspecialista" value="Código Especialista"/>
+                <h:inputText id="CodEspecialista" disabled="#{constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            constructoraVtBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{constructoraVtBean.vt.codEspecialistaConst}"
+                             maxlength="20"
+                             validatorMessage="El campo Código Especialista debe ser alfanumérico">
+                    <f:validateRegex pattern="[a-zA-Z0-9\s]*"/>   
+                </h:inputText>  
+            </h:panelGrid>
+        </h:panelGroup> 
+    </ui:define>
+</ui:composition>

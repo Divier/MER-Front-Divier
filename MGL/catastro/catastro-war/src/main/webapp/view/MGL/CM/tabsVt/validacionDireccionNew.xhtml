@@ -1,0 +1,373 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:panelGroup id="dirComponentevaldirnew">
+        <div rendered="#{validadorDireccionBean.mostrarPopupSub}" >
+            <fieldset id="validacionvaldirnew" rendered="#{validadorDireccionBean.mostrarPopupSub}">
+                <legend>Validar Direccion</legend>
+                <h:panelGrid rendered="#{validadorDireccionBean.mostrarPopupSub}">
+                    <h:panelGroup id="panelTipoDirvaldirnew"  >
+                        <h:panelGrid columns="4" >
+                            <h:outputText style="font-weight:bold; font-size: 12px;color: red;"  id="tipoDirvaldirnew" value="*"/> 
+                            <h:outputText style="font-weight:bold; font-size: 12px;"  id="tipoDireccionvaldirnew" value="Tipo Dirección:" /> 
+                            <h:selectOneMenu style="width: 90%" 
+                                             required="true"  requiredMessage="Seleccione TIPO DE DIRECCI&Oacute;N por favor."
+                                             id="tipoDireccionComboBoxvaldirnew" 
+                                             value="#{validadorDireccionBean.tipoDireccion}"> 
+                                <f:selectItem itemLabel="CALLE - CARRERA" itemValue="CK"/>
+                                <f:selectItem itemLabel="BARRIO - MANZANA" itemValue="BM"/>
+                                <f:selectItem itemLabel="INTRADUCIBLE" itemValue="IT"/>
+                                <f:ajax  event="change" execute="tipoDireccionComboBoxvaldirnew" 
+                                         listener="#{validadorDireccionBean.validarTipoDireccion()}" 
+                                         render=" @form" />
+                            </h:selectOneMenu>            
+                        </h:panelGrid>
+                    </h:panelGroup>
+                    <h:panelGroup id="panelWrapperHhppvaldirnew" >
+                        <h:panelGroup id="ckPanelHhppvaldirnew" rendered="#{validadorDireccionBean.showCKPanel}" >
+                            <h:panelGrid columns="7" >
+
+
+                                <h:panelGroup ></h:panelGroup>
+                                <h:panelGroup ></h:panelGroup>
+                            </h:panelGrid>
+                            <!--STAR-->
+                            <h:panelGroup rendered="#{!validadorDireccionBean.notGeoReferenciado}" id="pnNotRefenced">
+                                <table style="padding:5px 5px; font-size: 12px;" cellspacing="2" cellpadding="2">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; vertical-align: middle;height: 20px;">
+                                            <h:outputText id="compDircc4" value="Calle" style=" text-decoration: underline;font-weight: bold; text-align: center; vertical-align: middle;" ></h:outputText>
+                                        </td>
+                                    </tr>    
+
+                                    <tr>
+                                        <td style="width:130px;margin: 5px 5px;">
+                                            <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="tipoRegVia" value="*"/><h:outputText id="compDircc5" style="font-weight: bold;margin: 5px 5px;" value="Vía principal:"/>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="tipoRegNum" value="*"/><h:outputText id="compDircc6" style="font-weight: bold;margin: 5px 5px;" value="Núm:" />
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:outputText id="compDircc7" style="font-weight: bold;margin: 5px 5px;" value="Letra:"/>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:outputText id="compDircc8" style="font-weight: bold;margin: 5px 5px;" value="Letra 2:"/>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:outputText id="compDircc9" style="font-weight: bold;margin: 5px 5px;" value="Bis:"/>
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:outputText  id="compDircc10" style="font-weight: bold;margin: 5px 5px;" value="Cardinales:"/>
+                                        </td>
+                                    </tr>                                             
+
+                                    <tr>
+                                        <td style="width:130px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="viaPrincipal"  disabled="#{validadorDireccionBean.crearSolicitudButton}" value="#{validadorDireccionBean.direccionValidar.tipoViaPrincipal}" style="width:120px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems   value="#{validadorDireccionBean.obtenerListadoTipoSolicitudList('CALLES_DIR')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu>
+                                        </td>
+
+                                        <td style="width:120px;margin: 5px 5px;">                                                                           
+                                            <h:inputText  id="compDircc12" disabled="#{validadorDireccionBean.crearSolicitudButton}" value="#{validadorDireccionBean.direccionValidar.numViaPrincipal}" style="width:105px;" >                              
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:inputText>  
+                                        </td>
+
+                                        <td style="width:70px;margin: 5px 5px;"> 
+                                            <h:selectOneMenu id="letraUnoPrincipal"  disabled="#{validadorDireccionBean.crearSolicitudButton}" value="#{validadorDireccionBean.direccionValidar.ltViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems  value="#{validadorDireccionBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>      
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu>
+                                        </td>
+
+                                        <td style="width:70px;margin: 5px 5px;"> 
+                                            <h:selectOneMenu id="letraDosPrincipal" disabled="#{validadorDireccionBean.crearSolicitudButton}" value="#{validadorDireccionBean.direccionValidar.nlPostViaP}" style="width:60px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems  value="#{validadorDireccionBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>                                    
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu>
+                                        </td>
+
+                                        <td style="width:70px;margin: 5px 5px;"> 
+                                            <h:selectOneMenu id="bisPrincipal"  disabled="#{validadorDireccionBean.crearSolicitudButton}" value="#{validadorDireccionBean.direccionValidar.bisViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems    value="#{validadorDireccionBean.optionBisDir('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>                                   
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu>
+                                        </td>
+
+                                        <td style="width:120px;margin: 5px 5px;"> 
+                                            <h:selectOneMenu id="cuadrantePrincipal" disabled="#{validadorDireccionBean.crearSolicitudButton}" value="#{validadorDireccionBean.direccionValidar.cuadViaPrincipal}" style="width:100px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems    value="#{validadorDireccionBean.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">
+                                            <h:outputText  id="compDircc17" value="#"  style=" font-size: 20px; text-align: center;margin:5px 5px;"></h:outputText>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <table id="calleCarrera_9" style="padding:5px 5px; font-size: 12px;" cellpadding="2" cellspacing="2">
+                                    <tr>
+                                        <td style="text-align:center;" colspan="9">
+                                            <h:outputText id="compDircc18" value="Placa" style="text-decoration:underline;font-weight:bold;text-align:center;vertical-align: middle;" ></h:outputText>
+                                        </td>
+                                    </tr> 
+                                    <tr>
+                                        <td style="width:130px;margin:5px 5px;">                
+                                            <h:outputText  id="compDircc20" style="font-weight:bold;margin:5px 5px;" value="Cruce"/>
+                                        </td>
+                                        <td style="width:120px;margin:5px 5px;">                     
+                                            <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="tipoRegNumGen" value="*"/><h:outputText  id="compDircc21" style="font-weight:bold;margin:5px 5px;" value="Núm:"/>
+                                        </td>
+                                        <td style="width:70px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc22" style="font-weight:bold;margin:5px 5px;" value="Letra:"/>
+                                        </td>
+                                        <td style="width:70px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc23" style="font-weight:bold;margin:5px 5px;" value="Letra 2:"/>
+                                        </td>
+                                        <td style="width:70px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc24" style="font-weight:bold;margin:5px 5px;" value="Letra 3:"/>
+                                        </td>
+                                        <td style="width:120px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc25" style="font-weight:bold;margin:5px 5px;" value="Bis:"/>
+                                        </td>
+                                        <td style="width:120px;margin:5px 5px;">
+                                            <h:outputText  id="compDircc26" style="font-weight:bold;margin:5px 5px;" value="Cardinales:"/>
+                                        </td>
+                                        <td>
+                                            <h:outputText></h:outputText>
+                                        </td>
+                                        <td style="width:120px;margin:5px 5px;">
+                                            <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="tipoRegPla" value="*"/>
+                                            <h:outputText  id="compDircc27" value="No. Placa:" style="font-weight:bold;margin:5px 5px;"/>
+                                        </td>                  
+                                    </tr>
+                                    <tr>
+                                        <td style="width:130px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="viaGeneradora"  value="#{validadorDireccionBean.direccionValidar.tipoViaGeneradora}" style="width:120px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems value="#{validadorDireccionBean.obtenerListadoTipoSolicitudList('CALLES_DIR_GEN')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu> 
+                                        </td>
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:inputText id="compDircc261" value="#{validadorDireccionBean.direccionValidar.numViaGeneradora}" style="width:105px;margin: 5px 5px;" >
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:inputText>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:selectOneMenu  id="letraUnoGeneradora"  value="#{validadorDireccionBean.direccionValidar.ltViaGeneradora}" style="width:60px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems value="#{validadorDireccionBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu>
+                                        </td> 
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="letraDosGeneradora" value="#{validadorDireccionBean.direccionValidar.nlPostViaG}" style="width:60px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems value="#{validadorDireccionBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td style="width:70px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="letraTresGeneradora"  value="#{validadorDireccionBean.direccionValidar.letra3G}" style="width:60px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems value="#{validadorDireccionBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu>
+                                        </td> 
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="bisGeneradora"  value="#{validadorDireccionBean.direccionValidar.bisViaGeneradora}" style="width:100px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems value="#{validadorDireccionBean.optionBisDir('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu>
+                                        </td>                                   
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:selectOneMenu id="cuadranteGeneradora" value="#{validadorDireccionBean.direccionValidar.cuadViaGeneradora}" style="width:100px;margin: 5px 5px;">
+                                                <f:selectItem itemValue="" itemLabel=""/>
+                                                <f:selectItems value="#{validadorDireccionBean.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew"/>
+                                            </h:selectOneMenu>
+                                        </td>
+                                        <td>
+                                            <h:outputText  id="compDircc34" value="#{' '}-#{' '}" style="font-size: 20px; font-weight:bold"></h:outputText>
+                                        </td> 
+                                        <td style="width:120px;margin: 5px 5px;">
+                                            <h:inputText id="compDircc351" value="#{validadorDireccionBean.direccionValidar.placaDireccion}" style="width:90px;margin:5px 5px;">   
+                                                <f:ajax event="change" listener="#{validadorDireccionBean.buildDireccion()}" render="createDireccion direccionStrLabelHhppvaldirnew compDircc351"/>
+                                            </h:inputText>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center;" colspan="9">
+                                            <h:outputText rendered="false" value="#{validadorDireccionBean.createDireccion}" style="font-weight:bold;color:red;" id="createDireccion"/>
+                                        </td>
+                                    </tr>                        
+                                </table>                               
+                            </h:panelGroup>
+
+                            <!--END-->
+                        </h:panelGroup>
+                        <h:panelGroup id="bmPanelHhppvaldirnew" rendered="#{validadorDireccionBean.showBMPanel}">
+                            <h:panelGrid columns="6" >
+                                <h:panelGroup >
+                                    <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="bmHhppvaldirnew" value="*"/> 
+                                    <h:outputText id="addInfoHhppvaldirnew" value="Ingrese uno a uno los valores:" /> </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:selectOneMenu  
+                                        style="width: 100%" id="tipoDireccionBMComboBoxvaldirnew" 
+                                        value="#{validadorDireccionBean.tipoNivelBm}">
+                                        <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                        <f:selectItems value="#{validadorDireccionBean.bmList}" 
+                                                       var="barriomanzana"  itemValue="#{barriomanzana.idParametro}" 
+                                                       itemLabel="#{barriomanzana.descripcion}"/>
+                                    </h:selectOneMenu></h:panelGroup>
+                                <h:panelGroup >
+                                    <h:inputText  value="#{validadorDireccionBean.nivelValorBm}"  
+                                                  id="tipoDireccionBMHhppvaldirnew" style="width: 100%; margin-right: 10px;" maxlength="250"  />
+                                </h:panelGroup>              
+                                <h:panelGroup >
+                                    <h:commandButton 
+                                        title="Construir Direcci&oacute;n"  value="Construir" styleClass="btn"
+                                        action="#{validadorDireccionBean.construirDireccionBm()}" 
+                                        id="agregarInfoBMButtonHhppvaldirnew" />
+                                </h:panelGroup>
+                                <h:panelGroup > </h:panelGroup>                        
+                                <h:panelGroup ></h:panelGroup>
+                            </h:panelGrid>                           
+
+                        </h:panelGroup>
+                        <h:panelGroup id="itPanelHhppvaldirnew" rendered="#{validadorDireccionBean.showITPanel}">                            
+                            <h:panelGrid columns="1" >
+
+                                <h:panelGroup id="recuperaDirIT">
+                                    <h:panelGroup  >
+                                        <h:panelGrid columns="6" >
+                                            <h:panelGroup> 
+                                                <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="itHhppvaldirnew" value="*"/> 
+                                                <h:outputText id="addInfoItHhppvaldirnew" value="Ingrese uno a uno los valores:" />
+                                            </h:panelGroup>
+                                            <h:panelGroup>
+                                                <h:selectOneMenu  style="width: 100%"  id="tipoDireccionITComboBoxHhppvaldirnew"  
+                                                                  value="#{validadorDireccionBean.tipoNivelIt}">
+                                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                                    <f:selectItems value="#{validadorDireccionBean.itList}" 
+                                                                   var="intraducible"  itemValue="#{intraducible.idParametro}" 
+                                                                   itemLabel="#{intraducible.descripcion}"/>
+                                                </h:selectOneMenu>
+                                            </h:panelGroup>
+                                            <h:panelGroup><h:inputText value="#{validadorDireccionBean.nivelValorIt}"  id="tipoDireccionItHhppvaldirnew" 
+                                                                        style="width: 100%;margin-right: 10px;" maxlength="250"  /></h:panelGroup>              
+                                            <h:panelGroup><h:commandButton  title="Construir Direcci&oacute;n" styleClass="btn" 
+                                                                             value="Construir" action="#{validadorDireccionBean.construirDireccionIt()}"
+                                                                             id="agregarInfoItButtonHhppvaldirnew"  /></h:panelGroup>
+                                            <h:panelGroup></h:panelGroup>
+                                            <h:panelGroup></h:panelGroup>
+                                        </h:panelGrid>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                            </h:panelGrid>
+
+                        </h:panelGroup>
+                        <h:panelGroup id="itCompApartvaldirnew" rendered="#{validadorDireccionBean.showApartComp}">
+                            <h:panelGrid columns="8" >
+                                <h:panelGroup>  <h:outputText style="font-weight:bold" id="complementoLabelvaldirnew" value="Complemento:" />  
+                                </h:panelGroup>   
+                                <h:panelGroup>  <h:selectOneMenu 
+                                        style="width: 90%"  id="tipoComplementoComboBoxvaldirnew" 
+                                        value="#{validadorDireccionBean.tipoNivelComplemento}">
+                                        <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                        <f:selectItems value="#{validadorDireccionBean.complementoList}" 
+                                                       var="complemento"  itemValue="#{complemento.idParametro}" 
+                                                       itemLabel="#{complemento.descripcion}"/>
+                                    </h:selectOneMenu> 
+                                </h:panelGroup> 
+                                <h:panelGroup>  
+                                    <h:inputText maxlength="50" style="margin-right: 10px;width: 62%" 
+                                                 id="complementoParametrovaldirnew" value="#{validadorDireccionBean.complemento}" /> 
+                                </h:panelGroup> 
+                                <h:panelGroup>  <h:commandButton 
+                                        title="Construir Direcci&oacute;n"
+                                        action="#{validadorDireccionBean.construirDireccionComplemento()}"
+                                        id="agregarComplementoButtonvaldirnew" styleClass="btn" value="Guardar"> 
+                                        <f:ajax event="change" execute="@this" />
+                                    </h:commandButton> 
+                                </h:panelGroup> 
+                                <h:panelGroup> 
+                                    <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="apartvaldirnew" value="*"/>
+                                    <h:outputText style="font-weight:bold" id="apartamentoLabelvaldirnew" value="Apartamento:" /> 
+                                </h:panelGroup> 
+                                <h:panelGroup> 
+                                    <h:selectOneMenu  
+                                        style="width: 90%"  id="tipoApartamentoComboBoxvaldirnew" 
+                                        value="#{validadorDireccionBean.tipoNivelApartamento}">
+                                        <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                        <f:selectItems value="#{validadorDireccionBean.aptoList}" 
+                                                       var="apartamento"  itemValue="#{apartamento.idParametro}"
+                                                       itemLabel="#{apartamento.descripcion}"/>
+                                    </h:selectOneMenu>
+                                </h:panelGroup> 
+                                <h:panelGroup> 
+                                    <h:inputText 
+                                        maxlength="10" style="margin-right: 10px;width: 62%" id="apartamentoParametrovaldirnew" 
+                                        value="#{validadorDireccionBean.apartamento}" /> 
+                                </h:panelGroup> 
+                                <h:panelGroup> 
+                                    <h:commandButton 
+                                        title="Construir Direcci&oacute;n"  
+                                        action="#{validadorDireccionBean.construirDireccionApartamento()}"
+                                        id="agregarApartamentoButtonvaldirnew" styleClass="btn" value="Guardar"/> 
+                                </h:panelGroup> 
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </h:panelGroup>
+                    <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;" id="direccionStrLabelHhppvaldirnew" 
+                                  value="#{validadorDireccionBean.direccionLabel}" /> 
+                    <h:outputText escape="false" id="espaciobarrio2valdirnew" value="#{validadorDireccionBean.espacio}" />  
+                    <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;" id="barrioStrHhppvaldirnew" 
+                                  value="#{validadorDireccionBean.barrioSugeridoStr}" />  
+                    <h:panelGrid columns="3">
+                        <h:commandButton  
+                            action="#{validadorDireccionBean.validar()}" 
+                            disabled="#{validadorDireccionBean.deshabilitarValidar}"
+                            id="validarDireccionButtonHhppvaldirnew" value="Validar Direcci&oacute;n" 
+                            styleClass="btn" > 
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    />
+                        </h:commandButton>
+                        <h:commandButton action="#{validadorDireccionBean.limpiarCamposTipoDireccion()}" 
+                                         id="btnborrarHhppvaldirnew" value="Limpiar" 
+                                         styleClass="btn" > 
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    />
+                        </h:commandButton>  
+                        <h:commandButton action="#{validadorDireccionBean.ocultar()}" 
+                                         id="btnVolverHhppvaldirnew" value="Cerrar" 
+                                         styleClass="btn" > 
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    />
+                        </h:commandButton>  
+                    </h:panelGrid>
+                </h:panelGrid>
+            </fieldset>
+        </div>
+    </h:panelGroup>        
+</ui:composition>

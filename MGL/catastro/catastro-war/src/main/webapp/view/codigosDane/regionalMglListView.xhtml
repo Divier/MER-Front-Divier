@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml" >
+    <ui:define name="title"><span class="TituloSeccion">Administrador Regionales</span></ui:define>
+    <ui:define name="message"><span class="error"> #{regionalMglBean.message}</span></ui:define>
+    <ui:define name="content">
+        
+        <script language="javascript" type="text/javascript">
+            function submitByEnter(e) {
+                if (e.keyCode === 13) {
+                    return false;
+                } else
+                    return true;
+            }
+
+        </script>
+        
+          <h:panelGroup id="tblConsulta">
+            <div class="tableContent" >
+                <fieldset>
+                    <legend>ADMINISTRACIÓN REGIONALES</legend>
+                    <br></br>
+
+
+                    <h:dataTable id="regionalMglTable"  binding="#{regionalMglBean.dataTable}" 
+                                 value="#{regionalMglBean.regionalMglList}" var="regionalMgl"
+                                 rows="15"  style="width: 100%;"  styleClass="constructGTable"
+                                 headerClass="constructGTableHeader" 
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow" >
+
+                        <h:column >   
+                            <f:facet name="header">
+                                <h:outputText value="" />
+                            </f:facet>
+                            <h:commandLink value="Ir" action="#{regionalMglBean.goActualizar()}" disabled="#{!regionalMglBean.validarOpcionIr()}">
+                                <f:setPropertyActionListener target="#{regionalMglBean.idSqlSelected}" 
+                                                             value="#{regionalMgl.regionalRrId}" />                                    
+                            </h:commandLink>
+                        </h:column>
+
+                        <h:column>
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Regional Id"/><BR/>
+                                    <h:inputText maxlength="30" id="regionalId" style="width: 50px" 
+                                                 value="#{regionalMglBean.cmtFiltroConsultaRegionalDto.idRegional}"
+                                                 onkeypress="return submitByEnter(event);">
+                                        <f:ajax listener="#{regionalMglBean.findByFiltro}" 
+                                                event="change" execute="@this" render="regionalMglTable"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{regionalMgl.regionalRrId}"/>
+                            </div>
+                        </h:column>
+
+                        <h:column>
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre Regional"/><BR/>
+                                    <h:inputText maxlength="30" id="nombreId" 
+                                                 style="width: 50px" 
+                                                 onkeypress="return submitByEnter(event);"
+                                                 value="#{regionalMglBean.cmtFiltroConsultaRegionalDto.nombreRegional}">
+                                        <f:ajax listener="#{regionalMglBean.findByFiltro}" 
+                                                event="change" execute="@this" render="regionalMglTable"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{regionalMgl.nombreRegional}"/>
+                            </div>  
+                        </h:column>
+
+                        <h:column>
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Código Regional"/><BR/>
+                                    <h:inputText  maxlength="30" id="codigoId" 
+                                                  style="width: 50px"
+                                                  onkeypress="return submitByEnter(event);"
+                                                  value="#{regionalMglBean.cmtFiltroConsultaRegionalDto.codigoRegional}">
+                                        <f:ajax listener="#{regionalMglBean.findByFiltro}"
+                                                event="change" execute="@this" render="regionalMglTable"/> 
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{regionalMgl.codigoRr}"/>
+                            </div>
+                        </h:column> 
+
+
+                        <f:facet name="footer" >
+                            <div class="pagination2">
+                                <h:panelGroup>
+                                    <h:commandButton value= ""  action="#{regionalMglBean.pageFirst}" class="botonTPagInicioCm botonBaselista"/>
+                                    <h:commandButton  value= "" action="#{regionalMglBean.pagePrevious}" class="botonTPagAnteriorCm botonBaselista"/>
+                                    <h:commandButton value="#{regionalMglBean.pageActual}" />
+                                    <h:selectOneMenu  value="#{regionalMglBean.numPagina}" 
+                                                      styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                        <f:selectItems value="#{regionalMglBean.paginaList}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>    
+                                        <f:ajax render="regionalMglTable"  event="change"  listener="#{regionalMglBean.irPagina()}"  execute="@this" />                                         
+                                    </h:selectOneMenu>  
+                                    <h:commandButton  value= "" action="#{regionalMglBean.pageNext}" class="botonTPagSiguienteCm botonBaselista"/>
+                                    <h:commandButton  value= "" action="#{regionalMglBean.pageLast}" class="botonTPagFinCm botonBaselista"/>
+                                </h:panelGroup>
+                            </div>
+                        </f:facet>        
+                    </h:dataTable>    
+                </fieldset>   
+            </div>
+            <div id="classNew">
+                <h:panelGrid columns="1">
+                    <h:commandButton value="Nuevo" action="#{regionalMglBean.nuevoRegionalMgl()}" 
+                                     disabled="#{!regionalMglBean.validarOpcionNuevo()}" styleClass="btn">
+                    </h:commandButton>
+                </h:panelGrid> 
+            </div>
+        </h:panelGroup>     
+    </ui:define>
+</ui:composition>
+

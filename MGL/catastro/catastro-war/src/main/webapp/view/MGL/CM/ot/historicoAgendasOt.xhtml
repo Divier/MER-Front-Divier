@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes">
+<ui:composition  template="/view/MGL/template/otTemplate.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>
+    <ui:define name="content">
+
+        <h:panelGroup id="visualizacionAgendasHistoricos" rendered="#{!cmtHistoricoAgendasOtMglBean.showLogEstado}">                
+            <div class="tableContent" >
+                <h:dataTable value="#{cmtHistoricoAgendasOtMglBean.agendas}"
+                             var="agenda"  
+                             styleClass="constructGTable" rows="10"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+
+                    <h:column>
+                        <f:facet name="header">Fecha de Agenda</f:facet>
+                        <h:outputText value="#{agenda.fechaAgenda}" />
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">Fecha de Reagenda</f:facet>
+                        <h:outputText value="#{agenda.fechaReagenda}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Franja Agenda</f:facet>
+                        <h:outputText style="text-align: center;" value="#{agenda.timeSlot}" />
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">Hora Agenda</f:facet>
+                        <h:outputText value="#{agenda.horaInicio}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Razón Actividad</f:facet>
+                        <h:outputText value="#{agenda.basicaIdrazones.nombreBasica}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">No. Orden en WFC</f:facet>
+                        <h:outputText value="#{agenda.ofpsOtId}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">No. Actividad</f:facet>
+                        <h:outputText value="#{agenda.workForceId}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha Inicio Visita</f:facet>
+                        <h:outputText value="#{agenda.fechaInivioVt}">
+                            <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Técnico Asignado</f:facet>
+                        <h:outputText value="#{agenda.nombreTecnico}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha Fin Visita</f:facet>
+                        <h:outputText value="#{agenda.fechaFinVt}">
+                            <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Estado Agenda</f:facet>
+                        <h:outputText value="#{agenda.basicaIdEstadoAgenda.nombreBasica}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Observaciones Técnico</f:facet>
+                        <h:outputText value="#{agenda.observacionesTecnico}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">ID OT RR</f:facet>
+                        <h:outputText value="#{agenda.idOtenrr}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Estado Ot Al Agendar</f:facet>
+                        <h:outputText value="#{agenda.basicaIdEstadoOt.nombreBasica}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Documentos Adjuntos</f:facet>
+
+                        <ui:repeat id="docAdjuntos" var="doc" value="#{cmtHistoricoAgendasOtMglBean.consultaArchivosAge(agenda)}">  
+                            <div style="text-align: left;">
+
+                                <h:outputText escape="false" 
+                                              value="#{cmtHistoricoAgendasOtMglBean.armarUrl(doc)}"/>    
+                            </div>
+                        </ui:repeat>                       
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">Agenda Inmediata</f:facet>
+                        <h:outputText style="text-align: center;" value="#{agenda.agendaInmediata eq 'N' ? 'No' : 'Si'}" />
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">LOG Estados</f:facet>
+                        <h:panelGroup>
+                            <h:commandLink id="lnkEstado"
+                                           value="Estado" title=""
+                                           actionListener="#{cmtHistoricoAgendasOtMglBean.irLogEstadoAgenda(agenda.id)}"
+                                           styleClass="btnLogEstado"/>
+                        </h:panelGroup>
+                    </h:column>
+                    
+                    <f:facet name="footer" >
+                        <h:panelGroup>
+                            <div style="text-align: center;">
+                                <h:commandButton title="Primera Página" value="" action="#{cmtHistoricoAgendasOtMglBean.pageFirst}"
+                                                 class="botonTPagInicioCm botonBaselista"/>
+                                <h:commandButton title="Página Anterior" value="" action="#{cmtHistoricoAgendasOtMglBean.pagePrevious}"
+                                                 class="botonTPagAnteriorCm botonBaselista"/>
+                                <h:commandButton title="Número Páginas" value="#{cmtHistoricoAgendasOtMglBean.pageActual}" styleClass="botonTPagInicio"/>
+                                <h:selectOneMenu id="listTabla" value="#{cmtHistoricoAgendasOtMglBean.numPagina}" 
+                                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{cmtHistoricoAgendasOtMglBean.paginaList}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>
+                                    <f:ajax render="@form" event="change"
+                                            listener="#{cmtHistoricoAgendasOtMglBean.irPagina()}"
+                                            execute="@this" />
+                                </h:selectOneMenu>
+                                <h:commandButton title="Página Siguiente" value="" action="#{cmtHistoricoAgendasOtMglBean.pageNext}"
+                                                 class="botonTPagSiguienteCm botonBaselista"/>
+                                <h:commandButton title="Última Página" value="" action="#{cmtHistoricoAgendasOtMglBean.pageLast}"
+                                                 class="botonTPagFinCm botonBaselista"/>
+                            </div>
+                        </h:panelGroup>
+                    </f:facet>      
+                </h:dataTable>
+            </div>  
+        </h:panelGroup>
+        
+        <h:panelGroup id="vistaNuevaEstado" rendered="#{cmtHistoricoAgendasOtMglBean.showLogEstado}">
+           <h2 style="text-align: center;">HISTÓRICO AGENDAMIENTO POR LOG ESTADOS</h2>
+            <h:panelGroup id="regresarH">
+                <h:commandLink class="flecha" value=" Regresar" style="font-size: 12px"
+                        id="Regresar" immediate="true"
+                        action="#{cmtHistoricoAgendasOtMglBean.regresarHistorico()}"/>
+            </h:panelGroup>
+           <br/>
+           <div id ="contenido">
+                <h:panelGroup id="visualizacionLogEstado">      
+                    <div class="tableConten">
+                     <h:dataTable value="#{cmtHistoricoAgendasOtMglBean.listaAuditorias}"
+                                  var="agendaAud"  
+                                  styleClass="constructGTable" rows="10"
+                                  rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+
+                         <h:column class="center">
+                             <f:facet name="header">Usuario</f:facet>
+                             <h:outputText style="text-align: center;" value="#{agendaAud.usuarioEdicion}" />
+                         </h:column>
+
+                         <h:column class="center">
+                             <f:facet name="header">Fecha y Hora</f:facet>
+                             <h:outputText style="text-align: center;" value="#{agendaAud.fechaEdicion}">
+                                <f:convertDateTime type="both" pattern="dd-MM-yyyy HH:mm:ss a"/>
+                            </h:outputText>
+                         </h:column>
+
+                         <h:column class="center">
+                             <f:facet name="header">Estado</f:facet>
+                             <h:outputText style="text-transform: uppercase; text-align: center;" value="#{agendaAud.basicaIdEstadoAgenda.nombreBasica}" />
+                         </h:column>
+                         
+                        <f:facet name="footer" >
+                        <div class="pagination2">
+                            <h:panelGroup rendered="#{cmtHistoricoAgendasOtMglBean.listaAuditorias.size() gt 0}">
+                                   <div style="text-align: center;">
+                                       <h:commandButton title="Primera Página" action="#{cmtHistoricoAgendasOtMglBean.paginaPrimera()}"
+                                                        class="botonTPagInicioCm botonBaselista"/>
+                                    <h:commandButton title="Página Anterior" value="" action="#{cmtHistoricoAgendasOtMglBean.paginaAnterior()}"
+                                                     class="botonTPagAnteriorCm botonBaselista"/>
+                                    <h:commandButton title="Número Páginas" value="#{cmtHistoricoAgendasOtMglBean.getPaginaActual()}" styleClass="botonTPagInicio"/>
+                                    <h:selectOneMenu id="listTabla" value="#{cmtHistoricoAgendasOtMglBean.numeroPagina}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{cmtHistoricoAgendasOtMglBean.paginaLista}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>
+                                    <f:ajax render="@form" event="change"
+                                            listener="#{cmtHistoricoAgendasOtMglBean.irPage()}"
+                                            execute="@this"/>
+                                    </h:selectOneMenu>
+                                    <h:commandButton title="Página Siguiente" value="" action="#{cmtHistoricoAgendasOtMglBean.paginaSiguiente}"
+                                                     class="botonTPagSiguienteCm botonBaselista"/>
+                                    <h:commandButton title="Última Página" value="" action="#{cmtHistoricoAgendasOtMglBean.paginaUltima}"
+                                                     class="botonTPagFinCm botonBaselista"/>
+                            </div>
+                            </h:panelGroup>
+                            </div>
+                        </f:facet> 
+                     </h:dataTable>
+                    </div>  
+                </h:panelGroup>
+           </div>
+        </h:panelGroup>
+        
+    </ui:define>
+</ui:composition>
+</html>

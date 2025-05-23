@@ -1,0 +1,466 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+    <ui:composition template="/view/template/home.xhtml">
+        <ui:define name="title"><span class="TituloSeccion">Validación de Direcciones Online</span></ui:define>
+        <ui:define name="message"><span class="error">#{validarDirUnoAUnoMBean.message}</span></ui:define> 
+        <ui:define name="content">
+            <f:view>
+                
+             
+                <script type="text/javascript">          
+                function NewWindow(){
+                document.getElementById("formulario:panelPopup").style.display='none'; 
+                document.getElementById("formulario:procesar").style.display='none';
+                var showOk=document.getElementById("formulario:procesar").value;
+
+                if(showOk == 'false'){
+                document.getElementById("formulario:confirmar").style.display='none';
+                return " ";
+                }else{
+                if (!confirm("¿Desea guardar esta dirección en el repositorio? Por favor de click en Confirmar.")){
+                //no
+                document.getElementById("formulario:confirmar").style.display='none'; 
+                return " ";
+                }else{
+                document.getElementById("formulario:confirmar").style.display='block'; 
+                document.getElementById("formulario:nueva").style.display = 'none';
+                                document.getElementById("formulario:antigua").style.display = 'none';
+                                document.getElementById("formulario:siRevisar").style.display = 'none';
+                                document.getElementById("formulario:noRevisar").style.display = 'none';
+                                document.getElementById("formulario:siConfirmar").style.display = 'none';
+                                document.getElementById("formulario:noConfirmar").style.display = 'none';
+                                return " ";
+                            }
+                        }
+                    }
+                </script>
+
+                <h:form id="formulario">
+                    <f:view>
+                        <script>document.getElementById("formulario:showPopUp").style.display='none'; </script>
+                    </f:view>
+                    <h:panelGroup id="principal">
+                        <div class="elemento">            
+                            <h:panelGrid id="tipoConsultaId" columns="3">
+                                <h:outputLabel value="Tipo de Consulta: " styleClass="EtiquetaConsulta"/>                  
+                                <h:selectOneMenu id="lstTipoConsulta" value="#{validarDirUnoAUnoMBean.dir_tipoConsulta}" styleClass="ListaConsulta" required="true">
+                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.vacio}" />
+                                    <f:selectItem itemValue="S" itemLabel="SENCILLA" />
+                                    <f:selectItem itemValue="C" itemLabel="COMPLETA" />
+                                </h:selectOneMenu>
+                                <h:commandButton value="Enviar" id="enviar" actionListener="#{validarDirUnoAUnoMBean.doEnviar}" styleClass="buttonl" style="color:#FFFFFF;"></h:commandButton>
+                            </h:panelGrid>
+                            <h:panelGrid id="panelPrincipal" rendered="false" >
+                                <rich:panel styleClass="PanelConsulta">
+                                    <h:panelGrid id="panelPais" styleClass="PanelConsulta">
+                                        <a4j:outputPanel id="paisId"  styleClass="PanelAjax">
+                                            <div class="EtiquetaConsulta etiqueta">Pais:</div>
+                                            <div class="elemento">
+                                                <h:selectOneMenu id="lstpaises" value="#{validarDirUnoAUnoMBean.dir_pais}" 
+                                                                 styleClass="ListaConsulta"
+                                                                 valueChangeListener="#{validarDirUnoAUnoMBean.updateRegionales}">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.vacio}" />
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listPaises}"/>
+                                                    <a4j:ajax event="change" render="regionalId" execute="@this" />
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </a4j:outputPanel>
+
+                                        <a4j:outputPanel id="regionalId" styleClass="PanelAjax">
+                                            <div class="EtiquetaConsulta etiqueta">Departamento:</div>
+                                            <div class="elemento">
+                                                <h:selectOneMenu id="lstdeptos" value="#{validarDirUnoAUnoMBean.dir_regional}" 
+                                                                 styleClass="ListaConsulta"
+                                                                 valueChangeListener="#{validarDirUnoAUnoMBean.updateCiudades}">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.vacio}" />
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listRegionales}"/>
+                                                    <a4j:ajax event="change" render="ciudadId" execute="@this" />	
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </a4j:outputPanel>
+
+
+                                        <a4j:outputPanel id="ciudadId" styleClass="PanelAjax">
+                                            <div class="EtiquetaConsulta etiqueta">Ciudad:</div>
+                                            <div class="elemento">
+                                                <h:selectOneMenu id="lstciudades" value="#{validarDirUnoAUnoMBean.dir_ciudad}"
+                                                                 styleClass="ListaConsulta"
+                                                                 valueChangeListener="#{validarDirUnoAUnoMBean.updateTipoDireccion}">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.vacio}"/>
+                                                    <f:selectItems id="ssciudades" value="#{validarDirUnoAUnoMBean.listCiudades}"/>
+                                                    <a4j:ajax event="change" render="tipoDireccionId" execute="@this" />
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </a4j:outputPanel>
+
+                                        <a4j:outputPanel id="BarrioId" styleClass="PanelAjax">
+                                            <div class="EtiquetaConsulta etiqueta">Barrio:</div>
+                                            <div class="elemento">
+                                                <h:inputText title="Barrio donde está uicada la dirección. p.e:CHICÓ" 
+                                                             value="#{validarDirUnoAUnoMBean.dir_barrio}" 
+                                                             styleClass="ListaConsulta" maxlength="250"/>
+                                            </div>
+                                        </a4j:outputPanel>
+
+                                        <a4j:outputPanel id="DireccionId" styleClass="PanelAjax">
+                                            <div class="EtiquetaConsulta etiqueta">Dirección:</div>
+                                            <div class="elemento">
+                                                <h:inputText title="Dirección que desea buscar." onblur="ValidarCampoDireccion()" id="DireccionaValidar"
+                                                             value="#{validarDirUnoAUnoMBean.dir_ingresadaTexto}" 
+                                                             styleClass="TextoConsulta" maxlength="200"/>
+                                            </div>
+                                        </a4j:outputPanel>
+                                        <script>
+                                        function ValidarCampoDireccion()
+                                        {
+                                        var str= document.getElementById("formulario:DireccionaValidar").value; 
+                                        if(((str.split("#").length - 1)==1) || (!str) || (str =="") )
+                                        {
+                                        var n="";
+                                        document.getElementById("formulario:validar").disabled = false;
+                                        }
+                                        else
+                                        {
+                                        var n="Error, El simbolo # es requerido entre Principal y Originadora. Ej. Cl 1 # 2-03.";
+                                        document.getElementById("formulario:validar").disabled = true;  
+                                        }
+                                        document.getElementById("formulario:ErrorDireccion").innerHTML=n;
+                                        }
+                                        </script>
+                                    </h:panelGrid>
+                                </rich:panel>
+                                <div><h:outputLabel id="ErrorDireccion" value="" styleClass="error"/></div>
+
+                                <h:panelGroup id="tipoDireccionId" styleClass="PanelConsulta" >
+
+
+                                    <h:panelGrid id="TipoBogota" columns="1" styleClass="panelInfo" rendered="#{validarDirUnoAUnoMBean.showTipoBogota}">
+                                        <h:panelGrid id="direccion" columns="2">
+                                            <div class="EtiquetaConsulta">Calle o Carrera:</div>
+                                            <h:panelGrid id="calleBogota" columns="9">
+                                                <h:selectOneMenu id="lstcalles" value="#{validarDirUnoAUnoMBean.son_tcalle}" styleClass="ListaTipoCalle">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems id="calles" value="#{validarDirUnoAUnoMBean.listTCalles}"/>
+                                                </h:selectOneMenu>
+                                                <h:inputText id="dirNoEstandarId" title="Número de la Calle ó Carrera" value="#{validarDirUnoAUnoMBean.son_calle}" styleClass="CampoNumerico"/>
+                                                <h:selectOneMenu id="lstletrasc" value="#{validarDirUnoAUnoMBean.son_letraCalle}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems id="letrasc" value="#{validarDirUnoAUnoMBean.listLetras}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:selectOneMenu id="lstprefisc" value="#{validarDirUnoAUnoMBean.son_prefijoCalle}" styleClass="ListaBis">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems id="prefijosc" value="#{validarDirUnoAUnoMBean.listPrefijos}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:selectOneMenu id="lstletrascl" value="#{validarDirUnoAUnoMBean.son_letraCalles}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listLetras}"/>
+                                                </h:selectOneMenu>
+                                                <h:selectOneMenu id="lstcardic" value="#{validarDirUnoAUnoMBean.son_cardinalCalle}" styleClass="ListaCardinalidad">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems id="cardinalesc" value="#{validarDirUnoAUnoMBean.listCardinales}"/>
+                                                </h:selectOneMenu>
+                                            </h:panelGrid>
+                                            <div class="EtiquetaConsulta">Placa:</div>
+                                            <h:panelGrid id="placaBogota" columns="11">
+                                                <h:inputText title="Primer número de la placa" value="#{validarDirUnoAUnoMBean.son_placa1}" styleClass="CampoNumerico"
+                                                             />
+                                                <h:selectOneMenu id="lstletrasp" value="#{validarDirUnoAUnoMBean.son_letraPlaca}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems id="letrasp" value="#{validarDirUnoAUnoMBean.listLetras}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:selectOneMenu id="lstprefisp" value="#{validarDirUnoAUnoMBean.son_prefijoPlaca}" styleClass="ListaBis">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems id="prefijosp" value="#{validarDirUnoAUnoMBean.listPrefijos}"/>
+                                                </h:selectOneMenu>
+                                                <h:selectOneMenu id="lstletrasc4" value="#{validarDirUnoAUnoMBean.son_letraCalle4}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems id="letrasc4" value="#{validarDirUnoAUnoMBean.listLetras}"/>
+                                                </h:selectOneMenu>
+                                                <h:outputText value="-"/>
+                                                <h:inputText title="Segundo número de la placa" value="#{validarDirUnoAUnoMBean.son_placa2}" styleClass="CampoNumerico"/>
+                                                <h:selectOneMenu id="lstcardip2" value="#{validarDirUnoAUnoMBean.son_cardinalPlaca2}" styleClass="ListaCardinalidad">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems id="cardinalesp2" value="#{validarDirUnoAUnoMBean.listCardinales}"/>
+                                                </h:selectOneMenu>
+                                            </h:panelGrid>
+                                            <div class="EtiquetaConsulta">Complemento:</div>
+                                            <h:panelGrid id="complementoBogota" columns="3" style="text-align: left;">
+                                                <h:inputText id="compl" title="Torre/Interior/Edificio p.e:Torre 10" value="#{validarDirUnoAUnoMBean.son_complemento}" styleClass="Complemento"></h:inputText>
+                                                <h:outputLabel value="Apto" styleClass="TextoNegrilla"/>
+                                                <h:inputText title="Número de apartamento. p.e:201" value="#{validarDirUnoAUnoMBean.son_apto}" styleClass="CampoApto" />  
+                                            </h:panelGrid>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+
+
+                                    <h:panelGrid id="TipoMedellin" columns="1" rendered="#{validarDirUnoAUnoMBean.showTipoMedellin}">
+                                        <h:panelGrid columns="2">
+                                            <div class="EtiquetaConsulta">Calle ó Carrera:</div>
+
+                                            <h:panelGrid id="calleMedellin" columns="9">
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_tcalle}" styleClass="ListaTipoCalle">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listTCalles}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:inputText title="Número de la Calle ó Carrera" value="#{validarDirUnoAUnoMBean.son_calle}" styleClass="CampoNumerico"/>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_letraCalle}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listLetras}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_letraCalle2}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listLetras}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_cardinalCalle}" styleClass="ListaCardinalidad">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listCardinales}"/>
+                                                </h:selectOneMenu>
+                                            </h:panelGrid>
+                                            <div class="EtiquetaConsulta">Placa:</div>
+                                            <h:panelGrid id="placaMedellin" columns="5">
+
+                                                <h:inputText title="Primer número de la placa" value="#{validarDirUnoAUnoMBean.son_placa1}" styleClass="CampoNumerico"/>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_letraPlaca}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listLetras}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_letraCalle3}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listLetras}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:outputText value="-" />
+                                                <h:inputText title="Segundo número de la placa" value="#{validarDirUnoAUnoMBean.son_placa2}" styleClass="CampoNumerico"/>
+                                            </h:panelGrid>
+                                            <div class="EtiquetaConsulta">Complemento:</div>
+                                            <h:panelGrid id="complementoMedellin" columns="3" style="text-align: left;">
+                                                <h:inputText title="Torre/Interior/Edificio p.e:torre 10" value="#{validarDirUnoAUnoMBean.son_complemento}" styleClass="Complemento"></h:inputText>
+                                                <h:outputLabel value="Apto" styleClass="TextoNegrilla"/>
+                                                <h:inputText title="Número de apartamento. p.e:201" value="#{validarDirUnoAUnoMBean.son_apto}" styleClass="CampoNumerico" />  
+                                            </h:panelGrid>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+
+                                    <h:panelGrid id="TipoCali" columns="2" rendered="#{validarDirUnoAUnoMBean.showTipoCali}">
+                                        <h:panelGrid columns="2">
+                                            <div class="EtiquetaConsulta">Calle ó Carrera:</div>
+                                            <h:panelGrid id="calleCali" columns="9">
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_tcalle}" styleClass="ListaTipoCalle">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listTCalles}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:inputText value="#{validarDirUnoAUnoMBean.son_calle}" styleClass="CampoNumerico"/>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_letraCalle}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listLetrasyNumeros}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_prefijoCalle}" styleClass="ListaBis">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listPrefijos}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_letraCalles}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listLetras}"/>
+                                                </h:selectOneMenu>
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_cardinalCalle}" styleClass="ListaCardinalidad">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listCardinales}"/>
+                                                </h:selectOneMenu>
+                                            </h:panelGrid>
+                                            <div class="EtiquetaConsulta">Placa:</div>
+                                            <h:panelGrid id="placaCali" columns="11">
+
+                                                <h:inputText title="Primer número de la placa" value="#{validarDirUnoAUnoMBean.son_placa1}" styleClass="CampoNumerico"/>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_letraPlaca}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listLetrasyNumeros}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_prefijoPlaca}" styleClass="ListaBis">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listPrefijos}"/>
+                                                </h:selectOneMenu>
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_letraCalle4}" styleClass="ListaLetraNumero">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listLetras}"/>
+                                                </h:selectOneMenu>
+
+                                                <h:outputText value="-" styleClass="TextoNegrilla"></h:outputText>
+
+                                                <h:inputText title="Segundo número de la placa" value="#{validarDirUnoAUnoMBean.son_placa2}" styleClass="CampoNumerico"></h:inputText>
+
+                                                <h:selectOneMenu value="#{validarDirUnoAUnoMBean.son_cardinalPlaca2}" styleClass="ListaCardinalidad">
+                                                    <f:selectItem itemValue="0" itemLabel="#{validarDirUnoAUnoMBean.seleccionar}"/>
+                                                    <f:selectItems value="#{validarDirUnoAUnoMBean.listCardinales}"/>
+                                                </h:selectOneMenu>
+                                            </h:panelGrid>
+                                            <div class="EtiquetaConsulta">Complemento:</div>
+                                            <h:panelGrid id="complementoCali" columns="3" style="text-align: left;">
+                                                <h:inputText title="Torre/Interior/Edificio p.e:torre 10" value="#{validarDirUnoAUnoMBean.son_complemento}" styleClass="Complemento"></h:inputText>
+                                                <h:outputLabel value="Apto" styleClass="TextoNegrilla"/>
+                                                <h:inputText title="Número de apartamento. p.e:201" value="#{validarDirUnoAUnoMBean.son_apto}" styleClass="CampoNumerico" />  
+                                            </h:panelGrid>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </h:panelGroup>  
+                                <h:panelGrid style="text-align: center" columns="2" >
+                                    <h:commandButton value="Consultar" id="validar" actionListener="#{validarDirUnoAUnoMBean.doValidar}" styleClass="buttonl" style="color:#FFFFFF;"></h:commandButton>
+                                    <h:commandButton value="Limpiar" id="limpiar" actionListener="#{validarDirUnoAUnoMBean.doLimpiar}" styleClass="buttonl" style="color:#FFFFFF;"></h:commandButton>
+                                </h:panelGrid>
+                            </h:panelGrid>            
+                        </div>
+                        <div class="elemento" style="padding-left:20px;">
+                            <h:panelGrid id="respuestaSencilla" rendered="false">
+                                    <h:panelGrid id="rtaSencillaA" styleClass="panelInfo" columns="2" style="text-align: center">
+                                        <h:outputLabel value="Dirección Estandar: " styleClass="EtiquetaConsulta"/>
+                                        <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_estandar}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_estandar_css}" style="width:100%;" disabled="true"/>
+                                        <h:outputLabel value="Actividad económica: " styleClass="EtiquetaConsulta"/>
+                                        <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_actEconomica}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_actEconomica_css}" style="width:100%;" disabled="true"/>
+                                        <h:outputLabel value="Barrio: " styleClass="EtiquetaConsulta"/>
+                                        <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_barrio}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_barrio_css}" style="width:100%;" disabled="true"/>
+                                        <h:outputLabel value="Existencia: " styleClass="EtiquetaConsulta"/>
+                                        <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_existencia}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_existencia_css}" style="width:100%;" disabled="true"/>
+                                        <h:outputLabel value="Dirección Alterna: " styleClass="EtiquetaConsulta"/>
+                                        <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_alterna}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_alterna_css}" style="width:100%;" disabled="true"/>
+                                        <h:outputLabel value="Código de Manzana: " styleClass="EtiquetaConsulta"/>
+                                        <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_manzana}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_manzana_css}" style="width:100%;" disabled="true"/>
+                                        <h:outputLabel value="Nivel Economico: " styleClass="EtiquetaConsulta"/>
+                                        <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_estrato}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_estrato_css}" style="width:100%;" disabled="true"/>
+                                        <h:outputLabel value="Estrato: " styleClass="EtiquetaConsulta"/>
+                                        <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_estratoDef}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_estrato_css}" style="width:100%;" disabled="true"/>
+                                        <h:outputLabel value="Nivel de calidad: " styleClass="EtiquetaConsulta"/>
+                                        <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_nvlCalidad}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_nvlCalidad_css}" style="width:100%;" disabled="true"/>
+                                    </h:panelGrid>
+                            </h:panelGrid>
+
+                            <h:panelGrid id="respuestaCompleta" rendered="false">
+                                <h:panelGrid id="rtaCompletaA" styleClass="panelInfo" columns="2" style="text-align: center">
+                                    <h:outputLabel value="Dirección Estandar: " styleClass="EtiquetaConsulta" />
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_estandar}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_estandar_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Barrio: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_barrio}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_barrio_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Nivel Economico: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_estrato}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_estrato_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Estrato: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_estratoDef}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_estrato_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Actividad económica: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_actEconomica}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_actEconomica_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Código de Manzana: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_manzana}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_manzana_css}" style="width:100%;" disabled="true"/>
+                                
+                                    <h:outputLabel value="Dirección Alterna: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_alterna}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_alterna_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Calificador: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_calificador}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_calificador_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Existencia: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_existencia}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_existencia_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Nivel de calidad: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_nvlCalidad}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_nvlCalidad_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Nodo Bi: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_nodoUno}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_nodoUno_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Nodo UniUno: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_nodoDos}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_nodoDos_css}" style="width:100%;" disabled="true"/>
+                                    <h:outputLabel value="Nodo UniDos: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputText value="#{validarDirUnoAUnoMBean.dirRta_nodoTres}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_nodoTres_css}" style="width:100%;" disabled="true"/>                                    
+                                    <h:outputLabel value="Recomendaciones: " styleClass="EtiquetaConsulta"/>
+                                    <h:inputTextarea value="#{validarDirUnoAUnoMBean.dirRta_recomendaciones}" styleClass="Texto #{validarDirUnoAUnoMBean.dirRta_recomendaciones_css}" style="width:100%; height: 60px;" disabled="true"/>            
+
+                                <h:panelGrid style="text-align: right;padding-top: 0px;">
+                                    <rich:dataTable var="direccion" value="#{validarDirUnoAUnoMBean.direccionesAgregadas}" 
+                                                    styleClass="TablaContenido" 
+                                                    rendered="#{validarDirUnoAUnoMBean.showDireccionesAgregadas}" >
+                                        <f:facet name="header">
+                                            <rich:columnGroup>
+                                                <rich:column styleClass="TablaTitulo"><h:outputLabel value="Direcciones Agregadas" /></rich:column>
+                                            </rich:columnGroup>
+                                        </f:facet>
+                                        <rich:column>
+                                            <h:outputText value="#{direccion.address}" />  
+                                        </rich:column> 
+                                    </rich:dataTable>
+
+                                    <rich:dataTable var="direccionSug" value="#{validarDirUnoAUnoMBean.direccionesSugeridas}" 
+                                                    styleClass="TablaContenido" 
+                                                    rendered="#{validarDirUnoAUnoMBean.showDireccionesSugeridas}" >
+                                        <f:facet name="header">
+                                            <rich:columnGroup>
+                                                <rich:column styleClass="TablaTitulo"><h:outputLabel value="Direcciones Sugeridas" /></rich:column>
+                                            </rich:columnGroup>
+                                        </f:facet>
+                                        <rich:column>
+                                            <h:outputText value="#{direccionSug.address}" />  
+                                        </rich:column> 
+                                    </rich:dataTable>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                            </h:panelGrid>
+                                
+                            <h:commandButton value="Guardar" id="guardar" 
+                                             actionListener="#{validarDirUnoAUnoMBean.doValidarAccion}" 
+                                             styleClass="buttonl" style="color:#FFFFFF;"
+                                             rendered="#{validarDirUnoAUnoMBean.mostrarGuardar}">
+                            </h:commandButton>
+
+                            <!--Pop up Decision -->
+                            <h:panelGrid id="showBotonesDecision" rendered="#{validarDirUnoAUnoMBean.showPanelDecision}" columns="3">
+                                <h:outputLabel value="#{validarDirUnoAUnoMBean.mensajeUsuario}" styleClass="Confirmacion"></h:outputLabel>
+                                <h:commandButton id="nueva" value="Nueva" styleClass="buttonl" style="color:#FFFFFF;"
+                                                 actionListener="#{validarDirUnoAUnoMBean.doGuardarDireccionNueva}"></h:commandButton>
+                                <h:commandButton id="antigua" value="Antigua" styleClass="buttonl" style="color:#FFFFFF;"
+                                                 actionListener="#{validarDirUnoAUnoMBean.doGuardarDireccionAntigua}"></h:commandButton>
+                            </h:panelGrid>
+
+                            <!-- Pop up Revisar -->
+                            <h:panelGrid id="showBotonesRevisarEnCampo" rendered="#{validarDirUnoAUnoMBean.showPanelRevisarEnCampo}" columns="3">
+                                <h:outputLabel value="#{validarDirUnoAUnoMBean.mensajeUsuario}" styleClass="Confirmacion"></h:outputLabel>
+                                <h:commandButton id="siRevisar" value="Si" styleClass="buttonl" style="color:#FFFFFF;"
+                                                 actionListener="#{validarDirUnoAUnoMBean.doGuardarDireccionRevisarEnCampo}"></h:commandButton>
+                                <h:commandButton id="noRevisar" value="No" actionListener="#{validarDirUnoAUnoMBean.doCancelar}" styleClass="buttonl" style="color:#FFFFFF;"></h:commandButton> 
+                            </h:panelGrid>
+
+                            <!-- PopUp Confirmar -->
+                            <h:panelGrid id="showBotonesConfirmar" rendered="#{validarDirUnoAUnoMBean.showPanelConfirmar}" columns="3">
+                                <h:outputLabel value="#{validarDirUnoAUnoMBean.mensajeUsuario}" styleClass="Confirmacion"></h:outputLabel>
+                                <h:commandButton id="siConfirmar" value="Si" styleClass="buttonl" style="color:#FFFFFF;"
+                                                 actionListener="#{validarDirUnoAUnoMBean.doGuardarDireccionRevisarEnCampo}"></h:commandButton>
+                                <h:commandButton id="noConfirmar" value="No" actionListener="#{validarDirUnoAUnoMBean.doCancelar}" styleClass="buttonl" style="color:#FFFFFF;"></h:commandButton> 
+                            </h:panelGrid>
+                            <!-- Boton de confirmacion para guardar -->
+                            <h:commandButton id="confirmar" value="Confirmar" styleClass="buttonl" style="color:#FFFFFF;"
+                                             rendered="#{validarDirUnoAUnoMBean.showBotonConfirmar}"
+                                             actionListener="#{validarDirUnoAUnoMBean.doGuardarDireccion}">
+                            </h:commandButton>
+
+                            <h:panelGrid id="panelPopup" rendered="#{validarDirUnoAUnoMBean.showPopUp}">
+                                <h:inputText id="procesar" value="#{validarDirUnoAUnoMBean.showPopUp}"/>
+                                <f:view>
+                                    <script>NewWindow();</script>
+                                </f:view>
+                            </h:panelGrid>
+                        </div>          
+                    </h:panelGroup>        
+                </h:form> 
+            </f:view>
+        </ui:define> 
+    </ui:composition>
+</ui:composition>

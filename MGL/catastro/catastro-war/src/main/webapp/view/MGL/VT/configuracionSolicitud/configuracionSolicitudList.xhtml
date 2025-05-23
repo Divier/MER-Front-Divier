@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >       
+
+    <ui:define name="title"><span class="TituloSeccion">Track Solicitud</span></ui:define>
+
+    <h2>Configuración Solicitudes</h2>
+    <h:panelGrid id="configuracionSolicitudes" columns="2" style="width: 100%">
+        <h:panelGrid id="configuracionSolicitudesInfo" columns="6" style="width: 80%">
+            <h:outputText value="Tipo Grupo Proyecto:" />
+            <h:selectOneMenu style="width: 90%" id="tipoProyectoGeneralComboBox"
+                             value="#{configuracionSolicitudBean.idGrupoProyectoBasica}" >
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="0" />
+                <f:selectItems value="#{configuracionSolicitudBean.grupoProyectoBasicaList}" 
+                               var="proyectoGeneral" itemLabel="#{proyectoGeneral.nombreBasica}" 
+                               itemValue="#{proyectoGeneral.basicaId}"/>
+            </h:selectOneMenu>
+
+            <h:outputText value="Tipo Proyecto Básica:" />
+            <h:selectOneMenu style="width: 90%" id="tipoGrupoProyectoComboBox" 
+                             value="#{configuracionSolicitudBean.idProyectoBasica}" >
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="0" />
+                <f:selectItems value="#{configuracionSolicitudBean.proyectoBasicaList}" 
+                               var="grupoProyecto" itemLabel="#{grupoProyecto.nombreBasica}" 
+                               itemValue="#{grupoProyecto.basicaId}"/>
+            </h:selectOneMenu>               
+
+
+            <h:commandButton id="agregarTipoProyectoButton" action="#{configuracionSolicitudBean.guardarConfiguracion()}" 
+                             value="Agregar" styleClass="btn unblockClaro" />
+
+        </h:panelGrid>                                  
+    </h:panelGrid>
+
+    <h:dataTable id="ConfiguracionSolicitudesTable" 
+                 value="#{configuracionSolicitudBean.configuracionSolicitudList}" 
+                 var="proyecto" rows="10"                         
+                 styleClass="constructGTable" 
+                 rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                 style="width: 100%">
+        <h:column>    
+            <f:facet name="header">
+                <h:outputText value="ID" />
+            </f:facet>
+            <h:outputText value="#{proyecto.grupoProyectoId}"/>
+        </h:column>
+        <h:column>    
+            <f:facet name="header">
+                <h:outputText value="Fecha Creación" />
+            </f:facet>
+            <h:outputText value="#{proyecto.fechaCreacion}"/>
+
+        </h:column>
+        <h:column>    
+            <f:facet name="header">
+                <h:outputText value="ID Grupo Proyecto" />
+            </f:facet>
+            <h:outputText value="#{proyecto.grupoProyectoBasicaId}"/>
+
+        </h:column>
+        <h:column>    
+            <f:facet name="header">
+                <h:outputText value="Nombre Grupo Proyecto" />
+            </f:facet>
+            <h:outputText value="#{proyecto.nombreGrupoProyecto}"/>
+
+        </h:column>
+        <h:column>    
+            <f:facet name="header">
+                <h:outputText value="ID Proyecto Básica" />
+            </f:facet>
+            <h:outputText value="#{proyecto.proyectoBasicaId}"/>
+
+        </h:column>
+        <h:column>    
+            <f:facet name="header">
+                <h:outputText value="Nombre Proyecto Básica" />
+            </f:facet>
+            <h:outputText value="#{proyecto.nombreProyectoBasica}"/>
+
+        </h:column>
+        <h:column headerClass="columnEditar">    
+            <f:facet name="header">
+                <h:outputText value="Editar" />
+            </f:facet>
+            <div style="text-align: center;">
+
+                <h:commandLink title="Editar">
+                    <h:graphicImage value="../../../img/edit.gif" width="20" height="20" />
+                    <f:ajax event="click" execute="@this" 
+                            listener="#{configuracionSolicitudBean.goEditarConfiguracion(proyecto)}" render="@form"/>    
+                </h:commandLink>
+            </div> 
+
+        </h:column>
+        <h:column headerClass="columnEliminar" >    
+            <f:facet name="header">
+                <h:outputText value="Eliminar" />
+            </f:facet>
+            <div style="text-align: center;"> 
+                <h:commandLink action="#{configuracionSolicitudBean.eliminarConfiguracion(proyecto)}" 
+                               title="Eliminar" onclick="return confirm('¿Está seguro que desea Eliminar el registro?');">
+                    <h:graphicImage value="../../../img/eliminar.png" width="20" height="20" />
+
+                </h:commandLink>
+            </div>
+
+        </h:column>
+
+
+        <f:facet name="footer" >
+            <h:panelGroup >
+                <h:commandButton title="Primera Página" value="" action="#{configuracionSolicitudBean.pageFirst}"
+                                 class="botonTPagInicioCm botonBaselista"/>
+                <h:commandButton title="Página Anterior" value="" action="#{configuracionSolicitudBean.pagePrevious}"
+                                 class="botonTPagAnteriorCm botonBaselista"/>
+                <h:commandButton title="Número Páginas" value="#{configuracionSolicitudBean.pageActual}" 
+                                 styleClass="botonTPagInicio"    />
+                <h:selectOneMenu id="listTabla" value="#{configuracionSolicitudBean.numPagina}" 
+                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                    <f:selectItems value="#{configuracionSolicitudBean.paginaList}" var="pag"
+                                   itemValue="#{pag}"
+                                   itemLabel="#{pag}"/>    
+                    <f:ajax render="@form"  event="change"  
+                            listener="#{configuracionSolicitudBean.irPagina()}"  
+                            execute="@this" />                                         
+                </h:selectOneMenu>  
+                <h:commandButton title="Página Siguiente" value="" action="#{configuracionSolicitudBean.pageNext}"
+                                 class="botonTPagSiguienteCm botonBaselista"/>
+                <h:commandButton title="Última Página" value="" action="#{configuracionSolicitudBean.pageLast}"
+                                 class="botonTPagFinCm botonBaselista"/>
+            </h:panelGroup>
+        </f:facet> 
+    </h:dataTable>
+
+</f:view>

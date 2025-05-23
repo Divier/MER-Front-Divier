@@ -1,0 +1,19 @@
+<pcml version="6.0">                                                                       
+   <!-- RPG program: CMCTRFR2  -->                                                         
+   <!-- created: 2019-09-17-13.50.18 -->                                                   
+   <!-- source: TVCSRC/TVPCMLSRC(CMCTRFR2) -->                                             
+   <!-- 139 -->                                                                            
+   <program name="CMCTRFR2" path="/QSYS.LIB/TVCABLEEXE.LIB/CMCTRFR2.PGM">                      
+      <data name="PAEDIF" type="char" length="9" usage="inputoutput" />                    
+      <data name="PNSEQU" type="char" length="4" usage="inputoutput" />                    
+      <data name="POTINI" type="char" length="5" usage="inputoutput" />                    
+      <data name="PASALE" type="char" length="1" usage="inputoutput" />                    
+      <data name="PCML" type="char" length="2" usage="inputoutput" />                      
+      <data name="FUNCION" type="char" length="2" usage="inputoutput" />                   
+      <data name="PUSERID" type="char" length="10" usage="inputoutput" />                  
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />                   
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />                 
+      <data name="TABLARTA" type="char" length="1110" count="80" usage="inputoutput" />    
+      <data name="MENSAJE" type="char" length="63" usage="inputoutput" />                  
+   </program> 
+</pcml>

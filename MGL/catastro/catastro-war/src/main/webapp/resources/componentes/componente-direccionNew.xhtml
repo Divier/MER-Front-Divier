@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <cc:interface componentType="co.com.claro.mgl.mbeans.cm.componente.ControlerDireccionCM">
+        <cc:attribute name="ListdireccionDto" type="java.util.ArrayList" shortDescription="Lista de direcciones" required="true" />
+        <cc:attribute name="direccionDto" type="java.util.ArrayList" shortDescription="entidad de direcciones" required="true" />
+    </cc:interface> 
+
+    <cc:implementation>
+        <f:view id="viewAuditoria">
+            <style type="text/css">
+                .info {
+                    color:blue; 
+                }
+                .warn{
+                    color:yellow; 
+                } 
+                .err{
+                    color:red;
+                }
+            </style>
+            <h:panelGroup>
+                <div id="direccionComponente" style="overflow: scroll;height: 190px;" > 
+                    <table>
+                        <tr>
+                            <td>
+                                <h:selectOneMenu id="tecnologiasList"  value=""
+                                                 style="width: 140px"
+                                                 required="true" >
+                                    <f:selectItem itemValue="1" itemLabel="Crr-Calle" />
+                                      <f:selectItem itemValue="2" itemLabel="Brr-Manz" />
+                                       <f:selectItem itemValue="3" itemLabel="Intraducible" />
+                                                
+                                </h:selectOneMenu>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </h:panelGroup> 
+        </f:view> 
+    </cc:implementation> 
+</html>

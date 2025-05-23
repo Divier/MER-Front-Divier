@@ -1,0 +1,957 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+        xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/view/MGL/template/otTemplateAgendaCcmm.xhtml" >
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>
+    <ui:define name="content">
+        
+        <h:panelGroup id="visualizacionAgendas" rendered="#{cmtAgendamientoMglBean.consulta}">     
+            <div class="tableContent" >
+                <h:dataTable value="#{cmtAgendamientoMglBean.agendas}"
+                             var="agenda"  
+                             styleClass="constructGTable" rows="10"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+
+                    <h:column>
+                        <f:facet name="header">Fecha de Agenda</f:facet>
+                        <h:outputText value="#{agenda.fechaAgenda}" />
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">Fecha de Reagenda</f:facet>
+                        <h:outputText value="#{agenda.fechaReagenda}" />
+                    </h:column>
+                    
+                   <h:column>
+                        <f:facet name="header">Franja Agenda</f:facet>
+                        <h:outputText style="text-align: center;" value="#{agenda.timeSlot}" />
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">Hora Agenda</f:facet>
+                        <h:outputText value="#{agenda.horaInicio}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Razon Actividad</f:facet>
+                        <h:outputText value="#{agenda.basicaIdrazones.nombreBasica}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">No. Orden en WFC</f:facet>
+                        <h:outputText value="#{agenda.ofpsOtId}" />
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">No. Actividad</f:facet>
+                        <h:outputText value="#{agenda.workForceId}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha Inicio Visita</f:facet>
+                        <h:outputText value="#{agenda.fechaInivioVt}">
+                            <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss"/>
+                        </h:outputText>
+                    </h:column>
+                    
+                     <h:column>
+                        <f:facet name="header">Técnico Asignado</f:facet>
+                        <h:outputText value="#{agenda.nombreTecnico}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha Fin Visita</f:facet>
+                        <h:outputText value="#{agenda.fechaFinVt}">
+                            <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Estado Agenda</f:facet>
+                        <h:outputText value="#{agenda.basicaIdEstadoAgenda.nombreBasica}" />
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">Observaciones Tecnico</f:facet>
+                        <h:outputText value="#{agenda.observacionesTecnico}" />
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">ID OT RR</f:facet>
+                        <h:outputText value="#{agenda.idOtenrr}" />
+                    </h:column>
+
+                    <h:column>
+                         <f:facet name="header">Operaciones</f:facet>
+                         <h:panelGrid columns="4">
+                          
+                        <h:commandLink id="lnkReagendar"
+                                       value="" title="Reagendar"
+                                       actionListener="#{cmtAgendamientoMglBean.consultarAgenda(agenda, true)}"
+                                       styleClass="btnIconDeshacer"/>
+                        <h:commandLink id="lnkActualizar"
+                                       value="" title="Actualizar Agenda"
+                                       actionListener="#{cmtAgendamientoMglBean.updateAgendamiento(agenda)}"
+                                       styleClass="btnIconUpdate"/>
+                        <h:commandLink id="lnkCancelar"
+                                       value="" title="Cancelar"
+                                       actionListener="#{cmtAgendamientoMglBean.cancelarAgenda(agenda)}"
+                                       styleClass="btnIconEliminar"/>
+                        <h:commandLink id="lnkReasignar"
+                                       value="" title="Reasignar Tecnico"
+                                       rendered="#{cmtAgendamientoMglBean.tecnicoAnticipado and agenda.identificacionTecnico != null and agenda.tecnicoAnticipado eq 'Y'}"
+                                       actionListener="#{cmtAgendamientoMglBean.reasignarAgenda(agenda)}"
+                                       styleClass="btnIconReasignar"/>
+                         </h:panelGrid>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Documentos Adjuntos</f:facet>
+
+                        <ui:repeat id="docAdjuntos" var="doc" value="#{cmtAgendamientoMglBean.consultaArchivosAge(agenda)}">  
+                            <div style="text-align: left;">
+
+                                <h:outputText escape="false" 
+                                              value="#{cmtAgendamientoMglBean.armarUrl(doc)}"/>    
+                            </div>
+                        </ui:repeat>                       
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Agenda Inmediata</f:facet>
+                        <h:outputText style="text-align: center;" value="#{agenda.agendaInmediata eq 'N' ? 'No' : 'Si'}" />
+                    </h:column>
+
+                     <f:facet name="footer" >
+                         <h:panelGroup>
+                             <div style="text-align: center;">
+                             <h:commandButton title="Primera Página" value="" action="#{cmtAgendamientoMglBean.pageFirst}"
+                                              class="botonTPagInicioCm botonBaselista"/>
+                             <h:commandButton title="Página Anterior" value="" action="#{cmtAgendamientoMglBean.pagePrevious}"
+                                              class="botonTPagAnteriorCm botonBaselista"/>
+                             <h:commandButton title="Número Páginas" value="#{cmtAgendamientoMglBean.pageActual}" styleClass="botonTPagInicio"/>
+                             <h:selectOneMenu id="listTabla" value="#{cmtAgendamientoMglBean.numPagina}" 
+                                              styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                 <f:selectItems value="#{cmtAgendamientoMglBean.paginaList}" var="pag"
+                                                itemValue="#{pag}"
+                                                itemLabel="#{pag}"/>
+                                 <f:ajax render="@form" event="change"
+                                         listener="#{cmtAgendamientoMglBean.irPagina()}"
+                                         execute="@this" />
+                             </h:selectOneMenu>
+                             <h:commandButton title="Página Siguiente" value="" action="#{cmtAgendamientoMglBean.pageNext}"
+                                              class="botonTPagSiguienteCm botonBaselista"/>
+                             <h:commandButton title="Última Página" value="" action="#{cmtAgendamientoMglBean.pageLast}"
+                                              class="botonTPagFinCm botonBaselista"/>
+                              </div>
+                         </h:panelGroup>
+                     </f:facet>      
+                </h:dataTable>
+            </div>
+
+            <h:panelGrid columns="3">
+                <h:commandButton value="Agenda Tradicional"
+                                 title="Consulta la capacidad"
+                                 styleClass="btn"
+                                 action="#{cmtAgendamientoMglBean.consultarAgenda(null, false)}"
+                                 disabled="#{!cmtAgendamientoMglBean.rolCrearAgendaTradicional}">
+                </h:commandButton>
+                <h:commandButton id="idBotonAgendarAnticipado"  
+                                 title="Agendar Tecnico Anticipado" 
+                                 rendered="#{cmtAgendamientoMglBean.tecnicoAnticipado}"
+                                 action="#{cmtAgendamientoMglBean.abrirPanelTecnicos()}"
+                                 class="btn" value="Anticipado"
+                                 disabled="#{!cmtAgendamientoMglBean.rolCrearAgendaAnticipado}">
+                </h:commandButton>
+                 <h:commandButton value="Agenda Inmediata" rendered="#{cmtAgendamientoMglBean.agendaInmediata}"
+                                 title="Abre Panel para agenda inmediata"
+                                 styleClass="btn"
+                                 action="#{cmtAgendamientoMglBean.abrirAgendaInmediaraPreIframe()}"
+                                  disabled="#{!cmtAgendamientoMglBean.rolCrearAgendaInmediata}">
+                </h:commandButton>
+            </h:panelGrid> 
+        </h:panelGroup>
+        
+        <h:panelGroup id="creacionAgendas"  rendered="#{cmtAgendamientoMglBean.capacidad.size() > 0}"> 
+           <h2>CAPACIDAD DE AGENDAMIENTO</h2>
+            <div class="tableContent" >
+                <cc:schedule-component id="scheduleComponent" rendered="#{cmtAgendamientoMglBean.verCapacity}" mglSchedule="#{cmtAgendamientoMglBean.mglScheduleComponetDto}"/>
+            <hr/>
+            </div>
+           
+           <h:panelGroup rendered="#{cmtAgendamientoMglBean.crearAgenda}">
+             <div class="wizard-form">
+                   <br></br>
+                   <br></br>
+                   <h2 style="margin-top: -22px; margin-left: -12px">PREREQUISITOS PARA LA VISITA</h2>
+                   <h:selectManyCheckbox layout="pageDirection"
+                                         id="prerequisitosListCrear" 
+                                         value="#{cmtAgendamientoMglBean.idBasicaPrerequisito}" >                            
+                       <f:selectItems value="#{cmtAgendamientoMglBean.prerequisitosVt}" 
+                                      var="requisito" itemLabel="#{requisito.nombreBasica}" 
+                                      itemValue="#{requisito.basicaId}"/> 
+                   </h:selectManyCheckbox>
+               </div>       
+           
+            <div class="wizard-form">
+                <br></br>
+                <br></br>
+                <h2 style="margin-top: -22px; margin-left: -12px">PERSONA QUE RECIBE LA VISITA</h2>
+                <h:panelGrid  columns="8">
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Nombre:"/>
+                    <h:inputText id="nombrePerRec" style="width: 100%"  
+                                 value="#{cmtAgendamientoMglBean.ot.personaRecVt}"  validatorMessage="El nombre solo permite caracteres alfabeticos y espacios">
+                    <f:validateRegex pattern="([a-zA-ZÑñáéíóúÁÉÍÓÚ]| ){0,200}"/>
+                    </h:inputText>
+                    <h:outputText class="txtLabelsMgl"  value="Documento:" rendered="false"/>
+                    <h:inputText id="docPerRec" styleClass="alinNomCm"   rendered="false" value="#{cmtAgendamientoMglBean.ot.docPerRecVt}"/>
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Telefono:"/>
+                    <h:inputText id="telPerRec" styleClass="alinNomCm"  value="#{cmtAgendamientoMglBean.ot.telPerRecVt}" 
+                                 converterMessage="El telefono es numerico"  
+                                validatorMessage="El telefono debe tener 7 o 10 digitos">
+                        <f:validateLength minimum="7" maximum="10"/>                       
+                        <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                    </h:inputText>
+                 <h:outputText escape="false" class="correoPerRecVisLb" value="#{cmtAgendamientoMglBean.estiloObligatorio} Email:" />
+                 <h:inputText id="correoPerRecVisTxt" value="#{cmtAgendamientoMglBean.ot.emailPerRecVT}" maxlength="100"  validatorMessage="El campo email no tiene el formato requerido">
+                    <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>                
+                </h:inputText>
+                 <h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia" value="Conveniencia: "></h:outputText> 
+                 <h:selectBooleanCheckbox  value="#{cmtAgendamientoMglBean.conveniencia}" id="checkConveniencia"  />
+                </h:panelGrid>   
+            </div>
+          </h:panelGroup>
+           
+           <h:panelGroup rendered="#{cmtAgendamientoMglBean.reagendar}">
+            <div class="wizard-form">
+                <br></br>
+                <br></br>
+                <h2 style="margin-top: -22px; margin-left: -12px">DESCRIPCION REAGENDAMIENTO</h2>
+                <h:panelGrid  columns="10">
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Razon de Reagendamiento:"/>
+                    <h:inputTextarea id="razonReagendamiento" 
+                                     value="#{cmtAgendamientoMglBean.razonReagendamiento}"
+                                     style="margin-left: 5px; width: 100%;"/>
+                    
+                    <h:outputText class="txtLabelsMgl"  value="  "/>
+                    <h:outputText class="txtLabelsMgl"  value="  "/>
+                    
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Comentarios Orden:"/>
+                    <h:inputTextarea id="comentarios"
+                                     value="#{cmtAgendamientoMglBean.comentariosOrden}" 
+                                     style="margin-left: 5px; width: 100%;"/>
+					<h:outputText class="txtLabelsMgl"  value="  "/>
+                    <h:outputText class="txtLabelsMgl"  value="  "/>
+					<h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia6" value="Conveniencia: "/>
+                    <h:selectBooleanCheckbox  value="#{cmtAgendamientoMglBean.conveniencia}" id="checkConveniencia6"  />
+                </h:panelGrid> 
+                <h:panelGrid  columns="2">
+				
+				</h:panelGrid>  
+            </div>
+          </h:panelGroup>  
+            <div class="wizard-form">
+                <h:commandButton value="Regresar"
+                                 id="btnCrearAgenda"
+                                 title="Regresar a la pantalla anterior"
+                                 action="#{cmtAgendamientoMglBean.regresar()}"
+                                 class="btn">
+                </h:commandButton>
+                <h:commandButton id="idBotonAgendar"
+                                 title="Agendar" 
+                                 rendered="#{cmtAgendamientoMglBean.crearAgenda}" 
+                                 action="#{cmtAgendamientoMglBean.crearAgendas(false)}" 
+                                 class="btn" value="Agendar"/>
+                <h:commandButton id="idBotonReagendar"  
+                                 title="Reagendar" 
+                                 rendered="#{cmtAgendamientoMglBean.reagendar}" 
+                                 action="#{cmtAgendamientoMglBean.reagendarOrden()}" 
+                                 class="btn" value="Reagendar"/>
+                  </div>
+        </h:panelGroup>
+        
+        <!--INICIO PANEL REAGENDAR TECNICO ANTICIPADO  -->
+        <h:panelGroup id="reagendarTecnicoAntId"  rendered="#{cmtAgendamientoMglBean.reagendarTecnicoAnt}">
+
+            <fieldset>
+                <legend>Consultar Tecnicos</legend>  
+                <h:panelGrid columns="6">
+
+                    <h:outputText class="txtLabelFechas" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Fecha Agenda:"/>
+                    <h:selectOneMenu id="selectFechaRea" style="width: 200px;"
+                                     value="#{cmtAgendamientoMglBean.fechaSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.fechasAgendas}" 
+                                       var="fecha"
+                                       itemValue="#{fecha}"
+                                       itemLabel="#{fecha}"/>    
+                        <f:ajax event="change" 
+                                execute="@this" 
+                                listener="#{cmtAgendamientoMglBean.consultarTecnicos()}"
+                                render="selectTecnicoRea selectFranjaRe form33646:pMessagesExterno"/>
+                    </h:selectOneMenu> 
+
+                    <h:outputText class="txtLabelTecnicos" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Tecnicos Disponibles:"/>
+                    <h:selectOneMenu id="selectTecnicoRea"  style="width: 350px;" 
+                                     value="#{cmtAgendamientoMglBean.tecnicoSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.tecnicosDisponibles}" 
+                                       var="tecni"
+                                       itemValue="#{tecni.resource.resourceId}"
+                                       itemLabel="#{tecni.resource.name} [#{tecni.resource.resourceId}]"/>    
+                        <f:ajax event="change" 
+                                execute="@this" 
+                                listener="#{cmtAgendamientoMglBean.listarFranjas()}"
+                                render="selectFranjaRe form33646:pMessagesExterno"/>
+                    </h:selectOneMenu>            
+
+                    <h:outputText class="txtLabelTFranjas" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Franjas Disponibles:"/>
+                    <h:selectOneMenu id="selectFranjaRe" style="width: 200px;"
+                                     value="#{cmtAgendamientoMglBean.franjaSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.lstFranjas}" 
+                                       var="franja"
+                                       itemValue="#{franja}"
+                                       itemLabel="#{franja}"/>    
+                                   <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{cmtAgendamientoMglBean.seleccionarHoras()}"
+                                    render="selectHoraRea selectMinRea form33646:pMessagesExterno"/>
+                    </h:selectOneMenu>
+                    
+                   <h:outputText class="txtLabelTHoras" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Horas Disponibles:"/>
+                    <h:selectOneMenu id="selectHoraRea" style="width:200px;"
+                                     value="#{cmtAgendamientoMglBean.horaSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.lstHoras}" 
+                                       var="hora"
+                                       itemValue="#{hora}"
+                                       itemLabel="#{hora}"/>  
+                         <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{cmtAgendamientoMglBean.seleccionarMin()}"
+                                    render="selectMinRea form33646:pMessagesExterno"/>
+                    </h:selectOneMenu> 
+                   
+                    <h:outputText class="txtLabelTMin" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Min. Disponibles:"/>
+                    <h:selectOneMenu id="selectMinRea" style="width: 350px;"
+                                     value="#{cmtAgendamientoMglBean.minSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.lstMin}" 
+                                       var="min"
+                                       itemValue="#{min}"
+                                       itemLabel="#{min}"/>  
+                         <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{cmtAgendamientoMglBean.organizarHorasMin()}"
+                                    render="form33646:pMessagesExterno"/>
+                    </h:selectOneMenu> 
+
+                    <h:outputText  class="txtLabelWorktime"   value="Worktime:"/>
+                    <h:outputText  class="txtLabelValWoktime" value="#{cmtAgendamientoMglBean.parWorktimeNum} Min."/>
+
+                </h:panelGrid> 
+            </fieldset>
+
+            <div class="wizard-form">
+                <br></br>
+                <br></br>
+                <h2 style="margin-top: -22px; margin-left: -12px">DESCRIPCION REAGENDAMIENTO</h2>
+                <h:panelGrid  columns="10">
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Razon de Reagendamiento:"/>
+                    <h:inputTextarea id="razonReagendamientoRea" 
+                                     value="#{cmtAgendamientoMglBean.razonReagendamiento}"
+                                     style="margin-left: 5px; width: 100%;"/>
+
+                    <h:outputText class="txtLabelsMgl"  value="  "/>
+                    <h:outputText class="txtLabelsMgl"  value="  "/>
+
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Comentarios Orden:"/>
+                    <h:inputTextarea id="comentariosRea"
+                                     value="#{cmtAgendamientoMglBean.comentariosOrden}" 
+                                     style="margin-left: 5px; width: 100%;"/>
+                     <h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia4" value="Conveniencia: "></h:outputText> 
+                     <h:selectBooleanCheckbox  value="#{cmtAgendamientoMglBean.conveniencia}" id="checkConveniencia4"  />
+                </h:panelGrid> 
+                <h:panelGrid  columns="2">
+		
+				</h:panelGrid>  
+            </div> 
+            <h:commandButton value="Regresar"
+                             id="idBotonContinuarRea"
+                             title="Regresar a la pantalla anterior"
+                             action="#{cmtAgendamientoMglBean.regresar()}"
+                             class="btn">
+            </h:commandButton>
+            <h:commandButton id="btnCrearAgendaRea"  
+                             title="Reagendar" 
+                             action="#{cmtAgendamientoMglBean.reagendarOrden()}" 
+                             class="btn" value="Reagendar"/>  
+
+        </h:panelGroup>
+        <!--FIN PANEL REAGENDAR TECNICO ANTICIPADO -->    
+        
+        <h:panelGroup rendered="#{cmtAgendamientoMglBean.updateAgenda}">
+            <h2 style="margin-top: -22px; margin-left: -12px">AGENDA PARA ACTUALIZAR</h2>
+            <div class="wizard-form">
+                <h:dataTable id="updateAgendaTbl"
+                             value="#{cmtAgendamientoMglBean.updateAgendaMgl}"
+                             var="update" styleClass="constructGTable" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow "
+                             rows="5">
+                    <h:column>
+                        <f:facet name="header">Fecha de Agenda</f:facet>
+                        <h:outputText value="#{update.fechaAgenda}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha de Reagenda</f:facet>
+                        <h:outputText value="#{update.fechaReagenda}" />
+                    </h:column>    
+
+                    <h:column>
+                        <f:facet name="header">Franja Agenda</f:facet>
+                        <h:outputText value="#{update.timeSlot}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Tipo Agenda</f:facet>
+                        <h:outputText value="#{update.tipo}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">No. Orden en WFC</f:facet>
+                        <h:outputText value="#{update.ofpsOtId}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha Inicio Visita</f:facet>
+                        <h:outputText value="#{update.fechaInivioVt}" />
+                    </h:column>
+                       
+                     <h:column>
+                        <f:facet name="header">Tecnico Asignado</f:facet>
+                        <h:outputText value="#{update.nombreTecnico}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha Fin Visita</f:facet>
+                        <h:outputText value="#{update.fechaFinVt}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Estado Agenda</f:facet>
+                        <h:outputText value="#{update.basicaIdEstadoAgenda.nombreBasica}" />
+                    </h:column>
+
+                    <h:column>
+                         <f:facet name="header">Operaciones</f:facet>
+                         <h:panelGrid columns="1">
+                          
+                        <h:commandLink value="Actualizar" 
+                                       actionListener="#{cmtAgendamientoMglBean.updateAgendamientoMgl(update)}">
+                        </h:commandLink>
+                         </h:panelGrid>
+                    </h:column>
+
+                   </h:dataTable>
+                   <hr />
+               </div>
+         
+               <div class="wizard-form">
+                   <br></br>
+                   <br></br>
+                   <h2 style="margin-top: -22px; margin-left: -12px">PREREQUISITOS PARA LA VISITA</h2>
+                   <h:selectManyCheckbox layout="pageDirection"
+                                         id="prerequisitosList" 
+                                         value="#{cmtAgendamientoMglBean.idBasicaPrerequisito}" >                            
+                       <f:selectItems value="#{cmtAgendamientoMglBean.prerequisitosVt}" 
+                                      var="requisito" itemLabel="#{requisito.nombreBasica}" 
+                                      itemValue="#{requisito.basicaId}"/> 
+                   </h:selectManyCheckbox>
+               </div>
+
+            <div class="wizard-form">
+                <br></br>
+                <br></br>
+                <h2 style="margin-top: -22px; margin-left: -12px">PERSONA QUE RECIBE LA VISITA</h2>
+                <h:panelGrid  columns="8">
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Nombre:"/>
+                    <h:inputText id="nombrePerRecAct" style="width: 100%"  value="#{cmtAgendamientoMglBean.ot.personaRecVt}" 
+                                 validatorMessage="El nombre solo permite caracteres alfabeticos y espacios">
+                        <f:validateRegex pattern="([a-zA-ZÑñáéíóúÁÉÍÓÚ]| ){0,200}"/>
+                    </h:inputText>
+                    <h:outputText class="txtLabelsMgl"  value="Documento:" rendered="false"/>
+                    <h:inputText id="docPerRecAct" styleClass="alinNomCm"   rendered="false" value="#{cmtAgendamientoMglBean.ot.docPerRecVt}"/>
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Telefono:"/>
+                    <h:inputText id="telPerRecAct" styleClass="alinNomCm"  value="#{cmtAgendamientoMglBean.ot.telPerRecVt}"
+                                 converterMessage="El telefono es numerico" 
+                                 validatorMessage="El telefono debe tener 7 o 10 digitos">
+                        <f:validateLength minimum="7" maximum="10"/>                       
+                        <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                    </h:inputText> 
+                     <h:outputText escape="false" class="correoPerRecVis2Lb" value="#{cmtAgendamientoMglBean.estiloObligatorio} Email:" />
+                     <h:inputText id="correoPerRecVi2Txt" value="#{cmtAgendamientoMglBean.ot.emailPerRecVT}" maxlength="100"  validatorMessage="El campo email no tiene el formato requerido">
+                 <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>                
+                     </h:inputText>
+                     <h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia2" value="Conveniencia: "></h:outputText> 
+                     <h:selectBooleanCheckbox  value="#{cmtAgendamientoMglBean.conveniencia}" id="checkConveniencia2"  />
+                </h:panelGrid>   
+            </div>
+        
+                   <div class="wizard-form">
+                <h:commandButton value="Regresar"
+                                 id="btnCrearAgendaUpd"
+                                 title="Regresar a la pantalla anterior"
+                                 action="#{cmtAgendamientoMglBean.regresar()}"
+                                 class="btn">
+                </h:commandButton>
+            </div>
+          </h:panelGroup>
+        
+
+        <h:panelGroup rendered="#{cmtAgendamientoMglBean.cancelar}">
+            <h2 style="margin-top: -22px; margin-left: -12px">AGENDA A CANCELAR</h2>
+            <div class="wizard-form">
+                <h:dataTable id="cancelaAgendaTbl"
+                             value="#{cmtAgendamientoMglBean.cancelaAgendaMgl}"
+                             var="cancela" styleClass="constructGTable" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow "
+                             rows="5">
+                    <h:column>
+                        <f:facet name="header">Fecha de Agenda</f:facet>
+                        <h:outputText value="#{cancela.fechaAgenda}" />
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">Fecha de Reagenda</f:facet>
+                        <h:outputText value="#{cancela.fechaReagenda}" />
+                    </h:column>    
+
+                    <h:column>
+                        <f:facet name="header">Franja Agenda</f:facet>
+                        <h:outputText value="#{cancela.timeSlot}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Tipo Agenda</f:facet>
+                        <h:outputText value="#{cancela.tipo}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">No. Orden en WFC</f:facet>
+                        <h:outputText value="#{cancela.ofpsOtId}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha Inicio Visita</f:facet>
+                        <h:outputText value="#{cancela.fechaInivioVt}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha Fin Visita</f:facet>
+                        <h:outputText value="#{cancela.fechaFinVt}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Estado Agenda</f:facet>
+                        <h:outputText value="#{cancela.basicaIdEstadoAgenda.nombreBasica}" />
+                    </h:column>
+
+                    <h:column>
+                         <f:facet name="header">Operaciones</f:facet>
+                         <h:panelGrid columns="1">
+                          
+                        <h:commandLink value="Cancelar" 
+                                       actionListener="#{cmtAgendamientoMglBean.cancelarAgendaEnOFSC(cancela)}">
+                        </h:commandLink>
+                         </h:panelGrid>
+                    </h:column>
+
+                   </h:dataTable>
+                   <hr />
+               </div>
+            <div class="wizard-form">
+                <br></br>
+                <br></br>
+                <h2 style="margin-top: -22px; margin-left: -12px">RAZON DE CANCELAR</h2>
+                <h:panelGrid  columns="6">
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Razon de Cancelar:"/>
+                    <h:inputTextarea id="razonCancela" 
+                                     value="#{cmtAgendamientoMglBean.razonCancela}"
+                                     style="margin-left: 5px; width: 100%;"/>
+                    
+                    <h:outputText class="txtLabelsMgl"  value="  "/>
+                    <h:outputText class="txtLabelsMgl"  value="  "/>
+                    
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Comentarios Orden:"/>
+                    <h:inputTextarea id="comentariosCan"
+                                     value="#{cmtAgendamientoMglBean.comentariosOrden}" 
+                                     style="margin-left: 5px; width: 100%;"/>
+                </h:panelGrid>   
+            </div>
+                   <div class="wizard-form">
+                <h:commandButton value="Regresar"
+                                 id="btnCrearAgendaCan"
+                                 title="Regresar a la pantalla anterior"
+                                 action="#{cmtAgendamientoMglBean.regresar()}"
+                                 class="btn">
+                </h:commandButton>
+            </div>
+          </h:panelGroup>
+        
+         <h:panelGroup rendered="#{cmtAgendamientoMglBean.reasignar}">
+            <h2 style="margin-top: -22px; margin-left: -12px">REASIGNAR TECNICO</h2>
+
+            <fieldset>
+                
+                <h:panelGrid columns="8">
+                    
+                    <h:outputText  class="txtLabelFecAgenda"   value="Fecha Agenda:"/>
+                    <h:outputText  class="txtLabelValFecAgenda"  style="color: blue;"
+                                   value="#{cmtAgendamientoMglBean.reasignaAgenda.fechaAgenda}"/>
+
+                    <h:outputText  class="txtLabelFecReagenda"   value="Fecha Reagenda:"/>
+                    <h:outputText  class="txtLabelValFecReagenda"  style="color: blue;" 
+                                   value="#{cmtAgendamientoMglBean.reasignaAgenda.fechaReagenda}"/>
+                    
+                    <h:outputText  class="txtLabelFraAgenda"   value="Hora Inicio:"/>
+                    <h:outputText  class="txtLabelValFraAgenda"  style="color: blue;" 
+                                   rendered="#{cmtAgendamientoMglBean.reasignaAgenda.timeSlot != null}"
+                                   value="#{cmtAgendamientoMglBean.reasignaAgenda.timeSlot}"/>
+                    <h:outputText  class="txtLabelValFraAgenda1"  style="color: blue;" 
+                                   rendered="#{cmtAgendamientoMglBean.reasignaAgenda.horaInicio != null}"
+                                   value="#{cmtAgendamientoMglBean.reasignaAgenda.horaInicio}"/>
+                    
+                    <h:outputText  class="txtLabelFecInicio"   value="Fecha Inicio:"/>
+                    <h:outputText  class="txtLabelValFecInicio"  style="color: blue;" 
+                                   value="#{cmtAgendamientoMglBean.reasignaAgenda.fechaInivioVt}"/>
+                    
+                    <h:outputText  class="txtLabelEstAgenda"   value="Estado Agenda:"/>
+                    <h:outputText  class="txtLabelValEstAgenda"  style="color: blue;"
+                                   value="#{cmtAgendamientoMglBean.reasignaAgenda.basicaIdEstadoAgenda.nombreBasica}"/>
+                    
+                    <h:outputText  class="txtLabelNomTecnico"   value="Nombre Tecnico:"/>
+                    <h:outputText  class="txtLabelValNomTecnico"  style="color: blue;"
+                                   value="#{cmtAgendamientoMglBean.reasignaAgenda.nombreTecnico}"/>
+                    
+                    <h:outputText  class="txtLabelIdTecnico"   value="Identificacion Tecnico:"/>
+                    <h:outputText  class="txtLabelValIdTecnico"   style="color: blue;"
+                                   value="#{cmtAgendamientoMglBean.reasignaAgenda.identificacionTecnico}"/>
+                    
+                    
+                    <h:outputText class="txtLabelTecnicosRea" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Tecnicos Disponibles:"/>
+                    <h:selectOneMenu id="selectTecnicoRea1"  style="width: 350px;"
+                                     value="#{cmtAgendamientoMglBean.tecnicoSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.tecnicosDisponibles}" 
+                                       var="tecni"
+                                       itemValue="#{tecni.resource.resourceId}"
+                                       itemLabel="#{tecni.resource.name} [#{tecni.resource.resourceId}]"/>    
+                        <f:ajax event="change" 
+                                execute="@this" 
+                                listener="#{cmtAgendamientoMglBean.listarFranjas()}"
+                                render="selectFranjaRea form33646:pMessagesExterno"/>
+                    </h:selectOneMenu>            
+
+                    <h:outputText class="txtLabelTFranjas" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Franjas Disponibles:"/>
+                    <h:selectOneMenu id="selectFranjaRea" style="width: 150px;"
+                                     value="#{cmtAgendamientoMglBean.franjaSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.lstFranjas}" 
+                                       var="franja"
+                                       itemValue="#{franja}"
+                                       itemLabel="#{franja}"/>    
+                       <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{cmtAgendamientoMglBean.seleccionarHoras()}"
+                                    render="selectHoraReas selectMinReas form33646:pMessagesExterno"/>
+                    </h:selectOneMenu>
+                    
+                   <h:outputText class="txtLabelTHoras" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Horas Disponibles:"/>
+                    <h:selectOneMenu id="selectHoraReas" style="width:150px;"
+                                     value="#{cmtAgendamientoMglBean.horaSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.lstHoras}" 
+                                       var="hora"
+                                       itemValue="#{hora}"
+                                       itemLabel="#{hora}"/>  
+                         <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{cmtAgendamientoMglBean.seleccionarMin()}"
+                                    render="selectMinReas form33646:pMessagesExterno"/>
+                    </h:selectOneMenu> 
+                   
+                    <h:outputText class="txtLabelTMin" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Min. Disponibles:"/>
+                    <h:selectOneMenu id="selectMinReas" style="width: 150px;"
+                                     value="#{cmtAgendamientoMglBean.minSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.lstMin}" 
+                                       var="min"
+                                       itemValue="#{min}"
+                                       itemLabel="#{min}"/>  
+                         <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{cmtAgendamientoMglBean.organizarHorasMin()}"
+                                    render="form33646:pMessagesExterno"/>
+                    </h:selectOneMenu> 
+                    
+                    <h:outputText  class="txtLabelWorktimeRea"   value="Worktime:"/>
+                    <h:outputText  class="txtLabelValWoktimeRea"   style="color: blue;" 
+                                   value="#{cmtAgendamientoMglBean.parWorktimeNum} Min."/>
+
+                </h:panelGrid> 
+            </fieldset>
+
+            <div class="wizard-form">
+                <br></br>
+                <br></br>
+                <h2 style="margin-top: -22px; margin-left: -12px">RAZON DE REASIGNACION</h2>
+                <h:panelGrid  columns="4">
+                    <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Razon de Reasignar:"/>
+                    <h:inputTextarea id="razonReasignar" 
+                                     value="#{cmtAgendamientoMglBean.razonReasigna}"
+                                     style="margin-left: 5px; width: 100%;"/>
+                    
+                    <h:outputText class="txtLabelsMgl"  value="  "/>
+                    <h:outputText class="txtLabelsMgl"  value="  "/>
+                </h:panelGrid>   
+            </div>
+            <div class="wizard-form">
+                <h:commandButton value="Regresar"
+                                 id="btnCrearAgendaReasigna"
+                                 title="Regresar a la pantalla anterior"
+                                 action="#{cmtAgendamientoMglBean.regresar()}"
+                                 class="btn">
+                </h:commandButton>
+                <h:commandButton id="reasignaIdRea" title="Reasignar Tecnico"
+                                 class="btn"
+                                 value="Reasignar" 
+                                 action="#{cmtAgendamientoMglBean.updateAgendaForTecnicoMgl()}">
+                </h:commandButton>
+            </div>
+          </h:panelGroup>
+
+        <h:panelGroup id="panelRestricciones" style="width: 500px;">
+            <div id="dialogAgenda" title="Restricciones de la agenda"
+                 style="display: none;width: 500px;">
+                <h:dataTable id="restriccionesTbl" style="width: 500px;"
+                             value="#{cmtAgendamientoMglBean.restricciones}"
+                             var="restriccion" styleClass="constructGTable" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+                    <h:column>
+                        <f:facet name="header">Código</f:facet>
+                        <h:outputText value="#{restriccion.code}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Tipo</f:facet>
+                        <h:outputText value="#{restriccion.type}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Descripción</f:facet>
+                        <h:outputText value="#{restriccion.description}" />
+                    </h:column>
+                </h:dataTable>
+            </div>
+        </h:panelGroup>
+
+        <!--INICIO PANEL TECNICOS  -->
+        <h:panelGroup id="panelTecnicos" rendered="#{cmtAgendamientoMglBean.verPanelTecnicos}">
+
+            <fieldset>
+                <legend>Consultar Tecnicos</legend>  
+                <h:panelGrid columns="6">
+
+                    <h:outputText class="txtLabelFechas" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Fecha Agenda:"/>
+                    <h:selectOneMenu id="selectFecha" style="width: 200px;"
+                                     value="#{cmtAgendamientoMglBean.fechaSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.fechasAgendas}" 
+                                       var="fecha"
+                                       itemValue="#{fecha}"
+                                       itemLabel="#{fecha}"/>    
+                        <f:ajax event="change" 
+                                execute="@this" 
+                                listener="#{cmtAgendamientoMglBean.consultarTecnicos()}"
+                                render="selectTecnico form33646:pMessagesExterno"/>
+                    </h:selectOneMenu> 
+
+                    <h:outputText class="txtLabelTecnicos" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Tecnicos Disponibles:"/>
+                    <h:selectOneMenu id="selectTecnico"  style="width: 350px;"
+                                     value="#{cmtAgendamientoMglBean.tecnicoSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.tecnicosDisponibles}" 
+                                       var="tecni"
+                                       itemValue="#{tecni.resource.resourceId}"
+                                       itemLabel="#{tecni.resource.name} [#{tecni.resource.resourceId}]"/>    
+                        <f:ajax event="change" 
+                                execute="@this" 
+                                listener="#{cmtAgendamientoMglBean.listarFranjas()}"
+                                render="selectFranja form33646:pMessagesExterno"/>
+                    </h:selectOneMenu>            
+
+                    <h:outputText class="txtLabelTFranjas" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Franjas Disponibles:"/>
+                    <h:selectOneMenu id="selectFranja" style="width: 200px;"
+                                     value="#{cmtAgendamientoMglBean.franjaSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.lstFranjas}" 
+                                       var="franja"
+                                       itemValue="#{franja}"
+                                       itemLabel="#{franja}"/>  
+                         <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{cmtAgendamientoMglBean.seleccionarHoras()}"
+                                    render="selectHora selectMin form33646:pMessagesExterno"/>
+                    </h:selectOneMenu>
+                    
+                   <h:outputText class="txtLabelTHoras" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Horas Disponibles:"/>
+                    <h:selectOneMenu id="selectHora" style="width:200px;"
+                                     value="#{cmtAgendamientoMglBean.horaSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.lstHoras}" 
+                                       var="hora"
+                                       itemValue="#{hora}"
+                                       itemLabel="#{hora}"/>  
+                         <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{cmtAgendamientoMglBean.seleccionarMin()}"
+                                    render="selectMin form33646:pMessagesExterno"/>
+                    </h:selectOneMenu> 
+                   
+                    <h:outputText class="txtLabelTMin" escape="false" value="#{cmtAgendamientoMglBean.estiloObligatorio} Min. Disponibles:"/>
+                    <h:selectOneMenu id="selectMin" style="width: 350px;"
+                                     value="#{cmtAgendamientoMglBean.minSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtAgendamientoMglBean.lstMin}" 
+                                       var="min"
+                                       itemValue="#{min}"
+                                       itemLabel="#{min}"/>  
+                         <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{cmtAgendamientoMglBean.organizarHorasMin()}"
+                                    render="form33646:pMessagesExterno"/>
+                    </h:selectOneMenu> 
+                   
+                    <h:outputText  class="txtLabelWorktime"   value="Worktime:"/>
+                    <h:outputText  class="txtLabelValWoktime" value="#{cmtAgendamientoMglBean.parWorktimeNum} Min."/>
+
+                </h:panelGrid> 
+               </fieldset>
+
+                <div class="wizard-form">
+                    <br></br>
+                    <br></br>
+                    <h2 style="margin-top: -22px; margin-left: -12px">PREREQUISITOS PARA LA VISITA</h2>
+                    <h:selectManyCheckbox layout="pageDirection"
+                                          id="prerequisitosListTec" 
+                                          value="#{cmtAgendamientoMglBean.idBasicaPrerequisito}" >                            
+                        <f:selectItems value="#{cmtAgendamientoMglBean.prerequisitosVt}" 
+                                       var="requisito" itemLabel="#{requisito.nombreBasica}" 
+                                       itemValue="#{requisito.basicaId}"/> 
+                    </h:selectManyCheckbox>
+                </div>
+
+                <div class="wizard-form">
+                    <br></br>
+                    <br></br>
+                    <h2 style="margin-top: -22px; margin-left: -12px">PERSONA QUE RECIBE LA VISITA</h2>
+                    <h:panelGrid  columns="8">
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Nombre:"/>
+                        <h:inputText id="nombrePerRecTec" style="width: 100%"  value="#{cmtAgendamientoMglBean.ot.personaRecVt}" 
+                                     validatorMessage="El nombre solo permite caracteres alfabeticos y espacios">
+                            <f:validateRegex pattern="([a-zA-ZÑñáéíóúÁÉÍÓÚ]| ){0,200}"/>
+                        </h:inputText>
+                        <h:outputText class="txtLabelsMgl"  value="Documento:" rendered="false"/>
+                        <h:inputText id="docPerRecTec" styleClass="alinNomCm"   rendered="false" value="#{cmtAgendamientoMglBean.ot.docPerRecVt}"/>
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Telefono:"/>
+                        <h:inputText id="telPerRecTec" styleClass="alinNomCm"  value="#{cmtAgendamientoMglBean.ot.telPerRecVt}"
+                                     converterMessage="El telefono es numerico" 
+                                     validatorMessage="El telefono debe tener 7 o 10 digitos">
+                            <f:validateLength minimum="7" maximum="10"/>                       
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                        </h:inputText> 
+                        <h:outputText escape="false" class="correoPerRecVis2Lb" value="#{cmtAgendamientoMglBean.estiloObligatorio} Email:" />
+                        <h:inputText id="correoPerRecTec" value="#{cmtAgendamientoMglBean.ot.emailPerRecVT}" maxlength="100"  validatorMessage="El campo email no tiene el formato requerido">
+                            <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>                
+                        </h:inputText>
+                        <h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia3" value="Conveniencia: "></h:outputText> 
+                        <h:selectBooleanCheckbox  value="#{cmtAgendamientoMglBean.conveniencia}" id="checkConveniencia3"  />
+                    </h:panelGrid>   
+                </div>
+
+                <h:commandButton id="idBotonCerrar"  
+                                 title="Cerrar Panel Tecnicos" 
+                                 action="#{cmtAgendamientoMglBean.cerrarPanelTecnicos()}" 
+                                 class="btn" value="Cerrar"/>
+                <h:commandButton id="idBotonContinuar"  
+                                 title="Agendar" 
+                                 action="#{cmtAgendamientoMglBean.crearAgendas(true)}" 
+                                 class="btn" value="Agendar"/>  
+        </h:panelGroup>
+        <!--FIN PANEL TECNICOS -->
+        
+                <!--INICIO PANEL TECNICOS  -->
+        <h:panelGroup id="panelIframeWrap" rendered="#{cmtAgendamientoMglBean.agendaInmediataPreIframe}">     
+
+                <div class="wizard-form">
+
+                    <h2 style="margin-top: -22px; margin-left: -12px">PERSONA QUE RECIBE LA VISITA</h2>
+                    <h:panelGrid  columns="8">
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Nombre:"/>
+                        <h:inputText id="nombrePerRecTecPreIframe" style="width: 100%"  value="#{cmtAgendamientoMglBean.ot.personaRecVt}" 
+                                     validatorMessage="El nombre solo permite caracteres alfabeticos y espacios">
+                            <f:validateRegex pattern="([a-zA-ZÑñáéíóúÁÉÍÓÚ]| ){0,200}"/>
+                        </h:inputText>
+                        <h:outputText class="txtLabelsMgl"  value="Documento:" rendered="false"/>
+                        <h:inputText id="docPerRecTecPreIframe" styleClass="alinNomCm"   rendered="false" value="#{cmtAgendamientoMglBean.ot.docPerRecVt}"/>
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{cmtAgendamientoMglBean.estiloObligatorio} Telefono:"/>
+                        <h:inputText id="telPerRecTecPreIframe" styleClass="alinNomCm"  value="#{cmtAgendamientoMglBean.ot.telPerRecVt}"
+                                     converterMessage="El telefono es numerico" 
+                                     validatorMessage="El telefono debe tener 7 o 10 digitos">
+                            <f:validateLength minimum="7" maximum="10"/>                       
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                        </h:inputText> 
+                        <h:outputText escape="false" class="correoPerRecVis2Lb" value="#{cmtAgendamientoMglBean.estiloObligatorio} Email:" />
+                        <h:inputText id="correoPerRecTecPreIframe" value="#{cmtAgendamientoMglBean.ot.emailPerRecVT}" maxlength="100"  validatorMessage="El campo email no tiene el formato requerido">
+                            <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>                
+                        </h:inputText>
+                        <h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia3PreIframe" value="Conveniencia: "></h:outputText> 
+                        <h:selectBooleanCheckbox  value="#{cmtAgendamientoMglBean.conveniencia}" id="checkConveniencia3PreIframe"  />
+                    </h:panelGrid>   
+                </div>
+
+                <h:commandButton id="idBotonCerrarPreIframe"  
+                                 title="Cerrar Panel Agenda Inmediata" 
+                                 action="#{cmtAgendamientoMglBean.cerrarAgendaInmediata()}" 
+                                 class="btn" value="Regresar"/>
+                <h:commandButton id="idBotonContinuarPreIframe"  
+                                 title="Agendar" 
+                                 action="#{cmtAgendamientoMglBean.abrirIframe()}" 
+                                 class="btn" value="Agendar"/>  
+        </h:panelGroup>
+        
+        
+         <!--INICIO PANEL IFRAME APP EXTERNA -->
+        <h:panelGroup id="panelIframe" rendered="#{cmtAgendamientoMglBean.abrirPanelIframe}">
+            <div class="tableContent" >
+                    <h:commandLink value="[Cerrar]" style="float:right; font-size: 14px;"
+                                   id="cerraIfraId" action="#{cmtAgendamientoMglBean.cerrarIframe()}">
+                    </h:commandLink>
+                <h:panelGroup  id="modalIntegracionContent" layout="block" style="padding: 1% 0% 0% 0%;">
+                    <div class="mdl-dialog__title row no-padding">
+                        <iframe class="iframeIntegracion" style="width: 100%; height: 500px"
+                                name="iframeIntegracion" src="#{cmtAgendamientoMglBean.urlIframe}"/>
+                    </div>
+                </h:panelGroup>
+            </div>            
+        </h:panelGroup>
+        <!--FIN PANEL IFRAME APP EXTERNA -->
+    </ui:define>
+</ui:composition>
+</html>

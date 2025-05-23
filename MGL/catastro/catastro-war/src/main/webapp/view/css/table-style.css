@@ -1,0 +1,34 @@
+/*
+Copyright (c) 2017, and/or its affiliates. All rights reserved.
+CLARO PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+*/
+/* 
+    Created on : 25/05/2017, 06:03:10 PM
+    Author     : becerraarmr
+*/
+
+.order-table{
+  border-collapse:collapse;
+
+}
+
+.order-table-header{
+  text-align:center;
+  text-height:font-size; 
+  background:none repeat scroll 0 0 #E5E5E5;
+  padding:10px;
+  padding-left:20px;
+  padding-right:20px;
+}
+
+.order-table-odd-row{
+  text-align:center;
+  background:none repeat scroll 0 0 #FFFFFF;
+  border-bottom:1px solid #ffcccc;
+}
+
+.order-table-even-row{
+  text-align:center;
+  background:none repeat scroll 0 0 #F9F9F9;
+  border-bottom:1px solid #ffcccc
+}

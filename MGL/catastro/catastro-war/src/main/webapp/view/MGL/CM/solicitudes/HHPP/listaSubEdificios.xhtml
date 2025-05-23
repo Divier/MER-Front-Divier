@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:dataTable id="subEdificiosMglTable"
+                 value="#{encabezadoSolicitudModificacionCMBean.listCmtSubEdificioMgl}" var="subEdificiosMgl"
+                 headerClass="constructGTableHeader" rowClasses="constructGTableOddRowSelect , constructGTableEvenRowSelect" style="font-size: 12px; width: 100%;overflow: scroll;border:1px solid #999999;
+                 border-width:1px 1px 1px 1px;
+                 border-collapse: collapse ;
+                 border-spacing: 0 ;">
+        <h:column>
+            <f:facet name="header" >
+                <h:outputText value="Sub-Edificios "  />
+            </f:facet>
+
+            <div title="#{subEdificiosMgl.nombreSubedificio}" align="left" style="#{subEdificiosMgl.subEdificioId eq encabezadoSolicitudModificacionCMBean.selectedCmtSubEdificioMgl.subEdificioId ? 'background-color: gainsboro;':'background-color:white;'}">
+                <h:commandLink value="#{subEdificiosMgl.nombreSubedificio.substring(0,(subEdificiosMgl.nombreSubedificio.length()>15? 15:subEdificiosMgl.nombreSubedificio.length()))}"  style="font-size: 12px;"
+                               action="#{encabezadoSolicitudModificacionCMBean.cambiaEdificio()}">
+                    <f:setPropertyActionListener target="#{encabezadoSolicitudModificacionCMBean.selectedCmtSubEdificioMgl}" value="#{subEdificiosMgl}" />
+                </h:commandLink>
+            </div>
+        </h:column>
+    </h:dataTable>
+</ui:composition>

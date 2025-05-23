@@ -1,0 +1,14 @@
+<pcml version="4.0">                                                            
+   <!-- RPG program: CMHBLCR0  -->                                              
+   <!-- created: 2016-03-16-17.27.00 -->                                        
+   <!-- source: TVCSRC/CMRPGLESRC(CMHBLCR0) -->                                 
+   <!-- 49 -->                                                                  
+   <program name="CMHBLCR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMHBLCR0.PGM">       
+      <data name="PACODG" type="char" length="9" usage="inputoutput" />         
+      <data name="PCML" type="char" length="2" usage="inputoutput" />           
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />        
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />      
+      <data name="TABLARTA" type="char" length="70" count="1000" usage="inputoutput" />      
+      <data name="MENSAJE" type="char" length="63" usage="inputoutput" />       
+   </program>                                                                   
+</pcml>   

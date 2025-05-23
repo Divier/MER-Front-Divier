@@ -1,0 +1,319 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>        
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/script.js"></script>
+
+          
+    </h:head>
+    <h:body>
+
+        <h:form id="idFormCargue">
+            <!--Inicio Mensajes -->
+            <h:panelGroup id="messages">
+                <h:panelGroup  id="rendMessages" rendered="#{not empty facesContext.messageList}" >
+                    <div id="light" class="white_contentError" style="display : block;">
+                        <a href = "javascript:void(0)" 
+                           onclick = "document.getElementById('light').style.display = 'none';
+                                   document.getElementById('fade').style.display = 'none'"
+                           style="margin-left: 97%">
+                            <img src="${facesContext.externalContext.requestContextPath}/view/MGL/images/error.png" height="14px"  width="14px"/>
+                        </a>
+                        <BR/><BR/>
+                        <div id="marcoAuditoria" style="overflow: auto;max-height: 200px" > 
+                            <h:messages id="messagesPo" globalOnly="false" errorClass="errorMessage" infoClass="infoMessage" 
+                                        warnClass="warnMessage" fatalClass="successMessage"/>
+                        </div>
+                        <a href = "javascript:void(0)" 
+                           id="cerrarMensajeErrorBtn" 
+                           class="btn" style="position: relative; top: 1em;"
+                           onclick = "document.getElementById('light').style.display = 'none';
+                                   document.getElementById('fade').style.display = 'none'">
+                            Cerrar               
+                        </a>
+                    </div>
+                    <div id="fade" class="black_overlayError" style="display : block;"></div>
+                </h:panelGroup>
+            </h:panelGroup>
+            <!--Fin Mensajes -->
+            <!--Inicio includes -->
+            <div id="header">
+                <ui:include src="../../CM/name.xhtml" />
+            </div>
+            <div id="cssmenu">
+                <ui:include src="../../template/menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../../CM/version.xhtml" />
+            </div>
+            <div id="content">
+                <div id="subcontent">
+                    <section class="tabs">
+                        <div id="contenido">
+                            <ui:insert name="content">
+                            </ui:insert>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!--Fin includes -->
+            <!--Inicio Filtros -->
+            <h:panelGroup id="idPgnGro">
+                <h:panelGroup id="idPgnGroD">
+
+                    <h2 class="cargueMasivoModificacion" >CONSULTA ATRIBUTOS CUENTA MATRIZ</h2>
+                    <h:panelGrid id="idPnGFilter" columns="8" style="width: 100%">
+                        <h:outputText id="idOtTipo" escape="false" value="Tipo de Tecnologia #{cargueMasivoModificacionBean.estiloObligatorio}"  />
+                        <h:selectOneMenu  id="idSelTipo" value="#{cargueMasivoModificacionBean.tecnologiaSelected}" 
+                                          styleClass="ListaConsulta" style="width: 75%;" >
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listBasicaTecnologia}" var="tecnologia"
+                                           itemValue="#{tecnologia.basicaId}"
+                                           itemLabel="#{tecnologia.nombreBasica}">
+                            </f:selectItems>
+                        </h:selectOneMenu> 
+                        <h:outputText id="idOtDepartamento" escape="false" value="Departamento #{cargueMasivoModificacionBean.estiloObligatorio}" />
+                        <h:selectOneMenu id="idSelDepartamento" 
+                                         value="#{cargueMasivoModificacionBean.departamentoSelected}" 
+                                         style="width: 140px">
+                            <f:selectItem itemValue="0" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.departamentoList}" 
+                                           var="dep"
+                                           itemValue="#{dep.value}"
+                                           itemLabel="#{dep.label}"/>
+                            <f:ajax event="change" render="idPnGFilter idFormCargue:messages idFormCargue:idPngMsn idFormCargue:idBotonera idFormCargue:idPngRe idFormCargue:idPngSubt"  
+                                    execute="idPnGFilter" listener="#{cargueMasivoModificacionBean.cambioDepartamento()}"/>
+                        </h:selectOneMenu> 
+                        <h:outputText id="idOtCiudad" escape="false" 
+                                      value="Ciudad #{cargueMasivoModificacionBean.estiloObligatorio}"/>
+                        <h:selectOneMenu id="idSelCiudad" 
+                                         value="#{cargueMasivoModificacionBean.ciudadSelected}" 
+                                         style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.ciudadList}" 
+                                           var="ciud"
+                                           itemValue="#{ciud.gpoId}"
+                                           itemLabel="#{ciud.gpoNombre}"/>
+                            <f:ajax event="change" render="idPnGFilter idFormCargue:messages idFormCargue:idPngMsn idFormCargue:idBotonera idFormCargue:idPngRe idFormCargue:idPngSubt"  
+                                    execute="idPnGFilter" listener="#{cargueMasivoModificacionBean.cambioCiudad()}"/>
+                        </h:selectOneMenu> 
+                        <h:outputText id="idOtCentroP" value="Centro Poblado" />
+                        <h:selectOneMenu id="idSelCentroP" 
+                                         value="#{cargueMasivoModificacionBean.centroPobladoSelected}" 
+                                         style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.centroPobladoList}" 
+                                           var="cen"
+                                           itemValue="#{cen.gpoId}"
+                                           itemLabel="#{cen.gpoNombre}"/>
+                            <f:ajax event="change" render="idPnGFilter idFormCargue:messages idFormCargue:idPngMsn idFormCargue:idBotonera idFormCargue:idPngRe idFormCargue:idPngSubt"  
+                                    execute="idPnGFilter" listener="#{cargueMasivoModificacionBean.cambioCentroPoblado()}"/>
+                        </h:selectOneMenu> 
+
+                        <h:outputText id="idOtNodo" value="C&oacute;digo Nodo "/>
+                        <h:selectOneMenu id="idSelNodo" 
+                                         value="#{cargueMasivoModificacionBean.codigoNodo}" 
+                                         style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.lstNodos}" 
+                                           var="nod"
+                                           itemValue="#{nod}"
+                                           itemLabel="#{nod}"/>
+                        </h:selectOneMenu> 
+                        
+                        <h:outputText id="idBlacklist" value="Blacklist Tecnolog&iacute;a "/>
+                        <h:selectOneMenu id="idSelBlacklist" 
+                                         value="#{cargueMasivoModificacionBean.blacklistSelected}" 
+                                         style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listBlacklistTec}" 
+                                           var="black"
+                                           itemValue="#{black.basicaId}"
+                                           itemLabel="#{black.nombreBasica}"/>
+                        </h:selectOneMenu> 
+                        
+                        <h:outputText  class="txtLabelsMgl"  value="N&uacute;mero Cuenta RR:"/>
+                        <h:inputText id="idItNoCuRr"  value="#{cargueMasivoModificacionBean.strIdCcmmRr}"  maxlength="10"/>                       
+                 
+                        <h:outputText  class="txtLabelsMgl"  value="N&uacute;mero Cuenta MGL:"/>
+                        <h:inputText id="idItNoCuMgl"  value="#{cargueMasivoModificacionBean.strIdCcmmMgl}" maxlength="10"/>
+      
+                        
+                        <h:selectOneRadio id="idRadRepor" value="#{cargueMasivoModificacionBean.index}">
+                            <f:selectItem  itemLabel="General" itemValue="0"/>
+                            <f:selectItem  itemLabel="Detallado" itemValue="1"/>
+                            <f:ajax event="change" listener="#{cargueMasivoModificacionBean.cambioGeneraldetallado}" 
+                                    render="idFormCargue:idPgCmMod idFormCargue:idPgCmCarg idFormCargue:idPngMsn 
+                                    idFormCargue:idBotonera idFormCargue:idPngRe idFormCargue:idPngSubt" 
+                                    execute="@form"/>
+                        </h:selectOneRadio>
+                    </h:panelGrid>
+
+                    <h:panelGrid id="idPgCmMod" columns="2" >
+                        <h:outputText id="idOtTBas" escape="false" value="Tipo b&aacute;sica Atributo CCMM #{cargueMasivoModificacionBean.estiloObligatorio}"  
+                                      rendered="#{cargueMasivoModificacionBean.generalDetalle}" />
+                        <h:selectOneMenu id="idStBas"  
+                                         styleClass="ListaConsulta" style="width: 75%;" rendered="#{cargueMasivoModificacionBean.generalDetalle}" 
+                                         value="#{cargueMasivoModificacionBean.codigoSeleccion}">
+                            <f:selectItem  itemValue="" itemLabel=""/>
+                            <f:selectItems  value="#{cargueMasivoModificacionBean.cargaMasiva}" var="carga"
+                                            itemValue="#{carga.value}"
+                                            itemLabel="#{carga.description}">
+                            </f:selectItems>  
+                            <f:ajax  event="change" listener="#{cargueMasivoModificacionBean.consultaSelect}" 
+                                     render="idFormCargue:idPgCmCarg" execute="@form"/>
+                        </h:selectOneMenu> 
+                    </h:panelGrid>
+                    <h:panelGrid id="idPgCmCarg" columns="3" >
+                        <h:outputText id="idOtNom" escape="false"  
+                                      rendered="#{cargueMasivoModificacionBean.consultar}" />
+                        <h:inputText id="idItNom"  value="#{cargueMasivoModificacionBean.nombreCuentaFil}"  
+                                     rendered="#{cargueMasivoModificacionBean.nmc}"/>
+                        <h:inputText id="idItAdmin"  value="#{cargueMasivoModificacionBean.adminCompaniaFil}"  
+                                     rendered="#{cargueMasivoModificacionBean.adm}"/>
+                        <h:inputText id="idItTelUno"  value="#{cargueMasivoModificacionBean.telefonoUnoFil}"  
+                                     rendered="#{cargueMasivoModificacionBean.tpu}"  maxlength="18">
+                        </h:inputText>
+
+                        <h:inputText id="idItTelDos"  value="#{cargueMasivoModificacionBean.telefonoDosFil}"  
+                                     rendered="#{cargueMasivoModificacionBean.tpd}"  maxlength="18">
+                        </h:inputText>
+
+                        <h:inputText id="idItNod" value="#{cargueMasivoModificacionBean.codigoNodoParameter}" 
+                                     rendered="#{cargueMasivoModificacionBean.cnd}">
+                        </h:inputText>
+
+                        <h:selectOneMenu id="idSeCompAdmin" value="#{cargueMasivoModificacionBean.idCompaniaAdminFil}" 
+                                         rendered="#{cargueMasivoModificacionBean.cia}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listAdmin}" var="ad" itemValue="#{ad.companiaId}" 
+                                           itemLabel="#{ad.nombreCompania}" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu id="idSeCompAsc" value="#{cargueMasivoModificacionBean.idCompaniaAscensorFil}" 
+                                         rendered="#{cargueMasivoModificacionBean.cis}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listAscensor}" var="s" itemValue="#{s.companiaId}" 
+                                           itemLabel="#{s.nombreCompania}" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu id="idSeCompCons" value="#{cargueMasivoModificacionBean.idCompaniaConstructoraFil}" 
+                                         rendered="#{cargueMasivoModificacionBean.con}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listConstructora}" var="co" itemValue="#{co.companiaId}" 
+                                           itemLabel="#{co.nombreCompania}" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu id="idSeTiP" value="#{cargueMasivoModificacionBean.idTipoProyectoFil}" rendered="#{cargueMasivoModificacionBean.btp}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listTipoProyecto}" var="t" itemValue="#{t.basicaId}" 
+                                           itemLabel="#{t.nombreBasica}" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu id="idSeOrg" value="#{cargueMasivoModificacionBean.idOrigenDatosFil}" 
+                                         rendered="#{cargueMasivoModificacionBean.bod}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listOrigenDatos}" var="o" itemValue="#{o.basicaId}" 
+                                           itemLabel="#{o.nombreBasica}" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu id="idSeEst" value="#{cargueMasivoModificacionBean.idEstadoTecnologiaFil}" 
+                                         rendered="#{cargueMasivoModificacionBean.eti}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listEstado}" var="e" itemValue="#{e.basicaId}" 
+                                           itemLabel="#{e.nombreBasica}" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu id="idSeTiR" value="#{cargueMasivoModificacionBean.idTipoConfDistbFil}" 
+                                         rendered="#{cargueMasivoModificacionBean.btc}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listConfiguracion}" var="c" itemValue="#{c.basicaId}" 
+                                           itemLabel="#{c.nombreBasica}" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu id="idSeAli" value="#{cargueMasivoModificacionBean.idAlimtElectFil}" 
+                                         rendered="#{cargueMasivoModificacionBean.bae}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listAlimentacion}" var="a" itemValue="#{a.basicaId}" 
+                                           itemLabel="#{a.nombreBasica}" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu id="idSeTiD" value="#{cargueMasivoModificacionBean.idTipoDistribucionFil}" 
+                                         rendered="#{cargueMasivoModificacionBean.btd}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listTipoDistribucion}" var="d" itemValue="#{d.basicaId}" 
+                                           itemLabel="#{d.nombreBasica}" />
+                        </h:selectOneMenu>
+                        <h:selectOneMenu id="idSeTipEd" value="#{cargueMasivoModificacionBean.idTipoEdificioFil}" 
+                                         rendered="#{cargueMasivoModificacionBean.tde}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{cargueMasivoModificacionBean.listTiposCcmm}" var="te" itemValue="#{te.basicaId}" 
+                                           itemLabel="#{te.nombreBasica}" />
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+                    <div id="btnCentro">
+                        <h:commandButton value="Generar Reporte"  
+                                         disabled="#{!cargueMasivoModificacionBean.validarOpcionGeneraReporte()}"
+                                         styleClass="btn" style="alignment-adjust: central">
+                            <f:ajax  render="idFormCargue:messages idFormCargue:idPngMsn idFormCargue:idBotonera idFormCargue:idPngRe idFormCargue:idPngSubt idFormCargue:idPgnGro" 
+                                     execute="@form" listener="#{cargueMasivoModificacionBean.generaReporte}"/>
+                        </h:commandButton>
+                        
+                        <h:commandButton value="Limpiar"  action="#{cargueMasivoModificacionBean.limpiar()}"
+                                         styleClass="btn" style="alignment-adjust: central">
+                           
+                        </h:commandButton>
+                    </div>
+                   
+                </h:panelGroup>
+            </h:panelGroup>
+            <!--Fin Filtros -->
+            <!--Inicio reportes -->
+            <h:panelGroup id="idPngSubt">
+                
+                <h:panelGrid id="idPngRe" columns="1" style="width: 100%" >
+                    <h2 class="cargueMasivoModificacion">GENERACIÓN DE REPORTES</h2> 
+                </h:panelGrid>
+                
+                <div id="titleCentro">
+                    <h:outputLabel id="idLabC" value="Resultados Encontrados: #{cargueMasivoModificacionBean.cantidadRegistros}" 
+                                   rendered="#{!cargueMasivoModificacionBean.btnReporte}" /> 
+                </div>                
+            </h:panelGroup>
+            <h:panelGrid id="idBotonera"  columns="3" style="width: 100%">
+                <h:commandButton id="idIz" styleClass="btn unblockClaro" value="Exportar xls"  
+                                 action="#{cargueMasivoModificacionBean.generarReporteFinal(1)}" 
+                                 rendered="#{!cargueMasivoModificacionBean.btnReporte}" immediate="true" 
+                                 disabled="#{cargueMasivoModificacionBean.cantidadRegistros>2000}" 
+                                 title="#{cargueMasivoModificacionBean.xlsMaxReg}" />
+                <h:commandButton id="idCent" styleClass="btn unblockClaro" value="Exportar csv"  
+                                 action="#{cargueMasivoModificacionBean.generarReporteFinal(2)}" 
+                                 rendered="#{!cargueMasivoModificacionBean.btnReporte}" immediate="true" 
+                                 
+                                 title="#{cargueMasivoModificacionBean.csvMaxReg}"  />
+                <h:commandButton id="idDe" styleClass="btn unblockClaro" value="Exportar txt" 
+                                 action="#{cargueMasivoModificacionBean.generarReporteFinal(3)}" 
+                                 rendered="#{!cargueMasivoModificacionBean.btnReporte}" immediate="true" 
+                                 
+                                 title="#{cargueMasivoModificacionBean.txtMaxReg}" />
+            </h:panelGrid>          
+          
+           
+        </h:form>
+        <div id="footer">
+            <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

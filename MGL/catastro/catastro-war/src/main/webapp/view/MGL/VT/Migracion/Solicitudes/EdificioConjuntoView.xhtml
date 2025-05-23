@@ -1,0 +1,385 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/main.xhtml" >
+
+    <ui:define name="content">
+        
+        #{actionManagedBean.setAction('SOLICITAR_VT_EDIFICIO_CONJUNTO')}
+
+        <div  align="center">
+
+            <h:panelGrid
+
+                cellpadding = "10" cellspacing = "10" >
+                <f:facet name = "header">
+                    <h:outputText
+                        value = "SOLICITUD DE VISITAS TECNICAS EDIFICIO O CONJUNTO"/>
+                </f:facet>
+                <h:panelGrid
+                    id="VT_EC_paneldatos"
+                    columns = "4"
+                    border = "1"
+                    cellpadding = "10"
+                    cellspacing = "10">
+                    <h:outputLabel
+                        rendered="#{createsolicitud.canCreate eq false}"
+                        value = "Id Solicitud"/>
+                    <h:outputLabel
+                        id="VT_EC_idSolicitud"
+                        rendered="#{createsolicitud.canCreate eq false}"
+                        value = "#{createsolicitud.solicitud.idSolicitud}" />
+                    <h:outputLabel
+                        rendered="#{createsolicitud.canCreate eq false}"
+                        value = "Estado Solicitud"/>
+                    <h:outputLabel
+                        id="VT_EC_idestado"
+                        rendered="#{createsolicitud.canCreate eq false}"
+                        value = "#{createsolicitud.solicitud.estado}" />
+
+                    <h:outputLabel for="idcuentamatriz" value = "Cuenta Matriz"/>
+                    <h:panelGrid>
+                        <h:inputText
+                            id="VT_EC_idcuentamatriz"
+                            value="#{createsolicitud.solicitud.cuentaMatriz}"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            required="true"
+                            requiredMessage="Debe ingresar un valor en el campo Cuenta Matriz"
+                            validatorMessage="Debe ingresar valores numéricos en el campo Cuenta Matriz"
+                            styleClass="input"
+                            maxlength="12">
+                            <f:validateRegex pattern="[0-9]*"/>
+                            <f:ajax  render="VT_EC_msg_cuentamatriz" />
+                        </h:inputText>
+                        <h:message
+                            id="VT_EC_msg_cuentamatriz"
+                            style="color:red;"
+                            for="VT_EC_idcuentamatriz" />
+                    </h:panelGrid>
+
+                    <h:outputLabel value = "Regional" />
+                    <h:panelGrid>
+                        <h:selectOneMenu
+                            id="VT_EC_idregional"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.idRegional}"
+                            valueChangeListener="#{createsolicitud.regionalCodeChanged}"
+                            required="true"
+                            requiredMessage="Debe seleccionar un valor en el campo Regional"
+                            styleClass="input">
+                            <f:selectItems value="#{createsolicitud.regionales}" />
+                            <f:ajax
+                                render="VT_EC_idciudad VT_EC_msg_regional"/>
+                        </h:selectOneMenu>
+                        <h:message
+                            id="VT_EC_msg_regional"
+                            style="color: red;"
+                            for="VT_EC_idregional" />
+                    </h:panelGrid>
+
+                    <h:outputLabel value = "Ciudad" />
+                    <h:panelGrid>
+                        <h:selectOneMenu
+                            id="VT_EC_idciudad"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.ciudadRr}"
+                            required="true"
+                            requiredMessage="Debe seleccionar un valor en el campo Ciudad"
+                            styleClass="input">
+                            <f:selectItems value="#{createsolicitud.ciudades}"/>
+                            <f:ajax render="VT_EC_msg_ciudad"/>
+                        </h:selectOneMenu>
+                        <h:message
+                            id="VT_EC_msg_ciudad"
+                            style="color: red;"
+                            for="VT_EC_idciudad" />
+                    </h:panelGrid>
+
+                    <h:outputLabel value = "Nodo" />
+                    <h:panelGrid>
+                        <h:inputText
+                            id="VT_EC_idNodo"
+                            value="#{createsolicitud.solicitud.nodo}"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            required="true"
+                            requiredMessage="Debe ingresar un valor en el campo Nodo"
+                            styleClass="input">
+                            <f:ajax render="VT_EC_msg_nodo"/>
+                        </h:inputText>
+                        <h:message
+                            id="VT_EC_msg_nodo"
+                            style="color: red;"
+                            for="VT_EC_idNodo" />
+                    </h:panelGrid>
+
+                      <h:panelGrid>
+                    <h:outputLabel value = "Direcci&oacute;n completa" />
+                          <h:selectOneMenu
+                            id="CM_dircompleta"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.dirTipoCalleCompleta}"
+                            styleClass="input"
+                            required="true"
+                            requiredMessage="Debe seleccionar un valor en el campo Dirección Completa"
+                            >
+                            <f:ajax event="blur" render="CM_msg_dircompleta"/>
+                            <f:selectItems value="#{createsolicitud.tiposDeVias}" />
+                        </h:selectOneMenu>
+                        <h:message id="CM_msg_dircompleta"
+                                   style="color: red;"
+                                   for="CM_dircompleta" />
+                    </h:panelGrid>
+                    
+                    <h:panelGrid columns="2">
+                        <h:panelGrid>
+                            <h:outputLabel value = "Calle"/>
+                            <h:inputText
+                                id ="idDirCompletaCalle"
+                                disabled="#{createsolicitud.canCreate eq false}"
+                                value="#{createsolicitud.solicitud.streetName}"
+                                required="true"
+                                requiredMessage="Debe ingresar un valor en el campo Calle"
+                                styleClass="input_peq">
+                                <f:ajax render="VT_EC_msg_dircompletacalle"/>
+                            </h:inputText>
+                            <h:message
+                                id="VT_EC_msg_dircompletacalle"
+                                style="color: red;"
+                                for="idDirCompletaCalle" />
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputLabel  value = "Placa" />
+                            <h:panelGrid>
+                                <h:inputText
+                                    id="VT_EC_numPuertaUno"
+                                    disabled="#{createsolicitud.canCreate eq false}"
+                                    value="#{createsolicitud.solicitud.houseNumber}"
+                                    styleClass="input_peq"
+                                    required="true"
+                                    requiredMessage="Debe ingresar un valor en el campo Placa"
+                                    >
+                                    <f:ajax  render="VT_EC_msg_numPuertaUno"/>
+                                </h:inputText>
+                                <h:message
+                                    id="VT_EC_msg_numPuertaUno"
+                                    style="color: red;"
+                                    for="VT_EC_numPuertaUno" />
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <h:outputLabel value = "Tel&eacute;fono1" />
+                    <h:panelGrid>
+                        <h:inputText
+                            id="VT_EC_idtelefono1"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.solicitud.telefono}"
+                            required="true"
+                            requiredMessage="Debe ingresar un valor en el campo Tel&eacute;fono1 "
+                            validatorMessage="Debe ingresar valores numéricos en el campo Tel&eacute;fono1 "
+                            styleClass="input"
+                            maxlength="12">
+                            <f:validateRegex pattern="[0-9]*"/>
+                            <f:ajax render="VT_EC_msg_telefono1"/>
+                        </h:inputText>
+                        <h:message
+                            id="VT_EC_msg_telefono1"
+                            style="color: red;"
+                            for="VT_EC_idtelefono1" />
+                    </h:panelGrid>
+                    <h:panelGrid>
+                        <h:outputLabel value = "Direcci&oacute;n Alterna"  />
+                        <h:selectOneMenu
+                            id="CM_dircalterna"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.dirTipoCalleAlterna}"
+                            styleClass="input"
+                            >
+                            <f:selectItems value="#{createsolicitud.tiposDeVias}" />
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid columns="2">
+                        <h:panelGrid>
+                            <h:outputLabel value = "Calle"/>
+                            <h:inputText
+                                disabled="#{createsolicitud.canCreate eq false}"
+                                value="#{createsolicitud.dirCalleAlterna}"
+                                styleClass="input_peq"/>
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputLabel value = "Placa" />
+                            <h:inputText
+                                id="VT_EC_dirplacaalternaUno"
+                                disabled="#{createsolicitud.canCreate eq false}"
+                                value="#{createsolicitud.dirPlacaAlternaUno}"
+                                styleClass="input_peq"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <h:outputLabel  value = "Tel&eacute;fono2" />
+                    <h:panelGrid>
+                        <h:inputText
+                            id="VT_EC_idtelefono2"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.solicitud.telefono1}"
+                            validatorMessage="Ingrese valores númericos"
+                            styleClass="input"
+                            maxlength="12">
+                            <f:validateRegex pattern="[0-9]*"/>
+                            <f:ajax render="VT_EC_msg_telefono2"/>
+                        </h:inputText>
+                        <h:message
+                            id="VT_EC_msg_telefono2"
+                            style="color: red;"
+                            for="VT_EC_idtelefono2" />
+                    </h:panelGrid>
+                    <h:outputLabel value = "Contacto" />
+                    <h:panelGrid>
+                        <h:inputText
+                            id="VT_EC_idcontacto"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.solicitud.contacto}"
+                            required="true"
+                            requiredMessage="Debe ingresar un valor en el campo Contacto"
+                            styleClass="input">
+                            <f:ajax render="VT_EC_msg_contacto"/>
+                        </h:inputText>
+                        <h:message
+                            id="VT_EC_msg_contacto"
+                            style="color: red;"
+                            for="VT_EC_idcontacto" />
+                    </h:panelGrid>
+                    <h:outputLabel value = "Tel&eacute;fono Contacto" />
+                    <h:panelGrid>
+                        <h:inputText
+                            id="VT_EC_idtelefonocontacto"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.solicitud.telContacto}"
+                            required="true"
+                            requiredMessage="Debe ingresar un valor en el campo Tel&eacute;fono Contacto"
+                            validatorMessage="Debe ingresar valores numéricos en el campo Tel&eacute;fono Contacto"
+                            styleClass="input">
+                            <f:ajax  render="VT_EC_msg_telefonoContacto"/>
+                            <f:validateRegex pattern="[0-9]*"/>
+                        </h:inputText>
+                        <h:message
+                            id="VT_EC_msg_telefonoContacto"
+                            style="color: red;"
+                            for="VT_EC_idtelefonocontacto" />
+                    </h:panelGrid>
+                    <h:outputLabel value = "Solicitante" />
+                    <h:outputLabel
+                        value="#{createsolicitud.solicitud.solicitante}"
+                        styleClass="input"/>
+                    <h:outputLabel
+                        value = "Correo Solicitante"/>
+                    <h:panelGrid>
+                        <h:inputText
+                            id="VT_EC_idcorreosolicitante"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.solicitud.correo}"
+                            required="true"
+                            requiredMessage="Debe ingresar un valor en el campo Correo Solicitante"
+                            styleClass="input">
+                            <f:ajax render="VT_EC_msg_correosolicitante"/>
+                        </h:inputText>
+                        <h:message
+                            id="VT_EC_msg_correosolicitante"
+                            style="color: red;"
+                            for="VT_EC_idcorreosolicitante" />
+                    </h:panelGrid>
+                    <h:outputLabel
+                        value = "Administrador" />
+                    <h:panelGrid>
+                        <h:inputText
+                            id="VT_EC_idadministrador"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.solicitud.contacto1}"
+                            required="true"
+                            requiredMessage="Debe ingresar un valor en el campo Administrador"
+                            styleClass="input">
+                            <f:ajax render="VT_EC_msg_admin"/>
+                        </h:inputText>
+                        <h:message
+                            id="VT_EC_msg_admin"
+                            style="color: red;"
+                            for="VT_EC_idadministrador" />
+                    </h:panelGrid>
+
+                    <h:outputLabel
+                        value = "Tel&eacute;fono Administrador" />
+                    <h:panelGrid>
+                        <h:inputText
+                            id="VT_EC_id_tel_admin"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.solicitud.telContacto1}"
+                            required="true"
+                            requiredMessage="Debe ingresar un valor en el campo Administrador"
+                            validatorMessage="Debe ingresar valores numéricos en el campo Administrador"
+                            styleClass="input">
+                            <f:ajax render="VT_EC_msg_telefonoadministrador"/>
+                            <f:validateRegex pattern="[0-9]*"/>
+                        </h:inputText>
+                        <h:message
+                            id="VT_EC_msg_telefonoadministrador"
+                            style="color: red;"
+                            for="VT_EC_id_tel_admin" />
+                    </h:panelGrid>
+                    <h:outputLabel
+                        value = "Tipo solicitud" />
+                    <h:panelGrid>
+                        <h:selectOneMenu
+                            id="VT_EC_idtipoSolicitud"
+                            disabled="#{createsolicitud.canCreate eq false}"
+                            value="#{createsolicitud.solicitud.tipoSol}"
+                            required="true"
+                            requiredMessage="Debe seleccionar un valor en el campo Tipo solicitud"
+                            styleClass="input">
+                            <f:selectItems
+                                value="#{createsolicitud.tipoSolicitudesTipoSegmento}" />
+                            <f:ajax render="VT_EC_msg_idtipoSolicitud"/>
+                        </h:selectOneMenu>
+                        <h:message
+                            id="VT_EC_msg_idtipoSolicitud"
+                            style="color: red;"
+                            for="VT_EC_idtipoSolicitud" />
+                    </h:panelGrid>
+                </h:panelGrid>
+
+                <h:outputLabel value="Motivos de la Solicitud" style="display: block;
+                               text-align:center"/>
+                <h:inputTextarea
+                    id="VT_EC_motivo"
+                    style="border:1px; background:#DFEDDF; width:100%; height:120px "
+
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.motivo}"
+                    required="true"
+                    requiredMessage="Debe ingresar un valor en el campo Motivos de la Solicitud">
+                    <f:ajax render="VT_EC_msg_motivo"/>
+                </h:inputTextarea>
+                <h:message
+                    id="VT_EC_msg_motivo"
+                    style="color: red;"
+                    for="VT_EC_motivo" />
+            </h:panelGrid>
+
+
+            <h:panelGroup >
+                <h:commandButton                                      
+                    styleClass="btn"
+                    value = "Ingresar Datos"
+                    disabled="#{!createsolicitud.validarOpcionIngresarTecEdifConjunto()}"
+                    action="#{createsolicitud.prepareCreate(actionManagedBean.action)}">
+                </h:commandButton>               
+            </h:panelGroup>
+        </div>
+
+    </ui:define>
+
+</ui:composition>
+

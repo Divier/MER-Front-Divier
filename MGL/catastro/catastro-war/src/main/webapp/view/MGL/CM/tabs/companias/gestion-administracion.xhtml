@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                template="/view/MGL/template/cm.xhtml">   
+    <ui:define name="content">
+        <h2 id="myhMmData">Compañia [#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.nombreSubedificio}]</h2>
+        <ul id="nav">
+            <li class="active"><h:commandLink action="gestion-administracion" value="Compañías Administración" /></li>
+            <li><h:commandLink action="gestion-constructoras" value="Compañías Constructoras" immediate="true"/></li>
+            <li><h:commandLink action="gestion-ascensores" value="Compañías de Ascensores" immediate="true"/></li>
+        </ul>
+        <h:panelGroup id="formAdmin">
+            <h:panelGrid  class="comboCenter">
+                <h:selectOneMenu  id="SelectTipoCompania"
+                    value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.tipoCompaniaObj.tipoCompaniaId}">  
+                    <f:selectItem itemLabel="Compañía de Administración" itemValue="3" />
+                    <f:selectItem itemLabel="Administradores (Persona Natural)" itemValue="4" />
+                    <f:ajax render="formAdmin" execute="@this" event="change" listener="#{gestionCompaniaAdmonBean.consultarCompanias()}"/>
+                </h:selectOneMenu>
+            </h:panelGrid>
+            <h:panelGrid id="tipo_3" rendered="#{gestionCompaniaAdmonBean.vistas.view eq 'Compania'}" class="formulario" columns="4">
+               
+                <h:outputText escape="false" value="Compañía Administración" />
+                <h:selectOneMenu requiredMessage="Seleccione una compañía" required="true" id="nombreCompania" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.companiaId}">
+                    <f:selectItem itemLabel="" itemValue="0"/>
+                    <f:selectItems value="#{gestionCompaniaAdmonBean.listCmtCompaniaMgl}" var="com"
+                                   itemValue="#{com.companiaId}"
+                                   itemLabel="#{com.nombreCompania}"/>    
+                    <f:ajax event="change"  execute="@this" render="formAdmin" rendered="tipo_3" listener="#{gestionCompaniaAdmonBean.asignarCompania}" />
+                </h:selectOneMenu> 
+                <h:outputText value="Departamento" class="txtLabelsMgl"/>
+                <h:outputText  id="depto" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.departamento.gpoNombre}"  class="columnReadForm"/>
+                <h:outputText value="Código" />
+                <h:outputText id="codigo" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.codigoRr}" class="columnReadForm"/>
+                <h:outputText value="Municipio" class="txtLabelsMgl"/>
+                <h:outputText id="muni" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.municipio.gpoNombre}" class="columnReadForm"/>
+                <h:outputText value="NIT" class="txtLabelsMgl"/>
+                <h:outputText id="nit" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.nitCompania}" class="columnReadForm"/>
+                <h:outputText value="Centro Poblado" class="txtLabelsMgl"/>
+                <h:outputText id="centp" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.centroPoblado.gpoNombre}" class="columnReadForm"/>
+                <h:outputText value="Abreviatura" class="txtLabelsMgl"/>
+                <h:outputText id="abrev" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.abreviatura}" class="columnReadForm"/>
+                <h:outputText value="Barrio" class="txtLabelsMgl"/>
+                <h:outputText id="barrio" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.barrio}" class="columnReadForm"/>
+                <h:outputText value="Nombre Contacto" class="txtLabelsMgl"/>
+                <h:outputText id="contacto" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.nombreContacto}" class="columnReadForm"/>
+                <h:outputText value="Dirección" class="txtLabelsMgl"/>
+                <h:outputText id="dir" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.direccion}" class="columnReadForm"/>
+                <h:outputText value="Teléfonos" class="txtLabelsMgl"/>
+                <h:outputText value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.telefonos}"  id="tel1" class="columnReadForm"/>
+                <h:outputText value="E-mail" class="txtLabelsMgl"/>
+                <h:outputText id="email" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.email}" class="columnReadForm"/>
+                <h:outputText value="Página WEB" class="txtLabelsMgl"/>
+                <h:outputText id="pagWeb" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.paginaWeb}" class="columnReadForm"/>
+                <h:outputText value="Contacto edificio" class="txtLabelsMgl"/>
+                <h:inputText maxlength="100" id="contacotoEdi" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.administrador}" />
+                <h:commandButton value="Guardar" action="#{gestionCompaniaAdmonBean.guardarAsociacion}" class="btn" style="width: 70px;" disabled="#{!gestionCompaniaAdmonBean.rolEditar}"/>
+                <h:commandButton value="Horarios" action="#{gestionCompaniaAdmonBean.irHorarios}" class="btn" style="width: 70px;"/>
+            </h:panelGrid>
+
+            <h:panelGrid id="tipo_4" rendered="#{gestionCompaniaAdmonBean.vistas.view eq 'Administrador'}" class="formulario" columns="4">
+
+                <h:outputText value="Nombre Administrador" />
+                <h:selectOneMenu id="nombreAdministrador" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.companiaId}">
+                    <f:selectItem itemLabel="" itemValue="0"/>                    
+                    <f:selectItems value="#{gestionCompaniaAdmonBean.listCmtCompaniaMgl}" var="com"
+                                   itemValue="#{com.companiaId}"
+                                   itemLabel="#{com.nombreCompania}"/>    
+                    <f:ajax event="change" listener="#{gestionCompaniaAdmonBean.asignarCompania}" execute="@this" render="formAdmin"/>
+                </h:selectOneMenu> 
+                <h:outputText value="Telófono móvil" />
+                <h:inputText value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.telefonos}"  id="movil" disabled="true"  />
+
+                <h:outputText value="Tipo de identificación" />
+                <h:inputText value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.tipoDocumento}"  id="tipoId" disabled="true"  />
+
+                <h:outputText value="E-mail" />
+                <h:inputText  disabled="true" id="email_admin" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.email}" />
+
+                <h:outputText value="Número de identificación" />
+                <h:inputText disabled="true"   id="doc_admin" value="#{gestionCompaniaAdmonBean.cmtSubEdificioMgl.companiaAdministracionObj.nitCompania}" />
+                <h:outputText value="" />
+                <h:outputText value="" />
+                <h:commandButton value="Guardar" action="#{gestionCompaniaAdmonBean.guardarAsociacion}" class="btn" style="width: 70px;" disabled="#{!gestionCompaniaAdmonBean.rolEditar}"/>
+                <h:commandButton value="Horarios" action="#{gestionCompaniaAdmonBean.irHorarios}" class="btn" style="width: 70px;"/>
+            </h:panelGrid>
+            <h:panelGroup id="pnlHorarios" rendered="#{gestionCompaniaAdmonBean.vistas.view eq 'Horario'}">
+                <cc:componente-horario id="compHorarios" horarioRestriccion="#{gestionCompaniaAdmonBean.horarioRestriccion}" horarioEditable="L"
+                                       permisoCreacion="true" permisoEliminacion="#{gestionCompaniaAdmonBean.rolEliminar}"/>
+                <h:commandButton value="Volver" action="#{gestionCompaniaAdmonBean.volverDeHorarios}" class="btn" style="width: 70px;"/>
+            </h:panelGroup>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+
+

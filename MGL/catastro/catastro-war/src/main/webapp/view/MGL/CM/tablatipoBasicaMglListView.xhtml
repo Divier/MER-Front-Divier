@@ -1,0 +1,281 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml" >
+
+    <ui:define name="title"><span class="TituloSeccion">Administrador tablasBasicas</span></ui:define>
+    <ui:define name="message"><span class="error"> #{tipoBasicaMglBean.message}</span></ui:define>
+    <ui:define name="content">
+        <h:panelGroup rendered="#{!tipoBasicaMglBean.renderAuditoria}">
+            <br />
+            <br />
+            <h:panelGroup rendered="#{tipoBasicaMglBean.mostrarPanelCrearModTipoBas}">
+                <fieldset>
+                    <legend>Tipo Tabla Basica</legend>
+                    <div id="tableTipoTablaBasica">
+                        <table style="width: 100%">
+                            <tr><td></td>
+                                <td>
+                                    <h:outputText id="asc_nombrelb" escape="false"
+                                                  value="#{tipoBasicaMglBean.estiloObligatorio}Nombre" />
+                                </td>
+                                <td>
+                                    <h:inputText id="asc_nombreTxt"
+                                                 style="width: 75%"
+                                                 value="#{tipoBasicaMglBean.tipoBasica.nombreTipo}" >
+                                    </h:inputText>
+                                </td>
+                                <td>
+                                    <h:outputText escape="false" id="asc_codigolb"
+                                                  value="#{tipoBasicaMglBean.estiloObligatorio}Código" />
+                                </td>
+                                <td>
+                                    <h:inputText id="asc_codigoTxt"
+                                                 value="#{tipoBasicaMglBean.tipoBasica.codigoTipo}"
+                                                 disabled="true">
+
+                                    </h:inputText>
+
+                                </td>
+                            </tr> 
+                            <tr></tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <h:outputText escape="false"
+                                                  value="#{tipoBasicaMglBean.estiloObligatorio}Descripción"
+                                                  id="asc_campo_adicional1lb"/>
+                                </td>
+                                <td>
+                                    <h:inputTextarea id="asc_campo_adicional1Txt" rows="3" style="width: 75%"
+                                                     value="#{tipoBasicaMglBean.tipoBasica.descripcionTipo}">
+                                    </h:inputTextarea>
+                                </td>
+                                <td>
+                                    <h:outputText escape="false" id="asc_campo_adicional2lb"
+                                                  value="#{tipoBasicaMglBean.estiloObligatorio}Estado" />
+                                </td>
+                                <td>
+                                    <h:selectOneMenu styleClass="ListaConsulta" disabled="#{tipoBasicaMglBean.btnCrear}"
+                                                     id="listTipoEstadoBasica" style="width: 75%"
+                                                     value="#{tipoBasicaMglBean.tipoBasica.estadoRegistro}">
+                                        <f:selectItem itemValue="1" itemLabel="Activo" />
+                                        <f:selectItem itemValue="0" itemLabel="Inactivo" />
+                                    </h:selectOneMenu>
+                                </td>
+                            </tr>
+                            <tr></tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <h:outputText escape="false" 
+                                                  value="#{tipoBasicaMglBean.estiloObligatorio}Justificación"
+                                                  styleClass="formColumn1" />
+                                </td>
+                                <td>
+                                    <h:inputTextarea id="asc_campo_justificaTxt"
+                                                     rows="3" style="width: 75%"
+                                                     value="#{tipoBasicaMglBean.tipoBasica.justificacion}"> 
+                                    </h:inputTextarea>
+                                </td>
+
+                                <td>
+                                    <h:selectManyCheckbox  layout="pageDirection" 
+                                                           value="#{tipoBasicaMglBean.modulosRender}">
+                                        <f:selectItems value="#{tipoBasicaMglBean.modulosTblBasica}" var="modulos" 
+                                                       itemLabel="#{modulos.nombreBasica}" itemValue="#{modulos.basicaId}" />     
+                                    </h:selectManyCheckbox></td>
+                            </tr>
+                        </table>
+                        <h:panelGrid columns="4">
+                        <h:commandButton disabled="false" value="Crear" rendered="#{tipoBasicaMglBean.btnCrear}"
+                                         action="#{tipoBasicaMglBean.crearTipoTablasBasicasMgl}"
+                                         styleClass="btn unblockClaro"/>
+                        <h:commandButton disabled="false" value="Actualizar" rendered="#{tipoBasicaMglBean.btnActualizar}"
+                                         action="#{tipoBasicaMglBean.actualizarlTablasBasicasMgl}"
+                                         styleClass="btn unblockClaro"/>
+                        <h:commandButton disabled="false" value="Limpiar"
+                                         action="#{tipoBasicaMglBean.limpiarCamposAndCreate()}"
+                                         styleClass="btn unblockClaro"/>
+                        <h:commandButton value="Volver"
+                                         action="#{tipoBasicaMglBean.volverListTiposBasicas()}"
+                                         styleClass="btn unblockClaro"/>
+                         </h:panelGrid>
+                    </div>
+                </fieldset>
+            </h:panelGroup>
+
+            <br />
+            <br />
+
+            <h:panelGroup rendered="#{tipoBasicaMglBean.mostrarPanelListTiposBas}">
+                
+               <h2>Tablas Tipos Basicas</h2>
+               
+                <h:dataTable id="tablasBasicasMglTable" style="width: 100%"
+                             value="#{tipoBasicaMglBean.tablasTipoBasicasMglList}"
+                             var="tablastipoBasicasMgl"
+                             class="tablefeel">
+                    <h:column>
+                        <div align="left" >
+                            <f:facet name="header">
+                                <h:outputText value="Id " />
+                                <br />
+                                <h:inputText  maxlength="50" id="tipoBasId" 
+                                              style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{tipoBasicaMglBean.filtroTablaTipoBasicaDto.tipoBasicaId}">
+                                    <f:ajax listener="#{tipoBasicaMglBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="tablasBasicasMglTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:commandLink id="tipoBasicaId"
+                                           value="#{tablastipoBasicasMgl.tipoBasicaId}"
+                                           disabled="#{!tipoBasicaMglBean.validarOpcionSeleccionarId()}"
+                                           action="#{tipoBasicaMglBean.goActualizar(tablastipoBasicasMgl)}" />
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Código Tipo" />
+                                <br/>
+                                <h:inputText  maxlength="50" id="codigoId" 
+                                              style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{tipoBasicaMglBean.filtroTablaTipoBasicaDto.codigoTipo}">
+                                    <f:ajax listener="#{tipoBasicaMglBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="tablasBasicasMglTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{tablastipoBasicasMgl.codigoTipo}" />
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Nombre" />
+                                <br/>
+                                <h:inputText  maxlength="50" id="nombreId" 
+                                              style="width: 200px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{tipoBasicaMglBean.filtroTablaTipoBasicaDto.nombreTipo}">
+                                    <f:ajax listener="#{tipoBasicaMglBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="tablasBasicasMglTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{tablastipoBasicasMgl.nombreTipo}" />
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="left" >
+                            <f:facet name="header">
+                                <h:outputText value="Descripción" />
+                                <br/>
+                                <h:inputText  maxlength="50" id="descripId" 
+                                              style="width: 300px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{tipoBasicaMglBean.filtroTablaTipoBasicaDto.descripcion}">
+                                    <f:ajax listener="#{tipoBasicaMglBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="tablasBasicasMglTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{tablastipoBasicasMgl.descripcionTipo}" />
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Estado" />
+                                <br/>
+                                <h:selectOneMenu id="estadoId"  style="width: 100px"
+                                                     value="#{tipoBasicaMglBean.filtroTablaTipoBasicaDto.estado}">
+                                        <f:selectItem itemLabel="" itemValue=""/>
+                                        <f:selectItem itemLabel="Activado" itemValue="Activado"/>
+                                        <f:selectItem itemLabel="Desactivado" itemValue="Desactivado"/>   
+                                        <f:ajax listener="#{tipoBasicaMglBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablasBasicasMglTable"/>
+                                </h:selectOneMenu> 
+                            </f:facet>
+                            <h:outputText value="#{tablastipoBasicasMgl.estadoRegistro  eq 1 ? 'Activado':'Desactivado'}" />
+                        </div>
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Log" />
+                            </f:facet>
+                            <h:commandLink value="Log" actionListener="#{tipoBasicaMglBean.mostrarAuditoria(tablastipoBasicasMgl)}" />      
+                        </div>                                  
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Acción" />
+                        </f:facet>
+                        <h:commandLink id="Eliminar" title="Eliminar"
+                                       immediate="true" styleClass="btnIconEliminar"
+                                       action="#{tipoBasicaMglBean.eliminarlTablasBasicasMgl(tablastipoBasicasMgl)}"
+                                       onclick="return confirm('¿Est&oacute; seguro de eliminar el registro seleccionado ${tablastipoBasicasMgl.nombreTipo} ?');"
+                                       disabled="#{!tipoBasicaMglBean.validarOpcionEliminar()}">
+                        </h:commandLink>
+                    </h:column>
+
+                    <f:facet name="footer" >
+                        <div class="pagination2">
+                            <h:panelGroup rendered="#{tipoBasicaMglBean.pintarPaginado}">
+                                <h:commandButton value= "&#171;" action="#{tipoBasicaMglBean.pageFirst}"/>
+                                <h:commandButton value= "&#60;"  action="#{tipoBasicaMglBean.pagePrevious}"/>
+                                <h:commandButton value="#{tipoBasicaMglBean.pageActual}" />
+                                <h:selectOneMenu id="listTabla" value="#{tipoBasicaMglBean.numPagina}">
+                                    <f:selectItems value="#{tipoBasicaMglBean.paginaList}"
+                                                   var="pag" itemValue="#{pag}" itemLabel="#{pag}"/>    
+                                    <f:ajax render="@form"  event="change"  listener="#{tipoBasicaMglBean.irPagina()}" execute="@this" />                                         
+                                </h:selectOneMenu>
+                                <h:commandButton  value= "&#62;" action="#{tipoBasicaMglBean.pageNext}"/>
+                                <h:commandButton value= "&#187;" action="#{tipoBasicaMglBean.pageLast}"/>
+                            </h:panelGroup>
+                        </div>
+                    </f:facet>
+                </h:dataTable>
+                <h:panelGrid columns="4" id="tablasBasicasMgl2" styleClass="panelInfo">
+                    <h:panelGroup id="botonesAcciones">
+
+                        <h:commandButton value="Exportar"
+                                         action="#{tipoBasicaMglBean.exportExcel}"
+                                         styleClass="btn unblockClaro"
+                                          disabled="#{!tipoBasicaMglBean.validarOpcionExportar()}"/>
+                        <h:commandButton  value="Nuevo"
+                                         action="#{tipoBasicaMglBean.crearTiposBasicas()}"
+                                         styleClass="btn unblockClaro"
+                                         disabled="#{!tipoBasicaMglBean.validarOpcionNuevo()}"
+                                         />
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:panelGroup>
+            <br />
+
+        </h:panelGroup>
+        <h:panelGroup rendered="#{tipoBasicaMglBean.renderAuditoria}">
+            <span class="TituloSeccion">Auditoria de tipo Basica[#{tipoBasicaMglBean.tipoBasicaDescripcion}], Registro [#{tipoBasicaMglBean.descripcionBasica}]</span>
+            <cc:componente-auditoria auditoriaDto="#{tipoBasicaMglBean.informacionAuditoria}">
+
+            </cc:componente-auditoria>
+            <h:commandLink value="Volver" actionListener="#{tipoBasicaMglBean.ocultarAuditoria}" />     
+        </h:panelGroup>     
+    </ui:define>
+</ui:composition>

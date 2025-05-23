@@ -1,0 +1,319 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition template="./../../template/VT/proceso_masivo.xhtml">
+            <ui:define name="titleprocesomasivo">
+                Cargue Masivo 
+            </ui:define>
+            <ui:define name="content" >                
+		<script type="text/javascript">
+                    function controlDeGeneracionDeReporte() {
+                         
+                        if(#{cargarReporteBean.mensajeFinalizado} === true){
+                            document.getElementById("page-wrap").style.display = "block";
+                        }else{
+                            document.getElementById("page-wrap").style.display = "none";
+                        }
+                    }
+                    function validarRolBtnSubirArchivo() {                         
+                        if(#{!cargarReporteBean.validarOpcionSubirFile()}){
+                            document.getElementById("upload").disabled = 'disabled';
+                        }                       
+                    }
+                </script>                
+                <form 
+                    id="form"
+                    method="POST" 
+                    action="#{request.contextPath}/view/MGL/VT/procesoMasivo/cargar_reporte"   
+                    enctype="multipart/form-data">
+                    <h1> SELECCIONE EL ARCHIVO </h1>
+                    <input type="file" 
+                           name="file" 
+                           id="file"  /> 
+                    <input 
+                        id="upload"
+                        type="submit"
+                        value="Subir Archivo"
+                        class="btn unblockClaro"
+                        >
+                  
+						
+                    </input >                   
+                    <h:commandButton 
+                            id="limpiarArchivoCargadoC"
+                            value="Limpiar"                             
+                            action="#{cargarReporteBean.limpiarArchivoCargado()}"
+                            styleClass="btn"> 
+                          </h:commandButton>
+                           <br/>
+                    <input type="hidden" 
+                           name="usuario" 
+                           value="#{cargarReporteBean.usuario}"
+                           id="usuario"  /> 
+                    <br/>
+                    <br/>
+                    <input type="hidden" 
+                           name="perfil" 
+                           value="#{cargarReporteBean.perfil}"
+                           id="perfil"  /> 
+                    <br/>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel value="Nombre del Archivo: "/>
+                        <h:outputLabel value="#{cargarReporteBean.nameFile}"/>
+
+                        <h:outputLabel value="Descripción: "/>
+                        <h:outputLabel
+                            id="idDescripcion"
+                            value="#{cargarReporteBean.msgCargaReporte}"/>
+                    </h:panelGrid>
+                    <div id="page-wrap">
+                        <span class="procesandoReporte">Procesando Reporte, Espere...</span>
+                        <div class="meter red" style="width: 50%">
+                            <span></span>
+                        </div>
+                    </div>  
+                </form >
+
+                <h:form id="form_action">
+                    <h:panelGroup id = "accion" >                        
+                        <h:commandButton 
+                            id="registroProcesados"
+                            value="Registros Procesados"
+                            rendered="#{not(cargarReporteBean.puedeExportar)}"
+                            disabled="#{!cargarReporteBean.validarOpcionRegistro()}"
+                            action="#{cargarReporteBean.verificarEstado()}"
+                            styleClass="btn unblockClaro"> 
+                        </h:commandButton>
+                        <h:commandButton 
+                            value="Nuevo"
+                            rendered="#{cargarReporteBean.puedeExportar}"
+                            action="#{cargarReporteBean.prepareNuevo()}"
+                            styleClass="btn unblockClaro"/>
+                        <h:commandButton 
+                            id = "exportarxls"   
+                            rendered="#{cargarReporteBean.puedeExportarXls}"
+                            styleClass="btn unblockClaro"  
+                            value = "Exportar xls"
+                            action="#{cargarReporteBean.exportarXls()}"/>
+                        <h:commandButton 
+                            id = "exportartxt"   
+                            rendered="#{cargarReporteBean.puedeExportarTxt}"
+                            styleClass="btn unblockClaro"  
+                            value = "Exportar txt"
+                            action="#{cargarReporteBean.exportarTxt()}"/>
+                        <h:commandButton 
+                            id = "exportartcsv"   
+                            rendered="#{cargarReporteBean.puedeExportarCsv}"
+                            styleClass="btn unblockClaro"  
+                            value = "Exportar csv"
+                            action="#{cargarReporteBean.exportarCsv()}"/>
+                    </h:panelGroup>
+                    <br/><br/>
+                    <h:panelGroup >
+                        <h1>Procesos en cola</h1>
+                         <h:commandButton 
+                                 value="Actualizar"
+                                 action="#{cargarReporteBean.activarTiempoNocturno()}"
+                                 disabled="#{!cargarReporteBean.validarOpcionactualizar()}"
+                                 styleClass="btn unblockClaro"> 
+                                 <f:ajax  event="click"
+                                          render="idtablePendientes"/> 
+                             </h:commandButton>
+                        <br>
+                            
+                        </br>
+                        <h:outputLabel 
+                            rendered="#{cargarReporteBean.itemsPendientesPorProcesar.size()==0}"
+                            value="No hay procesos en cola"/>
+                        <h:panelGroup rendered="#{cargarReporteBean.itemsPendientesPorProcesar.size() > 0}">
+                            
+                            <div class="fixed-class1" >
+                                <h:dataTable   
+                                    id="idtablePendientes"
+                                    value="#{cargarReporteBean.itemsPendientesPorProcesar}" 
+                                    var="item" border="1" 
+                                    cellpadding="2" 
+                                    cellspacing="10" 
+                                    rowClasses="order-table-odd-row, order-table-even-row" 
+                                    columnClasses="order-table-odd-column, order-table-even-column" 
+                                    styleClass="order-table" 
+                                    headerClass="order-table-header"            
+                                    width="50%" dir="LTR"
+                                    >
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="NombreProceso"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.nombreArchivoCargue}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Fecha Registro"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.fechaRegistro}">
+                                            <f:convertDateTime pattern="yyyy-MM-dd hh:mm:ss a" 
+                                                               timeZone="America/Bogota"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Total Registros Cargados"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.cantidadTotal}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Total Registros procesados"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.cantidadProcesada}"/>
+                                    </h:column>
+                                </h:dataTable>
+                            </div>
+                        </h:panelGroup>
+                    </h:panelGroup>
+              
+                    <h:panelGroup>
+                        <h1>Mis procesos Cargados</h1>
+                        <h:outputLabel 
+                            rendered="#{cargarReporteBean.itemsArchivosUsuarioLogin.size() ==0}"
+                            value="No hay procesos Cargados"/>
+
+                                <h:dataTable id="idtableProcesosUsuario" 
+                                        rendered="#{cargarReporteBean.itemsArchivosUsuarioLogin.size() > 0}"
+                                        value="#{cargarReporteBean.itemsArchivosUsuarioLogin}"
+                                        var="item2" styleClass="constructGTable" 
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="NombreProceso"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item2.nombreArchivoCargue}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Fecha Registro"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item2.fechaRegistro}">
+                                            <f:convertDateTime pattern="yyyy-MM-dd hh:mm:ss a" 
+                                                               timeZone="America/Bogota"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Total Registros Cargados"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item2.cantidadTotal}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Total Registros procesados"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item2.cantidadProcesada}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Exportar Xls"/>
+                                        </f:facet>
+                                        <h:commandLink id="exportar"
+                                                       styleClass="unblockClaro"
+                                                       value="Exportar xls" title="Exportar xls"
+                                                       actionListener="#{cargarReporteBean.
+                                                                         exportarProcesoBD(item2)}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Archivo TCRM"/>
+                                        </f:facet>
+                                        <h:commandLink id="exportarTcrm" rendered="#{cargarReporteBean.
+                                                                         seEnvioArchivoTcrm(item2)}"
+                                                       styleClass="unblockClaro"
+                                                       value="Ver Archivo" title="Ver Archivo"
+                                                       actionListener="#{cargarReporteBean.
+                                                                         descargarArchivoTcrm(item2)}"/>
+                                    </h:column>
+                                    
+                                     <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Archivo EOC/BCSC"/>
+                                        </f:facet>
+                                        <h:commandLink id="exportarEoc" rendered="#{cargarReporteBean.
+                                                                         seEnvioArchivoEOC_BCSC(item2)}"
+                                                       styleClass="unblockClaro"
+                                                       value="Ver Archivo" title="Ver Archivo"
+                                                       actionListener="#{cargarReporteBean.descargarArchivoEOC_BCSC(item2)}"/>
+                                    </h:column>
+                                    
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Revertir Cambios"/>
+                                        </f:facet>
+                                        <h:commandLink id="revertirId" styleClass="unblockClaro"
+                                                       rendered="#{cargarReporteBean.validarRevertirCambios(item2)}"
+                                                       value="Revertir Cambios" title="Revertir Cambios"
+                                                       actionListener="#{cargarReporteBean.revertirCambios(item2)}">
+                                        </h:commandLink> 
+                                    </h:column>
+
+                              <f:facet name="footer" >
+                                  <h:panelGroup>
+                                      <div style="text-align: center;">
+                                          <h:commandButton title="Primera Página" value=""
+                                                           class="botonTPagInicioCm botonBaselista" action="#{cargarReporteBean.pageFirstCap()}">
+                                          </h:commandButton>
+                                          <h:commandButton title="Página Anterior" value=""
+                                                           class="botonTPagAnteriorCm botonBaselista" action="#{cargarReporteBean.pagePreviousCap()}">
+                                          </h:commandButton>
+                                          <h:commandButton title="Número Páginas" value="#{cargarReporteBean.pageActualCap}" styleClass="botonTPagInicio"/>
+                                          <h:selectOneMenu id="listTabla" value="#{cargarReporteBean.numPaginaCap}" 
+                                                           styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                              <f:selectItems value="#{cargarReporteBean.paginaListcap}" var="pag"
+                                                             itemValue="#{pag}"
+                                                             itemLabel="#{pag}"/>
+                                              <f:ajax render="idtableProcesosUsuario" event="change"
+                                                      listener="#{cargarReporteBean.irPaginaCap()}"
+                                                      execute="@this" />
+                                          </h:selectOneMenu>
+                                          <h:commandButton  title="Página Siguiente" value="" 
+                                                            class="botonTPagSiguienteCm botonBaselista" action="#{cargarReporteBean.pageNextCap()}">
+                                          </h:commandButton>
+                                          <h:commandButton title="Última Página" value=""
+                                                           class="botonTPagFinCm botonBaselista" action="#{cargarReporteBean.pageLastCap()}">
+                                          </h:commandButton>
+                                      </div>
+                                  </h:panelGroup>
+                              </f:facet> 
+								
+                                </h:dataTable>
+                    </h:panelGroup>
+                    
+                    
+                     <h:panelGroup id="panelRespuesta" style="width: 500px;">
+                    <div id="dialogRespuesta" title="Mensaje"
+                         style="display: none;width: 500px;">
+                        <h:outputText value="#{cargarReporteBean.mensajeReversion}"/>
+                   <h:commandButton value="Descargar" action="#{cargarReporteBean.exportExcelResultReverter}"
+                                     styleClass="buttonl" style="text-align: center; color:#FFFFFF;">
+                   </h:commandButton>
+                    </div>
+                </h:panelGroup>
+					
+                </h:form>
+		<h:outputScript name="vendor/jquery/jquery.min.js"/>
+		<script>
+                    $(document).ready(function(){
+                        if(#{cargarReporteBean.mensajeFinalizado}===true ){
+                            controlDeGeneracionDeReporte();                                     
+                            var obj=document.getElementById('form_action:registroProcesados');
+                            obj.click();		 
+                        }
+                        validarRolBtnSubirArchivo();
+                    });
+                </script>
+            </ui:define>    
+        </ui:composition>
+    </body>
+</html>

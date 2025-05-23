@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/gestionHhppTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Gestionar HHPP</span></ui:define>
+    <ui:define name="content">
+        #{SolicitudHhppCMBean.cargarHhppCm()}
+        <h:dataTable id="hhppListaId"
+                     styleClass="constructGTable2" 
+                     headerClass="constructGTableHeader" 
+                     style="width: 100%;" 
+                     rowClasses="constructGTableEvenRow, constructGTableOddRow" 
+                     rows="#{SolicitudHhppCMBean.filasPag}" 
+                     value="#{SolicitudHhppCMBean.hhppCmList}" 
+                     var="hhppCm">
+            <f:facet name="header">
+                <h:outputText value="Unidades de la Cuenta Matriz" style="width: 100%; text-align: center"/>
+            </f:facet>
+            <h:column > 
+                <f:facet name="header">
+                    <h:outputText value="Dirección" />
+                </f:facet>
+                <div align="left"  >
+                    <h:outputText value="#{hhppCm.subDireccionObj != null?hhppCm.subDireccionObj.sdiFormatoIgac: (hhppCm.direccionObj != null?hhppCm.direccionObj.dirFormatoIgac:'')}"  />      
+                </div>                                  
+            </h:column>
+            <h:column  > 
+                <f:facet name="header">
+                    <h:outputText value="Dirección RR" />
+                </f:facet>
+                <div align="left"  >
+                    <h:outputText value="#{hhppCm.hhpCalle} | #{hhppCm.hhpPlaca} | #{hhppCm.hhpApart}"  />      
+                </div>                                  
+            </h:column>
+            <h:column  > 
+                <f:facet name="header">
+                    <h:outputText value="Nodo" />
+                </f:facet>
+                <div align="left"  >
+                    <h:outputText value="#{hhppCm.nodId.nodCodigo}"  />      
+                </div>                                  
+            </h:column>
+            <h:column  > 
+                <f:facet name="header">
+                    <h:outputText value="Estrato" />
+                </f:facet>
+                <div align="left"  >
+                    <h:outputText value="#{hhppCm.subDireccionObj != null and hhppCm.subDireccionObj.sdiNivelSocioecono != null? (hhppCm.subDireccionObj.sdiNivelSocioecono eq '0'? 'NR' : hhppCm.subDireccionObj.sdiNivelSocioecono) : (hhppCm.direccionObj != null and hhppCm.direccionObj.dirNivelSocioecono != null ? (hhppCm.direccionObj.dirNivelSocioecono eq '0' ? 'NR' : hhppCm.direccionObj.dirNivelSocioecono) : 'NG')}"/>      
+                </div>                                  
+            </h:column>
+            <h:column  > 
+                <f:facet name="header">
+                    <h:outputText value="Estado" />
+                </f:facet>
+                <div align="left"  >
+                    <h:outputText value="#{hhppCm.ehhId.ehhNombre}"  />      
+                </div>                                  
+            </h:column>
+
+            <h:column  > 
+                <f:facet name="header">
+                    <h:outputText value="N° Cuenta" />
+                </f:facet>
+                <div align="left"  >
+                    <h:outputText value="#{hhppCm.cuenta}" />
+                </div>                                  
+            </h:column>
+            <f:facet name="footer">
+                <h:panelGroup>
+                    <h:commandButton  class="botonTPagInicioCm botonBaselista">
+                    <f:ajax  render="hhppListaId" execute="@this" 
+                             event="click" listener="#{SolicitudHhppCMBean.pageFirst()}"/>
+                    </h:commandButton>
+                    <h:commandButton  class="botonTPagAnteriorCm botonBaselista">
+                     <f:ajax  render="hhppListaId" execute="@this" 
+                             event="click" listener="#{SolicitudHhppCMBean.pagePrevious()}"/>
+                    </h:commandButton>
+                    <h:commandButton value="#{SolicitudHhppCMBean.pageActual}" />
+                    <h:selectOneMenu id="listTabla" value="#{SolicitudHhppCMBean.numPagina}" 
+                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                        <f:selectItems value="#{SolicitudHhppCMBean.paginaList}" var="pag"
+                                       itemValue="#{pag}"
+                                       itemLabel="#{pag}"/>    
+                        <f:ajax render="hhppListaId"  event="change"  listener="#{SolicitudHhppCMBean.irPagina()}"  execute="@this" />                                         
+                    </h:selectOneMenu>  
+                    <h:commandButton  class="botonTPagSiguienteCm botonBaselista">
+                     <f:ajax  render="hhppListaId" execute="@this" 
+                             event="click" listener="#{SolicitudHhppCMBean.pageNext()}"/>
+                    </h:commandButton>
+                    <h:commandButton  class="botonTPagFinCm botonBaselista">
+                    <f:ajax  render="hhppListaId" execute="@this" 
+                             event="click" listener="#{SolicitudHhppCMBean.pageLast()}"/>
+                    </h:commandButton>
+                </h:panelGroup>
+            </f:facet>
+
+        </h:dataTable>
+        <h:outputText value="&#160;" id="blancohhppCMTable" style="width: 100%"/>
+        <h:dataTable  id="hhppTable"
+                      value="#{SolicitudHhppCMBean.cmtSolicitudHhppMglListToChanges}" 
+                      var="listHhpp"
+                      class="constructGTable tableViewCont"
+                      rendered="#{(SolicitudHhppCMBean.cmtSolicitudHhppMglListToChanges.size())>0}">
+            <f:facet name="header">
+                <h:outputText value="Cambios de la Solicitud" />
+            </f:facet>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="PROCESO"/>
+                </f:facet>
+                <h:outputText value="#{listHhpp.tipoSolicitud == 1 ? 'CREACIÓN' : 'MODIFICACIÓN' }"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Dirección"/>
+                </f:facet>
+                <h:outputText value="#{listHhpp.cmtSubEdificioMglObj.cmtCuentaMatrizMglObj.direccionPrincipal.direccionObj.dirFormatoIgac}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Apartamento"/>
+                </f:facet>
+                <h:outputText value="#{listHhpp.hhppMglObj != null ? listHhpp.hhppMglObj.hhpApart : ''}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="SUBEDIFICIO"/>
+                </f:facet>
+                <h:outputText value="#{listHhpp.cmtSubEdificioMglObj.nombreSubedificio}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="OPCION_NIVEL5"/>
+                </f:facet>
+                <h:outputText value="#{listHhpp.opcionNivel5}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="VALOR_NIVEL5"/>
+                </f:facet>
+                <h:outputText value="#{listHhpp.valorNivel5}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="OPCION_NIVEL6"/>
+                </f:facet>
+                <h:outputText value="#{listHhpp.opcionNivel6}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="VALOR_NIVEL6"/>
+                </f:facet>
+                <h:outputText value="#{listHhpp.valorNivel6}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="TIPO DE VIVIENDA "/>
+                </f:facet>
+                <h:selectOneMenu id="listTabla" value="#{listHhpp.tipoHhpp}" 
+                                 styleClass="ListaConsulta"  style=" width: 20em">
+                <f:selectItems value="#{SolicitudHhppCMBean.listaTipoHhpp}" var="listTipo"
+                                           itemValue="#{listTipo.thhID}"
+                                           itemLabel="#{listTipo.thhID.concat(' - ').concat(listTipo.thhValor)}"/>
+                                                          
+                </h:selectOneMenu>  
+            </h:column>
+            <h:column>
+                <h:commandLink rendered="#{listHhpp.estadoRegistro==1 ? true : false}" 
+                               value="Eliminar" style="font-size: xx-small" 
+                               immediate="true" action="#{SolicitudHhppCMBean.eliminaGesHhpp()}">
+                    <f:setPropertyActionListener 
+                        target="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl}" value="#{listHhpp}" />
+                </h:commandLink>
+                <h:commandLink rendered="#{listHhpp.estadoRegistro==1 ? false : true}" 
+                               value="Restaurar" style="font-size: 12px;" 
+                               immediate="true" action="#{SolicitudHhppCMBean.eliminaGesHhpp()}">
+                    <f:setPropertyActionListener target="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl}" value="#{listHhpp}" />
+                </h:commandLink>
+            </h:column>
+        </h:dataTable>
+    </ui:define>
+</ui:composition>

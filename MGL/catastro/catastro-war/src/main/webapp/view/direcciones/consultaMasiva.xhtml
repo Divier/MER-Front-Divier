@@ -1,0 +1,484 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+    <ui:composition template="/view/template/home.xhtml">
+        <ui:define name="title"><span class="TituloSeccion">Consulta Masiva</span></ui:define>
+        <ui:define name="message"><span class="error">#{consultaMasivaMBean.message}</span></ui:define>
+        <ui:define name="content">
+            <f:view>
+                <h:form id="formulario">
+                    <h:panelGroup id="principal">
+                        <div class="elemento">            
+                            <h:panelGrid rendered="true">
+                                <rich:panel style="width:400px;">
+
+                                    <h:panelGrid id="panelPais">
+                                        <a4j:outputPanel id="paisId">
+                                            <div class="EtiquetaConsulta etiqueta">Pais:</div>
+                                            <div class="elemento">
+                                                <h:selectOneMenu id="lstpaises" value="#{consultaMasivaMBean.dir_pais}" 
+                                                                 styleClass="ListaConsulta"
+                                                                 valueChangeListener="#{consultaMasivaMBean.updateRegionales}">
+                                                    <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.vacio}" />
+                                                    <f:selectItems value="#{consultaMasivaMBean.listPaises}"/>
+                                                    <a4j:ajax event="change" render="regionalId" execute="@this" />	
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </a4j:outputPanel>
+
+                                        <a4j:outputPanel id="regionalId">
+                                            <div class="EtiquetaConsulta etiqueta">Departamento:</div>
+                                            <div class="elemento">
+                                                <h:selectOneMenu id="lstdeptos" value="#{consultaMasivaMBean.dir_regional}" 
+                                                                 styleClass="ListaConsulta"
+                                                                 valueChangeListener="#{consultaMasivaMBean.updateCiudades}">
+                                                    <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.vacio}" />
+                                                    <f:selectItems value="#{consultaMasivaMBean.listRegionales}"/>
+                                                    <a4j:ajax event="change" render="panelPrincipal, panelPropiedades, panelCruce, ciudadId" execute="@this" />	
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </a4j:outputPanel>
+
+                                        <a4j:outputPanel id="ciudadId">
+                                            <div class="EtiquetaConsulta etiqueta">Ciudad:</div>
+                                            <div class="elemento">
+                                                <h:selectOneMenu id="lstciudades" value="#{consultaMasivaMBean.dir_ciudad}"
+                                                                 styleClass="ListaConsulta"
+                                                                 valueChangeListener="#{consultaMasivaMBean.updateTipoDireccion}">
+                                                    <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.vacio}"/>
+                                                    <f:selectItems id="ssciudades" value="#{consultaMasivaMBean.listCiudades}"/>
+                                                    <a4j:ajax event="change" render="panelPrincipal, panelCruce, tablaResultado" execute="@this" />
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </a4j:outputPanel>
+
+                                    </h:panelGrid>
+                                </rich:panel>
+
+                                <h:panelGrid id="tipoConsultaId" styleClass="panelInfo" columns="3">
+                                    <h:outputLabel value="Tipo de Consulta: " styleClass="EtiquetaConsulta etiqueta"/>                                    
+                                    <h:selectOneMenu id="lstTipoConsulta" value="#{consultaMasivaMBean.dir_tipoConsulta}" styleClass="ListaConsulta" required="true">
+                                        <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.vacio}" />
+                                        <f:selectItem itemValue="#{consultaMasivaMBean.VALUE_CRUCE_DE_CALLES}" itemLabel="#{consultaMasivaMBean.LABEL_CRUCE_DE_CALLES}" />
+                                        <f:selectItem itemValue="#{consultaMasivaMBean.VALUE_PROP_DIR}" itemLabel="#{consultaMasivaMBean.LABEL_PROP_DIR}" />
+                                    </h:selectOneMenu>
+                                    <h:commandButton value="Enviar" id="enviar" action="#{consultaMasivaMBean.doEnviar}" styleClass="buttonl" style="color: #FFFFFF;"></h:commandButton>
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+                            <h:panelGroup  id="panelPrincipal" styleClass="panelInfo" rendered="#{consultaMasivaMBean.showPanelPrincipal}">
+                                <h:panelGroup id="panelCruce" styleClass="panelInfo" rendered="#{consultaMasivaMBean.showPanelCruce}">
+
+                                    <h:panelGrid  id="TipoBogota" columns="2" styleClass="panelInfo"  rendered="#{consultaMasivaMBean.showTipoBogota}">
+                                        <h:outputLabel value="Segmento 1:" styleClass="EtiquetaConsulta etiqueta"/>
+
+                                        <h:panelGrid id="calle" styleClass="panelInfo" columns="6">
+
+                                            <h:selectOneMenu id="lstcalles" value="#{consultaMasivaMBean.son_tcalle}" styleClass="ListaTipoCalle">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="calles" value="#{consultaMasivaMBean.listTCalles}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:inputText id="dirNoEstandarId" title="Número de la calle o carrera" value="#{consultaMasivaMBean.son_calle}" styleClass="CampoNumerico"/>
+
+                                            <h:selectOneMenu id="lstletrasc" value="#{consultaMasivaMBean.son_letraCalle}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="letrasc" value="#{consultaMasivaMBean.listLetras}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu id="lstprefisc" value="#{consultaMasivaMBean.son_prefijoCalle}" styleClass="ListaBis">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="prefijosc" value="#{consultaMasivaMBean.listPrefijos}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu id="lstletrascl" value="#{consultaMasivaMBean.son_letraCalles}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listLetras}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu id="lstcardic2" value="#{consultaMasivaMBean.son_cardinalCalle}" styleClass="ListaCardinalidad">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="cardinalesc2" value="#{consultaMasivaMBean.listCardinales}"/>
+                                            </h:selectOneMenu>
+                                        </h:panelGrid>
+
+                                        <h:outputLabel value="Segmento 2:" styleClass="EtiquetaConsulta etiqueta"/>
+                                        <h:panelGrid id="placa" styleClass="panelInfo" columns="6">
+
+                                            <h:selectOneMenu id="lstcalles2" value="#{consultaMasivaMBean.son_tcalle2}" styleClass="ListaTipoCalle">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="calles2" value="#{consultaMasivaMBean.listTCalles}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:inputText title="Primer número de la placa" value="#{consultaMasivaMBean.son_placa1}" styleClass="CampoNumerico"/>
+
+                                            <h:selectOneMenu id="lstletrasp" value="#{consultaMasivaMBean.son_letraPlaca}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="letrasp" value="#{consultaMasivaMBean.listLetras}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu id="lstprefisp" value="#{consultaMasivaMBean.son_prefijoPlaca}" styleClass="ListaBis">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="prefijosp" value="#{consultaMasivaMBean.listPrefijos}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu id="lstletrasc4" value="#{consultaMasivaMBean.son_letraCalle4}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="letrasc4" value="#{consultaMasivaMBean.listLetras}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu id="lstcardic" value="#{consultaMasivaMBean.son_cardinalPlaca}" styleClass="ListaCardinalidad">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="cardinalesc" value="#{consultaMasivaMBean.listCardinales}"/>
+                                            </h:selectOneMenu>
+                                        </h:panelGrid>
+                                        <h:commandButton value="Consultar"  
+                                                         actionListener="#{consultaMasivaMBean.doConsultar}" 
+                                                         rendered="#{consultaMasivaMBean.showBotonConsultar}"
+                                                         styleClass="buttonl"
+                                                         style="color:#FFFFFF;"></h:commandButton>
+                                    </h:panelGrid>
+
+                                    <h:panelGrid  id="TipoMedellin" columns="2" styleClass="panelInfo"  rendered="#{consultaMasivaMBean.showTipoMedellin}">
+                                        <h:outputLabel value="Segmento 1:" styleClass="contenidoIzquierdo"/>
+
+                                        <h:panelGrid id="calleMedellin" styleClass="panelInfo" columns="5">
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_tcalle}" styleClass="ListaTipoCalle">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems  value="#{consultaMasivaMBean.listTCalles}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:inputText title="Número de la calle o carrera" value="#{consultaMasivaMBean.son_calle}" styleClass="CampoNumerico"/>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_letraCalle}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listLetras}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu  value="#{consultaMasivaMBean.son_letraCalle2}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems  value="#{consultaMasivaMBean.listLetras}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_cardinalCalle}" styleClass="ListaCardinalidad">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listCardinales}"/>
+                                            </h:selectOneMenu>
+                                        </h:panelGrid>
+                                        <h:outputLabel value="Segmento 2:" styleClass="contenidoIzquierdo"/>
+
+                                        <h:panelGrid styleClass="panelInfo" columns="5">
+
+                                            <h:selectOneMenu id="lstcalles3" value="#{consultaMasivaMBean.son_tcalle2}" styleClass="ListaTipoCalle">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="calles3" value="#{consultaMasivaMBean.listTCalles}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:inputText title="Primer número de la placa" value="#{consultaMasivaMBean.son_placa1}" styleClass="CampoNumerico"/>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_letraPlaca}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listLetras}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_letraCalle3}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listLetras}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu id="lstcardic3" value="#{consultaMasivaMBean.son_cardinalPlaca}" styleClass="ListaCardinalidad">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="cardinalesc3" value="#{consultaMasivaMBean.listCardinales}"/>
+                                            </h:selectOneMenu>
+                                        </h:panelGrid>
+                                        <h:commandButton value="Consultar"  
+                                                         actionListener="#{consultaMasivaMBean.doConsultar}" 
+                                                         rendered="#{consultaMasivaMBean.showBotonConsultar}"
+                                                         styleClass="buttonl"
+                                                         style="color:#FFFFFF;"></h:commandButton>
+                                    </h:panelGrid>
+                                    <h:panelGrid  id="TipoCali" columns="2" styleClass="panelInfo"  rendered="#{consultaMasivaMBean.showTipoCali}">
+                                        <h:outputLabel value="Segmento 1:" styleClass="contenidoIzquierdo"/>
+                                        <h:panelGrid styleClass="panelInfo" columns="6">
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_tcalle}" styleClass="ListaTipoCalle">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listTCalles}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:inputText title="Número de la calle o carrera" value="#{consultaMasivaMBean.son_calle}" styleClass="CampoNumerico"/>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_letraCalle}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems  value="#{consultaMasivaMBean.listLetrasyNumeros}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_prefijoCalle}" styleClass="ListaBis">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listPrefijos}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_letraCalles}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listLetras}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_cardinalCalle}" styleClass="ListaCardinalidad">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listCardinales}"/>
+                                            </h:selectOneMenu>
+                                        </h:panelGrid>
+                                        <h:outputLabel value="Segmento 2:" styleClass="contenidoIzquierdo"/>
+                                        <h:panelGrid styleClass="panelInfo" columns="6">
+
+                                            <h:selectOneMenu id="lstcalles4" value="#{consultaMasivaMBean.son_tcalle2}" styleClass="ListaTipoCalle">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="calles4" value="#{consultaMasivaMBean.listTCalles}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:inputText title="Primer número de la placa" value="#{consultaMasivaMBean.son_placa1}" styleClass="CampoNumerico"/>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_letraPlaca}" styleClass="onemenuextrapequeno">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listLetrasyNumeros}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_prefijoPlaca}" styleClass="ListaBis">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listPrefijos}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu value="#{consultaMasivaMBean.son_letraCalle4}" styleClass="ListaLetraNumero">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems value="#{consultaMasivaMBean.listLetras}"/>
+                                            </h:selectOneMenu>
+
+                                            <h:selectOneMenu id="lstcardic4" value="#{consultaMasivaMBean.son_cardinalPlaca}" styleClass="ListaCardinalidad">
+                                                <f:selectItem itemValue="0" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                                <f:selectItems id="cardinalesc4" value="#{consultaMasivaMBean.listCardinales}"/>
+                                            </h:selectOneMenu>
+                                        </h:panelGrid>
+                                        <h:commandButton value="Consultar"  
+                                                         actionListener="#{consultaMasivaMBean.doConsultar}" 
+                                                         rendered="#{consultaMasivaMBean.showBotonConsultar}"
+                                                         styleClass="buttonl"
+                                                         style="color:#FFFFFF;"></h:commandButton>
+                                    </h:panelGrid>
+                                </h:panelGroup>
+
+                                <h:panelGroup id="panelPropiedades"  rendered="#{consultaMasivaMBean.showPanelPropiedades}">
+                                    <h:panelGrid  id="panelGridPropLabel" columns="2" >
+
+                                        <h:outputLabel value="Barrio:" styleClass="EtiquetaConsulta"/>
+                                        <h:inputText  value="#{consultaMasivaMBean.con_barrio}" styleClass="TextoConsulta"/>
+
+                                        <h:outputLabel value="Estrato:" styleClass="EtiquetaConsulta"/>
+                                        <h:selectOneMenu value="#{consultaMasivaMBean.con_estrato}" styleClass="ListaBis">
+                                            <f:selectItem itemValue="" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                            <f:selectItems value="#{consultaMasivaMBean.listEstratos}"/>
+                                        </h:selectOneMenu>
+
+                                        <h:outputLabel value="N. Socio Económico:" styleClass="EtiquetaConsulta"/>
+                                        <h:selectOneMenu value="#{consultaMasivaMBean.con_nivelSocio}" styleClass="ListaBis">
+                                            <f:selectItem itemValue="" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                            <f:selectItems value="#{consultaMasivaMBean.listNivelSocio}"/>
+                                        </h:selectOneMenu>
+
+
+
+                                        <h:outputLabel value="Nodo BI:" styleClass="EtiquetaConsulta"/>
+                                        <h:selectOneMenu value="#{consultaMasivaMBean.con_nodoUno}" styleClass="ListaTipoCalle">
+                                            <f:selectItem itemValue="" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                            <f:selectItems value="#{consultaMasivaMBean.listNodoUno}"/>
+                                        </h:selectOneMenu>
+
+                                        <h:outputLabel value="Nodo UniUno :" styleClass="EtiquetaConsulta"/>
+                                        <h:selectOneMenu value="#{consultaMasivaMBean.con_nodoDos}" styleClass="ListaTipoCalle">
+                                            <f:selectItem itemValue="" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                            <f:selectItems value="#{consultaMasivaMBean.listNodoDos}"/>
+                                        </h:selectOneMenu>
+
+                                        <h:outputLabel value="Nodo UniDos:" styleClass="EtiquetaConsulta"/>
+                                        <h:selectOneMenu value="#{consultaMasivaMBean.con_nodoTres}" styleClass="ListaTipoCalle">
+                                            <f:selectItem itemValue="" itemLabel="#{consultaMasivaMBean.seleccionar}"/>
+                                            <f:selectItems value="#{consultaMasivaMBean.listNodoTres}"/>
+                                        </h:selectOneMenu>
+
+                                        <h:commandButton value="Consultar"  
+                                                         actionListener="#{consultaMasivaMBean.doConsultar}" 
+                                                         styleClass="buttonl"
+                                                         style="color:#FFFFFF;"></h:commandButton>
+                                    </h:panelGrid>
+                                </h:panelGroup>
+                            </h:panelGroup>
+
+                        </div>
+                        <div class="elemento">
+                            <!--Panel de Tabla de resultados-->
+                            <h:panelGroup id="tablaResultado" rendered="#{consultaMasivaMBean.showTablaResultado}">
+                                <h:panelGrid id="rtaSencilla" columns="1">
+                                    <rich:dataTable id="tablaRes" var="consulta" value="#{consultaMasivaMBean.listConsultamasiva}" 
+                                                    rowKeyVar="numeroRegistro" 
+                                                    styleClass="altrowstable" 
+                                                    rendered="true"
+                                                    rows="10">
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Ciudad" id="ot2a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.cm_ciudad}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Barrio" id="ot3a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.cm_barrio}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <rich:column width="300">
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Dirección" id="ot4a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.cm_direccion}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <!--Inicio Modificacion Ivan Turriago-->
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Nivel Económico" id="ot5a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.cm_nivelSocio}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Estrato" id="ot6a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.cm_estrato}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Actividad económica" id="ot7a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.actividadEconomica}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Código Manzana" id="ot8a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.cmDirManzanaCatastral}" style="font-size: 10px;"/>
+                                        </rich:column> 
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Dirección Alterna" id="ot9a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.direccionAlterna}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Existencia" id="ot10a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.existencia}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Presición" id="ot11a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.cm_confiabilidad}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <!--Fin Modificacion Ivan Turriago-->
+                                        <!--Inicio Modificacion Fase I nodos Carlos Villamil V 1.1 -->
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Nodo Bi" id="ot12a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.nodoUno}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Nodo UniUno" id="ot13a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.nodoDos}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">
+                                                <h:outputLabel value="Nodo UniDos" id="ot14a" style="font-size: 10px;" />
+                                            </f:facet>
+                                            <h:outputText value="#{consulta.nodoTres}" style="font-size: 10px;"/>
+                                        </rich:column>
+                                        <!--Fin Modificacion Fase I nodos Carlos Villamil V 1.1 -->
+
+                                        <!--
+                                        <rich:column>
+                                            <f:facet name="header">Cuenta matriz</f:facet>
+                                            <h:outputText value="#{consulta.cm_cuentaMatriz}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">HHPP</f:facet>
+                                            <h:outputText value="#{consulta.cm_flagHhpp}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Tipo Red</f:facet>
+                                            <h:outputText value="#{consulta.cm_tipoRed}" />    
+                                        </rich:column> 
+                                        <rich:column>
+                                            <f:facet name="header">Nodo</f:facet>
+                                            <h:outputText value="#{consulta.cm_nodo}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Estado HHPP</f:facet>
+                                            <h:outputText value="#{consulta.cm_estadoHhpp}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Area</f:facet>
+                                            <h:outputText value="#{consulta.cm_nodoArea}" />    
+                                        </rich:column> 
+                                        <rich:column>
+                                            <f:facet name="header">Distrito</f:facet>
+                                            <h:outputText value="#{consulta.cm_nodoDistrito}" />
+                                        </rich:column>
+    
+                                        <rich:column>
+                                            <f:facet name="header">Divisional</f:facet>
+                                            <h:outputText value="#{consulta.cm_nodoDivisional}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header">Unidad gestion</f:facet>
+                                            <h:outputText value="#{consulta.cm_nodoUnidadGestion}" />    
+                                        </rich:column> 
+                                        <rich:column>
+                                            <f:facet name="header">Zona</f:facet>
+                                            <h:outputText value="#{consulta.cm_nodoZona}" />    
+                                        </rich:column> 
+                                        -->
+                                        <f:facet name="footer">
+                                            <rich:dataScroller id="sc2" for="tablaRes" rendered="#{consultaMasivaMBean.showTablaResultado}"
+                                                               page="#{consultaMasivaMBean.scrollerPage}" renderIfSinglePage="true"
+                                                               stepControls="show" boundaryControls="auto" maxPages="5" fastControls="auto" fastStep="5">
+                                                <f:facet name="first">
+                                                    <h:outputText value="Primero"/>
+                                                </f:facet>
+                                                <f:facet name="last">
+                                                    <h:outputText value="Ultimo"/>
+                                                </f:facet>
+                                            </rich:dataScroller>
+                                        </f:facet>  
+                                    </rich:dataTable>
+                                </h:panelGrid>
+                                <h:commandButton value="Exportar a CSV" id="exportar" 
+                                                 action="#{consultaMasivaMBean.doExportSelectedDataToCSV}" 
+                                                 rendered="#{consultaMasivaMBean.showBotonExportar}"
+                                                 styleClass="buttonl"
+                                                 style="color:#FFFFFF;"></h:commandButton>
+                                
+                            </h:panelGroup>
+                        </div>
+                    </h:panelGroup>
+                </h:form>
+            </f:view>
+        </ui:define> 
+    </ui:composition>
+</ui:composition>

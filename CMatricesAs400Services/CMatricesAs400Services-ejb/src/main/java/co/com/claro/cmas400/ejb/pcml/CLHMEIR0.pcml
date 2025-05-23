@@ -1,0 +1,23 @@
+<pcml version="4.0">                                                              
+    <!-- RPG module: CLHMEIR0  -->                                                
+    <!-- created: 2019-04-16-08.59.50 -->
+    <!-- old source: JSEGURA/QDSCLARO(INSHOMEPS) -->
+    <!-- source: JSEGURA/QDSCLARO(CLHMEIR0) -->                                   
+    <!-- 2700 -->                                                                  
+    <program name="CLHMEIR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CLHMEIR0.PGM">                           
+        <data name="IDPRC" type="char" length="1" usage="inputoutput" />            
+        <data name="IDUSER" type="char" length="10" usage="inputoutput" />          
+        <data name="DATEIN" type="char" length="8" usage="inputoutput" />
+        <data name="HOURIN" type="char" length="6" usage="inputoutput" />
+        <data name="DATEEN" type="char" length="8" usage="inputoutput" />           
+        <data name="HOUREN" type="char" length="6" usage="inputoutput" />           
+        <data name="CTDRGE" type="char" length="10" usage="inputoutput" />          
+        <data name="CTDRGR" type="char" length="10" usage="inputoutput" />
+        <data name="CTDRGS" type="char" length="10" usage="inputoutput" />      
+        <data name="UNAKY#" type="char" length="9" usage="inputoutput" />           
+        <data name="ARRUNKY" type="char" length="9000" usage="inputoutput" />       
+        <data name="IDENDM" type="char" length="7" usage="inputoutput" />           
+        <data name="ENDMSG" type="char" length="200" usage="inputoutput" />         
+    </program>                                                                     
+</pcml>
+

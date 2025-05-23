@@ -1,0 +1,56 @@
+<pcml version="4.0">
+   <!-- RPG program: CMCEDFR0  -->
+   <!-- created: 2014-09-18-17.10.17 -->
+   <!-- source: CMWEBF0/QRPGLESRC(CMCEDFR0) -->
+   <!-- 49 -->
+   <program name="CMCEDFR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMCEDFR0.PGM">
+      <data name="PACODG" type="char" length="9" usage="inputoutput" />
+      <data name="PNNIED" type="char" length="75" usage="inputoutput" />
+      <data name="PNNOTI" type="char" length="30" usage="inputoutput" />
+      <data name="PNCALL" type="char" length="25" usage="inputoutput" />
+      <data name="PNCCLL" type="char" length="6" usage="inputoutput" />
+      <data name="PNESTA" type="char" length="20" usage="inputoutput" />
+      <data name="XNTEL1" type="char" length="10" usage="inputoutput" />
+      <data name="XNTEL2" type="char" length="10" usage="inputoutput" />
+      <data name="PNDIR1" type="char" length="50" usage="inputoutput" />
+      <data name="PNDIR2" type="char" length="50" usage="inputoutput" />
+      <data name="PNCONT" type="char" length="40" usage="inputoutput" />
+      <data name="PNADMN" type="char" length="40" usage="inputoutput" />
+      <data name="XNCADM" type="char" length="4" usage="inputoutput" />
+      <data name="PNASCE" type="char" length="34" usage="inputoutput" />
+      <data name="XNCASC" type="char" length="4" usage="inputoutput" />
+      <data name="WCONVE" type="char" length="1" usage="inputoutput" />
+      <data name="PNHEAD" type="char" length="8" usage="inputoutput" />
+      <data name="PNHEAD" type="char" length="2" usage="inputoutput" />
+      <data name="PNNODO" type="char" length="8" usage="inputoutput" />
+      <data name="PNGRID" type="char" length="3" usage="inputoutput" />
+      <data name="XNTUNI" type="char" length="7" usage="inputoutput" />
+      <data name="XNHOPA" type="char" length="7" usage="inputoutput" />
+      <data name="XNNUTR" type="char" length="5" usage="inputoutput" />
+      <data name="WTRAPE" type="char" length="1" usage="inputoutput" />
+      <data name="BLDCDE" type="char" length="3" usage="inputoutput" />
+      <data name="BLCCDE" type="char" length="3" usage="inputoutput" />
+      <data name="PNNBAR" type="char" length="25" usage="inputoutput" />
+      <data name="XDFECR" type="char" length="8" usage="inputoutput" />
+      <data name="XNFUTR" type="char" length="8" usage="inputoutput" />
+      <data name="XDFEMO" type="char" length="8" usage="inputoutput" />
+      <data name="PANUTR" type="char" length="5" usage="inputoutput" />
+      <data name="PNDIR3" type="char" length="50" usage="inputoutput" />
+      <data name="PNDIR4" type="char" length="50" usage="inputoutput" />
+      <data name="PNBLC1" type="char" length="30" usage="inputoutput" />
+      <data name="PNBLC2" type="char" length="30" usage="inputoutput" />
+      <data name="PNBLC3" type="char" length="30" usage="inputoutput" />
+      <data name="PNBLC4" type="char" length="30" usage="inputoutput" />
+      <data name="PNTESN" type="char" length="20" usage="inputoutput" />
+      <data name="PNTPDN" type="char" length="20" usage="inputoutput" />
+      <data name="XNCOAP" type="char" length="15" usage="inputoutput" />
+      <data name="XALMET" type="char" length="15" usage="inputoutput" />
+      <data name="XALCUM" type="char" length="8" usage="inputoutput" />
+      <data name="XOGTOT" type="char" length="4" usage="inputoutput" />
+      <data name="XENTAT" type="char" length="15" usage="inputoutput" />
+      <data name="EDUSCR" type="char" length="10" usage="inputoutput" />
+      <data name="EDUSMO" type="char" length="10" usage="inputoutput" />
+      <data name="WMSTYP" type="char" length="1" usage="inputoutput" />
+      <data name="PNERRO" type="char" length="20" usage="inputoutput" />
+   </program>
+</pcml>

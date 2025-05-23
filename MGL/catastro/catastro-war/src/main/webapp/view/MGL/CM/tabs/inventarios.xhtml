@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <body>
+        <ui:composition template="/view/MGL/template/cm.xhtml">
+            <ui:define name="content">
+                <h:messages id="messages"  globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/> 
+                <div align="justify">
+                    <h2 id="myhMmData">Inventario de equipos [#{inventarioTecnologiaBean.cmtSubEdificioMgl.nombreSubedificio}]</h2>
+                    <h:panelGrid   style="width: 100%"> 
+                        <h:panelGrid id="listaInventario"  style="width: 100%"  >
+                            <h:dataTable id="inventarioTecnologiaMglTable"  class="tablefeel "
+                                         value="#{inventarioTecnologiaBean.listCmtInventariosTecnologiaMgl}" var="inventarioTecMgl" rows="10"                         
+                                         style="width: 100%;"
+                                         >
+                                <h:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Tipo de Equipo" /><BR/>
+                                        <h:inputText maxlength="50" id="tipoEquipo" style="width: 100px" value="#{inventarioTecnologiaBean.filtroConsultaInventarioTecDto.tipoInv}">
+                                            <f:ajax listener="#{inventarioTecnologiaBean.findByFiltro}" event="change" execute="@this" render="inventarioTecnologiaMglTable"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <div align="left"  >
+                                        <h:outputText value="#{inventarioTecMgl.tipoInventario}"  />      
+                                    </div>                                  
+                                </h:column>
+                                <h:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Tecnología" /><BR/>
+                                        <h:inputText maxlength="50" id="tecnologia" style="width: 100px" value="#{inventarioTecnologiaBean.filtroConsultaInventarioTecDto.tecnologia}">
+                                            <f:ajax listener="#{inventarioTecnologiaBean.findByFiltro}" event="change" execute="@this" render="inventarioTecnologiaMglTable"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <div align="left"  >
+                                        <h:outputText value="#{inventarioTecMgl.tecnoSubedificioId.basicaIdTecnologias.nombreBasica}"  />      
+                                    </div>                                  
+                                </h:column>
+                                <h:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Torre" /><BR/>
+                                        <h:inputText maxlength="50" id="torre" style="width: 100px" value="#{inventarioTecnologiaBean.filtroConsultaInventarioTecDto.torre}">
+                                            <f:ajax listener="#{inventarioTecnologiaBean.findByFiltro}" event="change" execute="@this" render="inventarioTecnologiaMglTable"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <div align="left"  >
+                                        <h:outputText value="#{inventarioTecMgl.tecnoSubedificioId.subedificioId.nombreSubedificio}"  />      
+                                    </div>                                  
+                                </h:column>
+                                <h:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Fabricante" /><BR/>
+                                        <h:inputText maxlength="50" id="Fabricante" style="width: 100px" value="#{inventarioTecnologiaBean.filtroConsultaInventarioTecDto.fabricante}">
+                                            <f:ajax listener="#{inventarioTecnologiaBean.findByFiltro}" event="change" execute="@this" render="inventarioTecnologiaMglTable"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <div align="left"  >
+                                        <h:outputText value="#{inventarioTecMgl.fabricante}"  />      
+                                    </div>                                  
+                                </h:column>
+                                <h:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Clase de Inventario" /><BR/>
+                                        <h:inputText maxlength="50" id="clase" style="width: 100px" value="#{inventarioTecnologiaBean.filtroConsultaInventarioTecDto.claseInv}">
+                                            <f:ajax listener="#{inventarioTecnologiaBean.findByFiltro}" event="change" execute="@this" render="inventarioTecnologiaMglTable"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <div align="left"  >
+                                        <h:outputText value="#{inventarioTecMgl.claseInventario}"  />      
+                                    </div>                                  
+                                </h:column>
+                                <h:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Serial" /><BR/>
+                                        <h:inputText maxlength="50" id="serial" style="width: 100px" value="#{inventarioTecnologiaBean.filtroConsultaInventarioTecDto.serial}">
+                                            <f:ajax listener="#{inventarioTecnologiaBean.findByFiltro}" event="change" execute="@this" render="inventarioTecnologiaMglTable"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <div align="left"  >
+                                        <h:outputText value="#{inventarioTecMgl.serial}"  />      
+                                    </div>                                  
+                                </h:column>
+                                <h:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Mac" /><BR/>
+                                        <h:inputText maxlength="50" id="mac" style="width: 100px" value="#{inventarioTecnologiaBean.filtroConsultaInventarioTecDto.mac}">
+                                            <f:ajax listener="#{inventarioTecnologiaBean.findByFiltro}" event="change" execute="@this" render="inventarioTecnologiaMglTable"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <div align="left"  >
+                                        <h:outputText value="#{inventarioTecMgl.mac}"  />      
+                                    </div>                                  
+                                </h:column>
+                                <h:column> 
+                                    <f:facet name="header">
+                                        <h:outputText value="Estado" /><BR/>
+                                        <h:selectOneMenu id="estadoConsulta"   
+                                                         styleClass="ListaConsulta"
+                                                         style="width: 61px"
+                                                         value="#{inventarioTecnologiaBean.filtroConsultaInventarioTecDto.estado}">
+                                            <f:selectItem itemValue="1" itemLabel="Activo" />
+                                            <f:selectItem itemValue="0" itemLabel="Inhabilitado" />
+                                            <f:ajax listener="#{inventarioTecnologiaBean.findByFiltro}" event="change" execute="@this" render="inventarioTecnologiaMglTable"/>
+                                        </h:selectOneMenu>
+                                    </f:facet>
+                                    <div align="left"  >
+                                        <h:outputText value="#{inventarioTecMgl.estado}"  />      
+                                    </div>                              
+                                </h:column>
+
+
+                                <f:facet name="footer" >
+                                    <div class="pagination2">
+                                        <h:panelGroup>
+                                            <h:commandButton value= "&#171;"  action="#{inventarioTecnologiaBean.pageFirst}" />
+                                            <h:commandButton  value= "&#60;" action="#{inventarioTecnologiaBean.pagePrevious}" />
+                                            <h:commandButton value="#{inventarioTecnologiaBean.pageActual}" />
+                                            <h:selectOneMenu  value="#{inventarioTecnologiaBean.numPagina}"  >
+                                                <f:selectItems value="#{inventarioTecnologiaBean.paginaList}" var="pag"
+                                                               itemValue="#{pag}"
+                                                               itemLabel="#{pag}"/>    
+                                                <f:ajax render="@form"  event="change"  listener="#{inventarioTecnologiaBean.irPagina()}"  execute="@this" />                                         
+                                            </h:selectOneMenu>  
+                                            <h:commandButton  value= "&#62;" action="#{inventarioTecnologiaBean.pageNext}" />
+                                            <h:commandButton  value= "&#187;" action="#{inventarioTecnologiaBean.pageLast}" />
+                                        </h:panelGroup>
+                                    </div>
+                                </f:facet>        
+                            </h:dataTable>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>
+

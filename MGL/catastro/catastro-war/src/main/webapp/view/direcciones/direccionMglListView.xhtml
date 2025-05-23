@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/template/home.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Administrador direccion</span></ui:define>
+    <ui:define name="message"><span class="error"> #{direccionMglBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <link  rel="stylesheet" type="text/css" href="/Visitas_Tecnicas/resources/stylesheet.css"/>    
+        <script>
+            function bigImg(x) {
+                x.style.background = "url('../img/buttonl_.png')";
+
+            }
+
+            function normalImg(x) {
+                x.style.background = "url('../img/buttonl.png')";
+
+            }
+        </script>
+        <h:form id="form1">
+
+            <h:panelGrid columns="1"> 
+                <h:commandButton value="Nuevo" action="#{direccionMglBean.nuevodireccionMgl()}" styleClass="buttonl" style="text-align: center; color:#FFFFFF;">
+                </h:commandButton>
+            </h:panelGrid>
+
+            <h:panelGrid columns="4">             
+                <h:outputText value="Departamento:" id="geoGpo_idlb"  style="align:right;  font-size: 12px"   />                   
+                <h:selectOneMenu  
+                    id="geoGpo_idselect" value="#{direccionMglBean.geoPolitico}" 
+                    styleClass="ListaConsulta"  style=" z-index: 5000; "  >
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{direccionMglBean.dptoList}" var="dpto"
+                                   itemValue="#{dpto.gpoId}"
+                                   itemLabel="#{dpto.gpoNombre}"/>   
+                    <f:ajax event="change" render="form1" listener="#{direccionMglBean.consultarCiudades()}"/>
+                </h:selectOneMenu>
+                <h:outputText value="Ciudad:" id="ciudad_lb"  style="align:right; font-size: 12px"  />
+                <h:selectOneMenu   
+                    id="ciudad_select" value="#{direccionMglBean.geoPoliticoCiudad}"  
+                    styleClass="ListaConsulta"  style=" z-index: 5000; "  >
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{direccionMglBean.ciudadList}" var="ciudad"
+                                   itemValue="#{ciudad.gpoId}"
+                                   itemLabel="#{ciudad.gpoNombre}"/>                
+                </h:selectOneMenu> 
+
+                <h:outputText value="Buscar por Direccion:" id="geo_nombrelb"  style="align:right;  font-size: 12px"  />
+                <h:inputText  id="direccionNombre" value="#{direccionMglBean.direccion}"                           
+                              style="align:right;  z-index: 1000;"  >                
+                </h:inputText>                
+                <h:commandButton value="Filtrar" action="#{direccionMglBean.buscarByDireccion()}" styleClass="buttonl" 
+                                 style="text-align: center; color:#FFFFFF;  z-index: 1000;   "/>
+            </h:panelGrid>
+
+            <table style="width: 766px; ">
+                <tr style=" text-align: left;"><td>
+                        <div style=" width: 766px; overflow:scroll; " >
+                            <h:dataTable id="direccionMglTable" 
+                                         binding="#{direccionMglBean.dataTable}"  value="#{direccionMglBean.direccionMglList}" var="direccionMgl" rows="15"                         
+                                         styleClass="solicitudesGTable"  border="1" 
+                                         headerClass="solicitudesGTableHeader"
+                                         rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"    >
+
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Ir" />
+                                    </f:facet>
+                                    <h:commandLink value="Ir" action="#{direccionMglBean.goActualizar()}" >
+
+                                        <f:setPropertyActionListener target="#{direccionMglBean.idSqlSelected}" value="#{direccionMgl.dirId}" />                                    
+                                    </h:commandLink>
+                                </h:column>
+
+
+
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Tipo Dirección" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.tdiId}" />      </div>                                  
+                                </h:column>
+
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Ubicación" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.ubiId}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Formato_Igac" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirFormatoIgac}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Servicio Información" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirServinformacion}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Dirección No standar" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirNostandar}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Dirección origen" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirOrigen}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Confiabilidad" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirConfiabilidad}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Estrato" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirEstrato}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Nivel socioeconomico" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirNivelSocioecono}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Localidad" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirLocalidad}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Manzana catastral" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirManzanaCatastral}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Manzana" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirManzana}" />      </div>                                  
+                                </h:column>
+
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Revisar" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirRevisar}" />      </div>                                  
+                                </h:column>                              
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Actividad economica" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirActividadEcono}" />      </div>                                  
+                                </h:column>                                
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Comentario socioeconomico" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirComentarioSocioeconomico}" />      </div>                                  
+                                </h:column>                                
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Nodo uno" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirNodouno}" />      </div>                                  
+                                </h:column>                                
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Nodo dos" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirNododos}" />      </div>                                  
+                                </h:column>                               
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Nodo tres" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccionMgl.dirNodotres}" />      </div>                                  
+                                </h:column>
+
+
+                                <f:facet name="footer">
+                                    <h:panelGroup>
+                                        <h:commandButton value="Ini" action="#{direccionMglBean.pageFirst}"
+                                                         disabled="#{direccionMglBean.dataTable.first == 0}" styleClass="buttonl" style="color:#FFFFFF;"/>
+                                        <h:commandButton value="Ant" action="#{direccionMglBean.pagePrevious}"
+                                                         disabled="#{direccionMglBean.dataTable.first == 0}" styleClass="buttonl" style="color:#FFFFFF;"/>
+
+
+                                        <h:commandButton value="#{direccionMglBean.pageActual}" styleClass="botonTPagInicio"    />
+
+                                        <h:selectOneMenu id="listTabla" value="#{direccionMglBean.numPagina}" 
+                                                         styleClass="ListaConsulta" style="width: 40px; height:19px;"
+                                                         valueChangeListener="#{direccionMglBean.irPagina}"    >
+                                            <f:selectItems value="#{direccionMglBean.paginaList}" var="pag"
+                                                           itemValue="#{pag}"
+                                                           itemLabel="#{pag}"/>    
+                                            <a4j:ajax event="change" render="form1" execute="@this" />                                         
+                                        </h:selectOneMenu>  
+
+
+                                        <h:commandButton value="Sig" action="#{direccionMglBean.pageNext}"
+                                                         disabled="#{direccionMglBean.dataTable.first + direccionMglBean.dataTable.rows
+                                                                     >= direccionMglBean.dataTable.rowCount}" styleClass="buttonl" style="color:#FFFFFF;"/>
+                                        <h:commandButton value="Fin" action="#{direccionMglBean.pageLast}"
+                                                         disabled="#{direccionMglBean.dataTable.first + direccionMglBean.dataTable.rows
+                                                                     >= direccionMglBean.dataTable.rowCount}" styleClass="buttonl" style="color:#FFFFFF;"/>
+                                    </h:panelGroup>
+                                </f:facet>
+
+                            </h:dataTable>  
+
+
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </h:form>
+    </ui:define>
+
+
+</ui:composition>
+

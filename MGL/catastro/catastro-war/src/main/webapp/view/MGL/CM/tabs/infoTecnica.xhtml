@@ -1,0 +1,274 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/infoTecnicaTemplate.xhtml"
+    >
+
+    <ui:define name="title"><span class="TituloSeccion">Información Técnica</span></ui:define>
+    <ui:define name="message"><span class="error"> #{infoTecnicaBean.message}</span></ui:define>
+    <ui:define name="content">
+        <h2 id="myhMmData">Informacion Tecnica [#{infoTecnicaBean.subEdificioMgl.nombreSubedificio}]</h2>
+
+        <h:panelGroup >
+            <fieldset>
+                <legend>Información Técnica </legend>
+                <div id="tableInformacionTecnica">
+                    <table style="width: 100%">
+                        <tr><td></td>
+                            <td>  </td>
+                            <td>    <h:outputText  escape="false" value="#{infoTecnicaBean.estiloObligatorio}Tecnología"  rendered="#{infoTecnicaBean.cargar}" />
+                                
+                                <h:selectOneMenu  rendered="#{infoTecnicaBean.cargar}" 
+                                                  value="#{infoTecnicaBean.tecnologiaSubId}"    disabled="#{infoTecnicaBean.disableTecno}"  
+                                                  style="width: 75%;">
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{infoTecnicaBean.lsCmtTecnologiaSubMgls}" var="tecnoSub" 
+                                                   itemLabel="#{tecnoSub.basicaIdTecnologias.nombreBasica}"
+                                                   itemValue="#{tecnoSub.tecnoSubedificioId}" />   
+                                    
+                                    <f:ajax event="change" 
+                                            execute="@form" 
+                                            listener="#{infoTecnicaBean.escribeNombreCobertura(infoTecnicaBean.tecnologiaSubId)}" 
+                                          render="nodos"/>
+                                </h:selectOneMenu> 
+
+                                <h:selectOneMenu  rendered="#{!infoTecnicaBean.cargar}" 
+                                                  value="#{infoTecnicaBean.tecnologiaSubUpdateID}"  disabled="#{infoTecnicaBean.disableTecno}"   
+                                                  style="width: 75%;">
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{infoTecnicaBean.lsCmtTecnologiaSubMgls}" var="tecnoSub" 
+                                                   itemLabel="#{tecnoSub.basicaIdTecnologias.nombreBasica}" 
+                                                   itemValue="#{tecnoSub.tecnoSubedificioId}" />   
+
+                                </h:selectOneMenu> 
+                            </td>
+                             <td>    <h:outputText  escape="false" value="#{infoTecnicaBean.estiloObligatorio}Nodo : " />
+                                 <h:outputText id="nodos" value="#{infoTecnicaBean.nodoCobertura}" />  
+                             
+                            </td>
+                            <td> </td>
+                            <td>    <h:outputText  escape="false" value="#{infoTecnicaBean.estiloObligatorio}Nivel 1" />
+                                <h:selectOneMenu  rendered="#{infoTecnicaBean.cargar}" 
+                                                  value="#{infoTecnicaBean.infoTecNivel1}" 
+                                                  style="width: 75%;">
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{infoTecnicaBean.listInfTecN1}" var="infoTecnicaN1" 
+                                                   itemLabel="#{infoTecnicaN1.nombreBasica}" itemValue="#{infoTecnicaN1.basicaId}" />   
+
+                                </h:selectOneMenu> 
+                                <h:selectOneMenu  rendered="#{!infoTecnicaBean.cargar}" 
+                                                  value="#{infoTecnicaBean.infoTecNivel1Update}" 
+                                                  style="width: 75%;">
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{infoTecnicaBean.listInfTecN1}" var="infoTecnicaN1" 
+                                                   itemLabel="#{infoTecnicaN1.nombreBasica}" itemValue="#{infoTecnicaN1.basicaId}" />   
+
+                                </h:selectOneMenu> 
+                            </td>
+                            <td>  </td>
+                            <td>     <h:outputText value="Nivel 2  " />
+                                <h:selectOneMenu  rendered="#{infoTecnicaBean.cargar}" 
+                                                  value="#{infoTecnicaBean.infoTecNivel2}" 
+                                                  style="width: 75%;">
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{infoTecnicaBean.listInfTecN2}" var="infoTecnicaN2" 
+                                                   itemLabel="#{infoTecnicaN2.nombreBasica}" itemValue="#{infoTecnicaN2.basicaId}" />   
+
+                                </h:selectOneMenu> 
+                                <h:selectOneMenu  rendered="#{!infoTecnicaBean.cargar}" 
+                                                  value="#{infoTecnicaBean.infoTecNivel2Update}" 
+                                                  style="width: 75%;">
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{infoTecnicaBean.listInfTecN2}" var="infoTecnicaN2" 
+                                                   itemLabel="#{infoTecnicaN2.nombreBasica}" itemValue="#{infoTecnicaN2.basicaId}" />   
+
+                                </h:selectOneMenu> 
+                            </td>
+                            <td>  </td>
+                            <td>   <h:outputText value="Nivel 3  " />
+                                <h:selectOneMenu  rendered="#{infoTecnicaBean.cargar}" 
+                                                  value="#{infoTecnicaBean.infoTecNivel3}" 
+                                                  style="width: 75%;">
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{infoTecnicaBean.listInfTecN3}" var="infoTecnicaN3" 
+                                                   itemLabel="#{infoTecnicaN3.nombreBasica}" itemValue="#{infoTecnicaN3.basicaId}" />   
+
+                                </h:selectOneMenu> 
+                                <h:selectOneMenu  rendered="#{!infoTecnicaBean.cargar}" 
+                                                  value="#{infoTecnicaBean.infoTecNivel3Update}" 
+                                                  style="width: 75%;">
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{infoTecnicaBean.listInfTecN3}" var="infoTecnicaN3" 
+                                                   itemLabel="#{infoTecnicaN3.nombreBasica}" itemValue="#{infoTecnicaN3.basicaId}" />   
+
+                                </h:selectOneMenu> 
+                            </td>
+                            <td> </td>
+                            <td>   
+                                <h:outputText value="Nivel 4 " />
+                                <h:selectOneMenu  rendered="#{infoTecnicaBean.cargar}" 
+                                                  value="#{infoTecnicaBean.infoTecNivel4}" 
+                                                  style="width: 75%;">
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{infoTecnicaBean.listInfTecN4}" var="infoTecnicaN4" 
+                                                   itemLabel="#{infoTecnicaN4.nombreBasica}" itemValue="#{infoTecnicaN4.basicaId}" />   
+
+                                </h:selectOneMenu> 
+                                <h:selectOneMenu  rendered="#{!infoTecnicaBean.cargar}" 
+                                                  value="#{infoTecnicaBean.infoTecNivel4Update}" 
+                                                  style="width: 75%;">
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{infoTecnicaBean.listInfTecN4}" var="infoTecnicaN4" 
+                                                   itemLabel="#{infoTecnicaN4.nombreBasica}" itemValue="#{infoTecnicaN4.basicaId}" />   
+
+                                </h:selectOneMenu> 
+                            </td>
+                        </tr> 
+
+                    </table>
+                </div>
+            </fieldset>
+              </h:panelGroup>
+            
+            <br></br>
+            <div class="tableContent" >
+                <h:dataTable                               
+                    value="#{infoTecnicaBean.listInfoTecnica}" 
+                    var="tablaInfoTecnica" rows="10"                         
+                    styleClass="constructGTable" 
+                    headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Código" />
+                            </f:facet>
+
+                            <h:commandLink  value="#{tablaInfoTecnica.id}" action="#{infoTecnicaBean.goActualizar(tablaInfoTecnica)}"
+                                            disabled="#{!infoTecnicaBean.rolEditar}" />
+                        </div>                                  
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Tecnología" />
+                            </f:facet>
+                            <h:outputText value="#{tablaInfoTecnica.tecnologiaSubMglObj.basicaIdTecnologias.nombreBasica}" />  
+
+                        </div>                                  
+                    </h:column>
+                        <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Nodo" />  
+                            </f:facet>
+                            <h:outputText value="#{tablaInfoTecnica.tecnologiaSubMglObj.nodoId.nodCodigo}" />  
+
+                        </div>                                  
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Información Técnica nivel 1" />
+                            </f:facet>
+                            <h:outputText value="#{tablaInfoTecnica.basicaIdInfoN1.nombreBasica}" />  
+
+                        </div>                                  
+                    </h:column>
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <f:facet name="header">
+                                    <h:outputText value="Información Técnica nivel 2" />
+                                </f:facet>
+                            </f:facet>
+                            <h:outputText value="#{tablaInfoTecnica.basicaIdInfoN2.nombreBasica}" />  
+
+                        </div>                                  
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <f:facet name="header">
+                                    <h:outputText value="Información Técnica nivel 3" />
+                                </f:facet>
+
+                            </f:facet>
+                            <h:outputText value="#{tablaInfoTecnica.basicaIdInfoN3.nombreBasica}" />  
+
+                        </div>                                  
+                    </h:column>
+
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <f:facet name="header">
+                                    <h:outputText value="Información Técnica nivel 4" />
+                                </f:facet>
+                            </f:facet>
+                            <h:outputText value="#{tablaInfoTecnica.basicaIdInfoN4.nombreBasica}" />  
+                        </div>      
+                    </h:column>
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Acción" />
+                        </f:facet>
+                        <h:commandLink id="Eliminar" 
+                                       title="Eliminar" 
+                                       action="#{infoTecnicaBean.eliminarlInfoTecnica(tablaInfoTecnica)}"
+                                       styleClass="btnIconEliminar"
+                                       onclick="return confirm('¿Est&aacute; seguro de eliminar el registro seleccionado ${tablaInfoTecnica.tecnologiaSubMglObj.basicaIdTecnologias.nombreBasica} ?');"  
+                                       rendered="true"
+                                       disabled="#{!infoTecnicaBean.rolEliminar}"
+                                      >
+                        </h:commandLink>
+                    </h:column>
+                    <f:facet name="footer" >
+                        <h:panelGroup >
+                            <h:commandButton value="" action="#{infoTecnicaBean.pageFirst}"
+                                             class="botonTPagInicioCm botonBaselista"/>
+                            <h:commandButton value="" action="#{infoTecnicaBean.pagePrevious}"
+                                             class="botonTPagAnteriorCm botonBaselista"/>
+                            <h:commandButton value="#{infoTecnicaBean.pageActual}" styleClass="botonTPagInicio"    />
+                            <h:selectOneMenu id="listTabla" value="#{infoTecnicaBean.numPagina}" 
+                                             styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                <f:selectItems value="#{infoTecnicaBean.paginaList}" var="pag"
+                                               itemValue="#{pag}"
+                                               itemLabel="#{pag}"/>    
+                                <f:ajax render="@form"  event="change"  listener="#{infoTecnicaBean.irPagina()}"  execute="@this" />                                         
+                            </h:selectOneMenu>  
+                            <h:commandButton value="" action="#{infoTecnicaBean.pageNext}"
+                                             class="botonTPagSiguienteCm botonBaselista"/>
+                            <h:commandButton value="" action="#{infoTecnicaBean.pageLast}"
+                                             class="botonTPagFinCm botonBaselista"/>
+                        </h:panelGroup>
+                    </f:facet>  
+                </h:dataTable>  
+            </div>
+
+
+            <br></br>
+            <h:panelGrid columns="4" styleClass="panelInfo">
+                <h:panelGroup id="botonesAcciones">
+                    <h:commandButton value="Agregar"   rendered="#{infoTecnicaBean.btnActivo}" action="#{infoTecnicaBean.guardarInfoTec}"  styleClass="btn"  disabled="#{!infoTecnicaBean.rolCrear}"></h:commandButton>
+                    <h:commandButton value="Actualizar"   rendered="#{!infoTecnicaBean.btnActivo}" action="#{infoTecnicaBean.actualizarlInfoTecMgl()}"  styleClass="btn" disabled="#{!infoTecnicaBean.rolEditar}"></h:commandButton>
+
+                </h:panelGroup>
+
+            </h:panelGrid>
+
+      
+
+    </ui:define>
+</ui:composition>
+

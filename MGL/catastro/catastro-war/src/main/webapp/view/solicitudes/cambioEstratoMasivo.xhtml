@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/mainUpload.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">
+        <h:panelGroup styleClass="TituloSeccion">
+            <h:outputText value="Cambio de Estrato Masivo" />
+        </h:panelGroup>
+    </ui:define>
+
+    <ui:define name="message"/>
+
+    <ui:define name="content">
+        <h:panelGroup layout="block" id="content">
+            <h:form prependId="false" id="formCambioEstratoMasivo">
+                <h:panelGrid columns="4" id="panelInformacionGeneral">
+                    <h:outputText value="Usuario: "/>
+                    <h:inputText value="#{cambioEstratoMasivoBean.usuario}" required="true"/>
+
+                    <h:outputText value="Fecha de Cargue: "/>
+
+                    <p:calendar id="dateFecha" 
+                                value="#{cambioEstratoMasivoBean.fechaCargue}"
+                                required="true"
+                                requiredMessage="Campo 'Fecha de Cargue' es requerido"
+                                readonly="true"  
+                                showOn="both">
+                    </p:calendar>        
+
+                    <h:outputText value="Perfil: "/>
+                    <h:inputText value="#{cambioEstratoMasivoBean.perfil}" required="true"/>
+
+                    <h:outputText value="Detalle: "/>
+                    <h:inputTextarea value="#{cambioEstratoMasivoBean.detalle}" required="true"/>
+                </h:panelGrid>
+
+                <h:panelGrid columns="3">
+                    <h:outputText value="Archivo: "/>
+                    <p:fileUpload id="archivoCambioEstrato"
+                                required="true" 
+                                label="Seleccionar Archivo:"
+                                value="#{cambioEstratoMasivoBean.uploadedFile}"
+                                mode="simple" skinSimple="true"/>
+                    <h:commandButton id="botonCargarEstrato" value="Subir Archivo" styleClass="buttonLarge" style="color:#FFFFFF;"
+                                     action="#{cambioEstratoMasivoBean.cargarArchivo}"/>
+                </h:panelGrid>
+
+            </h:form>
+        </h:panelGroup>
+    </ui:define>
+    
+</ui:composition>

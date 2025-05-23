@@ -1,0 +1,220 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:t="http://myfaces.apache.org/tomahawk"              
+                template="/view/MGL/template/otHhppTemplate.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"    
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" >
+    <ui:define name="title"><span class="TituloSeccion">Editar Ot Hhpp</span></ui:define>  
+
+    <ui:define name="content">
+        <h2 style="text-align: center;">EDITOR DE OT</h2>
+        <br/>
+        <h:panelGrid id="panelTabs" class="formulario3"  columns="7" style="margin-top: -20px">
+            <h:commandButton  id="irGeneral"  
+                              class="#{editarOtHhppBean.selectedTab == 'GENERAL' ? 'btn2 btn2Active':'btn2'}" 
+                              value="General"                              
+                              disabled="#{!editarOtHhppBean.selectedTab eq 'GENERAL'}" >            
+                <f:ajax event="click" execute="@this" listener="#{editarOtHhppBean.cambiarTab('GENERAL')}"
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton> 
+            <h:commandButton  id="irAgendamiento" 
+                              class="#{editarOtHhppBean.selectedTab == 'AGENDAMIENTO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Agendamiento"                               
+                              rendered="#{editarOtHhppBean.otHhppSeleccionado.tipoOtHhppId.agendable eq 1 and !editarOtHhppBean.otCerradaAnulada}" >
+                <f:ajax event="click" execute="@this" listener="#{editarOtHhppBean.cambiarTab('AGENDAMIENTO')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irNotas" 
+                              class="#{editarOtHhppBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Notas">
+                <f:ajax event="click" execute="@this" listener="#{editarOtHhppBean.cambiarTab('NOTAS')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+             <h:commandButton  id="irOnyx" 
+                              class="#{editarOtHhppBean.selectedTab == 'ONYX' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Onyx"                               
+                              rendered="#{editarOtHhppBean.otHhppSeleccionado.tipoOtHhppId.requiereOnyx eq 'Y'}" >
+                <f:ajax event="click" execute="@this" listener="#{editarOtHhppBean.cambiarTab('ONYX')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+             <h:commandButton  id="irHistorico" 
+                              class="#{editarOtHhppBean.selectedTab == 'HISTORICO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Histórico Agendas">
+                <f:ajax event="click" execute="@this" listener="#{editarOtHhppBean.cambiarTab('HISTORICO')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irBitacora" 
+                              class="#{editarOtHhppBean.selectedTab == 'BITACORA' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Bitácora">
+                <f:ajax event="click" execute="@this" listener="#{editarOtHhppBean.cambiarTab('BITACORA')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            
+        </h:panelGrid>
+        <h2 style="text-align: center;">EDITAR</h2>
+        <h:panelGrid style="width: 100%" class="formulario3"  id="tabsWrap"> 
+
+            <h:panelGroup style="width: 100%"  id="generalTab" rendered="true">
+
+                <h:panelGrid columns="6" id="contenidoGeneral" cellspacing="10px" class="formulario3" style="width:100%;" > 
+
+                    <h:outputText style="font-weight: bold;" id="numeroOtLabel" value="Número Ot" /> 
+                    <h:inputText disabled="true"  
+                                 id="numeroOtTxt" value="#{editarOtHhppBean.numeroOt}">   
+                    </h:inputText> 
+
+                    <h:outputText style="font-weight: bold;"  id="tipoOt" value="Tipo Ot Dirección:"/>   
+                    <h:selectOneMenu  disabled="true"
+                                      style="width: 145px" id="tipoOtComboBox" value="#{editarOtHhppBean.tipoOtHhppId}" >
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                        <f:selectItems value="#{editarOtHhppBean.tipoOtHhppList}" 
+                                       var="tipoOtHhpp" itemLabel="#{tipoOtHhpp.nombreTipoOt}" 
+                                       itemValue="#{tipoOtHhpp.tipoOtId}"/>
+                    </h:selectOneMenu> 
+
+                    <h:outputText  style="font-weight: bold;" id="contactoLabel" value="Contacto:" /> 
+                    <h:inputText disabled="false"  
+                                 id="contactoTxt" value="#{editarOtHhppBean.nombreContacto}"                                    
+                                 validatorMessage="El campo de Contacto debe contener solo LETRAS.">                                
+                        <f:validateRegex pattern="[a-zA-Z\s]*"/> 
+                    </h:inputText> 
+
+                    <h:outputText  style="font-weight: bold;" id="telefono" value="Teléfono Contacto:" /> 
+                    <h:inputText  disabled="false" id="telfonoContacto" maxlength="10"
+                                  value="#{editarOtHhppBean.telefonoContacto}"                                  
+                                  validatorMessage="El teléfono Contacto debe tener 7 o 10 digitos"
+                                  converterMessage="El teléfono Contacto debe ser numérico.">                            
+                        <f:validateLength minimum="7" maximum="10"/> 
+                        <f:convertNumber integerOnly="true" type="number" pattern="#0" /> 
+                    </h:inputText> 
+
+                    <h:outputText  style="font-weight: bold;" id="correo" value="Correo Contacto:" /> 
+                    <h:inputText disabled="false" id="email" maxlength="50"
+                                 value="#{editarOtHhppBean.correoContacto}" > 
+                    </h:inputText>
+
+                    <h:outputText style="font-weight: bold;" id="fechaCreacion" value="Fecha Creación Ot:"/>   
+                    <h:outputText  id="fechaCrear" value="#{editarOtHhppBean.fechaCreacionOt}" /> 
+
+                    <h:outputText style="font-weight: bold;" id="estadoGeneral" value="Estado General:" /> 
+                    <h:selectOneMenu disabled="#{editarOtHhppBean.otCerradaAnulada}"
+                                     style="width:145px" id="estadoInicial" 
+                                     value="#{editarOtHhppBean.estadoInicial}" >
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                        <f:selectItems value="#{editarOtHhppBean.estadoGeneralList}"  
+                                       var="estadoGeneral" itemLabel="#{estadoGeneral.nombreBasica}" 
+                                       itemValue="#{estadoGeneral.basicaId}"/>  
+                        <f:ajax event="change" execute="estadoInicial"
+                                listener="#{editarOtHhppBean.obtenerEstadoInicialInternoList()}"
+                                render="estadoInicialInterno"/>
+                    </h:selectOneMenu> 
+
+                    <h:outputText style="font-weight: bold;"  id="razonInicial" value="Razón inicial:"/>   
+                    <h:selectOneMenu disabled="#{editarOtHhppBean.otCerradaAnulada}"
+                                     style="width:145px" id="estadoInicialInterno" 
+                                     value="#{editarOtHhppBean.estadoInicialInterno}" >
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                        <f:selectItems value="#{editarOtHhppBean.estadoInicialInternoList}" 
+                                       var="inicialInterno" itemLabel="#{inicialInterno.nombreBasica}" 
+                                       itemValue="#{inicialInterno.basicaId}"/> 
+                    </h:selectOneMenu> 
+                    
+                    <h:outputText style="font-weight: bold;" id="tipoTraOtLabel" value="Tipo de Trabajo:" /> 
+                    <h:inputText disabled="true"  
+                                 id="tipoTraOtTxt" value="#{editarOtHhppBean.tipoOtHhppSeleccionada.tipoTrabajoOFSC.nombreBasica}">   
+                    </h:inputText> 
+
+
+                    <h:outputText style="font-weight: bold;" rendered="#{editarOtHhppBean.showTecnologias}" id="tecnologias" value="Tecnologías:"/>   
+                    <h:selectManyCheckbox layout="pageDirection" disabled="true" rendered="#{editarOtHhppBean.otHhppSeleccionado.tipoOtHhppId.manejaTecnologias eq '1'}"
+                                          id="tecnologiasList" 
+                                          value="#{editarOtHhppBean.tecnologiasSeleccionadas}" >  
+
+                        <f:selectItems value="#{editarOtHhppBean.tecnologiasBasicaList}" 
+                                       var="inicialInterno" itemLabel="#{inicialInterno.nombreBasica}" 
+                                       itemValue="#{inicialInterno.basicaId}" 
+                                       noSelectionValue="#{editarOtHhppBean.check(inicialInterno.basicaId)}"/> 
+                    </h:selectManyCheckbox> 
+                    
+                    
+                    <h:outputText style="font-weight: bold;" rendered="#{editarOtHhppBean.showTecnologias}" id="nodos" value="Nodos:"/>   
+                    <h:selectManyCheckbox layout="pageDirection" disabled="true" rendered="#{editarOtHhppBean.otHhppSeleccionado.tipoOtHhppId.manejaTecnologias eq '1'}"
+                                          id="nodosList" 
+                                          value="#{editarOtHhppBean.nodosSeleccionados}" >  
+
+                        <f:selectItems value="#{editarOtHhppBean.nodosSeleccionados}" 
+                                       var="nodoName" itemLabel="#{nodoName}" 
+                                       itemValue="#{nodoName}" 
+                                       noSelectionValue="true"/> 
+                    </h:selectManyCheckbox> 
+                    
+                    <h:outputText style="font-weight: bold;" id="subTipoTraOtLabel" value="Sub Tipo de OFSC:" /> 
+                    <h:inputText disabled="true"  
+                                 id="subTipoTraOtTxt" value="#{editarOtHhppBean.tipoOtHhppSeleccionada.subTipoOrdenOFSC.nombreBasica}">   
+                    </h:inputText> 
+
+                    <h:outputText style="font-weight: bold;" id="ansLabel" value="ANS:" /> 
+                    <h:inputText disabled="true"  
+                                 id="ansTxt" value="#{editarOtHhppBean.otHhppSeleccionado.ans}">   
+                    </h:inputText> 
+
+                    <h:outputText style="font-weight: bold;" id="slaLabel" value="SLA:" /> 
+                    <h:inputText disabled="true"  
+                                 id="slaTxt" value="#{editarOtHhppBean.tipoOtHhppSeleccionada.ans}">   
+                    </h:inputText> 
+
+                    <h:outputText style="font-weight: bold;" id="nodossele" value="NODO:" rendered="#{editarOtHhppBean.otHhppSeleccionado.tipoOtHhppId.manejaTecnologias eq '0'}" /> 
+                    <h:outputText rendered="#{editarOtHhppBean.otHhppSeleccionado.tipoOtHhppId.manejaTecnologias eq '0'}"
+                                 id="nodoslect" value="#{editarOtHhppBean.otHhppSeleccionado.nodosSeleccionado}"/>   
+                    
+                    <h:outputText id="SegmentoOtLabel" value="Segmento" style="font-weight: bold;" />
+                    <h:selectOneMenu id="SegmentoOtList"  
+                                     value="#{editarOtHhppBean.otHhppSeleccionado.segmento.basicaId}"
+                                     style="width: 100%"
+                                     styleClass="ListaConsulta"
+                                     required="true" 
+                                     requiredMessage="Es necesario el segmento para la creaci&oacute;n de la orden de trabajo"  
+                                     disabled="#{editarOtHhppBean.otHhppSeleccionado.otHhppId != null}" >
+                        <f:selectItem itemValue="0" itemLabel="Seleccione Uno." />
+                        <f:selectItems value="#{editarOtHhppBean.tipoSegmentoOtList}" 
+                                       var="lds"
+                                       itemValue="#{lds.basicaId}"
+                                       itemLabel="#{lds.nombreBasica}" />
+                    </h:selectOneMenu>
+                    <h:outputText  style="font-weight: bold;" id="enlace" value="Enlace:" /> 
+                    <h:inputText  disabled="true" id="idEnlace" 
+                                  value="#{editarOtHhppBean.otHhppSeleccionado.enlaceId}">                            
+                    </h:inputText> 
+
+                </h:panelGrid>
+                <section>
+                    <ui:include src="direccionOtHhpp.xhtml" />
+                </section>
+
+                <hr size="5" width="100%" align="LEFT"/>
+
+                <div style="width: 100%; text-align: center;" >
+                    <h:commandButton title="Guardar Cambios" rendered="#{!editarOtHhppBean.otCerradaAnulada}" 
+                                     action="#{editarOtHhppBean.editarOtHhpp()}"
+                                     id="ediatrOtHhppButton" styleClass="btn" value="Guardar Cambios" disabled="#{!editarOtHhppBean.rolEditar}"/>
+
+
+                    <h:commandButton title="Retornar al listado de Ot" rendered="true" 
+                                     action="#{editarOtHhppBean.irListadoOtHhpp()}"
+                                     id="goBackOtButton" styleClass="btn" value="Atrás"/>
+                </div>     
+                <hr size="5" width="100%" align="LEFT"/>
+
+
+            </h:panelGroup>    
+
+        </h:panelGrid>
+
+    </ui:define>
+
+
+</ui:composition>

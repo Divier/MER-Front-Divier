@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>        
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />   
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/table-style.css" rel="stylesheet" type="text/css" />
+
+        
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="../css/mgl-style.css" />
+    </h:head>
+    <h:body>
+        <h:form id="formPrincipal">      
+               
+            <ui:include src="../CM/panelMensajes.xhtml" />
+            <div id="header">
+                <h:panelGroup layout="block">
+                    <ui:include src="../template/nameError.xhtml" />  
+                </h:panelGroup>
+            </div>
+            <div id="cssmenu">
+                <ui:include src="menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../CM/version.xhtml" />
+            </div>
+            <div id="content">
+                <div id="subcontent">
+
+                    <div id="contenido">
+                        <ui:insert name="content">
+                            
+                        </ui:insert>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </h:form>
+        <div id="footer">
+            <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

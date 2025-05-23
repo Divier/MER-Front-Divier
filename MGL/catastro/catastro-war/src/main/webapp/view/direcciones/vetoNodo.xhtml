@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/main.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title"><span class="TituloSeccion">Veto de Nodos y Comunidades</span></ui:define>
+    <ui:define name="message"><span class="error"> </span></ui:define>
+
+    <ui:define name="content"> 
+        <link  rel="stylesheet" type="text/css" href="/Visitas_Tecnicas/resources/stylesheet.css"/>
+        <h:form id="formDatosConsulta"> 
+            <h:panelGrid id="panelDatosConsulta" columns="2">
+                <div class="EtiquetaConsulta">Número de Política:</div>
+                <h:inputText id="listPoliticas" value="#{vetoNodoBean.numPolitica}">                                  
+                </h:inputText>
+
+                <div class="EtiquetaConsulta">Fecha Inicial Veto:</div>            
+                <p:calendar id="initDate" 
+                            value="#{vetoNodoBean.initDate}"
+                            required="true"
+                            requiredMessage="Campo 'Fecha Inicial Veto' es requerido"
+                            readonly="true" 
+                            showOn="both">
+                </p:calendar>        
+
+                <div class="EtiquetaConsulta">Fecha Final Veto:</div>
+
+                <p:calendar id="endDate" 
+                            value="#{vetoNodoBean.endDate}"
+                            required="true"
+                            requiredMessage="Campo 'Fecha Final Veto' es requerido"
+                            readonly="true" 
+                            showOn="both">
+                </p:calendar>        
+            </h:panelGrid>
+
+            <h:panelGrid id="panelDivisional" columns="2">
+                <div class="EtiquetaConsulta">Divisional:</div>
+                <h:selectOneMenu id="listDivisional" value="#{vetoNodoBean.divisional}" 
+                                 styleClass="ListaConsulta"
+                                 required="true">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{vetoNodoBean.listDivisional}" var="ld"
+                                   itemValue="#{ld.divId}"
+                                   itemLabel="#{ld.divNombre}"/> 
+                    <f:ajax event="change" execute="listDivisional" 
+                            listener="#{vetoNodoBean.listDivisionalChange}" render="listArea"/>
+                </h:selectOneMenu>    
+
+                <div class="EtiquetaConsulta">Area:</div>
+                <h:selectOneMenu id="listArea" value="#{vetoNodoBean.area}" 
+                                 styleClass="ListaConsulta"
+                                 required="true">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{vetoNodoBean.listArea}" var="la"
+                                   itemValue="#{la.areId}"
+                                   itemLabel="#{la.areNombre}"/>   
+
+                </h:selectOneMenu> 
+
+                <div class="EtiquetaConsulta">Correo Electrónico:</div>
+                <h:inputText id="correo" value="#{vetoNodoBean.correoAlerta}" required="true"
+                             validatorMessage="EL campo correo electrónico no tiene el formato requerido " >
+                    <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                </h:inputText>
+            </h:panelGrid>
+
+            <h:commandButton id="buttonMostrarComunidades" 
+                             value="Obtener Comunidades" 
+                             action="#{vetoNodoBean.mostrarComunidades}" styleClass="buttonLarge" style="color:#FFFFFF;">                
+            </h:commandButton>
+            <hr size="5" width="100%" align="LEFT"/>
+
+            <h:dataTable id="comunidadesTable" binding="#{vetoNodoBean.comunidadesTable}"
+                         value="#{vetoNodoBean.comunidadesVetoList}" var="comunidadVeto" style="width: 500px;"
+                         styleClass="solicitudesGTable"
+                         headerClass="solicitudesGTableHeader"
+                         rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow" >
+                <f:facet name="header">
+                    <h:outputText value="Ciudades" />
+                </f:facet> 
+                <h:column>   
+                    <f:facet name="header">                        
+                        <h:commandButton value="Seleccionar Todo" styleClass="buttonLarge" style="color:#FFFFFF;"
+                                         action="#{vetoNodoBean.selectAllCities}"/>  
+                    </f:facet>
+                    <h:selectBooleanCheckbox value="#{comunidadVeto.selected}" />  
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Ciudad" />
+                    </f:facet>
+                    <h:outputText value="#{comunidadVeto.gpoNombre}"/>  
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="UNI" />
+                    </f:facet>
+                    <h:selectBooleanCheckbox value="#{comunidadVeto.selectedUNI}" />
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="BI" />
+                    </f:facet>
+                    <h:selectBooleanCheckbox value="#{comunidadVeto.selectedBI}" />
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="DTH" />
+                    </f:facet>
+                    <h:selectBooleanCheckbox value="#{comunidadVeto.selectedDTH}" />
+                </h:column>               
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Vetar Por nodo" />
+                    </f:facet>
+                    <h:commandButton value="Ver Nodos" action="#{vetoNodoBean.mostarNodosComunidad}" styleClass="buttonl" style="color:#FFFFFF;" >
+                        <f:setPropertyActionListener target="#{vetoNodoBean.idCity}" value="#{comunidadVeto.gpoId}" />                                    
+                    </h:commandButton>
+                </h:column>
+            </h:dataTable>
+
+            <h:commandButton id="buttonVetar" styleClass="buttonLarge" style="color:#FFFFFF;"
+                             action="#{vetoNodoBean.vetarComunidad}" 
+                             value="Vetar Comunidad" onclick="return confirm('Esta Seguro de Vetar la(s) Comunidad(es)')">
+            </h:commandButton>
+            <hr size="5" width="100%" align="LEFT"/>
+
+
+            <h:dataTable id="nodosTable" binding="#{vetoNodoBean.nodosTable}"
+                         value="#{vetoNodoBean.nodoComunidadVetoList}" var="nodoVeto" style="width: 500px;"
+                         styleClass="solicitudesGTable"
+                         headerClass="solicitudesGTableHeader"
+                         rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow">
+                <f:facet name="header">
+                    <h:outputText value="Nodos" />
+                </f:facet>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:commandButton value="Seleccionar Todo" styleClass="buttonLarge" style="color:#FFFFFF;"
+                                         action="#{vetoNodoBean.selectAllNodes}"/>
+                    </f:facet>
+                    <h:selectBooleanCheckbox value="#{nodoVeto.selected}" />  
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Codigo" />
+                    </f:facet>
+                    <h:outputText value="#{nodoVeto.nodCodigo}" />  
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Nombre" />
+                    </f:facet>
+                    <h:outputText value="#{nodoVeto.nodNombre}" />  
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Tipo" />
+                    </f:facet>
+                    <h:outputText value="#{nodoVeto.nodTipo}" />  
+                </h:column>
+            </h:dataTable>
+
+            <h:commandButton id="buttonVetarNodos" styleClass="buttonl" style="color:#FFFFFF;"
+                             action="#{vetoNodoBean.vetarNodos}" 
+                             value="Vetar Nodos" onclick="return confirm('Esta Seguro de Vetar el(los) Nodo(s)')">
+            </h:commandButton>
+            <hr size="5" width="100%" align="LEFT"/>
+        </h:form>
+
+    </ui:define>
+
+
+</ui:composition>

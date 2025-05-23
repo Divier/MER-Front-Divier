@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:panelGroup id="cmData" >
+        <h2 id="hMmData">Orden de Trabajo</h2>
+        <h:panelGrid  class="formulario2" columns="2" >
+            <h:panelGrid  columns="8" style="width: 120%;" >
+                <h:outputText value="No. Cuenta RR"/>
+                <h:outputText class="columnReadFormNumero" style="color: red;font-weight: bold; " value="#{OtMglBean.ordenTrabajo.cmObj.numeroCuenta}" />
+                <h:outputText value="Número Cuenta Matriz MGL"/>
+                <h:outputText class="columnReadFormNumero" style="color: red;font-weight: bold; " value="#{OtMglBean.ordenTrabajo.cmObj.cuentaMatrizId}" />
+                
+                <h:outputText value="Dirección"/>
+                <h:inputText class="columnReadFormNumero" disabled="true" 
+                             value="#{(OtMglBean.ordenTrabajo.cmObj.direccionPrincipal != null and  
+                                       OtMglBean.ordenTrabajo.cmObj.direccionPrincipal.direccionObj != null) ?
+                                       OtMglBean.ordenTrabajo.cmObj.direccionPrincipal.direccionObj.dirFormatoIgac : ''}"
+                             title="#{(OtMglBean.ordenTrabajo.cmObj.direccionPrincipal != null and  
+                                       OtMglBean.ordenTrabajo.cmObj.direccionPrincipal.direccionObj != null) ?
+                                       OtMglBean.ordenTrabajo.cmObj.direccionPrincipal.direccionObj.dirFormatoIgac : ''}"/>
+                
+                <h:outputText value="Barrio"/>
+                <h:outputText  
+                               value="#{OtMglBean.ordenTrabajo.cmObj.direccionPrincipal != null ?
+                                        OtMglBean.ordenTrabajo.cmObj.direccionPrincipal.barrio : ''}" />
+                 <h:outputText value="N° OT"/>
+                <h:outputText class="columnReadFormNumero" style="color: red;font-weight: bold; " value="#{OtMglBean.ordenTrabajo.idOt == null ? '':OtMglBean.ordenTrabajo.idOt}" />
+                
+                <h:outputText value="Departamento"/>
+                <h:outputText  value="#{OtMglBean.ordenTrabajo.cmObj.departamento.gpoNombre}" />
+                <h:outputText value="Ciudad"/>
+                <h:outputText  value="#{OtMglBean.ordenTrabajo.cmObj.municipio.gpoNombre}" />
+                <h:outputText value="Centro Poblado"/>
+                <h:outputText  value="#{OtMglBean.ordenTrabajo.cmObj.centroPoblado.gpoNombre}" />
+                 
+                <h:outputText value="Fecha Creación OT"/>
+                <h:outputText    value="#{OtMglBean.ordenTrabajo.fechaCreacion}" />
+                
+                <h:outputText value="Estado Interno"/>
+                <h:outputText    value="#{OtMglBean.ordenTrabajo.estadoInternoObj.nombreBasica}" />
+                
+                 <h:outputText value="Estado Externo"/>
+                <h:outputText   value="#{OtMglBean.estadoInternoExterno.idEstadoExt.nombreBasica}" />
+                
+                 <h:outputText value="SLA"/>
+                <h:outputText  value="#{OtMglBean.ordenTrabajo.tipoOtObj.ans}" />
+                
+                
+                
+                 
+                
+              
+                
+            </h:panelGrid>
+            <h:panelGroup id="cmDataD" >
+                <div id="idDivTab" style="overflow-y: #{OtMglBean.ordenTrabajo.listaSubEdificio != null and OtMglBean.ordenTrabajo.listaSubEdificio.size() > 3 ? 'scroll' : 'hidden'}; height: 75px;" >
+                    <h:dataTable class="contenidoTable" value="#{OtMglBean.ordenTrabajo.listaSubEdificio}" var="s" >
+                        <h:column headerClass="col1">
+                            <f:facet name="header">Nombre</f:facet>
+                            <h:inputText value="#{s.nombre}" title="#{s.direccionSub}"  disabled="true" />
+                        </h:column> 
+                        <h:column headerClass="col2">
+                            <f:facet name="header">Nodo</f:facet>
+                            <h:inputText value="#{s.codigoNodo}" title="#{s.codigoNodo}" disabled="true" style="text-align: center;" />
+                        </h:column>  
+                        <h:column headerClass="col3">
+                            <f:facet name="header" >Piso</f:facet>
+                            <h:inputText value="#{s.piso}" title="#{s.piso}" disabled="true" style="text-align: center;" />
+                        </h:column>  
+                    </h:dataTable>
+                </div>
+            </h:panelGroup>
+        </h:panelGrid>
+    </h:panelGroup>
+</ui:composition>
+

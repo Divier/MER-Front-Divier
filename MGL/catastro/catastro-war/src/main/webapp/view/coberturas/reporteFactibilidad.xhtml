@@ -1,0 +1,192 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>        
+            <!-- Responsive -->
+       <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+		<script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/script.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.js"></script>
+
+        <style type="text/css">
+            .ui-g div {
+                background-color: #ededed;
+                text-align: center;
+                border: 1px solid #fafafa;
+
+            }
+            .calendarClass input{
+                margin-left: 10px;
+                width: 85px
+            }
+        </style>
+
+
+    </h:head>
+    <h:body>
+
+
+        <h:form id="formPrincipal">
+            <ui:include src="../MGL/CM/panelMensajes.xhtml" />
+            <div id="header">
+                <ui:include src="../MGL/CM/name.xhtml" />
+            </div>
+            <div id="cssmenu">
+                <ui:include src="../MGL/template/menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../MGL/CM/version.xhtml" />
+            </div>
+            <div id="content">
+                <div id="subcontent">
+                    <section class="tabs">
+                        <div id="contenido">
+                            <ui:insert name="content">
+
+                                <h:form>
+                                    <p:growl id="msgs" showDetail="true" />
+
+                                    <p:panel id="repor" header="Reporte de Factibilidad" footer="Reporte de Factibilidad" style="margin-bottom:20px">
+                                        <h3 style="margin-top: 0">Tecnologias</h3>
+                                        <div class="ui-g">
+
+                                            <div class="ui-g-4"> 
+                                                   <h:outputText id="lblTecnologia" value="Tecnologias " />
+                                                  <p:selectCheckboxMenu id="tecnologiasList" value="#{reporteFactibilidadBean.tecnologiaList}" label="Tecnologias"
+                                                                       filter="true" filterMatchMode="startsWith" >
+                                                     <f:selectItems value="#{reporteFactibilidadBean.listTablaBasicaTecnologias}"
+                                                                    var="tec"  
+                                                                    itemValue="#{tec.codigoBasica}"
+                                                                   itemLabel="#{tec.nombreBasica}"/>
+                                                 </p:selectCheckboxMenu> 
+
+                                            </div>
+                                            <div class="ui-g-4"> 
+                                                   <h:outputText id="lblFactibilidad" value="Factibilidad " />
+                                                 <p:selectCheckboxMenu id="factibilidades"  value="#{reporteFactibilidadBean.factibilidadList}" label="Factibilidad"
+                                                                       filter="true" filterMatchMode="startsWith" >
+                                                     <f:selectItems value="#{reporteFactibilidadBean.listEstadoFactibilidad}"
+                                                                    var="tec"  
+                                                                    itemValue="#{tec.descripcion}"
+                                                                   itemLabel="#{tec.descripcion}"/>
+                                                 </p:selectCheckboxMenu> 
+                                            </div>
+                                            <div class="ui-g-4">
+						<h:outputText value="*" class="txtCamposReqMgl" />
+                                                <h:outputText id="lblCentroPoblado" value="Centro Poblado " />
+                                                
+                                                  <p:selectCheckboxMenu id="centroPobladolist"  value="#{reporteFactibilidadBean.centroPobladoList}" label="Centro Poblado"
+                                                                       filter="true" filterMatchMode="startsWith" >
+                                                     <f:selectItems value="#{reporteFactibilidadBean.centroPobladoCiudadList}"
+                                                                    var="centroPob"  
+                                                                    itemValue="#{centroPob.centroPobladoId}"
+                                                                    itemLabel="#{centroPob.nombreCentro} - (#{centroPob.nombreDepartamento}/#{centroPob.nombreCiudad})"/>
+                                                  </p:selectCheckboxMenu>
+                                                
+                                            
+                                            </div>
+
+                                        </div> 
+
+
+                                        <!-- primera fila fecha -->
+                                        <h3 style="margin-top: 0">Fechas</h3>
+                                        <h:panelGroup id="creacionOt">
+                                            <div class="ui-g">
+                                                <div class="ui-g-6"> 
+                                                    <h:outputText id="slaOtDesText1"  value="Fecha Inicial"  />
+                                                    <p:calendar id="initDate" styleClass="calendarClass" 
+                                                                value="#{reporteFactibilidadBean.fechaInicio}"
+                                                                readonly="false" 
+                                                                showOn="both">
+                                                        <f:convertDateTime pattern="dd/MM/yy" />   
+                                                    </p:calendar>     
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <h:outputText id="lblfechaFinal"  value="Fecha Final" />
+                                                    <p:calendar id="fechaFInalOnyx" styleClass="calendarClass"
+                                                                value="#{reporteFactibilidadBean.fechaFinal}"
+                                                                readonly="false" 
+                                                                showOn="both">
+                                                        <f:convertDateTime pattern="dd/MM/yy" />   
+                                                    </p:calendar> 
+                                                </div>
+                                            </div>
+                                        </h:panelGroup>
+           
+                                    </p:panel>
+                                </h:form>
+
+                                <br></br>  
+                                <p:panel id="basic" header="REPORTE FACTIBILIDAD" footer="Proceso" style="margin-bottom:20px" rendered="#{reporteFactibilidadBean.cantRegistros > 0}">
+                                    <h:panelGroup id="procesoRegistros"  style="color:red; width: 100%; text-align: center;"   >
+
+                                        <fieldset>
+                                            <legend>Estado del Reporte</legend>
+                                            <div>
+                                                <h:outputText id="mesage"  style="color:red; width: 100%; font-size: 1.5em; font-weight: bold;width: 50%; text-align: center;"  
+                                                              value="Resultados encontrados:   #{reporteFactibilidadBean.cantRegistros} "  />
+                                            </div>
+											  <div>
+                                                <h:outputText id="nota"  style="width: 100%; font-size: 1.0em; font-weight: bold;width: 50%; text-align: center;"  
+                                                              value="Nota :     Numero Maximo de registros a procesar para archivo XLS:  #{reporteFactibilidadBean.cantMaxRegExcel} "/>
+												   <br/>
+												<h:outputText id="nota2"  style="width: 100%; font-size: 1.0em; font-weight: bold;width: 50%; text-align: center;"  
+                                                              value="Nota :     Numero Maximo de registros a procesar para archivos CSV y TXT:  #{reporteFactibilidadBean.cantMaxRegCvs} "  />
+                                            </div>
+                                        </fieldset>
+                                    </h:panelGroup>
+                                </p:panel>
+
+                                <p:toolbar>
+                                    <f:facet name="left">
+                                        <h:commandButton value="Reporte" styleClass="btn" style=" text-align: center;" 
+                                                         action="#{reporteFactibilidadBean.getReporte()}" 
+                                                         disabled="#{!reporteFactibilidadBean.validarOpcionReporte()}"/>
+
+                                        <span class="ui-separator">
+                                            <span class="ui-icon pi pi-ellipsis-v" />
+                                        </span>
+                                         <h:commandButton value="Exportar .xls" styleClass="btn unblockClaro" style="text-align: center;"  
+                                                         action="#{reporteFactibilidadBean.exportExcel()}"
+                                                          disabled="#{reporteFactibilidadBean.cantRegistros gt reporteFactibilidadBean.cantMaxRegExcel or 
+                                                        reporteFactibilidadBean.cantRegistros eq 0}"/>
+                                        <h:commandButton value="Exportar .csv" styleClass="btn unblockClaro" style="text-align: center;"   
+                                                         action="#{reporteFactibilidadBean.exportCsvTxt('csv')}"
+                                                          disabled="#{reporteFactibilidadBean.cantRegistros gt reporteFactibilidadBean.cantMaxRegCvs or 
+                                                        reporteFactibilidadBean.cantRegistros eq 0}"                                />
+                                        <h:commandButton value="Exportar .txt" styleClass="btn unblockClaro" style="text-align: center;"   
+                                                         action="#{reporteFactibilidadBean.exportCsvTxt('txt')}"
+                                                          disabled="#{reporteFactibilidadBean.cantRegistros gt reporteFactibilidadBean.cantMaxRegCvs or 
+                                                        reporteFactibilidadBean.cantRegistros eq 0}"/>
+                                        <h:commandButton value="Limpiar" styleClass="btn unblockClaro" style="text-align: center;"   
+                                                         action="#{reporteFactibilidadBean.volverList()}"
+                                                         />
+
+                                    </f:facet>
+                                </p:toolbar>
+                            </ui:insert>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </h:form>
+        <div id="footer">
+            <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

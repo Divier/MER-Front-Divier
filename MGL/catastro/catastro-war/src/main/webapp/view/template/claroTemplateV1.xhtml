@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">     
+
+    <h:head>
+        <!-- Responsive -->
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/claro.css" rel="stylesheet" type="text/css" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/script.js" type="text/javascript"></script>
+
+        <h:outputStylesheet library="css" name="bootstrap.css"/>
+        <h:outputScript library="js" name="jsfcrud.js"/>
+        <h:outputScript library="js" name="bootstrap.js"/>
+
+    </h:head>
+
+    <h:body style="background-color: white;">
+
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" 
+                  closable="false" resizable="false" showHeader="false"
+                  styleClass="statusDialog">
+            <p:graphicImage library="images" name="claro/loading.gif" />
+        </p:dialog>
+        <h:form id="formEncabezado" enctype="multipart/form-data" style="background-color: white;">
+            <div id="header">
+                <h:panelGroup layout="block" rendered="#{bienvenidaBean.modulo eq 'CM'}">
+                    <ui:include src="../MGL/CM/name.xhtml" />  
+                </h:panelGroup>
+                <h:panelGroup layout="block" rendered="#{bienvenidaBean.modulo eq 'HHPP'}">
+                    <ui:include src="../MGL/template/menu/VT/name.xhtml" />  
+                </h:panelGroup>
+                <h:panelGroup layout="block" rendered="#{bienvenidaBean.modulo != 'CM' and bienvenidaBean.modulo != 'HHPP' }">
+                    <ui:include src="../MGL/template/name.xhtml" />  
+                </h:panelGroup>
+            </div>
+            <div id="cssmenu">
+                <ui:include src="../MGL/template/menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../MGL/CM/version.xhtml" />
+            </div>     
+        </h:form>     
+
+
+        <div id="centrar" align="center">
+            <div id="content" >
+                <h1 style="background-position: center; margin:0px" id="htitulo">
+                    <ui:insert name="content">
+
+                    </ui:insert>
+                </h1>
+            </div>
+        </div>
+    </h:body>
+</ui:composition>

@@ -1,0 +1,469 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/template/home.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Configuración Creación Automática de HHPP</span></ui:define>
+    <ui:define name="message"><span class="error"> </span></ui:define>
+
+    <ui:define name="content"> 
+        <link  rel="stylesheet" type="text/css" href="/Visitas_Tecnicas/resources/stylesheet.css"/>
+        <h:form id="formDatosConsulta">            
+            <h:messages id="messges"  globalOnly="true" errorClass="errorMessage" 
+                        infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+
+            <h:panelGrid id="panelFiltros" columns="4">
+                <div class="EtiquetaConsulta">Departamento:</div>
+                <h:selectOneMenu id="listDptos" value="#{configCreacionAutoHhpp.dptoSelected}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{configCreacionAutoHhpp.dptos}" var="ld"
+                                   itemValue="#{ld.gpoId}"
+                                   itemLabel="#{ld.gpoNombre}"/> 
+                    <f:ajax event="change" execute="listDptos" 
+                            listener="#{configCreacionAutoHhpp.listDptoChange}" render="listCiudades"/>
+                </h:selectOneMenu>    
+
+                <div class="EtiquetaConsulta">Ciudad:</div>
+                <h:selectOneMenu id="listCiudades" value="#{configCreacionAutoHhpp.ciudadSelected}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="" itemLabel="" />
+                    <f:selectItems value="#{configCreacionAutoHhpp.ciudades}" var="lc"
+                                   itemValue="#{lc.gpoId}"
+                                   itemLabel="#{lc.gpoNombre}"/>   
+
+                </h:selectOneMenu> 
+
+            </h:panelGrid>
+            <h:panelGrid id="panelBotonFiltros" columns="3">
+                <h:commandButton id="buttonFiltro" 
+                                 value="Filtrar" 
+                                 action="#{configCreacionAutoHhpp.obtenerConfigCiudad}" 
+                                 styleClass="buttonLarge" style="color:#FFFFFF;">                
+                </h:commandButton>
+                <h:commandButton id="buttonAll" 
+                                 value="Ver Todo" 
+                                 action="#{configCreacionAutoHhpp.verTodo}" 
+                                 styleClass="buttonLarge" style="color:#FFFFFF;">                
+                </h:commandButton>
+
+                <h:commandButton id="buttonCreaReg" 
+                                 value="Ingresar Registro" 
+                                 action="#{configCreacionAutoHhpp.crearRegistro}" 
+                                 styleClass="buttonLarge" style="color:#FFFFFF;">                
+                </h:commandButton>
+            </h:panelGrid>
+            <hr size="5" width="100%" align="LEFT"/>
+
+            <h:panelGrid id="panelDetalleConf" columns="6"
+                         rendered="#{configCreacionAutoHhpp.configCreaAutoDet != null}"
+                         style="width: 100%;">
+                <div class="EtiquetaConsulta">Ciudad:</div>
+                <h:outputText value="#{configCreacionAutoHhpp.configCreaAutoDet.gpoId.gpoNombre}"/>  
+
+                <div class="EtiquetaConsulta">Estado A:</div>
+                <h:selectOneMenu id="estadoADet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoA}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado B:</div>
+                <h:selectOneMenu id="estadoBDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoB}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado C:</div>
+                <h:selectOneMenu id="estadoCDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoC}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado D:</div>
+                <h:selectOneMenu id="estadoDDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoD}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado E:</div>
+                <h:selectOneMenu id="estadoEDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoE}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado F:</div>
+                <h:selectOneMenu id="estadoFDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoF}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado G:</div>
+                <h:selectOneMenu id="estadoGDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoG}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado H:</div>
+                <h:selectOneMenu id="estadoHDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoH}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado I:</div>
+                <h:selectOneMenu id="estadoIDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoI}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado J:</div>
+                <h:selectOneMenu id="estadoJDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoJ}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado L:</div>
+                <h:selectOneMenu id="estadoLDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoL}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado M:</div>
+                <h:selectOneMenu id="estadoMDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoM}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado N:</div>
+                <h:selectOneMenu id="estadoNDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoN}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado R:</div>
+                <h:selectOneMenu id="estadoRDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoR}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado W:</div>
+                <h:selectOneMenu id="estadoWDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoW}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado X:</div>
+                <h:selectOneMenu id="estadoXDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoX}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado Y:</div>
+                <h:selectOneMenu id="estadoYDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoY}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Estado Z:</div>
+                <h:selectOneMenu id="estadoZDet" value="#{configCreacionAutoHhpp.configCreaAutoDet.estadoGeoZ}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+                <h:outputText value=""/>  
+                <h:outputText value=""/>  
+                <h:outputText value=""/>  
+                <h:outputText value=""/>  
+
+                <div class="EtiquetaConsulta">Confiabilidad 0%-90%:</div>
+                <h:selectOneMenu id="conf90Det" value="#{configCreacionAutoHhpp.configCreaAutoDet.porcentajeValGeo90}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Confiabilidad 91%-95%:</div>
+                <h:selectOneMenu id="onf95Det" value="#{configCreacionAutoHhpp.configCreaAutoDet.porcentajevalGeo95}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+
+                <div class="EtiquetaConsulta">Confiabilidad 96%-100%:</div>
+                <h:selectOneMenu id="onf100Det" value="#{configCreacionAutoHhpp.configCreaAutoDet.porcentajevalGeo100}" 
+                                 styleClass="ListaConsulta"
+                                 style="width: 80px;">
+                    <f:selectItem itemValue="0" itemLabel="No Aplica" />
+                    <f:selectItem itemValue="1" itemLabel="Aplica" />
+                </h:selectOneMenu>
+            </h:panelGrid> 
+            <h:panelGrid id="panelBotonDetalle" columns="3"
+                         rendered="#{configCreacionAutoHhpp.configCreaAutoDet != null}">
+                <h:commandButton id="buttonActualizar" 
+                                 value="Actualizar" 
+                                 action="#{configCreacionAutoHhpp.actualizarDetalle}" 
+                                 styleClass="buttonLarge" style="color:#FFFFFF;"
+                                 rendered="#{configCreacionAutoHhpp.configCreaAutoDet.id != null}">                
+                </h:commandButton>
+                <h:commandButton id="buttonEliminar" 
+                                 value="Eliminar" 
+                                 action="#{configCreacionAutoHhpp.elmininarDetalle}" 
+                                 styleClass="buttonLarge" style="color:#FFFFFF;"
+                                 rendered="#{configCreacionAutoHhpp.configCreaAutoDet.id != null}">                
+                </h:commandButton>
+                <h:commandButton id="buttonCrear" 
+                                 value="Crear" 
+                                 action="#{configCreacionAutoHhpp.crearDetalle}" 
+                                 styleClass="buttonLarge" style="color:#FFFFFF;"
+                                 rendered="#{configCreacionAutoHhpp.configCreaAutoDet.id == null}">                
+                </h:commandButton>
+            </h:panelGrid>
+            <h:panelGroup rendered="#{configCreacionAutoHhpp.configCiudadesList != null}">
+            <hr size="5" width="100%" align="LEFT"/>
+                <div id="divTable" style="width: 100%;overflow: scroll;" >
+
+                    <h:dataTable id="configuracionesTable" binding="#{configCreacionAutoHhpp.confAutoTable}"
+                                 value="#{configCreacionAutoHhpp.configCiudadesList}" 
+                                 var="conf" style="width: 500px;"
+                                 styleClass="solicitudesGTable"
+                                 headerClass="solicitudesGTableHeader"
+                                 rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow" 
+                                 rows="15"
+                                 rendered="#{configCreacionAutoHhpp.configCiudadesList != null}">
+
+                        <f:facet name="header">
+                            <h:outputText value="Configuración de Creación Automatica de HHPP" />
+                        </f:facet> 
+
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Detalle" />
+                            </f:facet>
+                            <h:commandButton value="Ver Detalle" 
+                                             action="#{configCreacionAutoHhpp.obtenerConfigCiudad}" 
+                                             styleClass="buttonl" style="color:#FFFFFF;" >
+                                <f:setPropertyActionListener target="#{configCreacionAutoHhpp.ciudadSelected}" 
+                                                             value="#{conf.gpoId.gpoId.toString()}" />                                    
+                            </h:commandButton>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Ciudad" />
+                            </f:facet>
+                            <h:outputText value="#{conf.gpoId.gpoNombre}"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado A" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoA == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado B" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoB == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado C" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoC == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado D" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoD == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado E" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoE == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado F" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoF == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado G" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoG == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado H" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoH == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado I" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoI == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado L" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoL == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado L" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoL == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado M" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoM == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado N" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoN == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado R" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoR == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado W" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoW == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado X" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoX == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado Y" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoY == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado Z" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.estadoGeoZ == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Conf 0%-90%" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.porcentajeValGeo90 == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Conf 90%-95%" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.porcentajevalGeo95 == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Conf 95%-100%" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox value="#{conf.porcentajevalGeo100 == '1'}" 
+                                                     readonly="true" disabled="true"/>  
+                        </h:column>
+
+
+                        <f:facet name="footer">
+                            <h:panelGroup>
+                                <h:commandButton value="Primera" action="#{configCreacionAutoHhpp.pageFirst}"
+                                                 disabled="#{configCreacionAutoHhpp.confAutoTable.first == 0}" styleClass="buttonl" style="color:#FFFFFF;"/>
+
+                                <h:commandButton value="Anterior" action="#{configCreacionAutoHhpp.pagePrevious}"
+                                                 disabled="#{configCreacionAutoHhpp.confAutoTable.first == 0}" styleClass="buttonl" style="color:#FFFFFF;"/>
+
+                                <h:commandButton value="Siguiente" action="#{configCreacionAutoHhpp.pageNext}"
+                                                 disabled="#{configCreacionAutoHhpp.confAutoTable.first + configCreacionAutoHhpp.confAutoTable.rows
+                                                             >= configCreacionAutoHhpp.confAutoTable.rowCount}" styleClass="buttonl" style="color:#FFFFFF;"/>
+
+                                <h:commandButton value="Última" action="#{configCreacionAutoHhpp.pageLast}"
+                                                 disabled="#{configCreacionAutoHhpp.confAutoTable.first + configCreacionAutoHhpp.confAutoTable.rows
+                                                             >= configCreacionAutoHhpp.confAutoTable.rowCount}" styleClass="buttonl" style="color:#FFFFFF;"/>
+                            </h:panelGroup>
+                        </f:facet>
+
+                    </h:dataTable>
+                </div>
+            </h:panelGroup>
+        </h:form>
+
+    </ui:define>
+
+
+</ui:composition>

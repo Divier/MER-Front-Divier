@@ -1,0 +1,77 @@
+.card{
+    margin: 0;
+    max-width: 100%;
+    background: #ffffff;
+    padding: 1rem;
+    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    margin-bottom: 2rem;
+}
+
+.card_group{               
+    max-width: 100%;
+    background: #cccccc59;
+    padding: 3.3%;
+    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+}
+body .ui-datatable .ui-datatable-header{
+    background: #f8f9fa;
+    color: #495057;
+    padding:0.5rem 0.1rem; 
+    font-weight: 600;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+
+}
+
+body .ui-datatable .ui-datatable-footer{
+    background: #f8f9fa;
+}
+
+body .ui-datatable thead th { 
+    background: #f8f9fa; 				
+    color: #495057; 
+    padding:0.5rem 0.1rem; 
+    text-align: center; 
+    box-sizing: content-box; 
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s; 
+}
+
+body .ui-datatable .ui-datatable-data > tr > td { 
+    padding:0.5rem 0.1rem; 
+    text-align:center;
+}
+
+.white_contentError{
+    height: 130px;
+    text-align: center;
+}
+
+.labelTxt{
+    font-size: 13px !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.padding_col{
+    padding: 4px 10px 10px 0px !important;
+}
+
+.btn_col {
+    margin: auto !important;
+}
+
+.padding_col_btn {
+    width: 100%;
+    padding: 0 !important;
+    text-align: center;
+}
+
+.margin_lbl{
+    margin:auto;
+}
+
+

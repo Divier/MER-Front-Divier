@@ -1,0 +1,40 @@
+{
+	"Files": [
+		{
+			"cluster": [
+				"CLUSTER_GRF"
+			],
+			"environment": "DEV"
+		},
+		{
+			"cluster": [
+				"CLUSTER_GRF"
+			],
+			"environment": "QA"
+		},
+		{
+			"cluster": [
+				"GOS_EAF_CusServ"
+			],
+			"environment": "PREPROD"
+		},
+		{
+			"cluster": [
+				"CLUSTER_INTCUSOPER"
+			],
+			"environment": "PROD"
+		},
+		{
+			"cluster": [
+				"GOS_EAF_OPERATION"
+			],
+			"environment": "PROD_PR2"
+		},
+		{
+			"cluster": [
+				"CLUSTER_EAF_MER"
+			],
+			"environment": "PR_W14"
+		}
+	]
+}

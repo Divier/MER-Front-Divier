@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:rich="http://richfaces.org/rich" xmlns:a4j="http://richfaces.org/a4j">
+
+
+    
+<ui:composition template="/view/template/home.xhtml">
+<ui:define name="title">Test1</ui:define>
+    <ui:define name="content">
+    <h:form> 
+    <h:panelGrid columns="2" styleClass="panelInfo"
+                     rowClasses="panel-grid-row-impar, panel-grid-row-par"
+                     headerClass="panel-grid-header"
+                     columnClasses="panel-grid-col-label,panel-grid-col-value">       
+
+        <h:outputLabel for="idname"  value="Nombre"  styleClass="campos" />
+        <h:inputText id="idname" value="#{testMBean1.name}"/>                    
+    </h:panelGrid>     
+         
+    <h:panelGrid columns="2" styleClass="panelInfo"
+                     rowClasses="panel-grid-row-impar, panel-grid-row-par"
+                     headerClass="panel-grid-header"
+                     columnClasses="panel-grid-col-label,panel-grid-col-value">       
+
+                    <h:outputLabel id="lmessage1"  value="Pagina Multivalor 2"  styleClass="campos" />
+                    <h:commandButton value="multivalor" action="test2" styleClass="boton" />         
+    </h:panelGrid>  
+        
+    <h:panelGrid columns="2" styleClass="panelInfo"
+                     rowClasses="panel-grid-row-impar, panel-grid-row-par"
+                     headerClass="panel-grid-header"
+                     columnClasses="panel-grid-col-label,panel-grid-col-value">   
+      <h:commandButton value="Mensaje" action="#{testMBean1.onMessage}">
+          <f:ajax execute="@form" render="ajaxMessage1"/>
+      </h:commandButton>
+      <br/>
+      <h2>
+          <h:outputText value="#{testMBean1.message}"   id="ajaxMessage1"/>
+      </h2>               
+    </h:panelGrid>     
+        
+    <h:panelGrid columns="2" styleClass="panelInfo"
+                     rowClasses="panel-grid-row-impar, panel-grid-row-par"
+                     headerClass="panel-grid-header"
+                     columnClasses="panel-grid-col-label,panel-grid-col-value">   
+        <h:commandButton value="Consulta" action="#{testMBean1.onQuery}" styleClass="boton" />
+      <br/>
+      <h2>
+          <h:outputText value="-"   id="ajaxMessage2"/>
+      </h2>               
+    </h:panelGrid>           
+
+        
+    <h:panelGrid id="pgRegistros">        
+    <rich:dataTable id="queryresult" rowKeyVar="numeroRegistro"  var="sol" style="width: 45%"  value="#{testMBean1.listmultivalue}" >
+        <f:facet name="header">
+        <rich:columnGroup>
+        <rich:column><h:outputLabel value="Numero" /></rich:column>
+        <rich:column><h:outputLabel value="id" /></rich:column>
+        <rich:column><h:outputLabel value="Nombre" /></rich:column>
+        </rich:columnGroup>
+        </f:facet>
+
+        <rich:column>           
+            <a4j:commandLink styleClass="imagen" execute="@all" action="#{testMBean1.onAction}">
+            <h:outputText value="#{sol.mulId}" />
+            <f:param name="numeroRegistro" id="indiceRegistro" value="#{numeroRegistro}" />
+            <a4j:param value="#{sol.mulValor}" assignTo="#{testMBean1.selectedName}" />
+            </a4j:commandLink>                
+        </rich:column>   
+        
+        <rich:column>
+            <h:outputLink value="catalogodata.jsf">
+            <h:outputText value="#{sol.mulId}" styleClass="output"/>
+            <f:param name="id" value="#{sol.mulId}"/>
+            </h:outputLink>
+        </rich:column>
+
+        <rich:column>
+            <f:facet name="header">
+            <h:outputText value="Nombre"/>
+            </f:facet>
+            <h:outputText value="#{sol.mulValor}" styleClass="output"/>
+        </rich:column> 
+           
+
+
+    </rich:dataTable>   
+    </h:panelGrid>            
+        
+    </h:form> 
+        
+</ui:define> 
+</ui:composition>
+</html>

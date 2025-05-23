@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/main.xhtml"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title"><span class="TituloSeccion">Gestión de Ordenes de Trabajo</span></ui:define>
+    <ui:define name="content">
+        <h2>Gestión de Ordenes de Trabajo</h2>
+        
+
+        <h:dataTable id="OrdenesTrabajoPendientesTable" 
+                     value="#{ordenTrabajoGestionarBean.ordenTrabajoList}" 
+                     var="ot" rows="#{ordenTrabajoGestionarBean.filasPag}"                         
+                     styleClass="constructGTable" 
+                     rowClasses="constructGTableEvenRow, constructGTableOddRow "
+                     style="width: 100%">
+
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Fecha Ingreso" />
+                    <p:calendar id="button" 
+                                value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.fechaIngresoSeleccionada}" 
+                                style="white-space: nowrap;"
+                                styleClass="estiloCalendar"
+                                showOn="both">
+                                <f:ajax event="dateSelect" listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"  
+                                 execute="@this OrdenesTrabajoPendientesTable" 
+                                 render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXlst"/>
+                    </p:calendar>
+                </f:facet>
+                <h:outputText value="#{ot.fechaCreacion}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                </h:outputText>
+            </h:column>
+
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Id OT" />
+                    <h:inputText  maxlength="20" id="idOtId" 
+                                  style="width: 50px"  onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.idOtSelecionada}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                <h:commandLink value="#{ot.idOt}" 
+                               action="#{ordenTrabajoGestionarBean.goGestionOt(ot)}"
+                               disabled="#{!ordenTrabajoGestionarBean.validarEdicionOt() or 
+                                           (ot.disponibilidadGestion != null and
+                                           ot.disponibilidadGestion != ordenTrabajoGestionarBean.usuarioSesion) 
+                                           or !ordenTrabajoGestionarBean.validarIdOtRol()}">
+                </h:commandLink> 
+
+                <h:outputText value=" - Gestionando..."
+                              rendered="#{ot.disponibilidadGestion != null and 
+                                          ot.disponibilidadGestion != ordenTrabajoGestionarBean.usuarioSesion}"/>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Cuenta Matriz RR" />
+                    <h:inputText  maxlength="50" id="ccmmIdRrId" 
+                                  style="width: 80px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.ccmmRrSelecionada}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                <h:commandLink value="#{ot.cmObj.numeroCuenta}"
+                               action="#{ordenTrabajoGestionarBean.goCuentaMatriz(ot.cmObj)}"
+                               disabled="#{!ordenTrabajoGestionarBean.validarIdOtRol()}"/>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Tipo de OT" />
+                    <h:inputText  maxlength="100" id="tipoOtId" 
+                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.tipoOtSelecionada}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.tipoOtObj.descTipoOt}"/>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Departamento" />
+                    <h:inputText  maxlength="100" id="dptoId" 
+                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.dptoSelecionado}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.cmObj.departamento.gpoNombre}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Ciudad" />
+                    <h:inputText  maxlength="100" id="ciudadId" 
+                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.ciudadSelecionada}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.cmObj.municipio.gpoNombre}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Tecnología" />
+                    <h:inputText  maxlength="100" id="tecnoId" 
+                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.tecnoSelecionada}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.basicaIdTecnologia.nombreBasica}"/>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Estado" />
+                    <h:inputText  maxlength="100" id="estadoId" 
+                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.estIntSelecionada}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.estadoInternoObj.nombreBasica}"/>
+            </h:column>
+            <!--espinosadiea introduce el numero de cuenta matriz 09/06/2018--> 
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Cuenta Matriz MER" />
+                    <h:inputText  maxlength="50" id="ccmmMglId" 
+                                  style="width: 80px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.ccmmMglSelecionada}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                <h:commandLink value="#{ot.cmObj.cuentaMatrizId}"
+                               action="#{ordenTrabajoGestionarBean.goCuentaMatriz(ot.cmObj)}"
+                               disabled="#{!ordenTrabajoGestionarBean.validarIdOtRol()}"/>
+            </h:column>
+            <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="Regional" />
+                    <h:inputText  maxlength="50" id="regionalId" 
+                                  style="width: 50px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.regionalSeleccionada}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="#{ot.cmObj.division}"/>
+            </h:column>
+             <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="SLA" />
+                    <h:inputText  maxlength="50" id="slaId" 
+                                  style="width: 50px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.slaSeleccionada}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                 <h:outputText value="#{ot.tipoOtObj.ans}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Bloqueada" />
+                </f:facet>
+                <h:commandLink value="Desbloquear"
+                               action="#{ordenTrabajoGestionarBean.desbloquearOrden(ot)}"
+                               rendered="#{ot.disponibilidadGestion != null and
+                                           ordenTrabajoGestionarBean.validarGestionDesbloqueo()}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Usuario Bloqueo" />
+                    <h:inputText  maxlength="50" id="bloqueoId" 
+                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                  value="#{ordenTrabajoGestionarBean.filtroConsultaOrdenesDto.userBloqueo}">
+                        <f:ajax listener="#{ordenTrabajoGestionarBean.filtrarInfo()}"
+                                event="change" 
+                                execute="@this" 
+                                render="OrdenesTrabajoPendientesTable formPrincipal:buttonExportXls"/>
+                    </h:inputText>
+                </f:facet>
+                <h:outputText value="Sin bloqueo"
+                              rendered="#{ot.disponibilidadGestion == null}"/>
+                <h:outputText value="#{ot.disponibilidadGestion}"
+                              rendered="#{ot.disponibilidadGestion != null}"/>
+
+            </h:column>
+            
+            <f:facet name="footer" >
+                <h:panelGroup rendered="#{ordenTrabajoGestionarBean.showFooterTable}">
+                    <h:commandButton value="" action="#{ordenTrabajoGestionarBean.pageFirst}"
+                                     class="botonTPagInicioCm botonBaselista"/>
+                    <h:commandButton value="" action="#{ordenTrabajoGestionarBean.pagePrevious}"
+                                     class="botonTPagAnteriorCm botonBaselista"/>
+                    <h:commandButton value="#{ordenTrabajoGestionarBean.pageActual}" styleClass="botonTPagInicio"    />
+                    <h:selectOneMenu id="listTabla" value="#{ordenTrabajoGestionarBean.numPagina}" 
+                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                        <f:selectItems value="#{ordenTrabajoGestionarBean.paginaList}" var="pag"
+                                       itemValue="#{pag}"
+                                       itemLabel="#{pag}"/>    
+                         <f:ajax listener="#{ordenTrabajoGestionarBean.irPagina}"
+                                 event="change" execute="@this" render="OrdenesTrabajoPendientesTable"/>
+                    </h:selectOneMenu>  
+                    <h:commandButton value="" action="#{ordenTrabajoGestionarBean.pageNext}"
+                                     class="botonTPagSiguienteCm botonBaselista"/>
+                    <h:commandButton value="" action="#{ordenTrabajoGestionarBean.pageLast}"
+                                     class="botonTPagFinCm botonBaselista"/>
+                </h:panelGroup>
+            </f:facet> 
+
+
+        </h:dataTable>
+         <h:commandButton  value="Exportar" id="buttonExportXls"
+                                      styleClass="btn unblockClaro" immediate="true"
+                                      action="#{ordenTrabajoGestionarBean.exportExcel()}"
+                                      disabled="#{!ordenTrabajoGestionarBean.validarExportarRol()}"/>
+
+    </ui:define>
+
+</ui:composition>

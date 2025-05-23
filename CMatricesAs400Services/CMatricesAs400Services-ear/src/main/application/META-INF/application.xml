@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/application_7.xsd" version="7">
+  <display-name>C:\projects\Maven\C2_MGL\CMatricesAs400Services\CMatricesAs400Services\CMatricesAs400Services-ear</display-name>
+  <module>
+    <ejb>/CMatricesAs400Services-ejb-1.0.jar</ejb>
+  </module>
+  <module>
+    <ejb>/catastro-ejb-1.0.jar</ejb>
+  </module>
+  <module>
+    <web>
+      <web-uri>/CMatricesAs400Services-war-1.0.war</web-uri>
+      <context-root>/CMatricesAs400Services-war</context-root>
+    </web>
+  </module>
+  <library-directory>lib</library-directory>
+</application>

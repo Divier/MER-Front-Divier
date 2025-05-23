@@ -1,0 +1,223 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<ui:composition
+        template="/view/MGL/template/main.xhtml"
+        xmlns:p="http://primefaces.org/ui">
+
+
+    <ui:define name="title"><span class="TituloSeccion">Marcaciones Creación HHPP Virtuales R1 R2</span></ui:define>
+    <ui:define name="message"><span class="error"> #{marcacionesHhppVtMglBean.message}</span></ui:define>
+
+    <ui:define name="content">
+
+        <h:panelGroup>
+            <script type="text/javascript"
+                    src="${facesContext.externalContext.requestContextPath}/view/MGL/CM/js/hhpp_vt_loading.js"></script>
+
+            <div align="center" id="div_carga">
+                <h:graphicImage value="/view/MGL/CM/images/loading_hhpp.gif"></h:graphicImage>
+                <h2>Actualizando datos de Marcaciones, por favor espere...</h2>
+            </div>
+            <br/>
+
+            <h:panelGroup rendered="#{marcacionesHhppVtMglBean.mostrarPanelListMarcacionesHhppVt}">
+                <br/>
+                <br/>
+
+                <h2>Marcaciones Para Creación de HHPPs Virtual R1 y R2</h2>
+
+                <div align="left">
+                    <h:outputLabel value="Tiempo minimo de servicio activado   "></h:outputLabel>
+                    <h:inputText maxlength="50" id="tiempoMinId"
+                                 style="width: 100px" onkeypress="if (event.keyCode === 13) {
+                                              onchange();
+                                              return false;
+                                          }"
+                                 value="#{marcacionesHhppVtMglBean.valorTiempo}">
+                    </h:inputText>
+                </div>
+
+                <br/>
+
+                <h:dataTable id="tablaMarcacionesHHPPVirtual" style="width: 100%"
+                             value="#{marcacionesHhppVtMglBean.tablasMarcacionesHhppVtMglList}"
+                             var="tablaMarcacionesHHPPVirtualMgl"
+                             class="tablefeel">
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Id "/>
+                            </f:facet>
+                            <h:outputText value="#{tablaMarcacionesHHPPVirtualMgl.marcacionId}"/>
+
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Código R1"/>
+                                <br/>
+                                <h:inputText maxlength="50" id="codigoId"
+                                             style="width: 100px" onkeypress="if (event.keyCode === 13) {
+                                                          onchange();
+                                                          return false;
+                                                      }"
+                                             value="#{marcacionesHhppVtMglBean.filtroMarcacionesHhppVtDto.codigoR1}">
+
+                                    <f:ajax listener="#{marcacionesHhppVtMglBean.filtrarInfo()}"
+                                            event="change"
+                                            execute="@this"
+                                            render="tablaMarcacionesHHPPVirtual"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{tablaMarcacionesHHPPVirtualMgl.codigoR1}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Descripción R1"/>
+                                <br/>
+                                <h:inputText maxlength="50" id="descripR1Id"
+                                             style="width: 300px" onkeypress="if (event.keyCode === 13) {
+                                                          onchange();
+                                                          return false;
+                                                      }"
+                                             value="#{marcacionesHhppVtMglBean.filtroMarcacionesHhppVtDto.descripcionR1}">
+
+                                    <f:ajax listener="#{marcacionesHhppVtMglBean.filtrarInfo()}"
+                                            event="change"
+                                            execute="@this"
+                                            render="tablaMarcacionesHHPPVirtual"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{tablaMarcacionesHHPPVirtualMgl.descripcionR1}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Código R2"/>
+                                <br/>
+                                <h:inputText maxlength="50" id="codigoR2Id"
+                                             style="width: 100px" onkeypress="if (event.keyCode === 13) {
+                                                          onchange();
+                                                          return false;
+                                                      }"
+                                             value="#{marcacionesHhppVtMglBean.filtroMarcacionesHhppVtDto.codigoR2}">
+
+                                    <f:ajax listener="#{marcacionesHhppVtMglBean.filtrarInfo()}"
+                                            event="change"
+                                            execute="@this"
+                                            render="tablaMarcacionesHHPPVirtual"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{tablaMarcacionesHHPPVirtualMgl.codigoR2}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Descripción R2"/>
+                                <br/>
+                                <h:inputText maxlength="50" id="descripR2Id"
+                                             style="width: 300px" onkeypress="if (event.keyCode === 13) {
+                                                          onchange();
+                                                          return false;
+                                                      }"
+                                             value="#{marcacionesHhppVtMglBean.filtroMarcacionesHhppVtDto.descripcionR2}">
+                                    <f:ajax listener="#{marcacionesHhppVtMglBean.filtrarInfo()}"
+                                            event="change"
+                                            execute="@this"
+                                            render="tablaMarcacionesHHPPVirtual"/>
+
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{tablaMarcacionesHHPPVirtualMgl.descripcionR2}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Aplica HHPPs virtual"/>
+                                <br/>
+                                <h:selectOneMenu id="estadoId" style="width: 100px"
+                                                 value="#{marcacionesHhppVtMglBean.filtroMarcacionesHhppVtDto.aplicaHhppVt}">
+                                    <f:selectItem itemLabel="" itemValue=""/>
+                                    <f:selectItem itemLabel="Todos" itemValue="true"/>
+                                    <f:selectItem itemLabel="Ninguno" itemValue="false"/>
+
+                                    <f:ajax listener="#{marcacionesHhppVtMglBean.filtrarInfo()}"
+                                            event="change"
+                                            execute="@this"
+                                            render="tablaMarcacionesHHPPVirtual"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                            <span>No   </span>
+                            <p:toggleSwitch value="#{tablaMarcacionesHHPPVirtualMgl.aplicaHhppVt}">
+                                <f:ajax listener="#{marcacionesHhppVtMglBean.listarCambiosAplicaHHPP(tablaMarcacionesHHPPVirtualMgl)}"/>
+                            </p:toggleSwitch>
+                            <span>   Si</span>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Log"/>
+                            </f:facet>
+                            <h:commandLink value="Log"
+                                           action="#{marcacionesHhppVtMglBean.mostrarLogMarcacionesHHPPVirtual(tablaMarcacionesHHPPVirtualMgl)}"/>
+                        </div>
+                    </h:column>
+
+                    <f:facet name="footer">
+                        <div class="pagination2">
+                            <h:panelGroup rendered="#{marcacionesHhppVtMglBean.pintarPaginado}">
+
+                                <h:commandButton value="&#171;" action="#{marcacionesHhppVtMglBean.pageFirst()}"/>
+
+                                <h:commandButton value="&#60;" action="#{marcacionesHhppVtMglBean.pagePrevious()}"/>
+
+                                <h:commandButton value="#{marcacionesHhppVtMglBean.pageActual}"/>
+
+                                <h:selectOneMenu id="listTabla" value="#{marcacionesHhppVtMglBean.numPagina}">
+
+                                    <f:selectItems value="#{marcacionesHhppVtMglBean.paginaList}"
+                                                   var="pag" itemValue="#{pag}" itemLabel="#{pag}"/>
+
+                                    <f:ajax listener="#{marcacionesHhppVtMglBean.irPagina()}" event="change"
+                                            execute="@this" render="tablaMarcacionesHHPPVirtual"/>
+                                </h:selectOneMenu>
+                                <h:commandButton value="&#62;" action="#{marcacionesHhppVtMglBean.pageNext()}"/>
+
+                                <h:commandButton value="&#187;" action="#{marcacionesHhppVtMglBean.pageLast()}"/>
+                            </h:panelGroup>
+                        </div>
+                    </f:facet>
+                </h:dataTable>
+                <h:panelGrid columns="4" id="marcacionesMgl" styleClass="panelInfo">
+                    <h:panelGroup id="botonesAcciones">
+                        <h:commandButton disabled="false" value="Actualizar"
+                                         action="#{marcacionesHhppVtMglBean.actualizarMarcaciones()}"
+                                         styleClass="btn unblockClaro"/>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:panelGroup>
+            <br/>
+
+        </h:panelGroup>
+
+    </ui:define>
+</ui:composition>
+</html>

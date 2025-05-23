@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        template="/view/MGL/template/main.xhtml"
+>
+
+    <!-- -->
+    <ui:define name="title"><span class="TituloSeccion">LOG Marcaciones Creación HHPP Virtuales R1 R2</span></ui:define>
+    <ui:define name="message"><span class="error"> #{logMarcacionesHhppVtMglBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <h:panelGroup >
+
+            <h:panelGroup rendered="#{logMarcacionesHhppVtMglBean.mostrarPanelLogMarcaciones}">
+
+                <br />
+                <h2>LOG - Marcaciones Para Creación de HHPPs Virtual R1 y R2</h2>
+                <br />
+
+                <h:dataTable id="tablaLogMarcaHHPPVirtMglTable" style="width: 100%"
+                             value="#{logMarcacionesHhppVtMglBean.tablasLogMarcacionesHhppVtMglList}"
+                             var="tablaLogMarcacionesHHPPVirtual"
+                             class="tablefeel">
+                    <h:column>
+                        <div align="left" >
+                            <f:facet name="header">
+                                <h:outputText value="Id " />
+                            </f:facet>
+
+                            <h:outputText value="#{tablaLogMarcacionesHHPPVirtual.idLogMarcaHHPP}" />
+
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Usuario modificación" />
+                                <br/>
+                                <h:inputText  maxlength="50" id="usuarioMod"
+                                              style="width: 150px" onkeypress="if (event.keyCode === 13) {
+                                                      onchange();
+                                                      return false;
+                                                  }"
+                                              value="#{logMarcacionesHhppVtMglBean.getFiltroLogMarcacionesHhppVtDto().usuarioCreacionLogMarcaHHPP}">
+                                    <f:ajax listener="#{logMarcacionesHhppVtMglBean.filtrarInfo()}"
+                                            event="change"
+                                            execute="@this"
+                                            render="tablaLogMarcaHHPPVirtMglTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{tablaLogMarcacionesHHPPVirtual.usuarioCreacionLog}" />
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="left" >
+                            <f:facet name="header">
+                                <h:outputText value="Fecha modificación" />
+                                <br/>
+                                <h:inputText maxlength="10" id="fechaMod"
+                                             style="width: 300px" onkeypress="if (event.keyCode === 13) {
+                                                      onchange();
+                                                      return false;
+                                                  }"
+                                             value="#{logMarcacionesHhppVtMglBean.filtroLogMarcacionesHhppVtDto.fechaCreacionLogMarcaHHPP}"
+                                             converterMessage="El formato valido es: yyyy/mm/dd">
+                                    <f:convertDateTime pattern="yyyy-MM-dd"/>
+                                    <f:ajax listener="#{logMarcacionesHhppVtMglBean.filtrarInfo()}"
+                                            event="change"
+                                            execute="@this"
+                                            render="tablaLogMarcaHHPPVirtMglTable"/>
+                                </h:inputText>
+
+                            </f:facet>
+                            <h:outputText value="#{logMarcacionesHhppVtMglBean.formatearFecha(tablaLogMarcacionesHHPPVirtual.fechaCreacionLogMarcaHHPP)}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Valor Anterior" />
+                                <br/>
+                                <h:inputText  maxlength="2" id="valorAnterior"
+                                              style="width: 150px" onkeypress="if (event.keyCode === 13) {
+                                                      onchange();
+                                                      return false;
+                                                  }"
+                                              value="#{logMarcacionesHhppVtMglBean.filtroLogMarcacionesHhppVtDto.valorAntLogMarcaHHPP}">
+                                    <f:ajax listener="#{logMarcacionesHhppVtMglBean.filtrarInfo()}"
+                                            event="change"
+                                            execute="@this"
+                                            render="tablaLogMarcaHHPPVirtMglTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{tablaLogMarcacionesHHPPVirtual.valorAntLogMarcaHHPP}" />
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <div align="left" >
+                            <f:facet name="header">
+                                <h:outputText value="Valor Nuevo" />
+                                <br/>
+                                <h:inputText  maxlength="2" id="valorNuevo"
+                                              style="width: 150px" onkeypress="if (event.keyCode === 13) {
+                                                      onchange();
+                                                      return false;
+                                                  }"
+                                              value="#{logMarcacionesHhppVtMglBean.filtroLogMarcacionesHhppVtDto.valorNuevoLogMarcaHHPP}">
+                                    <f:ajax listener="#{logMarcacionesHhppVtMglBean.filtrarInfo()}"
+                                            event="change"
+                                            execute="@this"
+                                            render="tablaLogMarcaHHPPVirtMglTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{tablaLogMarcacionesHHPPVirtual.valorNuevoLogMarcaHHPP}" />
+                        </div>
+                    </h:column>
+
+                    <f:facet name="footer" >
+                        <div class="pagination2">
+                            <h:panelGroup rendered="#{logMarcacionesHhppVtMglBean.pintarPaginado}">
+
+                                <h:commandButton value= "&#171;" action="#{logMarcacionesHhppVtMglBean.pageFirst()}"/>
+
+                                <h:commandButton value= "&#60;"  action="#{logMarcacionesHhppVtMglBean.pagePrevious()}"/>
+
+                                <h:commandButton value="#{logMarcacionesHhppVtMglBean.pageActual}" />
+
+                                <h:selectOneMenu id="listTabla" value="#{logMarcacionesHhppVtMglBean.numPagina}">
+                                    <f:selectItems value="#{logMarcacionesHhppVtMglBean.paginaList}"
+                                                   var="pag" itemValue="#{pag}" itemLabel="#{pag}"/>
+
+                                    <f:ajax render="@form"  event="change"  listener="#{logMarcacionesHhppVtMglBean.irPagina()}" execute="@this" />
+                                </h:selectOneMenu>
+
+                                <h:commandButton  value= "&#62;" action="#{logMarcacionesHhppVtMglBean.pageNext}"/>
+
+                                <h:commandButton value= "&#187;" action="#{logMarcacionesHhppVtMglBean.pageLast}"/>
+                            </h:panelGroup>
+                        </div>
+                    </f:facet>
+                </h:dataTable>
+
+                <h:panelGrid columns="4">
+
+                    <h:commandButton value="Volver" action="marcacionesCreaHHPPVirtualR1R2" immediate="true"
+                                     styleClass="buttonl" style="text-align: center; color:#FFFFFF;">
+                        <f:param name="strOrigen" value="log_marcaciones" />
+                    </h:commandButton>
+
+                </h:panelGrid>
+            </h:panelGroup>
+
+        </h:panelGroup>
+
+    </ui:define>
+</ui:composition>

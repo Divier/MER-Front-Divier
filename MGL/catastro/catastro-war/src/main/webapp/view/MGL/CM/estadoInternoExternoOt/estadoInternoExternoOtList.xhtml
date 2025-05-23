@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >       
+
+    <ui:define name="title"><span class="TituloSeccion">Track Solicitud</span></ui:define>
+
+    <h2>Configuración Estados Internos X Estados Externos</h2>
+    <h:panelGrid id="relacionEstados" columns="2" style="width: 100%">
+        <h:panelGrid id="estadosInfo" columns="6" style="width: 80%">
+            <h:outputText value="Estado Interno Ot:" />
+            <h:selectOneMenu style="width: 90%" id="estadoInternootComboBox"
+                             value="#{estadosExternosInternosOtBean.idEstadoInternoOt}" >
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="0" />
+                <f:selectItems value="#{estadosExternosInternosOtBean.estadoInternoOtList}" 
+                               var="estadoInterno" itemLabel="#{estadoInterno.nombreBasica}" 
+                               itemValue="#{estadoInterno.basicaId}"/>
+            </h:selectOneMenu>
+
+            <h:outputText value="Estado Externo Ot:" />
+            <h:selectOneMenu style="width: 90%" id="estadoExternoOtComboBox" 
+                             value="#{estadosExternosInternosOtBean.idEstadoExternoOt}" >
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="0" />
+                <f:selectItems value="#{estadosExternosInternosOtBean.estadoExternoOtList}" 
+                               var="estadoExterno" itemLabel="#{estadoExterno.nombreBasica}" 
+                               itemValue="#{estadoExterno.basicaId}"/>
+            </h:selectOneMenu>               
+
+
+            <h:commandButton id="agregarRelacionEstadosButton" disabled="#{!estadosExternosInternosOtBean.validarOpcionAgregar()}"
+                               action="#{estadosExternosInternosOtBean.guardarRelacionEstadoInXExt()}" 
+                             value="Agregar" styleClass="btn" />
+            
+    <h:outputText value="" /><h:outputText value="Filtrar Estado Interno:" />
+            <h:selectOneMenu style="width: 90%" id="filtroOtComboBox" 
+                             value="#{estadosExternosInternosOtBean.idEstadoInternoOtFiltro}" >
+                <f:selectItem itemLabel="Seleccione Uno" itemValue="0" />
+                <f:selectItems value="#{estadosExternosInternosOtBean.estadoInternoOtList}" 
+                               var="estadoExterno" itemLabel="#{estadoExterno.nombreBasica}" 
+                               itemValue="#{estadoExterno.basicaId}"/>
+            </h:selectOneMenu>  
+    
+    <h:commandButton id="filtrarButton" action="#{estadosExternosInternosOtBean.filtrarByEstadoInterno()}" 
+                             value="Filtrar" styleClass="btn"/>
+       <h:commandButton id="limpiarButton" action="#{estadosExternosInternosOtBean.limpiar()}" 
+                             value="Limpiar" styleClass="btn" />
+        </h:panelGrid>                                  
+    </h:panelGrid>
+
+    <h:dataTable id="relacionEstadosTable" 
+                 value="#{estadosExternosInternosOtBean.cmtEstadoIntxExtMglList}" 
+                 var="estado" rows="10"                         
+                 styleClass="constructGTable" 
+                 rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                 style="width: 100%">
+                <h:column>    
+            <f:facet name="header">
+                <h:outputText value="Id:" />
+            </f:facet>
+                    <h:outputText value="#{estado.idEstadoIntExt}"/>
+
+        </h:column>
+        <h:column>    
+            <f:facet name="header">
+                <h:outputText value="Fecha Creación" />
+            </f:facet>
+            <h:outputText value="#{estado.fechaCreacion}"/>
+
+        </h:column>
+                <h:column>    
+            <f:facet name="header">
+                <h:outputText value="Id Interno Ot" />
+            </f:facet>
+                    <h:outputText value="#{estado.idEstadoInt.basicaId}"/>
+
+        </h:column>
+        <h:column>    
+            <f:facet name="header">
+                <h:outputText value="Estado Interno Ot" />
+            </f:facet>
+            <h:outputText value="#{estado.idEstadoInt.nombreBasica}"/>
+
+        </h:column>
+                <h:column>    
+            <f:facet name="header">
+                <h:outputText value="Id Estado Externo Ot" />
+            </f:facet>
+                    <h:outputText value="#{estado.idEstadoExt.basicaId}"/>
+
+        </h:column>
+        
+        
+        <h:column>    
+            <f:facet name="header">
+                <h:outputText value="Estado Externo Ot" />
+            </f:facet>
+            <h:outputText value="#{estado.idEstadoExt.nombreBasica}"/>
+
+        </h:column>
+
+        <h:column headerClass="columnEditar">    
+            <f:facet name="header">
+                <h:outputText value="Editar" />
+            </f:facet>
+            <div style="text-align: center;">
+
+                <h:commandLink title="Editar" disabled="#{!estadosExternosInternosOtBean.validarOpcionEditar()}">
+                    <h:graphicImage value="/view/img/edit.gif" width="20" height="20" />
+                    <f:ajax event="click" execute="@this" 
+                            listener="#{estadosExternosInternosOtBean.goEditarRelacionEstados(estado)}" render="formPrincipal:externosEstados"/>    
+                </h:commandLink>
+            </div> 
+
+        </h:column>
+        <h:column headerClass="columnEliminar" >    
+            <f:facet name="header">
+                <h:outputText value="Eliminar" />
+            </f:facet>
+            <div style="text-align: center;"> 
+                <h:commandLink action="#{estadosExternosInternosOtBean.eliminarRelacionEstados(estado)}" 
+                               disabled="#{!estadosExternosInternosOtBean.validarOpcionEliminar()}"
+                               title="Eliminar" onclick="return confirm('¿Est&aacute; seguro que desea Eliminar el registro?');">
+                    <h:graphicImage value="/view/img/eliminar.png" width="20" height="20" />
+
+                </h:commandLink>
+            </div>
+
+        </h:column>
+
+
+        <f:facet name="footer" >
+            <h:panelGroup >
+                <h:commandButton title="Primera Página" value="" action="#{estadosExternosInternosOtBean.pageFirst}"
+                                 class="botonTPagInicioCm botonBaselista"/>
+                <h:commandButton title="Página Anterior" value="" action="#{estadosExternosInternosOtBean.pagePrevious}"
+                                 class="botonTPagAnteriorCm botonBaselista"/>
+                <h:commandButton title="Número Páginas" value="#{estadosExternosInternosOtBean.pageActual}" 
+                                 styleClass="botonTPagInicio"    />
+                <h:selectOneMenu id="listTabla" value="#{estadosExternosInternosOtBean.numPagina}" 
+                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                    <f:selectItems value="#{estadosExternosInternosOtBean.paginaList}" var="pag"
+                                   itemValue="#{pag}"
+                                   itemLabel="#{pag}"/>    
+                    <f:ajax render="formPrincipal:externosEstados"  event="change"  
+                            listener="#{estadosExternosInternosOtBean.irPagina()}"  
+                            execute="@this" />                                         
+                </h:selectOneMenu>  
+                <h:commandButton title="Página Siguiente" value="" action="#{estadosExternosInternosOtBean.pageNext}"
+                                 class="botonTPagSiguienteCm botonBaselista"/>
+                <h:commandButton title="Última Página" value="" action="#{estadosExternosInternosOtBean.pageLast}"
+                                 class="botonTPagFinCm botonBaselista"/>
+            </h:panelGroup>
+        </f:facet> 
+    </h:dataTable>
+
+</f:view>

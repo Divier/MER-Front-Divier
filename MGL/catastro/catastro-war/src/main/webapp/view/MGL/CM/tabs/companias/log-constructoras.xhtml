@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/CM/cm/template/cmTemplate.xhtml">
+    <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+    <ui:define name="content">
+        <ul id="nav">
+            <li ><h:commandLink action="gestion-administracion" value="Compañías Administración" /></li>
+            <li class="active"><h:commandLink action="gestion-constructoras" value="Compañías Constructoras" /></li>
+            <li><h:commandLink action="gestion-ascensores" value="Compañías de Ascensores" /></li>
+        </ul>
+        #{constructorasBean.logConstructoras()}
+        <h:panelGroup id="formCon">
+            <h:messages id="messges"  globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+            <h:messages for="codigo" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+            <h:messages for="nit" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+            <h:messages for="departamento" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+            <h:messages for="muni" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+            <h:messages for="nombre" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+            <h:messages for="estado" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+            <h:messages for="dir" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+            <h:messages for="justi" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+            <h:panelGrid class="formulario" columns="4">
+                <h:outputText value="Nombre Constructora" />
+                <h:selectOneMenu disabled="#{constructorasBean.updateCompania}" id="nombreCompania" value="#{constructorasBean.constructoraAud.companiaId}">
+
+                    <f:selectItems value="#{constructorasBean.companyListTable}" var="com"
+                                   itemValue="#{com.companiaId}"
+                                   itemLabel="#{com.nombreCompania}"/>    
+                    <f:ajax event="change" listener="#{constructorasBean.updateCompania()}" execute="@this" render="formCon"/>
+                </h:selectOneMenu> 
+                <h:outputText value="Departamento" />
+                <h:selectOneMenu disabled="#{constructorasBean.updateCompania}" id="departamento" value="#{constructorasBean.departamento}"  requiredMessage="Ingrese departamento">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{constructorasBean.departamentoList}" var="depto"
+                                   itemValue="#{depto.gpoId}"
+                                   itemLabel="#{depto.gpoNombre}"/>    
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{constructorasBean.consultarCiudades()}" render="muni"/>
+                </h:selectOneMenu>
+                <h:outputText value="NIT" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}"  id="nit" value="#{constructorasBean.constructoraAud.nitCompania}" requiredMessage="El NIT es obligatorio"/>
+                <h:outputText value="Municipio" />
+                <h:selectOneMenu disabled="#{constructorasBean.updateCompania}" id="muni" value="#{constructorasBean.ciudad}"  requiredMessage="Ingrese municipio">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{constructorasBean.ciudadList}" var="ciudad"
+                                   itemValue="#{ciudad.gpoId}"
+                                   itemLabel="#{ciudad.gpoNombre}"/> 
+                </h:selectOneMenu>
+
+                <h:outputText value="Código" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}"  id="codigo" value="#{constructorasBean.constructoraAud.codigoRr}" requiredMessage="El código es obligatorio"/>
+                <h:outputText value="Centro Poblado" />
+                <h:selectOneMenu disabled="#{constructorasBean.updateCompania}" id="centroP" value="#{constructorasBean.constructoraAud.detalle}" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <!--<f:selectItems value="#-{modificacionHHPPMBean.ciudadesList}" 
+                                   var="ciudad"  itemValue="#-{ciudad.codigo}" itemLabel="#-{ciudad.nombre}"/>-->
+                </h:selectOneMenu>
+                <h:outputText value="Horario" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="abrev" value="#{constructorasBean.constructoraAud.hoRestriccionId}" />
+                <h:outputText value="Barrio" />
+                <h:selectOneMenu disabled="#{constructorasBean.updateCompania}" id="barrio" value="#{constructorasBean.constructoraAud.barrio}" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{constructorasBean.barrioList}" 
+                                   var="barrio"  itemValue="#{barrio}" itemLabel="#{barrio}"/>
+                </h:selectOneMenu>
+                <h:outputText value="Nombre Contacto" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="contacto" value="#{constructorasBean.constructoraAud.nombreContacto}" />
+                <h:outputText value="Dirección" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}"  id="dir" value="#{constructorasBean.constructoraAud.direccionNoStandar}" requiredMessage="Ingrese dirección"/>
+
+                <h:outputText value="Cargo del Contacto" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="cargo" value="#{constructorasBean.constructoraAud.costo}" />
+                <h:outputText value="Teléfono 1" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="tel1" value="#{constructorasBean.telefonos[0]}" />
+
+                <h:outputText value="E-mail" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="email" value="#{constructorasBean.constructoraAud.email}" />
+                <h:outputText value="Teléfono 2" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="tel2" value="#{constructorasBean.telefonos[1]}" />
+
+                <h:outputText value="Página WEB" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="pagWeb" value="#{constructorasBean.constructoraAud.paginaWeb}" />
+                <h:outputText value="Teléfono 3" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="tel3" value="#{constructorasBean.telefonos[2]}" />
+
+                <h:outputText value="Responsable Claro" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="responsable" value="#{constructorasBean.constructoraAud.usuarioCreacion}" />
+                <h:outputText value="Teléfono 4" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="tel4" value="#{constructorasBean.telefonos[3]}" />
+
+
+
+                <h:outputText value="Estado" />
+                <h:selectOneRadio disabled="#{constructorasBean.updateCompania}" id="estado"  value="#{constructorasBean.constructoraAud.estado}" class="radioB" requiredMessage="Estado obligatorio">
+                    <f:selectItem itemLabel="Activo" itemValue="A"/>
+                    <f:selectItem itemLabel="Inactivo" itemValue="I"/>
+                    <!--                            <f:ajax execute="nodoEstado" render="nodoEstado" listener="#,{modificacionHHPPMBean.limpiarNodoEstado()}"/>-->
+                </h:selectOneRadio>
+
+            </h:panelGrid>
+            <h:panelGrid  id="log"  class="formulario" columns="4">
+
+                <h:outputText value="Fecha Creación" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="fechaAdminC" value="#{constructorasBean.constructoraAud.fechaCreacion}" />
+                <h:outputText value="Fecha Modificación" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="fechaAdminM" value="#{constructorasBean.constructoraAud.fechaModificacion}" />
+                <h:outputText value="Usuario" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="userAdmin" value="#{constructorasBean.constructoraAud.usuarioCreacion}" />
+                <h:outputText value="Perfil" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="perfilAdmin" value="#{constructorasBean.constructoraAud.perfilUsuarioCreacion}" />
+                <h:outputText value="Detalle" />
+                <h:inputText readonly="#{constructorasBean.updateCompania}" required="false" id="detalleAdmin" value="#{constructorasBean.constructoraAud.detalle}" />
+                <h:outputText value="Justificación" />
+                <h:inputTextarea readonly="#{constructorasBean.updateCompania}" requiredMessage="Tiene que justificar la modificación"  id="justi" value="#{constructorasBean.constructoraAud.justificacion}" />
+
+            </h:panelGrid>
+
+            <div class="buttonArea">                        
+                <h:commandButton value="Aceptar" actionListener="gestion-constructoras" styleClass="btn"/>
+
+            </div>
+        </h:panelGroup>     
+    </ui:define>
+</ui:composition>
+

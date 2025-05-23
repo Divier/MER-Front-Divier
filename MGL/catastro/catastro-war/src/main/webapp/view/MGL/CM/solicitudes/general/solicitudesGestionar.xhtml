@@ -1,0 +1,251 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Track Solicitud</span></ui:define>
+    <ui:define name="content">
+        <h2>Gestión de Solicitudes</h2>
+        <h:panelGrid id="encabezadoSolicitudes" columns="2" style="width: 100%">
+            <h:panelGrid id="encabezadoSolicitudesInfo" columns="6" style="width: 80%">
+                <h:outputText value="Total Solicitudes" />
+                <h:outputText value="#{solicitudGestionarMglBean.totalSolicitudesDia}" />
+                <h:outputText value="100%" >
+                    <f:convertNumber type="percent" />
+                </h:outputText>
+                <h:outputText value="Solicitudes por Vencerse" />
+                <h:outputText value="#{solicitudGestionarMglBean.totalSolicitudesPorVencerDia}" />
+                <h:outputText value="#{solicitudGestionarMglBean.totalSolicitudesDia == 0 ? '0' : ((solicitudGestionarMglBean.totalSolicitudesPorVencerDia/solicitudGestionarMglBean.totalSolicitudesDia)*100)}%" >
+                    <f:convertNumber type="percent" />
+                </h:outputText>
+                <h:outputText value="Solicitudes Vencidas" />
+                <h:outputText value="#{solicitudGestionarMglBean.totalSolicitudesVencidasDia}" />
+                <h:outputText value="#{solicitudGestionarMglBean.totalSolicitudesDia == 0 ? '0' : ((solicitudGestionarMglBean.totalSolicitudesVencidasDia/solicitudGestionarMglBean.totalSolicitudesDia)*100)}%" >
+                    <f:convertNumber type="percent" />
+                </h:outputText>
+                <h:outputText value="Solicitudes Gestionadas" />
+                <h:outputText value="#{solicitudGestionarMglBean.totalSolicitudesGestionadasDia}" />
+                <h:outputText value="#{solicitudGestionarMglBean.totalSolicitudesDia == 0 ? '0' : ((solicitudGestionarMglBean.totalSolicitudesGestionadasDia/solicitudGestionarMglBean.totalSolicitudesDia)*100)}%" >
+                    <f:convertNumber type="percent" />
+                </h:outputText>
+            </h:panelGrid>
+            <h:panelGrid id="encabezadoSolicitudesImagen" columns="2" style="width: 20%">
+                <h:graphicImage value="../../../images/icon_plus_red.png" />
+                <h:commandLink value="#{solicitudGestionarMglBean.totalSolicitudesllamadas}"
+                               action="#{solicitudGestionarMglBean.verSolicitudesLlamadas()}"/>
+            </h:panelGrid>
+        </h:panelGrid>
+        <h:panelGrid id="busquedaSolicitudes" columns="5" style="width: 100%">
+            <h:outputText value="Búsqueda por Solicitud" />
+            <h:inputText value="#{solicitudGestionarMglBean.idSolicitudToFind}" />
+            <h:commandButton id="busquedaSolicitudButton"
+                             class="btn"
+                             value="Buscar"                             
+                             action="#{solicitudGestionarMglBean.findById()}"
+                             immediate="false" />
+            <h:commandButton id="verTodasSolicitudButton"
+                             class="btn"
+                             value="Ver Todas"
+                             action="#{solicitudGestionarMglBean.verTodas()}"
+                             immediate="true" />
+            <h:commandButton id="filtrarSolicitudButton"
+                             class="btn"
+                             value="Filtrar"
+                             action="#{solicitudGestionarMglBean.showFiltro()}"                             
+                             immediate="true" />
+        </h:panelGrid>
+        <h:panelGrid id="filtroSolicitudes" columns="8" style="width: 100%"
+                     rendered="#{solicitudGestionarMglBean.showFiltro}">
+            <h:outputText value="Departamento" />
+            <h:selectOneMenu id="divisionFiltroList"
+                             styleClass="ListaConsulta"
+                             value="#{solicitudGestionarMglBean.departamentoSelected}">
+                 <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{solicitudGestionarMglBean.lstDeptosGeograficoPoriticoMgl}"
+                               var="departamento"
+                               itemValue="#{departamento.gpoId}"
+                               itemLabel="#{departamento.gpoNombre}"/>
+                <f:ajax event="change"
+                        execute="@this filtroSolicitudes"
+                        render="comunidadFiltroList SolicitudesPendientesTable"
+                        listener="#{solicitudGestionarMglBean.obtenerListaCiudades()}"/>
+            </h:selectOneMenu>
+            <h:outputText value="Ciudad" />
+            <h:selectOneMenu id="comunidadFiltroList"
+                             styleClass="ListaConsulta"
+                             value="#{solicitudGestionarMglBean.ciudadSelected}">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{solicitudGestionarMglBean.ciudadesList}"
+                               var="comunidad"
+                               itemValue="#{comunidad.gpoId}"
+                               itemLabel="#{comunidad.gpoNombre}"/>
+                <f:ajax event="change"
+                        execute="@this filtroSolicitudes"
+                        render="SolicitudesPendientesTable"
+                        listener="#{solicitudGestionarMglBean.filtrarInfo()}"/>
+            </h:selectOneMenu>
+            <h:outputText value="Tipo Solicitud" />
+            <h:selectOneMenu id="tipoSolicitudFiltroList"
+                             styleClass="ListaConsulta"
+                             value="#{solicitudGestionarMglBean.tipoSolicitudSelected.tipoSolicitudId}">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{solicitudGestionarMglBean.tipoSolicitudList}"
+                               var="tSol"
+                               itemValue="#{tSol.tipoSolicitudId}"
+                               itemLabel="#{tSol.nombreTipo}"/>
+                <f:ajax event="change"
+                        execute="@this filtroSolicitudes"
+                        render="SolicitudesPendientesTable filtroSolicitudes"
+                        listener="#{solicitudGestionarMglBean.filtrarInfo()}"/>
+            </h:selectOneMenu>
+            <h:outputText value="Segmento" />
+            <h:selectOneMenu id="segmentoFiltroList"
+                             styleClass="ListaConsulta"
+                             value="#{solicitudGestionarMglBean.tipoSegmentoSelected.basicaId}">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{solicitudGestionarMglBean.tipoSegmentoList}"
+                               var="ld"
+                               itemValue="#{ld.basicaId}"
+                               itemLabel="#{ld.nombreBasica}"/>
+                <f:ajax event="change"
+                        execute="@this filtroSolicitudes"
+                        render="SolicitudesPendientesTable filtroSolicitudes"
+                        listener="#{solicitudGestionarMglBean.filtrarInfo()}"/>
+            </h:selectOneMenu>
+        </h:panelGrid>
+        <h:dataTable id="SolicitudesPendientesTable"
+                     value="#{solicitudGestionarMglBean.solicitudList}"
+                     var="solicitud" rows="#{solicitudGestionarMglBean.filasPag}"
+                     styleClass="constructGTable"
+                     rowClasses="constructGTableEvenRow, constructGTableOddRow "
+                     style="width: 100%">
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Fecha Ingreso" />
+                </f:facet>
+                <h:outputText value="#{solicitud.fechaCreacion}">
+                    <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink >
+                        <h:outputText value="Id Solicitud" style="color: black"/>
+                        <f:ajax event="click" render="SolicitudesPendientesTable"
+                                listener="#{solicitudGestionarMglBean.cambiarOrdenMayorMenorListado()}"/>  
+                    </h:commandLink> 
+                </f:facet>
+                <h:commandLink value="#{solicitud.solicitudCmId}"
+                               action="#{solicitudGestionarMglBean.irGestion(solicitud)}"
+                               disabled="#{solicitud.disponibilidadGestion eq '0' or !solicitudGestionarMglBean.validarOpcionGestSol()}" />
+                <h:outputText value=" - Gestionando..."
+                              rendered="#{solicitud.disponibilidadGestion eq '0'}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Cuenta Matriz RR" />
+                </f:facet>
+                <h:commandLink value="#{solicitud.cuentaMatrizObj.numeroCuenta}"
+                               disabled="#{!solicitudGestionarMglBean.validarOpcionGestSol()}"
+                               action="#{solicitudGestionarMglBean.goCuentaMatriz(solicitud.cuentaMatrizObj)}">
+                </h:commandLink>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Tipo de Solicitud" />
+                </f:facet>
+                <h:outputText value="#{solicitud.tipoSolicitudObj.nombreTipo}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Departamento" />
+                </f:facet>
+                <h:outputText value="#{solicitud.departamentoGpo.gpoNombre}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Ciudad" />
+                </f:facet>
+                <h:outputText value="#{solicitud.ciudadGpo.gpoNombre}"/>
+            </h:column>
+            <!--espinosadiea insercion de numero cuenta matriz 09/06/2018-->
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Cuenta Matriz MGL" />
+                </f:facet>
+                <h:commandLink value="#{solicitud.cuentaMatrizObj.cuentaMatrizId}"
+                               disabled="#{!solicitudGestionarMglBean.validarOpcionGestSol()}"
+                               action="#{solicitudGestionarMglBean.goCuentaMatriz(solicitud.cuentaMatrizObj)}">
+                </h:commandLink>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Estado" />
+                </f:facet>
+                <h:outputText value="#{solicitud.estadoSolicitudObj.nombreBasica}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Estado" />
+                </f:facet>
+                <h:graphicImage value="/view/img/verde.gif"
+                                rendered="#{solicitud.colorAlerta eq 'green'}" 
+                                style="float: right" />
+                <h:graphicImage value="/view/img/amarillo.gif"
+                                rendered="#{solicitud.colorAlerta eq 'yellow'}" 
+                                style="float: right" />
+                <h:graphicImage value="/view/img/rojo.gif"
+                                rendered="#{solicitud.colorAlerta eq 'red'}" 
+                                style="float: right" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Bloqueada" />
+                </f:facet>
+                <h:commandLink value="Desbloquear"
+                               action="#{solicitudGestionarMglBean.desbloquearSolicitud(solicitud)}"
+                               rendered="#{solicitud.disponibilidadGestion eq '0' and
+                                           solicitudGestionarMglBean.validarGestionDesbloqueo()}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Usuario Bloqueo" />
+                </f:facet>
+                <h:outputText value="Sin bloqueo"
+                              rendered="#{solicitud.disponibilidadGestion eq '1'}"/>
+                <h:outputText value="#{solicitud.usuarioEdicion}"
+                              rendered="#{solicitud.disponibilidadGestion eq '0'}"/>
+
+            </h:column>
+
+            <f:facet name="footer" >
+                <h:panelGroup rendered="#{solicitudGestionarMglBean.showFooterTable}">
+                    <h:commandButton value="" action="#{solicitudGestionarMglBean.pageFirst}"
+                                     class="botonTPagInicioCm botonBaselista"/>
+                    <h:commandButton value="" action="#{solicitudGestionarMglBean.pagePrevious}"
+                                     class="botonTPagAnteriorCm botonBaselista"/>
+                    <h:commandButton value="#{solicitudGestionarMglBean.pageActual}" styleClass="botonTPagInicio"/>
+                    <h:selectOneMenu id="listTabla" value="#{solicitudGestionarMglBean.numPagina}" 
+                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                        <f:selectItems value="#{solicitudGestionarMglBean.paginaList}" var="pag"
+                                       itemValue="#{pag}"
+                                       itemLabel="#{pag}"/>
+                        <f:ajax render="@form" event="change"
+                                listener="#{solicitudGestionarMglBean.irPagina()}"
+                                execute="@this" />
+                    </h:selectOneMenu>
+                    <h:commandButton value="" action="#{solicitudGestionarMglBean.pageNext}"
+                                     class="botonTPagSiguienteCm botonBaselista"/>
+                    <h:commandButton value="" action="#{solicitudGestionarMglBean.pageLast}"
+                                     class="botonTPagFinCm botonBaselista"/>
+                </h:panelGroup>
+            </f:facet> 
+        </h:dataTable>
+
+    </ui:define>
+
+</ui:composition>

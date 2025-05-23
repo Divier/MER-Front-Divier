@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml" >
+
+    <ui:define name="title"><span class="TituloSeccion">Reglas de Flujo Ot</span></ui:define>
+    <ui:define name="message"><span class="error"> #{detallexFlujoOtBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <br></br>
+        <h2>Reglas de Flujo Ot</h2>    
+        <h:panelGroup rendered="#{(detallexFlujoOtBean.validarEdicion()
+                                  or detallexFlujoOtBean.validarCreacion())
+                                  and detallexFlujoOtBean.mostrarPanelCrearRegla}">
+            <fieldset>
+                <div id="tableTipoTablaBasica">
+                    <table style="width: 100%">
+                        <tr>
+                            <td></td>
+                            <td><h:outputText value="Id Detalle" style="font-weight:bold"/></td>
+                            <td><h:outputText value="#{detallexFlujoOtBean.cmtDetalleFlujoMgl.detalleFlujoId}"  style="font-weight:bold"/></td>
+                        </tr>
+                        <tr><td></td>
+                            <td> <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Flujo:" /> </td>
+                            <td> <h:selectOneMenu id="tipoFlujoSelect" rendered="#{detallexFlujoOtBean.cargar}" 
+                                                  value="#{detallexFlujoOtBean.tipoOtlist}" 
+                                                  styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{detallexFlujoOtBean.listTablaBasicaFlujoOT}" var="tipoOt"
+                                                   itemValue="#{tipoOt.basicaId}"
+                                                   itemLabel="#{tipoOt.nombreBasica}">
+                                    </f:selectItems>   
+
+                                </h:selectOneMenu> 
+                                <h:selectOneMenu id="tipoFlujoSelect2" rendered="#{!detallexFlujoOtBean.cargar}" 
+                                                 value="#{detallexFlujoOtBean.tipoOtSelected}" 
+                                                 styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{detallexFlujoOtBean.listTablaBasicaFlujoOT}" var="tipoOt"
+                                                   itemValue="#{tipoOt.basicaId}"
+                                                   itemLabel="#{tipoOt.nombreBasica}">
+                                    </f:selectItems>   
+
+                                </h:selectOneMenu> </td>
+                            <td><h:outputText value="Aprobado:"   /> </td>
+                            <td> <h:selectBooleanCheckbox  value="#{detallexFlujoOtBean.aprobado}" 
+                                                           id = "chkAprobacion">
+                                    <f:ajax  event="change" execute="@form" render="@form" listener="#{detallexFlujoOtBean.accionAprobado()}"/>
+                                </h:selectBooleanCheckbox>
+                            </td>
+                        </tr> 
+                        <tr> <td></td>
+                            <td> <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Estado Inicial:" /> </td>
+                            <td> <h:selectOneMenu id="estadoInternoSelect1" rendered="#{detallexFlujoOtBean.cargar}" 
+                                                  value="#{detallexFlujoOtBean.estadoIntInicialList}" 
+                                                  styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{detallexFlujoOtBean.listTablaBasicaEstadoInternoOt}" var="estInterno"
+                                                   itemValue="#{estInterno.basicaId}"
+                                                   itemLabel="#{estInterno.nombreBasica}">
+                                    </f:selectItems>   
+
+                                </h:selectOneMenu>
+                                <h:selectOneMenu id="estadoInternoSelect2" rendered="#{!detallexFlujoOtBean.cargar}" 
+                                                 value="#{detallexFlujoOtBean.estadoIntInicialSelected}" 
+                                                 styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{detallexFlujoOtBean.listTablaBasicaEstadoInternoOt}" var="estInterno"
+                                                   itemValue="#{estInterno.basicaId}"
+                                                   itemLabel="#{estInterno.nombreBasica}">
+                                    </f:selectItems>   
+
+                                </h:selectOneMenu></td>
+                            <td> <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Estado Final:" /> </td>
+                            <td>  <h:selectOneMenu id="estadoInternoSelect3" rendered="#{detallexFlujoOtBean.cargar}" 
+                                                   value="#{detallexFlujoOtBean.estadoInternoFinalList}" 
+                                                   styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{detallexFlujoOtBean.listTablaBasicaEstadoInternoOt}" var="estInterno"
+                                                   itemValue="#{estInterno.basicaId}"
+                                                   itemLabel="#{estInterno.nombreBasica}">
+                                    </f:selectItems>   
+
+                                </h:selectOneMenu>
+                                <h:selectOneMenu id="estadoInternoSelect4" rendered="#{!detallexFlujoOtBean.cargar}" 
+                                                 value="#{detallexFlujoOtBean.estadoInternoFinalSelected}" 
+                                                 styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{detallexFlujoOtBean.listTablaBasicaEstadoInternoOt}" var="estInterno"
+                                                   itemValue="#{estInterno.basicaId}"
+                                                   itemLabel="#{estInterno.nombreBasica}">
+                                    </f:selectItems>   
+
+                                </h:selectOneMenu> </td>
+
+                        </tr>
+                        <tr><td></td>
+                            <td> <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Tecnología:" /> </td>
+                            <td>
+                                <h:selectOneMenu  value="#{detallexFlujoOtBean.tecnologiaSelected}" 
+                                                  styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{detallexFlujoOtBean.listBasicaTecnologia}" var="tecnologia"
+                                                   itemValue="#{tecnologia.basicaId}"
+                                                   itemLabel="#{tecnologia.nombreBasica}">
+                                    </f:selectItems>   
+                                </h:selectOneMenu>
+                            </td>
+                            <td> <h:outputText escape="false" value="Rol Aprobador:" /> </td>
+                            <td>
+                                <h:inputText id="idRolAprobador" value="#{detallexFlujoOtBean.rolAprobador}"  style="width: 75%;"
+                                             maxlength="10"  validatorMessage="El campo Rol Aprobador debe contener máximo 10 caracteres"/>
+                            </td>
+                        </tr>  
+                          <tr><td></td>
+                            <td> <h:outputText escape="false" value="Estado Razonado" /> </td>
+                            <td>
+                                <h:selectOneMenu  value="#{detallexFlujoOtBean.razonSelected}" 
+                                                  styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{detallexFlujoOtBean.listBasicaRazonesNodone}" var="razon"
+                                                   itemValue="#{razon.basicaId}"
+                                                   itemLabel="#{razon.nombreBasica}[#{razon.codigoBasica}]">
+                                    </f:selectItems>   
+                                </h:selectOneMenu>
+                            </td>
+                        </tr>  
+                        
+                    </table>
+                </div>
+            </fieldset>
+            
+           <h:panelGrid columns="4" id="estadoxFlujoBtn" styleClass="panelInfo">
+            <h:panelGroup id="botonesAcciones">
+                <h:commandButton value="Guardar" styleClass="btn"
+                                 rendered="#{detallexFlujoOtBean.validarCreacion()
+                                             and detallexFlujoOtBean.btnActivo}"
+                                 action="#{detallexFlujoOtBean.guardarEstadoxFlujo()}" />
+                <h:commandButton value="Actualizar" styleClass="btn"
+                                 rendered="#{detallexFlujoOtBean.validarEdicion()
+                                             and !detallexFlujoOtBean.btnActivo}"
+                                 action="#{detallexFlujoOtBean.actualizaEstadoxFlujo()}" />
+                <h:commandButton value="Limpiar Campos" styleClass="btn"
+                                 action="#{detallexFlujoOtBean.nuevoRegistro()}" />
+                <h:commandButton value="Volver" styleClass="btn"
+                                 action="#{detallexFlujoOtBean.volver()}" />
+            </h:panelGroup>
+        </h:panelGrid>
+        </h:panelGroup>
+
+        <h:panelGroup id="panelListReglaXFlujoOt" rendered="#{detallexFlujoOtBean.mostrarPanelListReglaXFlujoOt}">
+
+            <div class="tableContent" >
+                <h:dataTable id="tablaEstadoxFlujoMglTable"                              
+                             value="#{detallexFlujoOtBean.listCmtDetalleFlujoMgl}" 
+                             var="tablasReglaFlujoMgl" rows="8"                         
+                             styleClass="constructGTable"
+                             headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>    
+                        <div align="left" >
+                            <f:facet name="header">
+                                <h:outputText value="Id Detalle " /><BR/>
+                            </f:facet>
+                            <h:commandLink id="estxflujo"  accesskey=""
+                                           value="#{tablasReglaFlujoMgl.detalleFlujoId}"
+                                           action="#{detallexFlujoOtBean.goActualizar(tablasReglaFlujoMgl)}"
+                                           disabled="#{!detallexFlujoOtBean.validarEdicion() or !detallexFlujoOtBean.validarOpcionLinkIdDetalle()}"/>
+                        </div>                                    
+                    </h:column>
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Flujo     " />
+                            <h:inputText maxlength="50" id="tipo" style="width: 100px" value="#{detallexFlujoOtBean.tipoFlujoOtObj}">
+                                <f:ajax event="change" listener="#{detallexFlujoOtBean.findByFiltro()}" render="tablaEstadoxFlujoMglTable" resetValues="tipo"/>
+                            </h:inputText>
+                        </f:facet>
+                        <div align="left"   >
+                            <h:outputText value="#{tablasReglaFlujoMgl.tipoFlujoOtObj.nombreBasica}" />     
+                        </div>                                  
+                    </h:column>
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+
+                                <h:outputText value="Estado Inicial" /><BR/>
+
+                            </f:facet>
+                            <h:outputText value="#{tablasReglaFlujoMgl.estadoInicialObj.nombreBasica}" />     
+                        </div>                                  
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Estado Final" /><BR/>
+
+                            </f:facet>
+                            <h:outputText value="#{tablasReglaFlujoMgl.proximoEstado.nombreBasica}" />      
+                        </div>                                  
+                    </h:column>
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Aprobado" /><BR/>
+                            </f:facet>
+                            <h:outputText value="#{tablasReglaFlujoMgl.aprobacion}" />  
+                        </div>      
+                    </h:column>
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Rol Aprobador" /><BR/>
+                            </f:facet>
+                            <h:outputText value="#{tablasReglaFlujoMgl.rolAprobador}" />  
+                        </div>      
+                    </h:column>
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="Tecnología    " />
+                            <h:inputText maxlength="50" id="tec" style="width: 100px" value="#{detallexFlujoOtBean.tecnologiaFilter}">
+                                <f:ajax listener="#{detallexFlujoOtBean.findByFiltro}" event="change" render="tablaEstadoxFlujoMglTable" resetValues="tec"/>
+                            </h:inputText>
+                        </f:facet>
+                        <div align="left"   >
+                            <h:outputText value="#{tablasReglaFlujoMgl.basicaTecnologia.nombreBasica}" />  
+                        </div>      
+                    </h:column>
+                    <h:column>  
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Estado Razonado" />
+                            </f:facet>
+                            <h:outputText value="#{tablasReglaFlujoMgl.basicaRazonNodone.nombreBasica}" />    
+                        </div>
+                    </h:column>
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Acci&oacute;n" />
+                        </f:facet>
+                        <h:commandLink id="Eliminar" immediate="true"
+                                       styleClass="btnIconEliminar" title="Eliminar"
+                                       rendered="#{detallexFlujoOtBean.validarBorrado()}"
+                                       disabled="#{!detallexFlujoOtBean.validarOpcionEliminar()}"
+                                       action="#{detallexFlujoOtBean.eliminarReglaFlujoMgl(tablasReglaFlujoMgl)}"
+                                       onclick="return confirm('¿Est&oacute; seguro de eliminar el registro seleccionado ${detallexFlujoOtBean.esEstadoInicial} ?');" />
+                    </h:column>
+                    <f:facet name="footer" >
+                        <h:panelGroup rendered="#{detallexFlujoOtBean.pintarPaginado}">
+                            <h:commandButton value="" action="#{detallexFlujoOtBean.pageFirst}"
+                                             class="botonTPagInicioCm botonBaselista"/>
+                            <h:commandButton value="" action="#{detallexFlujoOtBean.pagePrevious}"
+                                             class="botonTPagAnteriorCm botonBaselista"/>
+                            <h:commandButton value="#{detallexFlujoOtBean.pageActual}" styleClass="botonTPagInicio"    />
+                            <h:selectOneMenu id="listTabla" value="#{detallexFlujoOtBean.numPagina}" 
+                                             styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                <f:selectItems value="#{detallexFlujoOtBean.paginaList}" var="pag"
+                                               itemValue="#{pag}"
+                                               itemLabel="#{pag}"/>    
+                                <f:ajax render="@form"  event="change"  listener="#{detallexFlujoOtBean.irPagina()}"  execute="@this" />                                         
+                            </h:selectOneMenu>
+                            <h:commandButton value="" action="#{detallexFlujoOtBean.pageNext}"
+                                             class="botonTPagSiguienteCm botonBaselista"/>
+                            <h:commandButton value="" action="#{detallexFlujoOtBean.pageLast}"
+                                             class="botonTPagFinCm botonBaselista"/>
+                        </h:panelGroup>
+                    </f:facet>
+                </h:dataTable>  
+            </div>
+            <h:commandButton value="Nuevo" styleClass="btn"
+                             action="#{detallexFlujoOtBean.crearNuevaRegla()}" 
+                             disabled="#{!detallexFlujoOtBean.validarOpcionNuevo()}"/>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

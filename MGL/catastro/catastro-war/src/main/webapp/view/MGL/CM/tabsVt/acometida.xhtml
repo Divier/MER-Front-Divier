@@ -1,0 +1,253 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/vt.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>
+    <!-- <ui:define name="message"><span class="error"> # {direccionAlternaMglBean.message}</span></ui:define> -->
+    <ui:define name="content">
+        <h2>Información de Acometida</h2>
+        <h4>Parte interna</h4>                
+        <h:panelGrid style="width: 100%; margin: 0px auto">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText id="lblPuntoInicial" value="Descripción Punto inicial (2000 caracteres)"/>
+            </h:panelGroup>
+            <h:inputTextarea id="txtDescPtoInilAcometida" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.descPtoInilAcometida}"
+                             required="true" 
+                             requiredMessage="Se debe diligenciar la Descripción Punto inicial"
+                             style="width: 100%; resize: none; overflow-y: scroll" rows="2"
+                             validatorMessage="El campo Descripción Punto inicial permite un número máximo de 2000 caracteres.">
+                <f:validateLength maximum="2000"/>
+            </h:inputTextarea>
+        </h:panelGrid>
+        <h:panelGrid columns="6" style="width: 100%;">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Punto inicial de acometida."/>
+            </h:panelGroup>
+            <h:selectOneMenu id="puntoInicial" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.tipoPtoIniAcometObj.basicaId}"
+                             styleClass="ListaConsulta"
+                             required="true" 
+                             requiredMessage="Debe seleccionar Tipo Punto inicial">
+                <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                <f:selectItems value="#{visitaTecnicaBean.tipoPuntoInicialAcometidaList}" var="ptoIniAco"
+                               itemValue="#{ptoIniAco.basicaId}" 
+                               itemLabel="#{ptoIniAco.nombreBasica}" />                                        
+            </h:selectOneMenu> 
+
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Canalización Interna"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="canalizacionInterna" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.canalizacionIntObj.basicaId}"
+                             styleClass="ListaConsulta"
+                             required="true" 
+                             requiredMessage="Debe seleccionar Canalización Interna">
+                <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                <f:selectItems value="#{visitaTecnicaBean.canalizacionInternaList}" var="canalInt"
+                               itemValue="#{canalInt.basicaId}" 
+                               itemLabel="#{canalInt.nombreBasica}" />                                        
+            </h:selectOneMenu> 
+        
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Persona que informa"/>
+            </h:panelGroup>
+            <h:inputText id="personaInforma"  disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                         value="#{visitaTecnicaBean.vt.personaInforma}"
+                         maxlength="200"
+                         required="true" 
+                         requiredMessage="Se debe ingresar el campo Persona que informa"
+                         validatorMessage="Persona que informa: Los nombres solo acepta letras y espacios">
+                <f:validateRegex pattern="[a-zA-Z\s]*"/>                                            
+            </h:inputText>
+            
+        </h:panelGrid>
+        <h:outputText value="&#160;" id="blanco1" style="width: 100%"/>
+        <h:panelGrid style="width: 100%; margin: 0px auto">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Descripción de Acometida  (2000 caracteres)"
+                              style="width: 100%; margin: 0px auto"/>
+            </h:panelGroup>
+            <h:inputTextarea id="descripcionAcometida" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.descripcionAcometida}"
+                             required="true" 
+                             requiredMessage="Se debe diligenciar Descripción de Acometida"
+                             style="width: 100%; resize: none; overflow-y: scroll" rows="2"
+                             validatorMessage="El campo Descripción de Acometida permite un número máximo de 2000 caracteres.">
+                <f:validateLength maximum="2000"/>
+            </h:inputTextarea>
+        </h:panelGrid>
+        <h:outputText value="&#160;" id="blanco2" style="width: 100%"/>
+        <h4>Parte externa</h4> 
+        <h:panelGrid style="width: 100%; margin: 0px auto">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl"/>
+                <h:outputText value="Observaciones de Acometida  (2000 caracteres)"/>
+            </h:panelGroup>
+            <h:inputTextarea id="observacionesAcometida" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.observacionesAcometida}"
+                             required="true" 
+                             requiredMessage="Se debe diligenciar observaciones de Acometida"
+                             style="width: 100%; resize: none; overflow-y: scroll" rows="2"
+                             validatorMessage="El campo Observaciones de Acometida permite un número máximo de 2000 caracteres.">
+                <f:validateLength maximum="2000"/>
+            </h:inputTextarea>
+        </h:panelGrid>
+        
+        <h:outputText value="&#160;" id="blanco3" style="width: 100%"/> 
+        <h2>Informacion de Red Interna</h2>
+        <h:panelGrid style="width: 100%; margin: 0px auto">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Distribución y ubicación de dispositivos  (500 caracteres.)"/>
+            </h:panelGroup>
+            <h:inputTextarea id="tapsExternos" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.tapsExternos}"
+                             required="true" 
+                             requiredMessage="El campo Distribución y ubicación de dispositivos es requerido"
+                             validatorMessage="El campo Distribución y ubicación de dispositivos permite un número máximo de 500 caracteres."
+                             style="width: 100%; resize: none; overflow-y: scroll" rows="2">
+                <f:validateLength maximum="500"/>
+            </h:inputTextarea>
+        </h:panelGrid>
+        <h:panelGrid columns="4" style="width: 80%">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Tipo de configuración de Distribución"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="tipoConfDistribucion" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.tipoConfDistribObj.basicaId}"
+                             styleClass="ListaConsulta"
+                             required="true" 
+                             requiredMessage="Debe seleccionar Tipo de configuración de Distribución">
+                <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                <f:selectItems value="#{visitaTecnicaBean.tipoConfDistribucionList}" var="confDist"
+                               itemValue="#{confDist.basicaId}" 
+                               itemLabel="#{confDist.nombreBasica}" />                                        
+            </h:selectOneMenu> 
+            <h:outputText/>
+            <h:outputText/>            
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Alimentación eléctrica"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="alimentacionElectrica" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.alimentElectObj.basicaId}"
+                             styleClass="ListaConsulta"
+                             required="true" 
+                             requiredMessage="Debe seleccionar Alimentación eléctrica">
+                <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                <f:selectItems value="#{visitaTecnicaBean.alimentacionElectricaList}" var="alimElec"
+                               itemValue="#{alimElec.basicaId}" 
+                               itemLabel="#{alimElec.nombreBasica}" />                                        
+            </h:selectOneMenu> 
+            <h:outputText value="Voltaje"/>
+            <h:inputText id="voltaje" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                         value="#{visitaTecnicaBean.vt.voltaje}"
+                         maxlength="20"
+                         required="false" 
+                         requiredMessage="El campo Voltaje es requerido"/>            
+       
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Tipo de distribución"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="tipoDistribucion" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.tipoDistribucionObj.basicaId}"
+                             styleClass="ListaConsulta"
+                             required="true" 
+                             requiredMessage="Debe seleccionar Tipo de distribución">
+                <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                <f:selectItems value="#{visitaTecnicaBean.tipoDistribucionList}"
+                               var="tipoDist"
+                               itemValue="#{tipoDist.basicaId}"
+                               itemLabel="#{tipoDist.nombreBasica}"/>
+            </h:selectOneMenu>
+            
+            <h:outputText id="OtrosTipoDistribucionLabel" value="Otro Tipo Distibución"/>
+            <h:inputText id="OtrosTipoDistribucionTf" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA' }"
+                         value="#{visitaTecnicaBean.vt.otroTipoDistribucion}"
+                         maxlength="20"
+                         required="false" 
+                         requiredMessage="El campo Otro Tipo Distibución es requerido"/>
+          
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Manejo de ascensores"/>
+            </h:panelGroup>
+            <h:selectOneMenu id="manejoAscensores" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.manejoAscensoresObj.basicaId}"
+                             styleClass="ListaConsulta"
+                             required="true" 
+                             requiredMessage="Debe seleccionar Manejo de ascensores">
+                <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                <f:selectItems value="#{visitaTecnicaBean.manejoAscensoresList}"
+                               var="manAsc"
+                               itemValue="#{manAsc.basicaId}"
+                               itemLabel="#{manAsc.nombreBasica}"/>
+            </h:selectOneMenu>
+            
+            <h:outputText value="Marca"/>
+            <h:inputText id="marca" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                         value="#{visitaTecnicaBean.vt.marca}"
+                         maxlength="50"
+                         required="false" 
+                         requiredMessage="Se debe ingresar el campo Marca"/>
+
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Teléfono"/>
+            </h:panelGroup>
+            <h:inputText id="telefono" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                         value="#{visitaTecnicaBean.vt.telefono}"
+                         maxlength="10"
+                         required="true"
+                         requiredMessage="Se debe ingresar el campo Teléfono"
+                         validatorMessage="El número telefónico es un campo numérico de mínimo 7 dígitos y máximo 10">
+                <f:validateRegex pattern="[0-9]{7,10}"/>
+            </h:inputText>
+            <h:outputText/>
+            <h:outputText/>
+        </h:panelGrid>
+        
+        <h:panelGrid style="width: 100%; margin: 0px auto">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Acondicionamientos  (2000 caracteres)"/>
+            </h:panelGroup>
+            <h:inputTextarea id="acondicionamientos" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                             value="#{visitaTecnicaBean.vt.acondicionamientos}"
+                             required="true" 
+                             requiredMessage="Se debe diligenciar Acondicionamientos"
+                             style="width: 100%; resize: none; overflow-y: scroll" rows="2"
+                             validatorMessage="El campo Acondicionamientos permite un número máximo de 2000 caracteres.">
+                <f:validateLength maximum="2000"/>
+            </h:inputTextarea>
+        </h:panelGrid>
+
+    </ui:define>
+</ui:composition>

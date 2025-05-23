@@ -1,0 +1,402 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/main.xhtml" >
+
+    <ui:define name="content">
+    #{actionManagedBean.setAction('SOLICITAR_VT_REPLANTEAMIENTO')}
+            <div align="center">
+           
+                 <h:panelGrid 
+                         cellpadding = "10" cellspacing = "10" >
+              <f:facet name = "header">
+                <h:outputText
+                  value = "SOLICITUD DE VISITAS TECNICAS REPLANTEAMIENTO"/>
+              </f:facet>
+              <h:panelGrid
+                id="VT_RE_paneldatos"
+                columns = "4"
+                border = "1"
+                cellpadding = "10"
+                cellspacing = "10">
+
+                <h:outputLabel
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "Id Solicitud"/>
+
+                <h:outputLabel
+                  id="VT_RE_idSolicitud"
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "#{createsolicitud.solicitud.idSolicitud}" />
+
+                <h:outputLabel
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "Estado Solicitud"/>
+
+                <h:outputLabel
+                  id="VT_RE_idestado"
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "#{createsolicitud.solicitud.estado}" />
+
+                <h:outputLabel for="VT_RE_idcuentamatriz" value = "Cuenta Matriz" styleClass="required"/>
+                <h:panelGrid>
+                  <h:inputText
+                    id="VT_RE_idcuentamatriz"
+                    value="#{createsolicitud.solicitud.cuentaMatriz}"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    validatorMessage="Ingrese valores númericos"
+                    styleClass="input"
+                    maxlength="12"
+                    label="Cuenta Matriz">
+                    <f:validateRegex pattern="[0-9]*"/>
+                    <f:ajax render="VT_RE_msg_cuentamatriz"/>
+                  </h:inputText>
+                  <h:message
+                    id="VT_RE_msg_cuentamatriz"
+                    style="color:red;"
+                    for="VT_RE_idcuentamatriz" />
+                </h:panelGrid>
+
+                <h:outputLabel for="VT_RE_idregional" value = "Regional" styleClass="required" />
+                <h:panelGrid>
+                  <h:selectOneMenu
+                    id="VT_RE_idregional"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.idRegional}"
+                    valueChangeListener="#{createsolicitud.regionalCodeChanged}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    styleClass="input"
+                    label="Regional">
+                    <f:selectItems value="#{createsolicitud.regionales}" />
+                    <f:ajax render="VT_RE_idciudad VT_RE_msg_idregional"/>
+                  </h:selectOneMenu>
+                  <h:message
+                    id="VT_RE_msg_idregional"
+                    style="color: red;"
+                    for="VT_RE_idregional" />
+                </h:panelGrid>
+
+                <h:outputLabel for="VT_RE_idciudad" value = "Ciudad" styleClass="required" />
+                <h:panelGrid>
+                  <h:selectOneMenu
+                    id="VT_RE_idciudad"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.ciudadRr}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    styleClass="input"
+                    label="Ciudad">
+                    <f:selectItems value="#{createsolicitud.ciudades}"/>
+                    <f:ajax render="VT_RE_msg_idciudad"/>
+                  </h:selectOneMenu>
+                  <h:message
+                    id="VT_RE_msg_idciudad"
+                    style="color: red;"
+                    for="VT_RE_idciudad" />
+                </h:panelGrid>
+
+                <h:outputLabel for="VT_RE_idNodo" value = "Nodo" styleClass="required" />
+                <h:panelGrid>
+                  <h:inputText
+                    id="VT_RE_idNodo"
+                    value="#{createsolicitud.solicitud.nodo}"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    styleClass="input"
+                    label="Nodo">
+                    <f:ajax render="VT_RE_msg_nodo"/>
+                  </h:inputText>
+                  <h:message
+                    id="VT_RE_msg_nodo"
+                    style="color: red;"
+                    for="VT_RE_idNodo" />
+                </h:panelGrid>
+
+                <h:outputLabel value = "Direcci&oacute;n Completa" />
+                <h:panelGrid columns="2">
+                  <h:panelGrid>
+                    <h:outputLabel for="VT_RE_idDirCompletaCalle" value = "Calle" styleClass="required"/>
+                    <h:inputText
+                        id ="VT_RE_idDirCompletaCalle"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.dirCalleCompleta}"
+                        required="true"
+                        requiredMessage="Requerido"
+                        styleClass="input_peq"
+                        label="Calle">
+                        <f:ajax render="VT_RE_msg_idDirCompletaCalle"/>
+                    </h:inputText>
+                    <h:message
+                      id="VT_RE_msg_idDirCompletaCalle"
+                      style="color: red;"
+                      for="VT_RE_idDirCompletaCalle" />
+                  </h:panelGrid>
+
+                  <h:panelGrid>
+                    <h:outputLabel for="VT_RE_numPuertaUno" value = "Placa" styleClass="required" />
+                    <h:panelGrid>
+                      <h:inputText
+                        id="VT_RE_numPuertaUno"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.numPuertaUno}"
+                        styleClass="input_mas_peq"
+                        required="true"
+                        requiredMessage="Requerido"
+                        label="Placa">
+                        <f:ajax render="VT_RE_msg_numPuertaUno"/>
+                      </h:inputText>
+                      <h:message
+                        id="VT_RE_msg_numPuertaUno"
+                        style="color: red;"
+                        for="VT_RE_numPuertaUno" />
+                    </h:panelGrid>
+                  </h:panelGrid>
+
+                </h:panelGrid>
+                <h:outputLabel for="VT_RE_idtelefono1" value = "Tel&eacute;fono1" styleClass="required" />
+                <h:panelGrid>
+                  <h:inputText
+                    id="VT_RE_idtelefono1"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.telefono}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    validatorMessage="Ingrese valores númericos"
+                    styleClass="input"
+                    maxlength="12"
+                    label="Tel&eacute;fono1">
+                    <f:validateRegex pattern="[0-9]*"/>
+                    <f:ajax  render="VT_RE_msg_telefono1"/>
+                  </h:inputText>
+                  <h:message
+                    id="VT_RE_msg_telefono1"
+                    style="color: red;"
+                    for="VT_RE_idtelefono1" />
+                </h:panelGrid>
+                <h:outputLabel value = "Direcci&oacute;n alterna" />
+                <h:panelGrid columns="2">
+                  <h:panelGrid>
+                    <h:outputLabel value = "Calle"/>
+                    <h:inputText label="Calle (Alterna)"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.dirCalleAlterna}"
+                      styleClass="input_peq"/>
+                  </h:panelGrid>
+                  <h:panelGrid>
+                    <h:outputLabel value = "Placa" />
+                    <h:inputText label="Placa (Alterna)"
+                      id="VT_RE_dirplacaalternaUno"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.dirPlacaAlternaUno}"
+                      styleClass="input_mas_peq"/>
+                  </h:panelGrid>
+                </h:panelGrid>
+                <h:outputLabel  value = "Tel&eacute;fono2" />
+                <h:panelGrid>
+                    <h:inputText 
+                    id="VT_RE_idtelefono2"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.telefono1}"
+                    validatorMessage="Ingrese valores númericos"
+                    styleClass="input"
+                    maxlength="12"
+                    label="Tel&eacute;fono2">
+                    <f:validateRegex pattern="[0-9]*"/>
+                    <f:ajax render="VT_RE_msg_telefono2"/>
+                  </h:inputText>
+                  <h:message
+                    id="VT_RE_msg_telefono2"
+                    style="color: red;"
+                    for="VT_RE_idtelefono2" />
+                </h:panelGrid>
+                <h:outputLabel for="VT_RE_idcontacto" value = "Contacto" styleClass="required" />
+                <h:panelGrid>
+                  <h:inputText
+                    id="VT_RE_idcontacto"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.contacto}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    styleClass="input"
+                    label="Contacto">
+                    <f:ajax render="VT_RE_msg_idcontacto"/>
+                  </h:inputText>
+                  <h:message
+                    id="VT_RE_msg_idcontacto"
+                    style="color: red;"
+                    for="VT_RE_idcontacto" />
+                </h:panelGrid>
+                <h:outputLabel for="VT_RE_idtelefonocontacto" value = "Tel&eacute;fono Contacto" styleClass="required" />
+                <h:panelGrid>
+                  <h:inputText
+                    id="VT_RE_idtelefonocontacto"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.telContacto}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    validatorMessage="Ingrese valores númericos"
+                    styleClass="input"
+                    label="Tel&eacute;fono Contacto">
+                    <f:ajax  render="VT_RE_msg_telefonoContacto"/>
+                    <f:validateRegex pattern="[0-9]*"/>
+                  </h:inputText>
+                  <h:message
+                    id="VT_RE_msg_telefonoContacto"
+                    style="color: red;"
+                    for="VT_RE_idtelefonocontacto" />
+                </h:panelGrid>
+                <h:outputLabel value = "Solicitante" />
+                <h:outputLabel
+                  value="#{createsolicitud.solicitud.solicitante}"
+                  styleClass="input"/>
+                <h:outputLabel for="VT_RE_idcorreosolicitante"
+                  value = "Correo Solicitante" styleClass="required"/>
+                <h:panelGrid>
+                  <h:inputText
+                    id="VT_RE_idcorreosolicitante"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.correo}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    styleClass="input"
+                    label="Correo Solicitante">
+                    <f:ajax render="VT_RE_msg_correosolicitante"/>
+                  </h:inputText>
+                  <h:message
+                    id="VT_RE_msg_correosolicitante"
+                    style="color: red;"
+                    for="VT_RE_idcorreosolicitante" />
+                </h:panelGrid>
+                <h:outputLabel for="VT_RE_idadministrador"
+                  value = "Administrador" styleClass="required" />
+                <h:panelGrid>
+                  <h:inputText
+                    id="VT_RE_idadministrador"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.contacto1}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    styleClass="input"
+                    label="Administrador">
+                    <f:ajax event="blur" render="VT_RE_msg_admin"/>
+                  </h:inputText>
+                  <h:message
+                    id="VT_RE_msg_admin"
+                    style="color: red;"
+                    for="VT_RE_idadministrador" />
+                </h:panelGrid>
+
+                <h:outputLabel for="VT_RE_id_tel_admin"
+                  value = "Tel&eacute;fono Administrador" styleClass="required" />
+                <h:panelGrid>
+                  <h:inputText
+                    id="VT_RE_id_tel_admin"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.telContacto1}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    validatorMessage="Ingrese valores númericos"
+                    styleClass="input"
+                    label="Tel&eacute;fono Administrador">
+                    <f:ajax render="VT_RE_msg_telefonoadministrador"/>
+                    <f:validateRegex pattern="[0-9]*"/>
+                  </h:inputText>
+                  <h:message
+                    id="VT_RE_msg_telefonoadministrador"
+                    style="color: red;"
+                    for="VT_RE_id_tel_admin" />
+                </h:panelGrid>
+                <h:outputLabel for="VT_RE_idsupervisor"
+                  value = "Supervisor" />
+                <h:inputText 
+                  id="VT_RE_idsupervisor"
+                  value="#{createsolicitud.solicitud.supervisor}"
+                  disabled="#{createsolicitud.canCreate eq false}"
+                  styleClass="input"
+                  label="Supervisor"/>
+                <h:outputLabel for="VT_RE_idmovil"
+                  value = "M&oacute;vil" />
+                <h:panelGrid>
+                  <h:inputText
+                    id="VT_RE_idmovil"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.movil}"
+                    validatorMessage="Ingrese valores númericos"
+                    styleClass="input"
+                    label="M&oacute;vil">
+                    <f:validateRegex pattern="[0-9]*"/>
+                    <f:ajax render="VT_RE_msg_movil"/>
+                  </h:inputText>
+                  <h:message
+                    id="VT_RE_msg_movil"
+                    style="color: red;"
+                    for="VT_RE_idmovil" />
+                </h:panelGrid>
+                <h:outputLabel for="VT_RE_idtipoSolicitud"
+                  value = "Tipo Solicitud" styleClass="required" />
+                <h:panelGrid>
+                  <h:selectOneMenu
+                    id="VT_RE_idtipoSolicitud"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.tipoSol}"
+                    required="true"
+                    requiredMessage="Requerido"
+                    styleClass="input"
+                    label="Tipo Solicitud">
+                    <f:selectItems
+                      value="#{createsolicitud.tipoSolicitudesTipoSolicitud}" />
+                    <f:ajax render="VT_RE_msg_idtipoSolicitud"/>
+                  </h:selectOneMenu>
+                  <h:message
+                    id="VT_RE_msg_idtipoSolicitud"
+                    style="color: red;"
+                    for="VT_RE_idtipoSolicitud" />
+                </h:panelGrid>
+              </h:panelGrid>
+
+              <h:outputLabel value="Motivos de la Solicitud" style="display: block;
+                             text-align:center" for="VT_RE_motivo" styleClass="required"/>
+              <h:inputTextarea
+                id="VT_RE_motivo"
+                
+                style="border:1px; background:#DFEDDF; width:100%; height:120px "
+                disabled="#{createsolicitud.canCreate eq false}"
+                value="#{createsolicitud.solicitud.motivo}"
+                required="true"
+                requiredMessage="Requerido"
+                label="Motivos de la Solicitud">
+                <f:ajax render="VT_RE_msg_motivo"/>
+              </h:inputTextarea>
+              <h:message
+                id="VT_RE_msg_motivo"
+                style="color: red;"
+                for="VT_RE_motivo" />
+            </h:panelGrid>
+           
+                
+                
+              <h:panelGroup >
+                <h:commandButton
+                  id = "CM_submit"                  
+                  styleClass="btn"
+                  value = "Ingresar Datos"
+                  disabled="#{!createsolicitud.validarOpcionIngresarDatos()}"
+                  actionListener="#{createsolicitud.prepareCreate(actionManagedBean.action)}">
+                 </h:commandButton>               
+              </h:panelGroup>
+                </div>
+       
+    </ui:define>
+
+</ui:composition>
+

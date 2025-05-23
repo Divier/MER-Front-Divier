@@ -1,0 +1,327 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"              
+                template="/view/MGL/template/VT/homeSolicitudes.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" >
+    <h:outputStylesheet library="css" name="claro/crear-regla.css" />
+    <ui:define name="title">Crear Regla Estados</ui:define>        
+    <ui:define name="tipoModulo">Cuentas Matrices</ui:define>        >       
+     
+    <ui:define name="content">
+        <style>
+            .padding_col_btn {
+                width: 100%;
+                padding: 0 !important;
+                text-align: center;
+            }
+
+            .margin_lbl{
+                margin:auto;
+            }
+
+            .inputSt{
+                width: 100% !important;;
+                padding: 2%;
+                margin: 0;
+                border-radius: 4px;
+            }
+
+        </style>  
+        <h2 style="margin-top: -22px; margin-left: -12px;text-align: center;">CREAR REGLAS ESTADOS COMBINADOS</h2>        
+        <!--             FORMULARIO DE REGISTRO DE LOS ESTADOS COMBINADOS EN UNA REGLA-->
+        <h:panelGroup layout="block"
+                      styleClass="card"
+                      id="EstadosCombinadosTab">
+            <!--                SECCION ADICIONAR ESTADO COMBINADO-->
+            <h:panelGroup layout="block"
+                          style="width:100%"
+                          id="pnlEstadosCombinados1"
+                          class="ui-g">
+
+                <!--        SECCION FORMULARIO SELECTOR ESTADOS-->
+                <div class="ui-g-4 padding_col">
+                    <h:panelGroup layout="block" styleClass="card_group">
+                        <p:panelGrid columns="2" style="width: 100%;" layout="grid"
+                                     styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-grid-col-3 margin_lbl,ui-grid-col-9">
+                            <p:outputLabel for="idEstado" styleClass="labelTxt" value="Estado: " />
+                            <p:selectOneMenu 
+                                    id="idEstado" 
+                                    filter="true"
+                                    filterMatchMode="startsWith"
+                                    value="#{cmtReglaEstadoCmMglBean.basicaIdEstado}" >
+                                <f:selectItem itemLabel="Seleccione uno..." itemValue="#{null}" />
+                                <f:selectItems value="#{cmtReglaEstadoCmMglBean.tipoEstadosList}" var="listEst"
+                                               itemValue="#{listEst.basicaId}"
+                                               itemDisabled="#{listEst.nombreBasica.contains('+')}"
+                                               itemLabel="#{listEst.nombreBasica.concat(' - ID MER:').concat(listEst.basicaId).concat(' - ID RR:').concat(listEst.codigoBasica)}"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </h:panelGroup>
+                </div>
+                <!--        SECCION FORMULARIO SELECTOR TECNOLOGIA-->
+                <div class="ui-g-4 padding_col">
+                    <h:panelGroup layout="block" styleClass="card_group">
+                        <p:panelGrid columns="2" style="width: 100;" layout="grid"
+                                     styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-grid-col-3 margin_lbl,ui-grid-col-9">
+                            <p:outputLabel for="idTecnologia" styleClass="labelTxt"  value="Tecnologia: " />
+                            
+                            <p:selectOneMenu 
+                                    id="idTecnologia" 
+                                    filter="true" 
+                                    filterMatchMode="startsWith"
+                                    value="#{cmtReglaEstadoCmMglBean.basicaIdTecnologia}" >
+                                <f:selectItem itemLabel="Seleccione uno..." itemValue="#{null}" />
+                                <f:selectItems value="#{cmtReglaEstadoCmMglBean.tipoTecnologiaBasicaList}" var="listEstTec"
+                                               itemValue="#{listEstTec.basicaId}"
+                                               itemDisabled="#{listEstTec.nombreBasica.contains('+')}"
+                                               itemLabel="#{listEstTec.nombreBasica}"/> 
+                            </p:selectOneMenu>
+                            
+                        </p:panelGrid>
+                    </h:panelGroup>
+                </div>
+
+                <!--        SECCION FORMULARIO BOTON ADICIONAR-->
+                <div class="ui-g-4 padding_col" style="margin: auto;">
+                    <h:panelGroup layout="block">
+                        <h:commandButton  id="idAdicionarEstadoC" 
+                                          class="btn"
+                                          style="display:inline-block;"
+                                          action="#{cmtReglaEstadoCmMglBean.adicionarEstadoCombinado()}"                                          
+                                          value="Agregar"> 
+                        </h:commandButton>
+                    </h:panelGroup>
+                </div>
+
+            </h:panelGroup>
+            <!--                SECCION TABLA DE ESTADOS COMBINADOS-->
+            <h:panelGroup layout="block"
+                          style="width: 100%;margin-bottom: 2%;margin-top: 2%;" 
+                          id="pnlEstadosCombinados2">
+                <p:dataTable  id="dbEstadosCId"
+                              var="estadoC" 
+                              value="#{cmtReglaEstadoCmMglBean.reglasEstadoTmpList}"
+                              style="width: 100%"
+                              emptyMessage="No hay registros">                   
+
+                    <p:column headerText="Estado">
+                        <h:outputText value="#{estadoC.estadoTecBasicaId.nombreBasica}" />
+                    </p:column>
+
+                    <p:column headerText="ID Estado MER">
+                        <h:outputText value="#{estadoC.estadoTecBasicaId.basicaId}" />
+                    </p:column>
+
+                    <p:column headerText="ID Estado RR">
+                        <h:outputText value="#{estadoC.estadoTecBasicaId.codigoBasica}" />
+                    </p:column>
+
+                    <p:column headerText="Tecnologia">
+                        <h:outputText value="#{estadoC.tecnologiaBasicaId.nombreBasica}" />
+                    </p:column>
+
+                    <p:column headerText="Accion" style="text-align: center;">
+                        <h:commandLink  id="cmd" 
+                                        class="btn" 
+                                        action="#{cmtReglaEstadoCmMglBean.eliminarEstado(estadoC)}" 
+                                        title="Remover"
+                                        value="Remover">
+                        </h:commandLink>
+                    </p:column>
+
+                </p:dataTable>
+            </h:panelGroup>
+            <!--                 SECCION CREAR REGLA-->
+            <h:panelGroup layout="block"
+                          style="width: 100%"
+                          id="pnlEstadosCombinados3">
+                <p:panelGrid id="pnlEstadosCombinados3Content"
+                             columns="3" 
+                             layout="grid"
+                             styleClass="ui-panelgrid-blank ui-fluid"
+                             columnClasses="ui-grid-col-4 padding_col margin_lbl,ui-grid-col-4 padding_col btn_col,ui-grid-col-4"                             
+                             style="border:0px none; background-color:transparent;">
+
+                    <h:panelGroup layout="block" styleClass="card_group">
+                        <p:panelGrid columns="2" style="width: 100%;" layout="grid"
+                                     styleClass="ui-panelgrid-blank ui-fluid" 
+                                     columnClasses="ui-grid-col-5 margin_lbl,ui-grid-col-7">
+                            <p:outputLabel for="idomEstadoC" styleClass="labelTxt"  value="Estado Combinado: " />    
+                            <p:selectOneMenu 
+                                    id="idomEstadoC" 
+                                    filter="true" 
+                                    filterMatchMode="startsWith"
+                                    value="#{cmtReglaEstadoCmMglBean.basicaIdEstadoComb}">
+                                <f:selectItem itemLabel="Seleccione uno..." itemValue="#{null}" />
+
+                                <f:selectItems 
+                                    value="#{cmtReglaEstadoCmMglBean.tipoEstadosCombinadoList}" 
+                                    var="listEstComb"
+                                    itemValue="#{listEstComb.basicaId}"
+                                    itemLabel="#{listEstComb.nombreBasica.concat(' : [ ID MER:').concat(listEstComb.basicaId).concat(' - ID RR:').concat(listEstComb.codigoBasica).concat(' ]')}"/>                            
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" >
+                        <p:panelGrid columns="3" style="width: 100%;" layout="grid"
+                                     styleClass="ui-panelgrid-blank ui-fluid " columnClasses="ui-grid-col-4 padding_col_btn,ui-grid-col-4 padding_col_btn,ui-grid-col-4 padding_col_btn">
+
+                            <h:commandLink  id="idCrearRegla" 
+                                            class="btn" 
+                                            style="display:inline-block;"
+                                            action="#{cmtReglaEstadoCmMglBean.registrarRegla()}"
+                                            value="Guardar Regla">
+                            </h:commandLink>
+
+                            <h:commandLink  id="idlimpiarRegla" 
+                                            class="btn" 
+                                            style="display:inline-block;margin-left: 0 !important;"
+                                            action="#{cmtReglaEstadoCmMglBean.eliminarEstados()}"
+                                            value="Limpiar Regla">
+                            </h:commandLink>
+
+                            <h:panelGroup layout="block" />
+
+                        </p:panelGrid>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" />
+
+                </p:panelGrid>
+            </h:panelGroup>
+
+        </h:panelGroup>
+
+        <br></br>
+        <!--             TABLA PARA VISUALIZAR LAS REGLAS ACTIVAS-->
+        <h:panelGroup  layout="block"
+                       id="TableLitadoReglasId"
+                       styleClass="card" >
+
+            <h:panelGroup layout="block"
+                          style="width:100%"
+                          id="pnlReglasFiltro"
+                          class="ui-g">
+
+                <div class="ui-g-6 padding_col"  style="margin: auto;">
+                    <h:panelGroup layout="block" styleClass="card_group">
+                        <p:panelGrid columns="3" style="width: 100%;" layout="grid"
+                                     styleClass="ui-panelgrid-blank ui-fluid" columnClasses="ui-grid-col-2 margin_lbl, ui-grid-col-5, ui-grid-col-5">
+                            <p:outputLabel for="idEstado"  style="font-weight: bold;" styleClass="labelTxt" value="BUSCAR: " />
+                            <p:selectOneMenu id="idTipoFiltro" value="#{cmtReglaEstadoCmMglBean.tipoFiltro}" >
+                                <f:selectItem itemLabel="Seleccione uno..." itemValue="#{null}" />
+                                <f:selectItem itemLabel="Id Regla" itemValue="IDRULE" />
+                                <f:selectItem itemLabel="Nombre Estado" itemValue="ESTNAME" />
+                                <f:selectItem itemLabel="Nombre Tecnologia" itemValue="TECNAME" />
+                                <f:selectItem itemLabel="Nombre Estado Combinado" itemValue="ESTCOMB" />
+                            </p:selectOneMenu>
+
+                            <h:inputText styleClass="inputSt"  value="#{cmtReglaEstadoCmMglBean.contentFiltro}"  />
+
+                        </p:panelGrid>
+                    </h:panelGroup>
+                </div>
+                <div class="ui-g-6 padding_col">
+                    <h:panelGroup layout="block">
+                        <h:commandButton  id="idFiltrarRegla" 
+                                          class="btn"
+                                          style="display:inline-block;"
+                                          action="#{cmtReglaEstadoCmMglBean.filtrar()}"                                          
+                                          value="Buscar"> 
+                        </h:commandButton>
+
+                        <h:commandButton  id="idLimpiarRegla" 
+                                          class="btn"
+                                          style="display:inline-block;"
+                                          action="#{cmtReglaEstadoCmMglBean.limpiarFiltro()}"                                          
+                                          value="Limpiar"> 
+                        </h:commandButton>
+                    </h:panelGroup>
+
+                </div>
+            </h:panelGroup>
+
+            <p:dataTable  id="dbListRegla"
+                          value="#{cmtReglaEstadoCmMglBean.reglasEstadoList}"
+                          var="listRegla" 
+                          styleClass="table table-borderless table-striped table-earning"
+                          lazy="true" disabledSelection="true"
+                          emptyMessage="No hay registros">
+
+                <f:facet name="header">
+                    Lista Reglas
+                </f:facet>
+
+                <p:column headerText="ID regla">
+                    <h:outputText value="#{listRegla.numeroRegla}" />
+                </p:column>
+
+                <p:column headerText="Nombre estado">
+                    <h:outputText value="#{listRegla.estadoTecBasicaId.nombreBasica}" />
+                </p:column>
+
+                <p:column headerText="ID estado MER">
+                    <h:outputText value="#{listRegla.estadoTecBasicaId.basicaId}" />
+                </p:column>
+
+                <p:column headerText="ID estado RR">
+                    <h:outputText value="#{listRegla.estadoTecBasicaId.codigoBasica}" />
+                </p:column>
+
+                <p:column headerText="Nombre tecnologia">
+                    <h:outputText value="#{listRegla.tecnologiaBasicaId.nombreBasica}" />
+                </p:column>
+
+                <p:column headerText="Nombre estado combinado">
+                    <h:outputText value="#{listRegla.estadoCmBasicaId.nombreBasica}" />
+                </p:column>
+
+                <p:column headerText="ID estado combinado MER">
+                    <h:outputText value="#{listRegla.estadoCmBasicaId.basicaId}" />
+                </p:column>
+
+                <p:column headerText="ID estado combinado RR">
+                    <h:outputText value="#{listRegla.estadoCmBasicaId.codigoBasica}" />
+                </p:column>
+
+                <p:column headerText="Eliminar" style="text-align: center;">
+                    <h:commandLink  id="cmd" 
+                                    class="btn" 
+                                    action="#{cmtReglaEstadoCmMglBean.eliminarRegla(listRegla)}" 
+                                    title="Eliminar Regla"
+                                    value="x">
+                    </h:commandLink>
+                </p:column>
+
+                <f:facet name="footer"  >
+                    <h:panelGroup style="text-align: center;" >
+                        <h:commandButton title="Primera Página" value="#{cmtReglaEstadoCmMglBean.inicioPagina}" action="#{cmtReglaEstadoCmMglBean.pageFirst}"
+                                         class="btn"/>
+                        <h:commandButton title="Página Anterior" value="#{cmtReglaEstadoCmMglBean.anteriorPagina}" action="#{cmtReglaEstadoCmMglBean.pagePrevious}"
+                                         class="btn"/>
+                        <h:commandButton title="Número Páginas" value="#{cmtReglaEstadoCmMglBean.pageActual}" styleClass="botonTPagInicio"    />
+                        <h:selectOneMenu id="listTabla" value="#{cmtReglaEstadoCmMglBean.numPagina}" 
+                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                            <f:selectItems value="#{cmtReglaEstadoCmMglBean.paginaList}" var="pag"
+                                           itemValue="#{pag}"
+                                           itemLabel="#{pag}"/>    
+                            <f:ajax render="@form"  event="change"  
+                                    listener="#{cmtReglaEstadoCmMglBean.irPagina()}"  
+                                    execute="@this" />                                         
+                        </h:selectOneMenu>  
+                        <h:commandButton title="Página Siguiente" value="#{cmtReglaEstadoCmMglBean.siguientePagina}" action="#{cmtReglaEstadoCmMglBean.pageNext}"
+                                         class="btn"/>
+                        <h:commandButton title="Última Página" value="#{cmtReglaEstadoCmMglBean.finPagina}" action="#{cmtReglaEstadoCmMglBean.pageLast}"
+                                         class="btn"/>
+                    </h:panelGroup>
+                </f:facet>      
+            </p:dataTable>     
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

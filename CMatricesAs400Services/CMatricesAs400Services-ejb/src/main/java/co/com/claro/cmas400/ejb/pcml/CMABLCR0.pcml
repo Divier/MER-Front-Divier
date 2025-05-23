@@ -1,0 +1,17 @@
+<pcml version="4.0">                                                            
+   <!-- RPG program: CMABLCR0  -->                                              
+   <!-- created: 2016-03-16-17.23.18 -->                                        
+   <!-- source: TVCSRC/CMRPGLESRC(CMABLCR0) -->                                 
+   <!-- 61 -->                                                                  
+   <program name="CMABLCR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMABLCR0.PGM">       
+      <data name="PACODG" type="char" length="9" usage="inputoutput" />         
+      <data name="PCML" type="char" length="2" usage="inputoutput" />           
+      <data name="PNOPCI" type="char" length="1" usage="inputoutput" />         
+      <data name="PCONFI" type="char" length="1" usage="inputoutput" />         
+      <data name="PUSERID" type="char" length="10" usage="inputoutput" />       
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />        
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />      
+      <data name="TABLARTA" type="char" length="61" count="500" usage="inputoutput" />      
+      <data name="MENSAJE" type="char" length="63" usage="inputoutput" />       
+   </program>                                                                   
+</pcml> 

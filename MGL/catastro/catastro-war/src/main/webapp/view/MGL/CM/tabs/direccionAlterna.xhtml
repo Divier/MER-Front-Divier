@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/cm.xhtml">
+    <ui:define name="content">
+
+        <h2 id="myhMmData"> Direcciones[#{direccionAlternaMglBean.selectedCmtSubEdificioMgl.nombreSubedificio}]</h2>
+        <h:panelGrid rendered="#{direccionAlternaMglBean.vistas.view eq 'Lista'}" style="width: 100%;">
+            <h:dataTable id="DireccionAlternaMglTable" 
+                         value="#{direccionAlternaMglBean.cmtdireccionMglList}" var="cmtDireccionMgl"                         
+                         styleClass="constructGTable2"
+                         headerClass="constructGTableHeader"  rowClasses="constructGTableEvenRow, constructGTableOddRow" style="width: 100%;">
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Dirección" />
+                    </f:facet>
+                    <div style="#{cmtDireccionMgl.tdiId eq 2?'background: #A4A4A4;padding: 5px;width: 200px;':'padding: 5px;width: 200px;'}">
+                        <h:commandLink value="#{cmtDireccionMgl.direccionObj.dirFormatoIgac}"
+                                       action="#{direccionAlternaMglBean.irModificar(cmtDireccionMgl)}"
+                                       disabled="#{cmtDireccionMgl.tdiId eq 2 or !direccionAlternaMglBean.validarEdicion()}"/>
+                    </div>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Eliminar" />
+                    </f:facet>
+                    <div style="#{cmtDireccionMgl.tdiId eq 2?'background: #A4A4A4;padding: 5px;':'padding: 5px;'}">
+                        <h:commandLink value="Eliminar"
+                                       action="#{direccionAlternaMglBean.eliminarDireccion(cmtDireccionMgl)}"
+                                       disabled="#{cmtDireccionMgl.tdiId eq 2 or !direccionAlternaMglBean.validarBorrado()}"/>
+                    </div>
+                </h:column>
+
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Dirección RR" />
+                    </f:facet>
+                    <div align="left"  style="width: 200px; #{cmtDireccionMgl.tdiId eq 2?'background: #A4A4A4;padding: 5px;':'padding: 5px;'}" >
+                        <h:outputText value="[#{cmtDireccionMgl.calleRr}][#{cmtDireccionMgl.unidadRr}]"/>
+                    </div>
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Estado" />
+                    </f:facet>
+                    <div align="left"   style="width: 100px; #{cmtDireccionMgl.tdiId eq 2?'background: #A4A4A4;padding: 5px;':'padding: 5px;'}" >
+                        <h:outputText value="#{(cmtDireccionMgl.direccionObj.dirRevisar eq 1 ?'Pendiente revisar':'Existe')}" />      </div>                                  
+                </h:column>
+                <h:column>  
+                    <f:facet name="header">
+                        <h:outputText value="Comentarios" />
+                    </f:facet>
+                    <div align="left"  style="width: 350px; #{cmtDireccionMgl.tdiId eq 2?'background: #A4A4A4;padding: 5px;':'padding: 5px;'}" >
+                        <h:outputText value="#{cmtDireccionMgl.comentario}" />      </div>                                  
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Log" />
+                    </f:facet>
+                    <div style="#{cmtDireccionMgl.tdiId eq 2?'background: #A4A4A4;padding: 5px;':'padding: 5px;'}">
+                        <h:commandLink value="Log" action="#{direccionAlternaMglBean.irAuditoria(cmtDireccionMgl)}"/>
+                    </div>
+                </h:column>
+                <f:facet name="footer">
+                    <h:panelGroup>
+                        <h:commandButton value="" action="#{direccionAlternaMglBean.pageFirst}"
+                                         class="botonTPagInicioCm botonBaselista"/>
+                        <h:commandButton value="" action="#{direccionAlternaMglBean.pagePrevious}"
+                                         class="botonTPagAnteriorCm botonBaselista"/>
+                        <h:commandButton value="#{direccionAlternaMglBean.pageActual}" styleClass="botonTPagInicio"    />
+                        <h:selectOneMenu id="listTabla" value="#{direccionAlternaMglBean.numPagina}" 
+                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                            <f:selectItems value="#{direccionAlternaMglBean.paginaList}" var="pag"
+                                           itemValue="#{pag}"
+                                           itemLabel="#{pag}"/>    
+                            <f:ajax render="@form"  event="change"  listener="#{direccionAlternaMglBean.irPagina()}"  execute="@this" />                                         
+                        </h:selectOneMenu>  
+                        <h:commandButton value="" action="#{direccionAlternaMglBean.pageNext}"
+                                         class="botonTPagSiguienteCm botonBaselista"/>
+                        <h:commandButton value="" action="#{direccionAlternaMglBean.pageLast}"
+                                         class="botonTPagFinCm botonBaselista"/>
+                    </h:panelGroup>
+                </f:facet>                
+            </h:dataTable>  
+            <h:commandButton value="Adicionar" styleClass="btn"
+                             action="#{direccionAlternaMglBean.irCrear()}"
+                             rendered="#{direccionAlternaMglBean.validarCreacion()}"/>
+        </h:panelGrid>
+
+        <h:panelGrid rendered="#{direccionAlternaMglBean.vistas.view eq 'Direccion'}">
+            <h:outputText value="Dirección"
+                          style="display: inline-block; width: 80px;"/>
+            <h:panelGroup>
+                <h:inputText id="idDireccionTextoAltern" value="#{direccionAlternaMglBean.direccion}"
+                             style="width: 300px" maxlength="100"  validatorMessage="El campo dirección debe contener más de 8 caracteres" requiredMessage="La dirección es requerida">
+                 <!--  <f:validateRegex pattern="((\w|\s|#|-|a-zA-ZÑñ0-9){2,})?"/> -->
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{direccionAlternaMglBean.avisaCambiaDireccion()}"  render="@form"/>
+                </h:inputText>
+                <h:graphicImage id="mostrarComponenteButton" style="width: 13px; " title="Validar dirección" value="/view/img/home.gif">
+                    <f:ajax render="@form" execute="@this idDireccionTextoAltern" 
+                            event="click" listener="#{direccionAlternaMglBean.irPopUpDireccion()}"/>
+                </h:graphicImage>
+            </h:panelGroup>
+            <h:panelGroup id="grupoBarriosDireccion" rendered="#{direccionAlternaMglBean.cmtCuentaMatrizMgl.municipio.gpoMultiorigen eq '1' and direccionAlternaMglBean.drDireccion.idTipoDireccion eq 'CK' and direccionAlternaMglBean.direccionValidada}">                
+                <h:outputText value="Barrio"/><BR/>
+                <h:panelGroup id="gupBarrios"  >
+                    <div>
+                        <h:selectOneMenu required="true" style="width: 300px" id="SelectorBarrios" value="#{direccionAlternaMglBean.selectedBarrio}" requiredMessage="El campo barrio es requerido" 
+                                         rendered="#{direccionAlternaMglBean.barrioslist.size()>0 and !direccionAlternaMglBean.otroBarrio}">
+                            <f:selectItems value="#{direccionAlternaMglBean.barrioslist}" var="lbar" itemLabel="#{lbar}" itemValue="#{lbar}" />       
+                        </h:selectOneMenu>
+                        <h:inputText required="true" style="width: 300px" id="barriodigitado" value="#{direccionAlternaMglBean.selectedBarrio}" rendered="#{!(direccionAlternaMglBean.barrioslist.size()>0) or (direccionAlternaMglBean.otroBarrio)}" requiredMessage="El campo barrio es requerido">
+                        </h:inputText>
+                        <h:commandButton  id="mostrarOtroBarrio" value="#{direccionAlternaMglBean.otroBarrio?'Lista':'Otro'}" rendered="#{direccionAlternaMglBean.barrioslist.size()>0}" styleClass="btng">
+                            <f:ajax render="@form" execute="@this" 
+                                    event="click" listener="#{direccionAlternaMglBean.mostrarOtrobarrio()}" />
+                        </h:commandButton>
+                    </div>   
+                </h:panelGroup>
+            </h:panelGroup>
+            <h:outputText value="Comentario(200c)" rendered="#{direccionAlternaMglBean.direccionValidada}"/>
+            <h:inputTextarea id="asc_campo_justificaTxt" style="width: 300px" value="#{direccionAlternaMglBean.comentario}" rows="3" requiredMessage="El campo Comentario es requerido para cualquier modificación o eliminación del registro" rendered="#{direccionAlternaMglBean.direccionValidada}">
+            </h:inputTextarea> 
+            <h:commandLink action="#{direccionAlternaMglBean.irCmdeDireccion()}" immediate="true" rendered="#{direccionAlternaMglBean.mostrarLinkMatriz}" value="ir CM que contien la direccion"/>
+            <h:panelGrid id="botonesDireccionChange" columns="2">
+                <h:commandButton  id="dirAlternaVolverButton" value="Volver" 
+                                  styleClass="btn unblockClaro" 
+                                  action="#{direccionAlternaMglBean.irLista()}" 
+                                  immediate="true"/>
+                <h:commandButton  id="dirAlternaGuardarButton" value="Guardar"
+                                  styleClass="btn"
+                                  action="#{direccionAlternaMglBean.guardar()}" 
+                                  rendered="#{direccionAlternaMglBean.direccionValidada}"/>
+            </h:panelGrid>
+        </h:panelGrid>
+        <h:panelGrid rendered="#{direccionAlternaMglBean.vistas.view eq 'Auditoria'}">
+            <cc:componente-auditoria auditoriaDto="#{direccionAlternaMglBean.informacionAuditoria}">
+            </cc:componente-auditoria>
+            <h:commandButton  value="Volver" styleClass="btn" action="#{direccionAlternaMglBean.irLista()}"/>
+        </h:panelGrid>
+        <h:panelGrid  rendered="#{direccionAlternaMglBean.vistas.view eq 'Eliminar'}">
+            <h:outputText escape="false" style="font-weight: bold" value="Direccion a eliminar:  #{direccionAlternaMglBean.registrocmtDireccionMglEliminar.direccionObj.dirFormatoIgac}"/>        
+            <h:outputText value="Comentario Eliminacion(200c)"/>        
+            <h:inputTextarea id="asc_campo_justificaElimTxt" style="width: 300px" value="#{direccionAlternaMglBean.comentario}" rows="3" requiredMessage="El campo Comentario es requerido para cualquier modificación o eliminación del registro" >
+                <f:validateRequired />
+            </h:inputTextarea>                          
+            <h:panelGrid id="botonesEliminarChange" columns="2">
+                <h:commandButton  value="Eliminar" styleClass="btn" action="#{direccionAlternaMglBean.confirmarEliminar()}" onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"/>
+                <h:commandButton  value="Volver" styleClass="btn" action="#{direccionAlternaMglBean.irLista()}" immediate="true"/>
+            </h:panelGrid>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

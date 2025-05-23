@@ -1,0 +1,12 @@
+<pcml version="4.0">
+   <!-- RPG program: CMINADR0  -->
+   <!-- created: 2014-09-19-09.08.08 -->
+   <!-- source: CMWEBF0/QRPGLESRC(CMINADR0) -->
+   <!-- 42 -->
+   <program name="CMINADR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMINADR0.PGM">
+      <data name="PRNUED" type="char" length="9" usage="inputoutput" />
+      <data name="PCML" type="char" length="2" usage="inputoutput" />
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />
+      <data name="MENSAJE" type="char" length="63" usage="inputoutput" />
+   </program>
+</pcml>

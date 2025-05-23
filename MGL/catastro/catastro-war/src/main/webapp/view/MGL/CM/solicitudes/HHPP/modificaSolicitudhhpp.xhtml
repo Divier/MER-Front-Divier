@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/solicitudHhppTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Solicitud HHPP</span></ui:define>
+
+    <ui:define name="content">
+        <h3>Lista HHPP</h3>
+        <h:dataTable  id="hhppTable"
+                      value="#{SolicitudHhppCMBean.listaHhppToChanges}" 
+                          var="listHhpp"
+                          class="constructGTable tableViewCont"
+                          rendered="#{(SolicitudHhppCMBean.listaHhppToChanges.size())>0}">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="HHP_ID"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.hhpId}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="HHPP"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.hhpApart}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="TIPO"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.hhpTipo}"/>
+                </h:column> 
+                <h:column>
+                    <h:commandLink value="Editar" style="font-size: 12px;" immediate="true" action="#{SolicitudHhppCMBean.editarHhpp()}">
+                        <f:setPropertyActionListener target="#{SolicitudHhppCMBean.selectHhppMgl}" value="#{listHhpp}" />
+                    </h:commandLink>
+                </h:column>
+            </h:dataTable>
+        
+        <h3>Solicitudes de Modificación de HHPP</h3>
+        
+         <h:dataTable  id="hhppTable2"
+                          value="#{SolicitudHhppCMBean.cmtSolicitudHhppMglListToChanges}" 
+                          var="listHhpp"
+                          class="constructGTable tableViewCont"
+                          rendered="#{(SolicitudHhppCMBean.cmtSolicitudHhppMglListToChanges.size())>0}">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Tipo Nivel 5" />
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.opcionNivel5}" rendered="#{listHhpp.estadoRegistro == 1}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Valor Nivel 5"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.valorNivel5}" rendered="#{listHhpp.estadoRegistro == 1}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Tipo Nivel 6"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.opcionNivel6}" rendered="#{listHhpp.estadoRegistro == 1}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Valor Nivel 6"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.valorNivel6}" rendered="#{listHhpp.estadoRegistro == 1}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Tipo Operaci&oacute;n"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.tipoSolicitud == 1 ? 'Creación':'Modificación'}" rendered="#{listHhpp.estadoRegistro == 1}"/>
+                </h:column>
+                <h:column>
+                    <h:commandLink value="Eliminar" style="font-size: xx-small" 
+                                   immediate="true" 
+                                   action="#{SolicitudHhppCMBean.eliminaHhpp()}" 
+                                   rendered="#{listHhpp.estadoRegistro == 1}">
+                        <f:setPropertyActionListener 
+                            target="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl}" 
+                            value="#{listHhpp}" rendered="hhppTable2 hhppTable" />
+                    </h:commandLink>
+                </h:column>
+            </h:dataTable>
+    </ui:define>
+    
+</ui:composition>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+  <body>
+    <ui:composition template="./../../../template/main.xhtml">
+       
+      <ui:define name="content">
+           <div align = "center">
+        <h1> SELECCIONE EL ARCHIVO </h1>
+        
+          <input type="file" 
+            name="file" 
+            id="file"  /> 
+          <br/>
+          <input
+            id="upload"
+            type="submit"
+            value="Subir Archivo"
+            class="btn"
+            />
+        
+          <h:panelGrid columns="2">
+            <h:outputLabel value="Nombre del archivo"/>
+            <h:outputText value="#{cierreMasivoBean.nameFile}"/>              
+            <h:outputLabel value="Tama&ntilde;o del archivo"/>
+            <h:outputText value="#{cierreMasivoBean.sizeFile}"/>              
+            <h:outputLabel value="Resultado"/>
+            <h:outputText value="#{cierreMasivoBean.resultado}"/>              
+          </h:panelGrid>
+          </div>
+          </ui:define>
+    
+    </ui:composition>
+  </body>
+</html>

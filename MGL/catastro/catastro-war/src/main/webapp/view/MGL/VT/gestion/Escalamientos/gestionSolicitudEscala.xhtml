@@ -1,0 +1,1034 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/VT/homeGestionSolicitudes.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <title>Gestión Solicitud</title>
+    <ui:define name="content">
+
+        <h:inputHidden id="inicio"
+                       value="#{gestionSolicitudEscalaBean.tmpInicio}"  />
+        <h:inputHidden id="fin"
+                       value="#{gestionSolicitudEscalaBean.tmpFin}"  />
+        #{solicitudSessionBean.init()}
+        <h2 style="margin-top: -22px; margin-left: -12px">
+            #{gestionSolicitudEscalaBean.solicitudSeleccionada.tipoAccionSolicitudStr} </h2>
+
+        <h:panelGrid columns="8" id="encabezadoMgl" class="formulario3" style="width:100%;">
+
+            <h:outputText style="font-weight:bold" id="numeroSolicitudLabel" value="Número Solicitud:"/>
+            <h:outputText style="width: 100%;font-size: 12px;color:red;" id="numeroSolicitudIn"
+                          value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.idSolicitud}"/>
+
+            <h:outputText style="font-weight:bold" id="estadoSolicitud" value="Estado Solicitud:"/>
+            <h:inputText value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.estado}" disabled="true"
+                         id="estadoSolicitudInput"/>
+
+            <h:outputText id="inicioSolicitud" value="Inicio Gestión:"
+                          rendered="#{!gestionSolicitudEscalaBean.solicitudGestionada}"/>
+            <h:inputText id="eimsTxt" style="width: 100px" value="#{gestionSolicitudEscalaBean.timeSol}"
+                         rendered="#{!gestionSolicitudEscalaBean.solicitudGestionada}"/>
+            <h:outputText id="tiempoSolicitud" value="Tiempo Solicitud:"
+                          rendered="#{gestionSolicitudEscalaBean.solicitudGestionada}"/>
+            <h:inputText id="eimsTxt2" style="width: 100px"
+                         value="#{gestionSolicitudEscalaBean.cmtTiempoSolicitudMglToCreate.tiempoGestion}"
+                         rendered="#{gestionSolicitudEscalaBean.solicitudGestionada}"/>
+
+            <h:outputText style="font-weight:bold" id="fechaSol" value="Fecha:"/>
+            <h:inputText maxlength="200" disabled="true" id="fechaInput"
+                         value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.fechaIngreso}"/>
+
+        </h:panelGrid>
+
+        <h:panelGrid id="panelTabs" class="formulario3" columns="3" >
+            <h:commandButton  id="irSolicitudDth"
+                              class="#{gestionSolicitudEscalaBean.selectedTab == 'SOLICITUD' ? 'btn2 btn2Active':'btn2'}"
+                              value="Solicitud"
+                              disabled="#{!gestionSolicitudEscalaBean.selectedTab eq 'SOLICITUD'}">
+                <f:ajax event="click" execute="@this" listener="#{gestionSolicitudEscalaBean.cambiarTab('SOLICITUD')}"
+                        render="tabsWrap panelTabs"/>
+            </h:commandButton>
+            <h:commandButton id="irTrackSolicitudDth"
+                             class="#{gestionSolicitudEscalaBean.selectedTab == 'TRACK' ? 'btn2 btn2Active':'btn2'}"
+                             value="Track">
+                <f:ajax event="click" execute="@this" listener="#{gestionSolicitudEscalaBean.cambiarTab('TRACK')}"
+                        render="tabsWrap panelTabs"/>
+            </h:commandButton>
+
+            <h:commandButton id="irNotasSolicitudDth"
+                             class="#{gestionSolicitudEscalaBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}"
+                             value="Notas">
+                <f:ajax event="click" execute="@this" listener="#{gestionSolicitudEscalaBean.cambiarTab('NOTAS')}"
+                        render="tabsWrap panelTabs"/>
+            </h:commandButton>
+
+        </h:panelGrid>
+        <br/>
+        <h:panelGrid style="width: 100%"
+                     columns="3"
+                     id="tabsWrap" >
+            <h:panelGroup style="width: 100%"
+                          id="SolicitudDthTab" rendered="#{gestionSolicitudEscalaBean.showSolicitud}">
+                <table style="width: 100%">
+                    <tr> <td> <br/> </td>  </tr>
+                    <tr>
+                        <td colspan="8">
+                            <h2 style="margin-top: -22px; margin-left: -12px">DATOS HHPP</h2> </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="tipoSol" value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoAccion"
+                                          value="Tipo Solicitud:" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu style="width: 90%" id="selectTipoAccion" disabled="true"
+                                             value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.cambioDir}" >
+                                <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                <f:selectItems value="#{gestionSolicitudEscalaBean.tipoAccionSolicitudBasicaList}"
+                                               var="tipoAccion"
+                                               itemValue="#{tipoAccion.codigoBasica}"
+                                               itemLabel="#{tipoAccion.nombreBasica}">
+                                </f:selectItems>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="tipoReg" value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoRegional"
+                                          value="Departamento:"/>
+                        </td>
+                        <td>
+                            <h:selectOneMenu style="width: 140px;"
+                                             value="#{gestionSolicitudEscalaBean.departamento}"
+                                             id="departamento"
+                                             disabled="true" >
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue="" />
+                                <f:selectItems value="#{gestionSolicitudEscalaBean.departamentoList}"
+                                               var="departamento"
+                                               itemLabel="#{departamento.gpoNombre}"
+                                               itemValue="#{departamento.gpoId}"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="city"
+                                          value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="ciudadMgl"
+                                          value="Ciudad:" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu style="width: 140px;"
+                                             value="#{gestionSolicitudEscalaBean.ciudad}"
+                                             disabled="true"
+                                             id="ciudad" >
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                <f:selectItems value="#{gestionSolicitudEscalaBean.ciudadesList}"
+                                               var="ciudad"
+                                               itemLabel="#{ciudad.gpoNombre}"
+                                               itemValue="#{ciudad.gpoId}" />
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="centroP"
+                                          value="*" />
+                            <h:outputText style="font-weight:bold"
+                                          value="Centro Poblado"
+                                          class="txtLabelsMgl" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="centroPoblado"
+                                             disabled="true"
+                                             value="#{gestionSolicitudEscalaBean.idCentroPoblado}" >
+                                <f:selectItem itemValue=""
+                                              itemLabel="Seleccione Uno" />
+                                <f:selectItems value="#{gestionSolicitudEscalaBean.centroPobladoList}"
+                                               var="centroPob"
+                                               itemValue="#{centroPob.gpoId}"
+                                               itemLabel="#{centroPob.gpoNombre}">
+                                </f:selectItems>
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td/>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td colspan="8">
+                            <hr size="5" width="100%" align="LEFT"/>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="tipoTec"
+                                          value="*"  />
+                            <h:outputText style="font-weight:bold"
+                                          id="solicitud"
+                                          value="Tipo de Tecnología " />
+                        </td>
+                        <td>
+                            <h:selectOneMenu disabled="true"
+                                             style="width:90%"
+                                             id="tipoRed"
+                                             value="#{gestionSolicitudEscalaBean.tipoTecnologia}" >
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue="" />
+                                <f:selectItems value="#{gestionSolicitudEscalaBean.tipoTecnologiaBasicaList}"
+                                               var="tipoRed"
+                                               itemLabel="#{tipoRed.nombreBasica}"
+                                               itemValue="#{tipoRed.basicaId}"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="tipoDir"
+                                          value="*"/>
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoDireccion"
+                                          value="Tipo Dirección:" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu style="width: 90%"
+                                             disabled="true"
+                                             required="true"
+                                             requiredMessage="Seleccione TIPO DE DIRECCIÓN por favor."
+                                             id="tipoDireccionComboBox"
+                                             value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.direccionDetallada.idTipoDireccion}">
+                                <f:selectItem itemLabel="CALLE - CARRERA"
+                                              itemValue="CK" />
+                                <f:selectItem itemLabel="BARRIO - MANZANA"
+                                              itemValue="BM" />
+                                <f:selectItem itemLabel="INTRADUCIBLE"
+                                              itemValue="IT" />
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="areaCanal"
+                                          value="*" />
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoSolicitudContacto"
+                                          value="Área" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu disabled="true"
+                                             style="width: 90%"
+                                             id="tipoSolicitudContactoComboBox"
+                                             value="#{gestionSolicitudEscalaBean.area}" >
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue=""/>
+                                <f:selectItems value="#{gestionSolicitudEscalaBean.areaCanalList}"
+                                               var="area"
+                                               itemValue="#{area.idParametro}"
+                                               itemLabel="#{area.descripcion}" />
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoHHPP"
+                                          value="Tipo" />
+                        </td>
+                        <td>
+                            <h:selectOneMenu disabled="true"
+                                             style="width: 90%"
+                                             id="idTipoHHPP"
+                                             value="#{gestionSolicitudEscalaBean.tipoHHPP}" >
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue=""/>
+                                <f:selectItem itemLabel="Individual"
+                                              itemValue="Individual"/>
+                                <f:selectItem itemLabel="Masiva"
+                                              itemValue="Masiva"/>
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr><td><br/></td></tr>
+                </table>
+                <hr size="5" width="100%" align="LEFT"/>
+                <div style="padding:15px">
+                    <h:panelGroup id="panelWrapper" >
+                        <h:panelGroup id="ckPanel"
+                                      rendered="#{gestionSolicitudEscalaBean.showCKPanel}" >
+                            <h:panelGrid columns="6" >
+                                <h:panelGroup  >
+                                    <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                  id="dir"
+                                                  value="*" />
+                                    <h:outputText id="direccionLabel"
+                                                  value="Ingrese la dirección:" />
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:inputText disabled="true"
+                                                 value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.direccion}"
+                                                 id="direccion"
+                                                 style="width: 490px; margin-right: 10px;"
+                                                 maxlength="49" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <h:panelGroup id="bmPanel" rendered="#{gestionSolicitudEscalaBean.showBMPanel}">
+                            <h:panelGrid columns="6" >
+                                <h:panelGroup >
+                                    <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                  id="bm"
+                                                  value="*" />
+                                    <h:outputText id="addInfo"
+                                                  value="Ingrese la dirección:" />
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:selectOneMenu  disabled="true"
+                                                      style="width: 100%"
+                                                      id="tipoDireccionBMComboBox"
+                                                      value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.direccionDetallada.mzTipoNivel1}" >
+                                        <f:selectItem itemLabel="Seleccione Uno"
+                                                      itemValue="" />
+                                        <f:selectItems value="#{gestionSolicitudEscalaBean.bmList}"
+                                                       var="barriomanzana"
+                                                       itemValue="#{barriomanzana.idParametro}"
+                                                       itemLabel="#{barriomanzana.descripcion}" />
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:inputText disabled="true"
+                                                 value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.direccionDetallada.mzValorNivel1}"
+                                                 id="tipoDireccionBM"
+                                                 style="width: 100%; margin-right: 10px;"
+                                                 maxlength="250"  />
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <h:panelGroup id="itPanel"
+                                      rendered="#{gestionSolicitudEscalaBean.showITPanel}">
+                            <h:panelGrid columns="6" >
+                                <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                                              id="it" value="*"/>
+                                    <h:outputText id="addInfoIt"
+                                                  value="Ingrese la dirección:" />
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:selectOneMenu disabled="true"
+                                                     style="width: 100%"
+                                                     id="tipoDireccionITComboBox"
+                                                     value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.direccionDetallada.mzTipoNivel1}" >
+                                        <f:selectItem itemLabel="Seleccione Uno"
+                                                      itemValue="" />
+                                        <f:selectItems value="#{gestionSolicitudEscalaBean.itList}"
+                                                       var="intraducible"
+                                                       itemValue="#{intraducible.idParametro}"
+                                                       itemLabel="#{intraducible.descripcion}" />
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+                                <h:panelGroup >
+                                    <h:inputText disabled="true"
+                                                 value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.direccionDetallada.mzValorNivel1}"
+                                                 id="tipoDireccionIt"
+                                                 style="width: 100%;margin-right: 10px;"
+                                                 maxlength="250"  />
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </h:panelGroup>
+
+
+                    </h:panelGroup>
+                </div>
+
+
+                <table id="detalleTable" style="width: 100%">
+                    <tr>
+                        <td colspan="8"> <hr size="5" width="100%" align="LEFT"/></td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td colspan="7">
+                            <span class="TituloSeccion">Detalle Dirección</span>  </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td>
+                            <h:outputText style="font-weight:bold"
+                                          id="complementoLabel"
+                                          value="Complemento:" />
+                        </td>
+                        <td> <h:inputText disabled="true"
+                                          maxlength="50"
+                                          style="margin-right: 10px;width: 59%"
+                                          id="complementoParametro"
+                                          value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.complemento}" />
+                        </td>                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="apart"
+                                          value="*" />
+                            <h:outputText style="font-weight:bold"
+                                          id="apartamentoLabel"
+                                          value="Apartamento:" />
+                        </td>
+                        <td> <h:selectOneMenu disabled="true"
+                                              style="width: 90%"
+                                              id="tipoApartamentoComboBox"
+                                              value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.direccionDetallada.cpTipoNivel5}" >
+                                <f:selectItem itemLabel="Seleccione Uno"
+                                              itemValue="" />
+                                <f:selectItems value="#{gestionSolicitudEscalaBean.aptoList}"
+                                               var="apartamento"
+                                               itemValue="#{apartamento.idParametro}"
+                                               itemLabel="#{apartamento.descripcion}"/>
+                            </h:selectOneMenu> </td>
+
+                        <td colspan="2"> <h:inputText disabled="true"
+                                                      maxlength="10" style="margin-right: 10px;width: 45%"
+                                                      id="apartamentoParametro"
+                                                      value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.direccionDetallada.cpValorNivel5}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> <br/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" style="text-align: center; ">
+                            <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;"
+                                          id="direccionStrLabel"
+                                          value="#{gestionSolicitudEscalaBean.direccionCompleta}" />
+                        </td>
+                    </tr>
+                </table>
+
+                <table id="datosEscalamientoHHPP" style="width: 100%">
+                    <tr>
+                        <td colspan="10">
+                            <hr size="5" width="100%" align="LEFT"/>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td nowrap="nowrap">
+                            <h:outputText style="font-weight:bold"
+                                          id="ccmmLabel"
+                                          value="# CCMM/Cta Suc:" />
+                        </td>
+                        <td>
+                            <h:inputText  id="ccmm" style="width: 80%"
+                                          disabled="true"
+                                          value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.ccmm}" />
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold"
+                                          id="solOTLabel"
+                                          value="# Solicitud/OT:" />
+                        </td>
+                        <td>
+                            <h:inputText  id="solTO" style="width: 80%"
+                                          disabled="true"
+                                          value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.solicitudOT}" />
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold"
+                                          id="tipoGestionLabel"
+                                          value="Tipo Gestión:" />
+                        </td>
+                        <td colspan="6">
+                            <h:selectOneMenu id="selectTipoGestion" style="width: 90%"
+                                             disabled="true"
+                                             value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.tipoGestion}" >
+                                <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                <f:selectItems value="#{gestionSolicitudEscalaBean.tablasBasicasMglList}"
+                                               var="tipo"
+                                               itemValue="#{tipo.nombreBasica}"
+                                               itemLabel="#{tipo.nombreBasica}"/>
+
+                            </h:selectOneMenu>
+                        </td>
+
+                    </tr>
+                    <tr><td><br/></td></tr>
+                </table>
+
+                <table id="contactoTable" style="width: 100%">
+                    <tr>
+                        <td colspan="10"> <hr size="5" width="100%" align="LEFT"/></td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+
+                    <tr>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="solicitant" value="*"/>
+                            <h:outputText style="font-weight:bold" id="solicitanteLabel" value="Solicitante:"/>
+                        </td>
+                        <td>
+                            <h:inputText maxlength="250" disabled="true"
+                                         value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.solicitante}"
+                                         id="solicitante" style="width: 80%"/>
+                        </td>
+
+
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="telephone" value="*"/>
+                            <h:outputText style="font-weight:bold" id="telefonoSolicitanteLabel" value="Teléfono:"/>
+                        </td>
+                        <td>
+                            <h:inputText  disabled="true"
+                                          maxlength="10"  value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.telSolicitante}"
+                                          id="telefonoSolicitante"  style="width: 80%" >
+                                <f:validateLength minimum="7" maximum="10"/>
+                                <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                            </h:inputText>
+                        </td>
+
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="email" value="*"/>
+                            <h:outputText style="font-weight:bold" id="correoLabel" value="Correo:"/>
+                        </td>
+                        <td>
+                            <h:inputText value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.correo}"
+                                         id="correoSolicitante" disabled="true" style="width: 100%"/>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+
+                    <tr>
+
+                        <td >
+                            <h:outputText style="font-weight:bold" id="observacionesLabel" value="Observaciones:"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="10">
+                            <h:inputTextarea disabled="true"
+                                             value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.motivo}"
+                                             id="observacionesTextArea" style="width: 100%; height: 66px; " cols="4" rows="12">
+                                <f:validateLength maximum="400" />
+                            </h:inputTextarea>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td colspan="10">
+                            <h:panelGroup id="escalamientoHHPP" style="text-align: center">
+
+                                <hr size="5" width="100%" align="LEFT"/>
+                                <br/>
+
+                                <span class="TituloSeccion">Documentos</span>
+                                <br/>
+                                <br/>
+                                <h:panelGrid columns="2" style="text-align: center">
+
+                                    <h:dataTable id="tableCargaArchivoEscalamientoHHPP"
+                                                 styleClass="constructGTable2"
+                                                 headerClass="constructGTableHeader"
+                                                 value="#{gestionSolicitudEscalaBean.tecArchivosEscalamientosHHPP}" var="archivosLst"
+                                                 rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                                 style="text-align: center">
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Nombre Archivo"/>
+                                            </f:facet>
+                                            <a href="#{archivosLst.urlArchivoSoporte}"
+                                               target="#" id="linkDescargaEscalamientoHHPP" >
+                                                #{archivosLst.nombreArchivo}
+                                            </a>
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:panelGrid>
+                            </h:panelGroup>
+
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+
+                </table>
+                <hr  size="5" width="100%" align="LEFT"/>
+                <table id="gestionTable" style="width: 100%">
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td>
+                            <h:outputText style="font-weight:bold"
+                                          id="accionLabel"
+                                          value="Acción:" />
+                        </td>
+                        <td colspan="6">
+                            <h:selectOneMenu id="accionSelect" style="width: 90%"
+                                             disabled="#{gestionSolicitudEscalaBean.estadoSolicitud}"
+                                             value="#{gestionSolicitudEscalaBean.accion}" >
+                                <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                <f:selectItem itemValue="FINALIZADO" itemLabel="FINALIZADO"/>
+                                <f:selectItem itemValue="PENDIENTE" itemLabel="PENDIENTE"/>
+                                <f:selectItem itemValue="RECHAZADO" itemLabel="RECHAZADO"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold; font-size: 16px;color: red;"
+                                          id="resGestionReeq"
+                                          rendered="#{crearSolicitudDthBean.showContacto}"
+                                          value="*"  />
+                            <h:outputText style="font-weight:bold"
+                                          id="restGesionLabel"
+                                          value="Resultado de la Gestión:" />
+                        </td>
+                        <td colspan="6">
+                            <h:selectOneMenu id="restGestionSelect" style="width: 90%"
+                                             value="#{gestionSolicitudEscalaBean.resultadoGestion}"
+                                             disabled="#{gestionSolicitudEscalaBean.estadoSolicitud}">
+                                <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                <f:selectItems value="#{gestionSolicitudEscalaBean.tablasBasicasResultadoMglList}"
+                                               var="tipo"
+                                               itemValue="#{tipo.nombreBasica}"
+                                               itemLabel="#{tipo.nombreBasica}"/>
+                            </h:selectOneMenu>
+                        </td>
+                        <td>
+                            <h:outputText style="font-weight:bold"
+                                          id="usuarioGestionadorLabel"
+                                          value="Usuario Gestionador:" />
+                        </td>
+                        <td colspan="6">
+                            <h:inputText value="#{gestionSolicitudEscalaBean.usuarioVt}"
+                                         disabled="true"
+                                         id="usuarioGestionador" style="width: 100%"/>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                </table>
+
+                <table id="respuestaActualTbl" style="width: 100%">
+                    <tr>
+                        <th colspan="10">
+                            <hr style="text-align: left; width: 100%; height: 5px"/>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td><br/></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputText
+                                    style="font-weight:bold; font-size: 16px;color: red;"
+                                    id="respActReq"
+                                    rendered="#{crearSolicitudDthBean.showContacto}"
+                                    value="*"/>
+
+                            <h:outputText style="font-weight:bold"
+                                          id="respActualLabel"
+                                          value="Respuesta Actual:"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="10">
+                            <h:inputTextarea
+                                    value="#{gestionSolicitudEscalaBean.respuestaActual}"
+                                    disabled="#{gestionSolicitudEscalaBean.estadoSolicitud}"
+                                    id="respActual"
+                                    style="width: 100%; height: 66px;" cols="4"
+                                    rows="12"
+                                    validatorMessage="El campo 'Respuesta Actual' no puede contener más de 2000 caractéres.">
+                                <f:validateLength maximum="2000"/>
+                            </h:inputTextarea>
+                        </td>
+                    </tr>
+                </table>
+                <table style="width: 100%; display: #{gestionSolicitudEscalaBean.observacionesList.size() > 0 ? '' : 'none'}">
+                    <tr>
+                        <td width="100%" colspan="10">
+                            <p:fieldset legend="Observaciones" toggleable="true" toggleSpeed="500">
+                                <h:panelGrid columns="2" style="text-align: center; width: 100%">
+
+                                    <h:dataTable id="tableObservations"
+                                                 styleClass="constructGTable2"
+                                                 headerClass="constructGTableHeader"
+                                                 value="#{gestionSolicitudEscalaBean.observacionesList}" var="obs"
+                                                 rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                                 style="text-align: center; width: 100%">
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Observación"/>
+                                            </f:facet>
+                                            <h:outputText value="#{obs.observacion}"/>
+                                        </h:column>
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Documentos"/>
+                                            </f:facet>
+                                            <h:panelGrid columns="2" style="text-align: center; width: 100%">
+                                                <h:dataTable id="tableFiles"
+                                                             styleClass="constructGTable2"
+                                                             headerClass="constructGTableHeader"
+                                                             value="#{obs.archivos}" var="arch"
+                                                             rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                                             style="text-align: center; width: 100%">
+                                                    <h:column>
+                                                        <a href="#{arch.urlArchivoSoporte}" style="color: #0078D0"
+                                                           target="#" id="linkDownloadFile" >
+                                                            #{arch.nombreArchivo}
+                                                        </a>
+                                                    </h:column>
+                                                </h:dataTable>
+                                            </h:panelGrid>
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                </table>
+                <table style="width: 100%; display: #{!gestionSolicitudEscalaBean.estadoSolicitud?'none':''}" >
+                    <tr>
+                        <td colspan="10"> <hr  size="5" width="100%" align="LEFT"/></td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td >
+                            <h:outputText style="font-weight:bold" id="observacionesEstadoLabel" value="Observaciones:"
+                                          rendered="#{!(gestionSolicitudEscalaBean.solicitudSeleccionada.estado ne 'PENDIENTE'
+                                              and empty gestionSolicitudEscalaBean.observaciones)}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="10">
+                            <h:inputTextarea value="#{gestionSolicitudEscalaBean.observaciones}"
+                                             rendered="#{!(gestionSolicitudEscalaBean.solicitudSeleccionada.estado ne 'PENDIENTE'
+                                              and empty gestionSolicitudEscalaBean.observaciones)}"
+                                             disabled="#{gestionSolicitudEscalaBean.solicitudSeleccionada.estado ne 'PENDIENTE'}"
+                                             validatorMessage="El campo de OBSERVACIONES no puede contener más de 400 caractéres."
+                                             id="observacionesEstadoTextArea" style="width: 100%; height: 66px; " cols="4" rows="12">
+                                <f:validateLength maximum="400" />
+                            </h:inputTextarea>
+                        </td>
+                    </tr>
+                    <tr style="display: #{!gestionSolicitudEscalaBean.solicitudSeleccionada.estado.equals('PENDIENTE')?'none':''}">
+                        <td colspan="10">
+                            <h:panelGroup id="estadoArchivosHHPP">
+                                <br/>
+                                <br/>
+                                <hr size="5" width="100%" align="LEFT"/>
+                                <br/>
+                                <br/>
+
+                                <span class="TituloSeccion">#{gestionSolicitudEscalaBean.solicitudSeleccionada.estado.equals("PENDIENTE") and !gestionSolicitudEscalaBean.showBack?'Adjuntar Documentos':'Documentos'}</span>
+                                <br/>
+                                <br/>
+                                <h:panelGrid columns="2">
+                                    <p:fileUpload id="idArchivoEscalamiento"
+                                                  rendered="#{gestionSolicitudEscalaBean.solicitudSeleccionada.estado.equals('PENDIENTE') and !gestionSolicitudEscalaBean.showBack}"
+                                                  label="Seleccionar Documento:"  mode="simple" skinSimple="true"
+                                                  value="#{gestionSolicitudEscalaBean.fileEscalamientoHHPP}" style="display:block;"/>
+
+                                    <br/>
+
+                                    <h:commandButton value="Guardar Documento" id="btnEscalamientoHHPP"
+                                                     rendered="#{gestionSolicitudEscalaBean.solicitudSeleccionada.estado.equals('PENDIENTE') and !gestionSolicitudEscalaBean.showBack}"
+                                                     styleClass="btn"  action="#{gestionSolicitudEscalaBean.guardarArchivoEscalamientoHHPP()}">
+                                    </h:commandButton>
+
+                                    <h:dataTable id="tableArchivoEstadoEscalamientoHHPP"
+                                                 styleClass="constructGTable2"
+                                                 rendered="#{!gestionSolicitudEscalaBean.solicitudSeleccionada.estado.equals('PENDIENTE') and gestionSolicitudEscalaBean.showBack}"
+                                                 headerClass="constructGTableHeader"
+                                                 value="#{gestionSolicitudEscalaBean.tecArchivosEstadoEscalamientosHHPP}" var="archivosLst"
+                                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Nombre Archivo"/>
+                                            </f:facet>
+                                            <h:outputText value="#{archivosLst.nombreArchivo}"/>
+                                        </h:column>
+                                    </h:dataTable>
+
+
+                                    <h:dataTable id="tableCargaArchivoEstadoEscalamientoHHPP"
+                                                 rendered="#{(gestionSolicitudEscalaBean.solicitudSeleccionada.estado.equals('PENDIENTE') and gestionSolicitudEscalaBean.lstFilesEscalamientoHHPP.size() > 0) and !gestionSolicitudEscalaBean.showBack}"
+                                                 styleClass="constructGTable2"
+                                                 headerClass="constructGTableHeader"
+                                                 value="#{gestionSolicitudEscalaBean.lstFilesEscalamientoHHPP}" var="archivosLst"
+                                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Nombre Archivo"/>
+                                            </f:facet>
+                                            <h:outputText value="#{gestionSolicitudEscalaBean.nombreArchivo(archivosLst)}"/>
+                                        </h:column>
+                                        <h:column rendered="#{gestionSolicitudEscalaBean.solicitudSeleccionada.estado.equals('PENDIENTE')  and !gestionSolicitudEscalaBean.showBack}">
+                                            <f:facet name="header">
+                                                <h:outputText value="Acción"/>
+                                            </f:facet>
+                                            <h:commandLink id="lnkCancelarEscalamientoHHPP"
+                                                           value="" title="Eliminar"
+                                                           actionListener="#{gestionSolicitudEscalaBean.eliminarArchivoEscalamientoHHPP(archivosLst)}"
+                                                           styleClass="btnIconEliminar"
+                                                           onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"/>
+                                        </h:column>
+                                    </h:dataTable>
+
+                                    <ui:repeat  var="ar"
+                                                rendered="#{gestionSolicitudEscalaBean.solicitudSeleccionada.estado.equals('PENDIENTE')  and gestionSolicitudEscalaBean.lstFilesEscalamientoHHPP.size() > 0}"
+                                                value="#{gestionSolicitudEscalaBean.tecArchivosEstadoEscalamientosHHPP}">
+                                        <div style="text-align: left;">
+
+                                            <a href="#{ar.urlArchivoSoporte}"
+                                               target="blank" id="linkDescargaEstadoEscalamientoHHPP" >
+                                                #{ar.nombreArchivo}
+                                            </a>
+                                        </div>
+                                    </ui:repeat>
+                                </h:panelGrid>
+                            </h:panelGroup>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+                <table id="gestionBtn" style="width: 100%">
+                    <tr>
+                        <td colspan="10"> <hr  size="5" width="100%" align="LEFT"/></td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                    <tr>
+                        <td style="text-align: center;" colspan="10">
+
+                            <h:commandButton id="irGestionButton" value="Gestionar"
+                                             rendered="#{!gestionSolicitudEscalaBean.estadoSolicitud and !gestionSolicitudEscalaBean.solicitudGestionada}"
+                                             action="#{gestionSolicitudEscalaBean.gestionarSolicitud()}"
+                                             styleClass="btn"
+                                            type="submit"/>
+                            <h:commandButton id="irEstadoButton" value="Agregar"
+                                             rendered="#{gestionSolicitudEscalaBean.estadoSolicitud and gestionSolicitudEscalaBean.solicitudSeleccionada.estado.equals('PENDIENTE')}"
+                                             action="#{gestionSolicitudEscalaBean.agregarEstado()}"
+                                             styleClass="btn"
+                                             type="submit"/>
+                            <h:commandButton style="text-align: left;" id="detalleSolBack"
+                                             styleClass="btn" value="Volver"
+                                             rendered="#{gestionSolicitudEscalaBean.estadoSolicitud and !gestionSolicitudEscalaBean.solicitudSeleccionada.estado.equals('PENDIENTE')}"
+                                             action="#{gestionSolicitudEscalaBean.goBackEstadoSolicitud()}"/>
+                            <h:commandButton style="text-align: left;" id="gestionSolBack"
+                                             styleClass="btn" value="Volver"
+                                             rendered="#{(!gestionSolicitudEscalaBean.estadoSolicitud) or gestionSolicitudEscalaBean.solicitudGestionada}"
+                                             action="#{gestionSolicitudEscalaBean.goBackSolicitudDthList()}"/>
+                        </td>
+                    </tr>
+                </table>
+
+            </h:panelGroup>
+
+            <h:panelGroup style="width: 100%;" id="TrackSolicitudTab"
+                          rendered="#{gestionSolicitudEscalaBean.showTrack}">
+
+                <h:dataTable id="tableTrackSolicitud" value="#{gestionSolicitudEscalaBean.cmtTiempoSolicitudMgl}"
+                             styleClass="constructGTable2" var="track"
+                             headerClass="constructGTableHeader"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Tiempo Solicitud"/>
+                        </f:facet>
+                        <div align="center">
+                            <h:outputText value="#{gestionSolicitudEscalaBean.cmtTiempoSolicitudMgl.tiempoSolicitud eq null ?
+                                                   '00:00:00' : gestionSolicitudEscalaBean.cmtTiempoSolicitudMgl.tiempoSolicitud}"/>
+
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Tiempo Espera"/>
+                        </f:facet>
+                        <div align="center">
+                            <h:outputText value="#{gestionSolicitudEscalaBean.cmtTiempoSolicitudMgl.tiempoEspera eq null ?
+                                                   '00:00:00' : gestionSolicitudEscalaBean.cmtTiempoSolicitudMgl.tiempoEspera}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Tiempo Gestión"/>
+                        </f:facet>
+                        <div align="center">
+                            <h:outputText value="#{gestionSolicitudEscalaBean.cmtTiempoSolicitudMgl.tiempoGestion eq null ?
+                                                   '00:00:00' : gestionSolicitudEscalaBean.cmtTiempoSolicitudMgl.tiempoGestion}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Tiempo Total"/>
+                        </f:facet>
+                        <h:outputText value="#{gestionSolicitudEscalaBean.cmtTiempoSolicitudMgl.tiempoTotal eq null ?
+                                                   '00:00:00' : gestionSolicitudEscalaBean.cmtTiempoSolicitudMgl.tiempoTotal}"/>
+                        <h:graphicImage value="/view/img/verde.gif"
+                                        rendered="#{gestionSolicitudEscalaBean.solicitudSeleccionada.colorAlerta eq 'green'}"
+                                        style="float: right"/>
+                        <h:graphicImage value="/view/img/amarillo.gif"
+                                        rendered="#{gestionSolicitudEscalaBean.solicitudSeleccionada.colorAlerta eq 'yellow'}"
+                                        style="float: right"/>
+                        <h:graphicImage value="/view/img/rojo.gif"
+                                        rendered="#{gestionSolicitudEscalaBean.solicitudSeleccionada.colorAlerta eq 'red'}"
+                                        style="float: right"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Tiempo ANS"/>
+                        </f:facet>
+
+                        <div align="center">
+                            <h:outputText value="#{gestionSolicitudEscalaBean.cmtTipoSolicitudMgl.ans eq null ?
+                                                   'No Configurado' : gestionSolicitudEscalaBean.cmtTipoSolicitudMgl.ans}"/>
+                        </div>
+
+                    </h:column>
+                </h:dataTable>
+                <br/>
+
+                <h:panelGroup id="panelTrackDetalleSolicitud">
+                    <h2>Detalle Creación de la Solicitud</h2>
+                    <h:panelGrid id="panelInfoTrackDetalleSolicitud" columns="2">
+                        <h:outputText value="Fecha-Hora Inicio:" style="min-width: 150px; max-width: 150px;"/>
+                        <h:outputText value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.fechaIngreso}">
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>
+                        <h:outputText value="Fecha-Hora Finalización:" style="min-width: 150px; max-width: 150px;"/>
+0                        <h:outputText value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.fechaCancelacion != null ?
+                                               gestionSolicitudEscalaBean.solicitudSeleccionada.fechaCancelacion : 'Gestión sin finalizar'}">
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText>
+                        <h:outputText value="Usuario Solicitante:" style="min-width: 150px; max-width: 150px;"/>
+                        <h:outputText value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.usuario}"/>
+                        <h:outputText value="Correo:" style="min-width: 150px; max-width: 150px;"/>
+                        <h:outputText value="#{gestionSolicitudEscalaBean.solicitudSeleccionada.correo}"/>
+                    </h:panelGrid>
+
+                </h:panelGroup>
+
+            </h:panelGroup>
+
+            <h:panelGroup style="width: 100%;" id="notasSolicitudTab"
+                          rendered="#{gestionSolicitudEscalaBean.showNotas}">
+
+                <h:panelGroup id="panelGroupDetalleNota" rendered="true">
+                    <h:panelGrid id="panelNotaInfo" columns="4" style="width: 100%;">
+
+                        <h:outputText value="Descripcion" id="DescripcionNotaOtLabel"/>
+                        <h:inputText label="Descripcion" id="DescripcionNotaOtInput"
+                                     maxlength="200"
+                                     value="#{gestionSolicitudEscalaBean.cmtNotasSolicitudVtMgl.descripcion}"
+                                     readonly="#{gestionSolicitudEscalaBean.cmtNotasSolicitudVtMgl.notasId != null}"/>
+
+                        <h:outputText value="Tipo Nota" id="TipoNotaOtLabel"/>
+                        <h:selectOneMenu id="TipoMotaOtList" value="#{gestionSolicitudEscalaBean.tipoNotaSelected.basicaId}"
+                                         styleClass="ListaConsulta"
+                                         disabled="#{gestionSolicitudEscalaBean.cmtNotasSolicitudVtMgl.notasId  != null}">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{gestionSolicitudEscalaBean.tipoNotaList}" var="ld"
+                                           itemValue="#{ld.basicaId}"
+                                           itemLabel="#{ld.nombreBasica}"/>
+                        </h:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid id="panelDescNotaInfo" columns="1" style="width: 100%;">
+                        <h:outputText value="Nota (4000 Caracteres)" id="NotaOtLabel"/>
+
+                        <h:inputTextarea label="Nota" id="NotaOtInput"
+                                         style="width: 100%; resize: none; overflow-y: scroll;" rows="2"
+                                         value="#{gestionSolicitudEscalaBean.cmtNotasSolicitudVtMgl.nota}"
+                                         readonly="#{gestionSolicitudEscalaBean.cmtNotasSolicitudVtMgl.notasId != null}"
+                                         validatorMessage="'Nota' Numero maximo de caracteres es 4000">
+                            <f:validateLength maximum="4000"/>
+                        </h:inputTextarea>
+                    </h:panelGrid>
+
+                    <h:panelGrid id="panelComentarioNota"
+                                 rendered="#{gestionSolicitudEscalaBean.cmtNotasSolicitudVtMgl.notasId != null}"
+                                 columns="1" style="width: 100%;">
+                        <h:outputText value="Comentario (4000 Caracteres)" id="ComentarioNotaOtLabel"/>
+
+                        <h:inputTextarea label="Comentario" id="ComentarioNotaOtInput"
+                                         style="width: 100%; resize: none; overflow-y: scroll;" rows="1"
+                                         value="#{gestionSolicitudEscalaBean.notaComentarioStr}">
+                            <f:validateLength maximum="4000"/>
+                        </h:inputTextarea>
+                    </h:panelGrid>
+                    <h:panelGrid id="panelBotonesNotaInfo" columns="3" style="width: 100%; margin: 0 auto;">
+                        <h:commandButton value="Guardar Nota" id="CrearNotaOtButton"
+                                         rendered="#{gestionSolicitudEscalaBean.cmtNotasSolicitudVtMgl.notasId == null and !gestionSolicitudEscalaBean.detalleSolicitud}"
+                                         styleClass="btn"
+                                         action="#{gestionSolicitudEscalaBean.guardarNota()}"/>
+                        <h:commandButton value="Guardar Comentario" id="CrearComentarioNotaButton"
+                                         rendered="#{gestionSolicitudEscalaBean.cmtNotasSolicitudVtMgl.notasId != null and !gestionSolicitudEscalaBean.detalleSolicitud}"
+                                         styleClass="btn"
+                                         action="#{gestionSolicitudEscalaBean.guardarComentarioNota()}"/>
+                        <h:commandButton value="Limpiar Campos" id="limpiarButton"
+                                         rendered="true" styleClass="btn" immediate="true">
+                            <f:ajax render="@form" execute="@this"
+                                    event="click" listener="#{gestionSolicitudEscalaBean.limpiarCamposNota()}"/>
+                        </h:commandButton>
+                    </h:panelGrid>
+
+                </h:panelGroup>
+
+                <h:panelGroup id="panelGroupHitorialNotas" style="width: 100%;" rendered="true">
+                    <div style="width: 100%; height: 200px; overflow-y: scroll;">
+
+                        <h:dataTable class="AligSpan" id="HitorialNotasTable" style="width:100%;margin:0 auto;"
+                                     var="ntSol"
+                                     value="#{gestionSolicitudEscalaBean.notasSolicitudList}"
+                                     headerClass="solicitudesGTableHeader">
+                            <f:facet name="header">
+                                <h:outputText value="Historial Notas"/>
+                            </f:facet>
+                            <h:column>
+                                <h:panelGroup>
+                                    <h:panelGrid columns="8" style="width: 100%; border: none;">
+                                        <h:outputText value="Tipo Nota:" style="font-weight: bold;"/>
+                                        <h:outputText value="#{ntSol.tipoNotaObj.nombreBasica}" class="labelnotastipo"/>
+
+                                        <h:outputText value="Usuario:" style="font-weight: bold"/>
+                                        <h:outputText value="#{ntSol.usuarioCreacion}" class="labelnotasuser"/>
+
+                                        <h:outputText value="Fecha Creación:" style="font-weight: bold"/>
+                                        <h:outputText value="#{ntSol.fechaCreacion}">
+                                            <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                                        </h:outputText>
+                                        <h:commandLink value=""
+                                                       action="#{gestionSolicitudEscalaBean.mostarComentario(ntSol)}"
+                                                       immediate="true">
+                                            <h:graphicImage value="../../../images/icon_plus_red.png"/>
+                                        </h:commandLink>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="1" style="width: 100%">
+                                        <h:outputText value="#{ntSol.nota}"/>
+                                    </h:panelGrid>
+
+                                    <h:dataTable rendered="#{ntSol.comentarioList != null
+                                                              and ntSol.comentarioList.size() >0}"
+                                                 style="width:100%"
+                                                 value="#{ntSol.comentarioList}" var="cmNtSol">
+
+                                        <h:column>
+                                            <h:outputText value="#{cmNtSol.nota}" style="width: 100%;"/>
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:panelGroup>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

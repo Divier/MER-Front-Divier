@@ -1,0 +1,1019 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"              
+                template="/view/MGL/template/otHhppAgendaTemplate.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"    
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" >
+    <ui:define name="title"><span class="TituloSeccion">Editar Ot Hhpp</span></ui:define>        
+    <ui:define name="content">
+        <script>
+            $("#cerrarMensajeErrorBtn").on("click", function () {
+                if (#{agendamientoOtHhppBean.regresarVista} === true) {
+                    var contextPath = window.location.href.substring(0, window.location.href.indexOf("/", 10));
+                    window.location.href = contextPath + "${facesContext.externalContext.requestContextPath}/view/MGL/VT/otHhpp/agendamientoOtHhpp.jsf";
+                }
+            });
+
+        </script>
+        <h2 style="text-align: center;">EDITOR DE OT</h2>
+        <br/>
+        <h:panelGrid id="panelTabs" class="formulario3"  columns="7" style="margin-top: -20px">
+            <h:commandButton  id="irGeneral"  
+                              class="#{agendamientoOtHhppBean.selectedTab == 'GENERAL' ? 'btn2 btn2Active':'btn2'}" 
+                              value="General"                              
+                              disabled="#{!agendamientoOtHhppBean.selectedTab eq 'GENERAL'}" >            
+                <f:ajax event="click" execute="@this" listener="#{agendamientoOtHhppBean.cambiarTab('GENERAL')}"
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton> 
+            <h:commandButton  id="irAgendamiento" 
+                              class="#{agendamientoOtHhppBean.selectedTab == 'AGENDAMIENTO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Agendamiento"                               
+                              rendered="#{agendamientoOtHhppBean.otHhppSeleccionado.tipoOtHhppId.agendable eq 1 
+                                          and agendamientoOtHhppBean.otHhppSeleccionado.estadoGeneral.
+                                             identificadorInternoApp eq '@B_EGA(@TB_RAB)'}" >
+                <f:ajax event="click" execute="@this" listener="#{agendamientoOtHhppBean.cambiarTab('AGENDAMIENTO')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irNotas"
+                              class="#{agendamientoOtHhppBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Notas">
+                <f:ajax event="click" execute="@this" listener="#{agendamientoOtHhppBean.cambiarTab('NOTAS')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+             <h:commandButton  id="irOnyx" 
+                              class="#{agendamientoOtHhppBean.selectedTab == 'ONYX' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Onyx"                               
+                              rendered="#{agendamientoOtHhppBean.otHhppSeleccionado.tipoOtHhppId.requiereOnyx eq 'Y'}" >
+                <f:ajax event="click" execute="@this" listener="#{agendamientoOtHhppBean.cambiarTab('ONYX')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+             <h:commandButton  id="irHistorico" 
+                              class="#{agendamientoOtHhppBean.selectedTab == 'HISTORICO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Histórico Agendas">
+                <f:ajax event="click" execute="@this" listener="#{agendamientoOtHhppBean.cambiarTab('HISTORICO')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irBitacora" 
+                              class="#{agendamientoOtHhppBean.selectedTab == 'BITACORA' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Bitácora">
+                <f:ajax event="click" execute="@this" listener="#{agendamientoOtHhppBean.cambiarTab('BITACORA')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+        </h:panelGrid>
+        <h2 style="text-align: center;">AGENDAMIENTO</h2>
+        <h:panelGrid style="width: 100%" class="formulario3"  id="tabsWrap"> 
+
+            <h:panelGroup id="visualizacionAgendas" rendered="#{agendamientoOtHhppBean.consulta}">     
+                <div class="tableContent" >
+                    <h:dataTable value="#{agendamientoOtHhppBean.agendaList}"
+                                 var="agenda"  
+                                 styleClass="constructGTable" rows="10"
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+
+                        <h:column>
+                            <f:facet name="header">Fecha de Agenda</f:facet>
+                            <h:outputText value="#{agenda.fechaAgenda}" />
+                        </h:column>
+                        
+                         <h:column>
+                            <f:facet name="header">Fecha de Reagenda</f:facet>
+                            <h:outputText value="#{agenda.fechaReagenda}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Franja Agenda</f:facet>
+                            <h:outputText style="text-align: center;" value="#{agenda.timeSlot}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Hora Agenda</f:facet>
+                            <h:outputText value="#{agenda.horaInicio}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Razon Actividad</f:facet>
+                            <h:outputText value="#{agenda.basicaIdrazones.nombreBasica}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">No. Orden en WFC</f:facet>
+                            <h:outputText value="#{agenda.ofpsOtId}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">No. Actividad</f:facet>
+                            <h:outputText value="#{agenda.ofpsId}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Fecha Inicio Visita</f:facet>
+                            <h:outputText value="#{agenda.fechaInivioVt}" >
+                                <f:convertDateTime dateStyle="full" pattern="dd-MMM-yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Técnico Asignado</f:facet>
+                            <h:outputText value="#{agenda.nombreTecnico}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Fecha Fin Visita</f:facet>
+                            <h:outputText value="#{agenda.fechaFinVt}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Estado Visita</f:facet>
+                            <h:outputText value="#{agenda.estadoVisita.nombreBasica}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Estado Agenda</f:facet>
+                            <h:outputText value="#{agenda.basicaIdEstadoAgenda.nombreBasica}" />
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name="header">No. Ot en RR</f:facet>
+                            <h:outputText value="#{agenda.idOtenrr}" />
+                        </h:column>
+            
+                        <h:column>
+                            <f:facet name="header">Observaciones Técnico</f:facet>
+                            <h:outputText value="#{agenda.observacionesTecnico}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Operaciones</f:facet>
+                            <h:panelGrid columns="4">
+
+                                <h:commandLink id="lnkReagendar"
+                                               value="" title="Reagendar"
+                                               actionListener="#{agendamientoOtHhppBean.reAgendar(agenda)}"
+                                               styleClass="btnIconDeshacer"/>
+                                <h:commandLink id="lnkActualizar"
+                                               value="" title="Actualizar Agenda"
+                                               actionListener="#{agendamientoOtHhppBean.updateAgenda(agenda)}"
+                                               styleClass="btnIconUpdate"/>
+                                <h:commandLink id="lnkCancelar"
+                                               value="" title="Cancelar"
+                                               actionListener="#{agendamientoOtHhppBean.cancelarAgenda(agenda)}"
+                                               styleClass="btnIconEliminar"/>
+                                <h:commandLink id="lnkReasignar"
+                                               value="" title="Reasignar Técnico"
+                                               rendered="#{agendamientoOtHhppBean.tecnicoAnticipado and agenda.identificacionTecnico != null and agenda.tecnicoAnticipado eq 'Y'}"
+                                               actionListener="#{agendamientoOtHhppBean.reasignarAgenda(agenda)}"
+                                               styleClass="btnIconReasignar"/>
+                            </h:panelGrid>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Documentos Adjuntos</f:facet>
+
+                            <ui:repeat id="docAdjuntos" var="doc" value="#{agendamientoOtHhppBean.consultaArchivosAge(agenda)}">  
+                                <div style="text-align: left;">
+                                    <h:outputText escape="false" 
+                                                  value="#{agendamientoOtHhppBean.armarUrl(doc)}"/>    
+                                </div>
+                            </ui:repeat>                       
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Agenda Inmediata</f:facet>
+                            <h:outputText style="text-align: center;" value="#{agenda.agendaInmediata eq 'N' ? 'No' : 'Si'}" />
+                        </h:column>
+                        
+                        <f:facet name="footer" >
+                            <h:panelGroup>
+                                <div style="text-align: center;">
+                                    <h:commandButton title="Primera Página" value="" action="#{agendamientoOtHhppBean.pageFirst}"
+                                                     class="botonTPagInicioCm botonBaselista"/>
+                                    <h:commandButton title="Página Anterior" value="" action="#{agendamientoOtHhppBean.pagePrevious}"
+                                                     class="botonTPagAnteriorCm botonBaselista"/>
+                                    <h:commandButton title="Número Páginas" value="#{agendamientoOtHhppBean.pageActual}" styleClass="botonTPagInicio"/>
+                                    <h:selectOneMenu id="listTabla" value="#{agendamientoOtHhppBean.numPagina}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                        <f:selectItems value="#{agendamientoOtHhppBean.paginaList}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>
+                                        <f:ajax render="@form" event="change"
+                                                listener="#{agendamientoOtHhppBean.irPagina()}"
+                                                execute="@this" />
+                                    </h:selectOneMenu>
+                                    <h:commandButton title="Página Siguiente" value="" action="#{agendamientoOtHhppBean.pageNext}"
+                                                     class="botonTPagSiguienteCm botonBaselista"/>
+                                    <h:commandButton title="Última Página" value="" action="#{agendamientoOtHhppBean.pageLast}"
+                                                     class="botonTPagFinCm botonBaselista"/>
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>
+                    </h:dataTable>
+                </div>
+
+                <h:panelGrid columns="3">
+                    <h:commandButton value="Agenda Tradicional"
+                                     title="Consulta la capacidad"
+                                     class="btn"
+                                     action="#{agendamientoOtHhppBean.crearAgenda()}"
+                                     disabled="#{!agendamientoOtHhppBean.rolCrearAgendaTradicional}">
+                    </h:commandButton>
+                    <h:commandButton id="idBotonAgendarAnticipado"  
+                                     title="Agendar Tecnico Anticipado" 
+                                     rendered="#{agendamientoOtHhppBean.tecnicoAnticipado}"
+                                     action="#{agendamientoOtHhppBean.abrirPanelTecnicos()}"
+                                     class="btn" value="Anticipado"
+                                     disabled="#{!agendamientoOtHhppBean.rolCrearAgendaAnticipado}">
+                    </h:commandButton>
+                     <h:commandButton value="Agenda Inmediata" rendered="#{agendamientoOtHhppBean.agendaInmediata}"
+                                     title="Abre Panel para agenda inmediata"
+                                     styleClass="btn"
+                                     action="#{agendamientoOtHhppBean.abrirAgendaInmediata()}"
+                                     disabled="#{!agendamientoOtHhppBean.rolCrearAgendaInmediata}">
+                    </h:commandButton>
+                    </h:panelGrid>
+            </h:panelGroup>
+
+            <h:panelGroup id="creacionAgendas"  rendered="#{agendamientoOtHhppBean.capacidad.size() > 0}"> 
+                <h2>CAPACIDAD DE AGENDAMIENTO</h2>
+                <div class="tableContent" >
+                    <cc:schedule-component id="scheduleComponent" 
+                                           mglSchedule="#{agendamientoOtHhppBean.mglScheduleComponetDto}" rendered="#{agendamientoOtHhppBean.verCapacity}"/>
+                    <hr/>
+                </div>
+             
+                <h:panelGroup rendered="#{agendamientoOtHhppBean.crearAgenda}">
+                    <div class="wizard-form">
+                        <br></br>
+                        <br></br>
+                        <h2 style="margin-top: -22px; margin-left: -12px">PREREQUISITOS PARA LA VISITA</h2>
+                        <h:selectManyCheckbox layout="pageDirection"
+                                              id="prerequisitosListCrear" 
+                                              value="#{agendamientoOtHhppBean.idBasicaPrerequisito}" >                            
+                            <f:selectItems value="#{agendamientoOtHhppBean.prerequisitosVt}" 
+                                           var="requisito" itemLabel="#{requisito.nombreBasica}" 
+                                           itemValue="#{requisito.basicaId}"/> 
+                        </h:selectManyCheckbox>
+                    </div>       
+
+                    <div class="wizard-form">
+                        <br></br>
+                        <br></br>
+                        <h2 style="margin-top: -22px; margin-left: -12px">PERSONA QUE RECIBE LA VISITA</h2>
+                        <h:panelGrid  columns="6">
+                            <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Nombre:"/>
+                            <h:inputText id="nombrePerRec" style="width: 100%"  
+                                         value="#{agendamientoOtHhppBean.otHhppSeleccionado.nombreContacto}"  validatorMessage="El nombre solo permite caracteres alfabeticos y espacios">
+                                <f:validateRegex pattern="([a-zA-Z]| ){0,200}"/>
+                            </h:inputText>
+                            <h:outputText class="txtLabelsMgl"  value="Documento:" rendered="false"/>
+                            <h:inputText id="docPerRec" styleClass="alinNomCm"   rendered="false" value="#{agendamientoOtHhppBean.agenda.docPerRecVt}"/>
+                            <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Telefono:"/>
+                            <h:inputText id="telPerRec" styleClass="alinNomCm"  value="#{agendamientoOtHhppBean.otHhppSeleccionado.telefonoContacto}" 
+                                         converterMessage="El teléfono es numérico"  
+                                         validatorMessage="El teléfono debe tener 7 o 10 digitos">
+                                <f:validateLength minimum="7" maximum="10"/>                       
+                                <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                            </h:inputText>
+                            <h:outputText escape="false" class="correoPerRecVisLb" value="#{agendamientoOtHhppBean.estiloObligatorio} Email:" />
+                            <h:inputText id="correoPerRecViTxt" value="#{agendamientoOtHhppBean.otHhppSeleccionado.correoContacto}" maxlength="100"  validatorMessage="El campo email no tiene el formato requerido">
+                                <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>                
+                            </h:inputText>
+							<h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia3" value="Conveniencia: "/>
+						<h:selectBooleanCheckbox  value="#{agendamientoOtHhppBean.conveniencia}" id="checkConveniencia3"  />
+                        </h:panelGrid>   
+                    </div>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{agendamientoOtHhppBean.reagendar}">
+                    <div class="wizard-form">
+                        <br></br>
+                        <br></br>
+                        <h2 style="margin-top: -22px; margin-left: -12px">DESCRIPCIÓN REAGENDAMIENTO</h2>
+                        <h:panelGrid  columns="12">
+                            <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Razon de Reagendamiento:"/>
+                            <h:inputTextarea id="razonReagendamiento" 
+                                             value="#{agendamientoOtHhppBean.razonReagendamiento}"
+                                             style="margin-left: 5px; width: 100%;"/>
+
+                            <h:outputText class="txtLabelsMgl"  value="  "/>
+                            <h:outputText class="txtLabelsMgl"  value="  "/>
+
+                            <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Comentarios Orden:"/>
+                            <h:inputTextarea  id="comentarios"
+                                             value="#{agendamientoOtHhppBean.comentariosOrden}" 
+                                             style="margin-left: 5px; width: 100%;" />
+											 <h:outputText class="txtLabelsMgl"  value="  "/>
+											 	 <h:outputText class="txtLabelsMgl"  value="  "/>
+												 		 	 <h:outputText class="txtLabelsMgl"  value="  "/>
+							<h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia5" value="Conveniencia: "/>
+						<h:selectBooleanCheckbox  value="#{agendamientoOtHhppBean.conveniencia}" id="checkConveniencia5"  />
+                        </h:panelGrid>  
+					<h:panelGrid  columns="2">
+					
+				</h:panelGrid>						
+                    </div>
+                </h:panelGroup>  
+                <div class="wizard-form">
+                    <h:commandButton value="Regresar"
+                                     id="btnCrearAgenda"
+                                     title="Regresar a la pantalla anterior"
+                                     action="#{agendamientoOtHhppBean.regresar()}"
+                                     class="btn">
+                    </h:commandButton>
+                    <h:commandButton id="idBotonAgendar"
+                                     title="Agendar" 
+                                     rendered="#{agendamientoOtHhppBean.crearAgenda}" 
+                                     action="#{agendamientoOtHhppBean.crearAgendas(false)}" 
+                                     class="btn" value="Agendar"/>
+                    <h:commandButton id="idBotonReagendar"  
+                                     title="Reagendar" 
+                                     rendered="#{agendamientoOtHhppBean.reagendar}" 
+                                     action="#{agendamientoOtHhppBean.reagendarOrden()}" 
+                                     class="btn" value="Reagendar"/>
+                </div>
+            </h:panelGroup>
+
+            <!--INICIO PANEL REAGENDAR TECNICO ANTICIPADO  -->
+            <h:panelGroup id="reagendarTecnicoAntId"  rendered="#{agendamientoOtHhppBean.reagendarTecnicoAnt}">
+
+                <fieldset>
+                    <legend>Consultar Tecnicos</legend>  
+                    <h:panelGrid columns="6">
+
+                        <h:outputText class="txtLabelFechas" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Fecha Agenda:"/>
+                        <h:selectOneMenu id="selectFechaRea" style="width: 200px;"
+                                         value="#{agendamientoOtHhppBean.fechaSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.fechasAgendas}" 
+                                           var="fecha"
+                                           itemValue="#{fecha}"
+                                           itemLabel="#{fecha}"/>    
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.consultarTecnicos()}"
+                                    render="selectTecnicoRea selectFranjaRe form33646:pMessagesExterno"/>
+                        </h:selectOneMenu> 
+
+                        <h:outputText class="txtLabelTecnicos" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Tecnicos Disponibles:"/>
+                        <h:selectOneMenu id="selectTecnicoRea"  style="width: 350px;"
+                                         value="#{agendamientoOtHhppBean.tecnicoSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.tecnicosDisponibles}" 
+                                           var="tecni"
+                                           itemValue="#{tecni.resource.resourceId}"
+                                           itemLabel="#{tecni.resource.name} [#{tecni.resource.resourceId}]"/>    
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.listarFranjas()}"
+                                    render="selectFranjaRe form33646:pMessagesExterno"/>
+                        </h:selectOneMenu>            
+
+                        <h:outputText class="txtLabelTFranjas" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Franjas Disponibles:"/>
+                        <h:selectOneMenu id="selectFranjaRe" style="width: 200px;"
+                                         value="#{agendamientoOtHhppBean.franjaSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.lstFranjas}" 
+                                           var="franja"
+                                           itemValue="#{franja}"
+                                           itemLabel="#{franja}"/>
+                             <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.seleccionarHoras()}"
+                                    render="selectHoraRea selectMinRea form33646:pMessagesExterno"/>
+                        </h:selectOneMenu> 
+
+                     <h:outputText class="txtLabelTHoras" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Horas Disponibles:"/>
+                     <h:selectOneMenu id="selectHoraRea" style="width:200px;"
+                                     value="#{agendamientoOtHhppBean.horaSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{agendamientoOtHhppBean.lstHoras}" 
+                                       var="hora"
+                                       itemValue="#{hora}"
+                                       itemLabel="#{hora}"/>  
+                         <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.seleccionarMin()}"
+                                    render="selectMinRea form33646:pMessagesExterno"/>
+                    </h:selectOneMenu> 
+                   
+                    <h:outputText class="txtLabelTMin" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Min. Disponibles:"/>
+                    <h:selectOneMenu id="selectMinRea" style="width: 350px;"
+                                     value="#{agendamientoOtHhppBean.minSelected}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{agendamientoOtHhppBean.lstMin}" 
+                                       var="min"
+                                       itemValue="#{min}"
+                                       itemLabel="#{min}"/>  
+                         <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.organizarHorasMin()}"
+                                    render="form33646:pMessagesExterno"/>
+                    </h:selectOneMenu> 
+
+                        <h:outputText  class="txtLabelWorktime"   value="Worktime:"/>
+                        <h:outputText  class="txtLabelValWoktime" value="#{agendamientoOtHhppBean.parWorktimeNum} Min."/>
+
+                    </h:panelGrid> 
+                </fieldset>
+
+                <div class="wizard-form">
+                    <br></br>
+                    <br></br>
+                    <h2 style="margin-top: -22px; margin-left: -12px">DESCRIPCION REAGENDAMIENTO</h2>
+                    <h:panelGrid  columns="11">
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Razon de Reagendamiento:"/>
+                        <h:inputTextarea id="razonReagendamientoRea" 
+                                         value="#{agendamientoOtHhppBean.razonReagendamiento}"
+                                         style="margin-left: 5px; width: 100%;"/>
+
+                        <h:outputText class="txtLabelsMgl"  value="  "/>
+                        <h:outputText class="txtLabelsMgl"  value="  "/>
+
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Comentarios Orden:"/>
+                        <h:inputTextarea id="comentariosRea"
+                                         value="#{agendamientoOtHhppBean.comentariosOrden}" 
+                                         style="margin-left: 5px; width: 100%;"/>
+						
+                       
+											 	 <h:outputText class="txtLabelsMgl"  value="  "/>
+												 		 	 <h:outputText class="txtLabelsMgl"  value="  "/>
+						<h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia7" value="   Conveniencia: "/>
+						<h:selectBooleanCheckbox  value="#{agendamientoOtHhppBean.conveniencia}" id="checkConveniencia7"  />
+                    </h:panelGrid>   
+					 <h:panelGrid  columns="2">
+		
+				</h:panelGrid>  
+                </div> 
+                <h:commandButton value="Regresar"
+                                 id="idBotonContinuarRea"
+                                 title="Regresar a la pantalla anterior"
+                                 action="#{agendamientoOtHhppBean.regresar()}"
+                                 class="btn">
+                </h:commandButton>
+                <h:commandButton id="btnCrearAgendaRea"  
+                                 title="Reagendar" 
+                                 action="#{agendamientoOtHhppBean.reagendarOrden()}" 
+                                 class="btn" value="Reagendar"/>  
+
+            </h:panelGroup>
+            <!--FIN PANEL REAGENDAR TECNICO ANTICIPADO -->   
+
+            <h:panelGroup rendered="#{agendamientoOtHhppBean.updateAgenda}">
+                <h2 style="margin-top: -22px; margin-left: -12px">AGENDA PARA ACTUALIZAR</h2>
+                <div class="wizard-form">
+                    <h:dataTable id="updateAgendaTbl"
+                                 value="#{agendamientoOtHhppBean.updateAgendaMgl}"
+                                 var="update" styleClass="constructGTable" 
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow "
+                                 rows="5">
+                        <h:column>
+                            <f:facet name="header">Fecha de Agenda</f:facet>
+                            <h:outputText value="#{update.fechaAgenda}" />
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name="header">Fecha de Reagenda</f:facet>
+                            <h:outputText value="#{update.fechaReagenda}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Franja Agenda</f:facet>
+                            <h:outputText value="#{update.timeSlot}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Tipo Agenda</f:facet>
+                            <h:outputText value="#{update.tipo}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">No. Orden en WFC</f:facet>
+                            <h:outputText value="#{update.ofpsOtId}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Fecha Inicio Visita</f:facet>
+                            <h:outputText value="#{update.fechaInivioVt}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Técnico Asignado</f:facet>
+                            <h:outputText value="#{update.nombreTecnico}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Fecha Fin Visita</f:facet>
+                            <h:outputText value="#{update.fechaFinVt}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Estado Visita</f:facet>
+                            <h:outputText value="#{update.estadoVisita.nombreBasica}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Estado Agenda</f:facet>
+                            <h:outputText value="#{update.basicaIdEstadoAgenda.nombreBasica}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Operaciones</f:facet>
+                            <h:panelGrid columns="1">
+
+                                <h:commandLink value="Actualizar" 
+                                               actionListener="#{agendamientoOtHhppBean.updateAgendaMgl(update)}">
+                                </h:commandLink>
+                            </h:panelGrid>
+                        </h:column>
+
+                    </h:dataTable>
+                    <hr />
+                </div>
+
+                <div class="wizard-form">
+                    <br></br>
+                    <br></br>
+                    <h2 style="margin-top: -22px; margin-left: -12px">PREREQUISITOS PARA LA VISITA</h2>
+                    <h:selectManyCheckbox layout="pageDirection"
+                                          id="prerequisitosList" 
+                                          value="#{agendamientoOtHhppBean.idBasicaPrerequisito}" >                            
+                        <f:selectItems value="#{agendamientoOtHhppBean.prerequisitosVt}" 
+                                       var="requisito" itemLabel="#{requisito.nombreBasica}" 
+                                       itemValue="#{requisito.basicaId}"/> 
+                    </h:selectManyCheckbox>
+                </div>
+
+                <div class="wizard-form">
+                    <br></br>
+                    <br></br>
+                    <h2 style="margin-top: -22px; margin-left: -12px">PERSONA QUE RECIBE LA VISITA</h2>
+                    <h:panelGrid  columns="8">
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Nombre:"/>
+                        <h:inputText id="nombrePerRecAct" style="width: 100%"  value="#{agendamientoOtHhppBean.otHhppSeleccionado.nombreContacto}" 
+                                     validatorMessage="El nombre solo permite caracteres alfabeticos y espacios">
+                            <f:validateRegex pattern="([a-zA-Z]| ){0,200}"/>
+                        </h:inputText>
+                        <h:outputText class="txtLabelsMgl"  value="Documento:" rendered="false"/>
+                        <h:inputText id="docPerRecAct" styleClass="alinNomCm"   rendered="false" value="#{agendamientoOtHhppBean.actualizaAgenda.docPerRecVt}"/>
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Telefono:"/>
+                        <h:inputText id="telPerRecAct" styleClass="alinNomCm"  value="#{agendamientoOtHhppBean.otHhppSeleccionado.telefonoContacto}"
+                                     converterMessage="El telefono es numerico" 
+                                     validatorMessage="El telefono debe tener 7 o 10 digitos">
+                            <f:validateLength minimum="7" maximum="10"/>                       
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                        </h:inputText> 
+                      <h:outputText escape="false" class="correoPerRecVis2Lb" value="#{agendamientoOtHhppBean.estiloObligatorio} Email:" />
+                            <h:inputText id="correoPerRecVi2Txt" value="#{agendamientoOtHhppBean.actualizaAgenda.emailPerRecVT}" maxlength="100"  validatorMessage="El campo email no tiene el formato requerido">
+                                <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>                
+                            </h:inputText>
+						<h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia2" value="Conveniencia: "/>
+						<h:selectBooleanCheckbox  value="#{agendamientoOtHhppBean.conveniencia}" id="checkConveniencia2"  />
+                    </h:panelGrid>   
+                </div>
+
+                <div class="wizard-form">
+                    <h:commandButton value="Regresar"
+                                     id="btnCrearAgendaUpd"
+                                     title="Regresar a la pantalla anterior"
+                                     action="#{agendamientoOtHhppBean.regresar()}"
+                                     class="btn">
+                    </h:commandButton>
+                </div>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{agendamientoOtHhppBean.cancelar}">
+                <h2 style="margin-top: -22px; margin-left: -12px">AGENDA A CANCELAR</h2>
+                <div class="wizard-form">
+                    <h:dataTable id="cancelaAgendaTbl"
+                                 value="#{agendamientoOtHhppBean.cancelaAgendaMgl}"
+                                 var="cancela" styleClass="constructGTable" 
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow "
+                                 rows="5">
+                        <h:column>
+                            <f:facet name="header">Fecha de Agenda</f:facet>
+                            <h:outputText value="#{cancela.fechaAgenda}" />
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name="header">Fecha de Reagenda</f:facet>
+                            <h:outputText value="#{cancela.fechaReagenda}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Franja Agenda</f:facet>
+                            <h:outputText value="#{cancela.timeSlot}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Tipo Agenda</f:facet>
+                            <h:outputText value="#{cancela.tipo}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">No. Orden en WFC</f:facet>
+                            <h:outputText value="#{cancela.ofpsOtId}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Fecha Inicio Visita</f:facet>
+                            <h:outputText value="#{cancela.fechaInivioVt}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Fecha Fin Visita</f:facet>
+                            <h:outputText value="#{cancela.fechaFinVt}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Estado Visita</f:facet>
+                            <h:outputText value="#{cancela.estadoVisita.nombreBasica}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Estado Agenda</f:facet>
+                            <h:outputText value="#{cancela.basicaIdEstadoAgenda.nombreBasica}" />
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Operaciones</f:facet>
+                            <h:panelGrid columns="1">
+
+                                <h:commandLink value="Cancelar" 
+                                               actionListener="#{agendamientoOtHhppBean.cancelarAgendaEnOFSC(cancela)}">
+                                </h:commandLink>
+                            </h:panelGrid>
+                        </h:column>
+
+                    </h:dataTable>
+                    <hr />
+                </div>
+                <div class="wizard-form">
+                    <br></br>
+                    <br></br>
+                    <h2 style="margin-top: -22px; margin-left: -12px">RAZÓN DE CANCELAR</h2>
+                    <h:panelGrid  columns="6">
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Razón de Cancelar:"/>
+                        <h:inputTextarea id="razonCancela" 
+                                         value="#{agendamientoOtHhppBean.razonCancela}"
+                                         style="margin-left: 5px; width: 100%;"/>
+
+                        <h:outputText class="txtLabelsMgl"  value="  "/>
+                        <h:outputText class="txtLabelsMgl"  value="  "/>
+
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Comentarios Orden:"/>
+                        <h:inputTextarea id="comentariosCan"
+                                         value="#{agendamientoOtHhppBean.comentariosOrden}" 
+                                         style="margin-left: 5px; width: 100%;"/>
+                    </h:panelGrid>   
+                </div>
+                <div class="wizard-form">
+                    <h:commandButton value="Regresar"
+                                     id="btnCrearAgendaCan"
+                                     title="Regresar a la pantalla anterior"
+                                     action="#{agendamientoOtHhppBean.regresar()}"
+                                     class="btn">
+                    </h:commandButton>
+                </div>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{agendamientoOtHhppBean.reasignar}">
+               
+                <h2 style="text-align: left">REASIGNAR TECNICO</h2>
+
+                <fieldset>      
+                    <h:panelGrid columns="8">
+
+                        <h:outputText  class="txtLabelFecAgenda"   value="Fecha Agenda:"/>
+                        <h:outputText  class="txtLabelValFecAgenda"  style="color: blue;"
+                                       value="#{agendamientoOtHhppBean.reasignaAgenda.fechaAgenda}"/>
+
+                        <h:outputText  class="txtLabelFecReagenda"   value="Fecha Reagenda:"/>
+                        <h:outputText  class="txtLabelValFecReagenda"  style="color: blue;" 
+                                       value="#{agendamientoOtHhppBean.reasignaAgenda.fechaReagenda}"/>
+
+                        <h:outputText  class="txtLabelFraAgenda"   value="Hora Inicio:"/>
+                        <h:outputText  class="txtLabelValFraAgenda"  style="color: blue;" 
+                                       rendered="#{agendamientoOtHhppBean.reasignaAgenda.timeSlot != null}"
+                                       value="#{agendamientoOtHhppBean.reasignaAgenda.timeSlot}"/>
+                        <h:outputText  class="txtLabelValFraAgenda1"  style="color: blue;" 
+                                       rendered="#{agendamientoOtHhppBean.reasignaAgenda.horaInicio != null}"
+                                       value="#{agendamientoOtHhppBean.reasignaAgenda.horaInicio}"/>
+
+                        <h:outputText  class="txtLabelFecInicio"   value="Fecha Inicio:"/>
+                        <h:outputText  class="txtLabelValFecInicio"  style="color: blue;" 
+                                       value="#{agendamientoOtHhppBean.reasignaAgenda.fechaInivioVt}"/>
+
+                        <h:outputText  class="txtLabelEstAgenda"   value="Estado Agenda:"/>
+                        <h:outputText  class="txtLabelValEstAgenda"  style="color: blue;"
+                                       value="#{agendamientoOtHhppBean.reasignaAgenda.basicaIdEstadoAgenda.nombreBasica}"/>
+
+                        <h:outputText  class="txtLabelNomTecnico"   value="Nombre Tecnico:"/>
+                        <h:outputText  class="txtLabelValNomTecnico"  style="color: blue;"
+                                       value="#{agendamientoOtHhppBean.reasignaAgenda.nombreTecnico}"/>
+
+                        <h:outputText  class="txtLabelIdTecnico"   value="Identificacion Tecnico:"/>
+                        <h:outputText  class="txtLabelValIdTecnico"   style="color: blue;"
+                                       value="#{agendamientoOtHhppBean.reasignaAgenda.identificacionTecnico}"/>
+
+
+                        <h:outputText class="txtLabelTecnicosRea" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Tecnicos Disponibles:"/>
+                        <h:selectOneMenu id="selectTecnicoRea1"  style="width: 350px;"
+                                         value="#{agendamientoOtHhppBean.tecnicoSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.tecnicosDisponibles}" 
+                                           var="tecni"
+                                           itemValue="#{tecni.resource.resourceId}"
+                                           itemLabel="#{tecni.resource.name} [#{tecni.resource.resourceId}]"/>    
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.listarFranjas()}"
+                                    render="selectFranjaRea form33646:pMessagesExterno"/>
+                        </h:selectOneMenu>            
+
+                        <h:outputText class="txtLabelTFranjas" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Franjas Disponibles:"/>
+                        <h:selectOneMenu id="selectFranjaRea" style="width: 150px;"
+                                         value="#{agendamientoOtHhppBean.franjaSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.lstFranjas}" 
+                                           var="franja"
+                                           itemValue="#{franja}"
+                                           itemLabel="#{franja}"/>    
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.seleccionarHoras()}"
+                                    render="selectHoraReas selectMinReas form33646:pMessagesExterno"/>
+                        </h:selectOneMenu>
+
+                        <h:outputText class="txtLabelTHoras" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Horas Disponibles:"/>
+                        <h:selectOneMenu id="selectHoraReas" style="width:150px;"
+                                         value="#{agendamientoOtHhppBean.horaSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.lstHoras}" 
+                                           var="hora"
+                                           itemValue="#{hora}"
+                                           itemLabel="#{hora}"/>  
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.seleccionarMin()}"
+                                    render="selectMinReas form33646:pMessagesExterno"/>
+                        </h:selectOneMenu> 
+
+                        <h:outputText class="txtLabelTMin" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Min. Disponibles:"/>
+                        <h:selectOneMenu id="selectMinReas" style="width: 150px;"
+                                         value="#{agendamientoOtHhppBean.minSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.lstMin}" 
+                                           var="min"
+                                           itemValue="#{min}"
+                                           itemLabel="#{min}"/>  
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.organizarHorasMin()}"
+                                    render="form33646:pMessagesExterno"/>
+                        </h:selectOneMenu> 
+
+                        <h:outputText  class="txtLabelWorktimeRea"   value="Worktime:"/>
+                        <h:outputText  class="txtLabelValWoktimeRea"   style="color: blue;" 
+                                       value="#{agendamientoOtHhppBean.parWorktimeNum} Min."/>
+                    </h:panelGrid> 
+                </fieldset>
+
+                <div class="wizard-form">
+                    <br></br>
+                    <br></br>
+                    <h2 style="text-align: left">RAZON DE REASIGNACION</h2>
+                    <h:panelGrid  columns="4">
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Razon de Reasignar:"/>
+                        <h:inputTextarea id="razonReasignar" 
+                                         value="#{agendamientoOtHhppBean.razonReasigna}"
+                                         style="margin-left: 5px; width: 100%;"/>
+
+                        <h:outputText class="txtLabelsMgl"  value="  "/>
+                        <h:outputText class="txtLabelsMgl"  value="  "/>
+                    </h:panelGrid>   
+                </div>
+                <div class="wizard-form">
+                    <h:commandButton value="Regresar"
+                                     id="btnCrearAgendaReasigna"
+                                     title="Regresar a la pantalla anterior"
+                                     action="#{agendamientoOtHhppBean.regresar()}"
+                                     class="btn">
+                    </h:commandButton>
+                    <h:commandButton id="reasignaIdRea" title="Reasignar Tecnico"
+                                     class="btn"
+                                     value="Reasignar" 
+                                     action="#{agendamientoOtHhppBean.updateAgendaForTecnicoMgl()}">
+                    </h:commandButton>
+                </div>
+            </h:panelGroup>
+
+            <h:panelGroup id="panelRestricciones" style="width: 500px;">
+                <div id="dialogAgenda" title="Restricciones de la agenda"
+                     style="display: none;width: 500px;">
+                    <h:dataTable id="restriccionesTbl" style="width: 500px;"
+                                 value="#{agendamientoOtHhppBean.restricciones}"
+                                 var="restriccion" styleClass="constructGTable" 
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+                        <h:column>
+                            <f:facet name="header">Código</f:facet>
+                            <h:outputText value="#{restriccion.code}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Tipo</f:facet>
+                            <h:outputText value="#{restriccion.type}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Descripción</f:facet>
+                            <h:outputText value="#{restriccion.description}" />
+                        </h:column>
+                    </h:dataTable>
+                </div>
+            </h:panelGroup>
+
+            <!--INICIO PANEL TECNICOS  -->
+            <h:panelGroup id="panelTecnicos" rendered="#{agendamientoOtHhppBean.verPanelTecnicos}">
+
+                <fieldset>
+                    <legend>Consultar Tecnicos</legend>  
+                    <h:panelGrid columns="6">
+
+                        <h:outputText class="txtLabelFechas" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Fecha Agenda:"/>
+                        <h:selectOneMenu id="selectFecha" style="width: 200px;"
+                                         value="#{agendamientoOtHhppBean.fechaSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.fechasAgendas}" 
+                                           var="fecha"
+                                           itemValue="#{fecha}"
+                                           itemLabel="#{fecha}"/>    
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.consultarTecnicos()}"
+                                    render="selectTecnico form33646:pMessagesExterno"/>
+                        </h:selectOneMenu> 
+
+                        <h:outputText class="txtLabelTecnicos" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Tecnicos Disponibles:"/>
+                        <h:selectOneMenu id="selectTecnico"  style="width: 350px;"
+                                         value="#{agendamientoOtHhppBean.tecnicoSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.tecnicosDisponibles}" 
+                                           var="tecni"
+                                           itemValue="#{tecni.resource.resourceId}"
+                                           itemLabel="#{tecni.resource.name} [#{tecni.resource.resourceId}]"/>    
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.listarFranjas()}"
+                                    render="selectFranja form33646:pMessagesExterno"/>
+                        </h:selectOneMenu>            
+
+                        <h:outputText class="txtLabelTFranjas" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Franjas Disponibles:"/>
+                        <h:selectOneMenu id="selectFranja" style="width: 200px;"
+                                         value="#{agendamientoOtHhppBean.franjaSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.lstFranjas}" 
+                                           var="franja"
+                                           itemValue="#{franja}"
+                                           itemLabel="#{franja}"/>    
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.seleccionarHoras()}"
+                                    render="selectHora selectMin form33646:pMessagesExterno"/>
+                        </h:selectOneMenu>
+
+                        <h:outputText class="txtLabelTHoras" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Horas Disponibles:"/>
+                        <h:selectOneMenu id="selectHora" style="width:200px;"
+                                         value="#{agendamientoOtHhppBean.horaSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.lstHoras}" 
+                                           var="hora"
+                                           itemValue="#{hora}"
+                                           itemLabel="#{hora}"/>  
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.seleccionarMin()}"
+                                    render="selectMin form33646:pMessagesExterno"/>
+                        </h:selectOneMenu> 
+
+                        <h:outputText class="txtLabelTMin" escape="false" value="#{agendamientoOtHhppBean.estiloObligatorio} Min. Disponibles:"/>
+                        <h:selectOneMenu id="selectMin" style="width: 350px;"
+                                         value="#{agendamientoOtHhppBean.minSelected}">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{agendamientoOtHhppBean.lstMin}" 
+                                           var="min"
+                                           itemValue="#{min}"
+                                           itemLabel="#{min}"/>  
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{agendamientoOtHhppBean.organizarHorasMin()}"
+                                    render="form33646:pMessagesExterno"/>
+                        </h:selectOneMenu> 
+
+                        <h:outputText  class="txtLabelWorktime"   value="Worktime:"/>
+                        <h:outputText  class="txtLabelValWoktime" value="#{agendamientoOtHhppBean.parWorktimeNum} Min."/>
+
+                    </h:panelGrid>
+                </fieldset>
+                <div class="wizard-form">
+                    <br></br>
+                    <br></br>
+                    <h2 style="margin-top: -22px; margin-left: -12px">PREREQUISITOS PARA LA VISITA</h2>
+                    <h:selectManyCheckbox layout="pageDirection"
+                                          id="prerequisitosListTec" 
+                                          value="#{agendamientoOtHhppBean.idBasicaPrerequisito}" >                            
+                        <f:selectItems value="#{agendamientoOtHhppBean.prerequisitosVt}" 
+                                       var="requisito" itemLabel="#{requisito.nombreBasica}" 
+                                       itemValue="#{requisito.basicaId}"/> 
+                    </h:selectManyCheckbox>
+                </div>
+
+                <div class="wizard-form">
+                    <br></br>
+                    <br></br>
+                    <h2 style="margin-top: -22px; margin-left: -12px">PERSONA QUE RECIBE LA VISITA</h2>
+                    <h:panelGrid  columns="8">
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Nombre:"/>
+                        <h:inputText id="nombrePerRecTec" style="width: 100%"  value="#{agendamientoOtHhppBean.otHhppSeleccionado.nombreContacto}" 
+                                     validatorMessage="El nombre solo permite caracteres alfabeticos y espacios">
+                            <f:validateRegex pattern="([a-zA-ZÑñáéíóúÁÉÍÓÚ]| ){0,200}"/>
+                        </h:inputText>
+                        <h:outputText class="txtLabelsMgl"  value="Documento:" rendered="false"/>
+                        <h:inputText id="docPerRecTec" styleClass="alinNomCm"   rendered="false" value="#{agendamientoOtHhppBean.agenda.docPerRecVt}"/>
+                        <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Telefono:"/>
+                        <h:inputText id="telPerRecTec" styleClass="alinNomCm"  value="#{agendamientoOtHhppBean.otHhppSeleccionado.telefonoContacto}"
+                                     converterMessage="El telefono es numerico" 
+                                     validatorMessage="El telefono debe tener 7 o 10 digitos">
+                            <f:validateLength minimum="7" maximum="10"/>                       
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                        </h:inputText> 
+                        <h:outputText escape="false" class="correoPerRecVis2Lb" value="#{agendamientoOtHhppBean.estiloObligatorio} Email:" />
+                        <h:inputText id="correoPerRecTec" value="#{agendamientoOtHhppBean.otHhppSeleccionado.correoContacto}" maxlength="100"  validatorMessage="El campo email no tiene el formato requerido">
+                            <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>                
+                        </h:inputText>
+						<h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia1" value="Conveniencia: "/>
+						<h:selectBooleanCheckbox  value="#{agendamientoOtHhppBean.conveniencia}" id="checkConveniencia1"  />
+                    </h:panelGrid>   
+                </div>                
+                <h:commandButton id="idBotonCerrar"  
+                                 title="Cerrar Panel Tecnicos" 
+                                 action="#{agendamientoOtHhppBean.cerrarPanelTecnicos()}" 
+                                 class="btn" value="Cerrar"/>
+                <h:commandButton id="idBotonContinuar"  
+                                 title="Agendar" 
+                                 action="#{agendamientoOtHhppBean.crearAgendas(true)}" 
+                                 class="btn" value="Agendar"/>
+
+            </h:panelGroup>
+            <!--FIN PANEL TECNICOS -->
+              <!--INICIO PANEL IFRAME APP EXTERNA -->.
+             
+              <h:panelGroup id="panelIframeWrap" rendered="#{agendamientoOtHhppBean.agendaInmediataPreIframe}">  
+                    <div class="wizard-form">           
+                        <h2 style="margin-top: -22px; margin-left: -12px">PERSONA QUE RECIBE LA VISITA</h2>
+                        <h:panelGrid  columns="8">
+                            <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Nombre:"/>
+                            <h:inputText id="nombrePerRecPreIframe" style="width: 100%"  
+                                         value="#{agendamientoOtHhppBean.otHhppSeleccionado.nombreContacto}"  validatorMessage="El nombre solo permite caracteres alfabeticos y espacios">
+                                <f:validateRegex pattern="([a-zA-Z]| ){0,200}"/>
+                            </h:inputText>
+                            <h:outputText class="txtLabelsMgl"  value="Documento:" rendered="false"/>
+                            <h:inputText id="docPerRecPreIframe" styleClass="alinNomCm"   rendered="false" value="#{agendamientoOtHhppBean.agenda.docPerRecVt}"/>
+                            <h:outputText escape="false" class="txtLabelsMgl"  value="#{agendamientoOtHhppBean.estiloObligatorio} Telefono:"/>
+                            <h:inputText id="telPerRecPreIframe" styleClass="alinNomCm"  value="#{agendamientoOtHhppBean.otHhppSeleccionado.telefonoContacto}" 
+                                         converterMessage="El teléfono es numérico"  
+                                         validatorMessage="El teléfono debe tener 7 o 10 digitos">
+                                <f:validateLength minimum="7" maximum="10"/>                       
+                                <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                            </h:inputText>
+                            <h:outputText escape="false" class="correoPerRecVisLb" value="#{agendamientoOtHhppBean.estiloObligatorio} Email:" />
+                            <h:inputText id="correoPerRecViTxtPreIframe" value="#{agendamientoOtHhppBean.otHhppSeleccionado.correoContacto}" maxlength="100"  validatorMessage="El campo email no tiene el formato requerido">
+                                <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>                
+                            </h:inputText>
+                            <h:outputText escape="false"  class="txtLabelsMgl"  id="lblconveniencia3PreIframe" value="Conveniencia: "/>
+                            <h:selectBooleanCheckbox  value="#{agendamientoOtHhppBean.conveniencia}" id="checkConveniencia3PreIframe"  />                       
+                             
+                        
+                        </h:panelGrid>   
+                         <h:commandButton id="idBotonCerrarPreIframe"  
+                                 title="Cerrar Panel Agenda Inmediata" 
+                                 action="#{agendamientoOtHhppBean.cerrarAgendaInmediata()}" 
+                                 class="btn" value="Regresar"/>
+                <h:commandButton id="idBotonContinuarPreIframe"  
+                                 title="Agendar" 
+                                 action="#{agendamientoOtHhppBean.abrirIframe()}" 
+                                 class="btn" value="Agendar"/>
+                    </div>
+                </h:panelGroup>
+                  <h:panelGroup id="panelIframe" rendered="#{agendamientoOtHhppBean.abrirPanelIframe}">
+
+                      <div class="tableContent" >
+                          <h:commandLink value="[Cerrar]" style="float:right; font-size: 14px;"
+                                         id="cerraIfraId" action="#{agendamientoOtHhppBean.cerrarIframe()}">
+                          </h:commandLink>
+                          <h:panelGroup  id="modalIntegracionContent" layout="block" style="padding: 1% 0% 0% 0%;">
+                              <div class="mdl-dialog__title row no-padding">
+                                  <iframe class="iframeIntegracion" style="width: 100%; height: 500px"
+                                          name="iframeIntegracion" src="#{agendamientoOtHhppBean.urlIframe}"/>
+                              </div>
+                          </h:panelGroup>
+                      </div>            
+                  </h:panelGroup>
+          
+            <!--FIN PANEL IFRAME APP EXTERNA -->
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

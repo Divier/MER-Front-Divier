@@ -1,0 +1,13 @@
+<pcml version="4.0">
+   <!-- RPG program: CMEEDAR0  -->
+   <!-- created: 2014-09-18-17.10.17 -->
+   <!-- source: CMWEBF0/QRPGLESRC(CMEEDAR0) -->
+   <!-- 49 -->
+   <program name="CMEEDAR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMEEDAR0.PGM">
+      <data name="ENTRA" type="char" length="4" usage="inputoutput" />
+      <data name="PCML" type="char" length="2" usage="inputoutput" />
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />
+      <data name="TABLA" type="char" length="38" count="500" usage="inputoutput" />
+   </program>
+</pcml>

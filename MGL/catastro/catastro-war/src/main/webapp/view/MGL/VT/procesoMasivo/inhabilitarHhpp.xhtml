@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition template="inhabilitarTemplate.xhtml">
+            <ui:define name="TitleReporte">
+                <h1>Reporte Inhabilitar Hhpp</h1>
+            </ui:define>
+
+            <ui:define name="titleprocesomasivo">
+                Reporte Inhabilitar Hhpp
+            </ui:define>
+            <ui:define  name="fechaInhabilitar">
+                <h:panelGrid id="panelFechas" columns="3">
+                    <h:panelGrid>
+                        <h:outputLabel
+                            value="Fecha Inicial Creación"
+                            />
+                        <p:calendar id="fechaInicioInhabilitarHhpp" 
+                                    value="#{proReporteBean.fechaInicioInhabilitarHhpp}" 
+                                    readonly="false" 
+                                    showOn="both">
+                         <f:convertDateTime pattern="dd/MM/yy" />    
+                        </p:calendar>                  
+                    </h:panelGrid>
+                    <h:panelGrid>
+                        <h:outputLabel
+                            value="Fecha Final Creación"
+                            />
+                        <p:calendar id="fechaFinInhabilitarHhpp" 
+                                    value="#{proReporteBean.fechaFinInhabilitarHhpp}" 
+                                    readonly="false" 
+                                    showOn="both">
+                        <f:convertDateTime pattern="dd/MM/yy" />
+                        </p:calendar>                  
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" style="display: inline-flex" >
+                        <h:outputText class="columnReadForm" 
+                                      value="Creado por Ficha" />      
+                        <h:selectBooleanCheckbox  value="#{proReporteBean.creadoXFicha}" 
+                                                  id = "chkAprobacion">
+                        </h:selectBooleanCheckbox>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </ui:define>
+            <ui:define name="procesar">
+                <script type="text/javascript">
+
+                    function controlDeGeneracionDeReporte() {
+                        document.getElementById("page-wrap").style.display = "block";
+                        document.getElementById("formReporteInhabilitar:buttonReporteGeneral").disabled = true;
+                        document.getElementById("formReporteInhabilitar:btnhidden").click();
+                        document.getElementById("formReporteInhabilitar:idtipotecnologia").disabled = true;
+                        document.getElementById("formReporteInhabilitar:iddepartamento").disabled = true;
+                        document.getElementById("formReporteInhabilitar:idciudad").disabled = true;
+                        document.getElementById("formReporteInhabilitar:idcentropoblado").disabled = true;
+                        document.getElementById("formReporteInhabilitar:idnodo").disabled = true;
+                        document.getElementById("formReporteInhabilitar:idEtiquetas").disabled = true;
+                        document.getElementById("formReporteInhabilitar:fechaInicioInhabilitarHhpp_input").disabled = true;
+                        document.getElementById("formReporteInhabilitar:fechaFinInhabilitarHhpp_input").disabled = true;
+                        document.getElementById("formReporteInhabilitar:chkAprobacion").disabled = true;
+                    }
+
+                </script>
+                <div id="page-wrap">
+                    <span class="procesandoReporte">Procesando Reporte, Espere...</span>
+                    <div class="meter red">
+                        <span style="width: 100%"></span>
+                    </div>
+                </div>
+                <h:commandButton
+                    id = "buttonReporteGeneral"
+                    rendered="#{proReporteBean.puedeProcesar}"
+                    disabled="#{!proReporteBean.validarOpcionGenerarReporteInhabilitar()}"
+                    styleClass="btn unblockClaro"
+                    value = "Reporte Inhabilitar Hhpp"
+                    onclick="controlDeGeneracionDeReporte();" 
+                    >
+                </h:commandButton>
+                <h:commandButton
+                    id="btnhidden"
+                    actionListener="#{proReporteBean.procesarReporte(true)}"
+                    >                    
+                </h:commandButton>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,316 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/vt.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>
+    <!-- <ui:define name="message"><span class="error"> # {direccionAlternaMglBean.message}</span></ui:define> -->
+    <ui:define name="content">
+        <h2>Cuenta Matriz</h2>
+
+        <h:panelGroup>
+
+            <table style="width: 100%; border-spacing: 10px;">
+                <tr>
+                    <td>
+                        <h:outputText id="lblNombre" value="Nombre" />
+                    </td>
+                    <td>
+                        <h:outputText id="nombreEdificio" value="#{visitaTecnicaBean.vt.otObj.cmObj.nombreCuenta}"/>
+                    </td>
+                    <td>
+                        <h:panelGroup>
+                            <h:outputText value="*" />
+                            <h:outputText id="lblVt" value="Cod. VT" />
+                        </h:panelGroup>
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="codVtList" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         value="#{visitaTecnicaBean.tipoVisitaTecnica.basicaId}"
+                                         required="#{visitaTecnicaBean.tipoVisitaTecnica.basicaId != -1}"
+                                         requiredMessage="Debe seleccionar un Código de VT">
+                            <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                            <f:selectItems value="#{visitaTecnicaBean.tipoVtList}" var="canalInt"
+                                           itemValue="#{canalInt.basicaId}"
+                                           itemLabel="#{canalInt.nombreBasica}" />
+                           
+                            <f:ajax event="change" execute="codVtList" 
+                                    listener="#{visitaTecnicaBean.CodVtListChange()}" render="otroCodVt"/>
+                        </h:selectOneMenu>
+                    </td>
+
+                    <td>
+                        <h:panelGroup>
+                            <h:outputText value="*" />
+                            <h:outputText value="Otro Cod. VT"/>
+                        </h:panelGroup>
+                    </td>
+                    <td>
+                        <h:inputText id="otroCodVt"
+                                     disabled="#{visitaTecnicaBean.codVTOtro || visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     value="#{visitaTecnicaBean.vt.otros}"
+                                     maxlength="10"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td> <h:outputText value="Dirección"/></td>
+                    <td> <h:outputText id="direccion" value="#{visitaTecnicaBean.vt.otObj.cmObj.direccionPrincipal.direccionObj.dirFormatoIgac}"/></td>
+                    <td> <h:outputText value="Dir. Alterna"/></td>
+                    <td> <h:outputText id="txtDirAlterna" value="#{visitaTecnicaBean.obtenerDirAlterna()}"/></td>
+                    <td> <h:outputText value="Comunidad"/></td>
+                    <td> <h:outputText id="comunidad" value="#{visitaTecnicaBean.vt.otObj.cmObj.comunidad}"/></td>
+
+                </tr>
+                <tr>
+                    <td> <h:outputText value="Barrio"/></td>
+                    <td> <h:outputText id="txtBarrio" value="#{visitaTecnicaBean.vt.otObj.cmObj.direccionPrincipal.barrio}"/></td>
+                    <td> <h:outputText value="Nodo"/></td>
+                    <td> <h:outputText id="nodo" value="#{visitaTecnicaBean.vt.otObj.cmObj.subEdificioGeneral.nodoObj.nodNombre}"/></td>
+                    <h:outputText/>
+                    <h:outputText/>
+                </tr>
+                <tr>
+                    <td>
+                        <h:outputText value="N° Interiores/Bloques/Torres"/>
+                    </td>
+                    <td>
+                        <h:inputText id="valorIntBlqTor" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     value="#{visitaTecnicaBean.vt.valorIntBlqTor}"
+                                     maxlength="2"
+                                     required="false"
+                                     validatorMessage="El campo Interiores/Bloques/Torres debe ser numérico.">
+                            <!--<f:validateRegex pattern="[0-9]?"/> -->
+                        </h:inputText>
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="intBloTorre" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         value="#{visitaTecnicaBean.vt.pisoTorre}">
+                            <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                            <f:selectItem itemValue="0" itemLabel="Sin Sub Edificios" />
+                            <f:selectItems value="#{visitaTecnicaBean.dirNivel5List}" var="canalInt"
+                                           itemValue="#{canalInt.idParametro}"
+                                           itemLabel="#{canalInt.descripcion}" />
+                            <f:selectItem itemValue="" itemLabel="" />
+                        </h:selectOneMenu>
+                    </td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>
+                                    <h:outputText id="lblUniApto" value="Aptos"   />
+                                </td>
+                                <td>
+                                    <h:selectBooleanCheckbox id="unidadApato" value="#{visitaTecnicaBean.apartamento}"
+                              disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"/>
+                                </td>
+                                <td>
+                                    <h:outputText id="lblUniCasa" value="Casa" />
+                                </td>
+                                <td>
+                                    <h:selectBooleanCheckbox id="unidadCasa" value="#{visitaTecnicaBean.casa}"
+                                     disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"/>
+                                </td>
+                                <td>
+                                    <h:outputText id="lblUniOfi" value="Oficina" />
+                                </td>
+                                <td>
+                                    <h:selectBooleanCheckbox id="unidadOfi" value="#{visitaTecnicaBean.oficina}"
+                                disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"/>
+                                </td>
+                                <td>
+                                    <h:outputText id="lblUniLocal" value="Local" />
+                                </td>
+                                <td>
+                                    <h:selectBooleanCheckbox id="unidadLocal" value="#{visitaTecnicaBean.local}"
+                                 disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <h:panelGroup>
+                            <h:outputText value="*" class="txtCamposReqMgl" />
+                            <h:outputText class="txtLabelsMgl" id="lblValorUni" value="Cantidad de unidades." />
+                        </h:panelGroup>
+                    </td>
+                    <td>
+                        <h:inputText id="cantidadUnidades" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                     value="#{visitaTecnicaBean.vt.valorUnidades}"
+                                     required="true"
+                                     requiredMessage="El campo Cantidad de unidades es requerido"
+                                     maxlength="4"
+                                     validatorMessage="El campo de Unidades por SubEdificio debe ser numérico.">
+                            <f:validateRegex pattern="[0-9]{1,}"/>
+                        </h:inputText>
+                    </td>
+                </tr>
+                <tr>
+                    <hr></hr>
+                    <br></br>
+                </tr>
+                <tr>
+                    <td>
+                        <h:panelGroup>
+                            <h:outputText value="*" />
+                            <h:outputText value="Estrato" />
+                        </h:panelGroup>
+                    </td>
+                    <td>
+                        <h:outputText id="estrato" value="#{visitaTecnicaBean.vt.otObj.cmObj.subEdificioGeneral.estrato.codigoBasica eq -1 ? 'NG': 
+                                                            (visitaTecnicaBean.vt.otObj.cmObj.subEdificioGeneral.estrato.codigoBasica eq 0 ? 'NR':
+                                                            visitaTecnicaBean.vt.otObj.cmObj.subEdificioGeneral.estrato.codigoBasica)}"/>
+                        </td>
+                    <td>
+                        <h:outputText value="Tipo"/>
+                    </td>
+                    <td>
+                        <h:outputText id="tipo" style="width: 140px"
+                                      value="#{visitaTecnicaBean.vt.otObj.cmObj.subEdificioGeneral.tipoProyectoObj.nombreBasica}"/>
+                    </td>
+                    <td>
+                        <h:outputText value="Horario de Trabajo"/>
+                    </td>
+                    <td>
+                        <h:outputText id="horarioTrabajo"/>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td>
+                        <h:outputText value="Tipo Cliente"/>
+                    </td>
+                    <td>
+                        <h:selectOneMenu id="tipoEdificioVt" style="width: 140px" 
+                                         disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                         value="#{visitaTecnicaBean.tipoEdificio.basicaId}"
+                                         required="false"
+                                         requiredMessage="Seleccione una compañía">
+                            <f:selectItem itemLabel="- Seleccionar -" itemValue=""/>
+                            <f:selectItems value="#{visitaTecnicaBean.tipoEdificioList}" var="tipoED"
+                                           itemValue="#{tipoED.basicaId}"
+                                           itemLabel="#{tipoED.nombreBasica}"/>
+                        </h:selectOneMenu>
+                    </td>
+                    <td>
+                        <h:outputText value="Cia. Administración"/>
+                    </td>
+                    <td>
+                        <!--<h:selectOneMenu id="CompaniaAdminVt" style="width: 140px" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.basicaId == 10}"
+                                         value="#{visitaTecnicaBean.vt.administracionObj.companiaId}"
+                                         required="false" rendered="false"
+                                         requiredMessage="Seleccione una compañia">
+                            <f:selectItem itemLabel="- Seleccionar -" itemValue=""/>
+                            <f:selectItems value="#{visitaTecnicaBean.companiaAdminList}" var="com"
+                                           itemValue="#{com.companiaId}"
+                                           itemLabel="#{com.nombreCompania}"/>
+                        </h:selectOneMenu>-->
+                        <h:outputText value="#{visitaTecnicaBean.vt.administracionObj.nombreCompania}"/>
+                    </td>
+                    <td>
+                        <h:outputText value="Administrador"
+                        rendered="#{!visitaTecnicaBean.campoConstructora()}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="admon" value="#{visitaTecnicaBean.directorIngenieroObra}" 
+                        disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}" 
+                        rendered="#{!visitaTecnicaBean.campoConstructora()}"/>
+                    </td>
+
+                    <tr>
+
+                        <td>
+                            <h:outputText value="Teléfono" />
+                        </td>
+                        <td>
+                            <h:outputText id="telfono" value="#{visitaTecnicaBean.vt.otObj.cmObj.subEdificioGeneral.companiaAdministracionObj.telefonos}"/>
+                        </td>
+                        <td>
+                            <h:outputText value="Teléfono portería"/>
+                        </td>
+                        <td>
+                            <h:outputText id="telPorteria" value="#{visitaTecnicaBean.vt.otObj.cmObj.subEdificioGeneral.telefonoPorteria}"/>
+                        </td>
+                        <!--<td>
+                            <h:outputText value="Planta electrica" rendered="false"/>
+                        </td>
+                        <td>
+                            <h:selectOneMenu id="plantaElectricaList" style="width: 140px" disabled="# {visitaTecnicaBean.vt.otObj.estadoInternoObj.basicaId == 10}"
+                                             value="# {visitaTecnicaBean.vt.plantaElectrica}"
+                                             required="false" rendered="false"
+                                             requiredMessage="Seleccione Planta Electrica">
+                                <f:selectItem itemValue="" itemLabel="- Seleccionar -" />
+                                <f:selectItem itemValue="Y" itemLabel="Si" />
+                                <f:selectItem itemValue="N" itemLabel="No" />
+                            </h:selectOneMenu>
+                        </td> -->
+                    <td>
+                        <h:outputText value="Director obra / Ingeniero obra"
+                        rendered="#{visitaTecnicaBean.campoConstructora()}"/>
+                    </td>
+                    <td>
+                        <h:inputText id="dirObra" value="#{visitaTecnicaBean.directorIngenieroObra}" 
+                        disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}" 
+                        rendered="#{visitaTecnicaBean.campoConstructora()}"                
+                        requiredMessage="Se debe diligenciar Director obra/Ingeniero obra"/>
+                    </td>
+                    </tr>
+
+                </tr>
+
+            </table>
+
+            <table style="width: 100%; border-spacing: 10px;">
+
+            </table>
+
+            <h:panelGrid style="width: 100%; margin: 0px auto">
+                <h:panelGroup>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputText class="txtLabelsMgl" value="Observaciones de la Administración (2000 caracteres.)"/>
+                </h:panelGroup>
+                <h:inputTextarea id="obsAdmin" disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                 style="width: 100%; resize: none; overflow-y: scroll"
+                                 rows="5"
+                                 value="#{visitaTecnicaBean.vt.observacionesAdmon}"
+                                 required="true"
+                                 requiredMessage="Se debe diligenciar Observaciones de la Administración"
+                                 validatorMessage="El número máximo de caracteres es de 2000.">
+                    <f:validateLength maximum="2000"/>
+                </h:inputTextarea>
+            </h:panelGrid>
+            <h:panelGrid style="width: 100%; margin: 0px auto">
+                <h:panelGroup>
+                    <h:outputText value="*" class="txtCamposReqMgl" />
+                    <h:outputText class="txtLabelsMgl" value="Origen Visita Técnica (2000 caracteres.)"/>
+                </h:panelGroup>
+                <h:inputTextarea id="origenVt"  disabled="#{visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_PDCC' ||
+                                            visitaTecnicaBean.vt.otObj.estadoInternoObj.identificadorInternoApp eq '@B_CANVA'}"
+                                 style="width: 100%; resize: none; overflow-y: scroll"
+                                 rows="5"
+                                 value="#{visitaTecnicaBean.vt.origenVt}"
+                                 required="true"
+                                 requiredMessage="Se debe diligenciar Origen Visita Técnica"
+                                 validatorMessage="El número máximo de caracteres es de 2000.">
+                    <f:validateLength maximum="2000"/>
+                </h:inputTextarea>
+            </h:panelGrid>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

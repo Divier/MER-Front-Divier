@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:panelGroup id="listadoComunidadesComponente">
+        <div rendered="#{cmtInfoAdiMantenimientoBean.mostrarPopupCom}" >
+            <fieldset id="validacion" rendered="#{cmtInfoAdiMantenimientoBean.mostrarPopupCom}">
+                <legend>Listado Comunidades</legend>
+                <h1>Listado Comunidades </h1>  
+                <BR/>
+                <BR/>
+                <h:dataTable id="listadosComunidadesTable" style="width:100%;margin:0 auto;"                            
+                             value="#{cmtInfoAdiMantenimientoBean.lstComunidadesMgls}" var="comunidad"
+                             styleClass="constructGTable" rows="5"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+                    <h:column>  
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Nombre Comunidad" /><BR/>
+                                <h:panelGrid columns="2" style="width: 100%"  >
+                                    <h:inputText maxlength="30" id="idNombreComunidad"
+                                                 style="width: 105px" 
+                                                 value="#{cmtInfoAdiMantenimientoBean.cmtFiltroConsultaComunidadesRrDto.nombreComunidad}">
+                                        <f:ajax listener="#{cmtInfoAdiMantenimientoBean.findByFiltroCom}" 
+                                                event="change" execute="@this"  render="formPrincipal:listadosComunidadesTable"/> 
+                                    </h:inputText>
+                                </h:panelGrid> 
+                            </f:facet>  
+                            <h:outputText value="#{comunidad.nombreComunidad}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="C&oacute;digo Comunidad" /><BR/>
+                                <h:panelGrid columns="2" style="width: 100%"  >
+                                    <h:inputText maxlength="30" id="idCodigoComunidad"
+                                                 style="width: 105px" 
+                                                 value="#{cmtInfoAdiMantenimientoBean.cmtFiltroConsultaComunidadesRrDto.codigoComunidad}">
+                                        <f:ajax listener="#{cmtInfoAdiMantenimientoBean.findByFiltroCom}" 
+                                                event="change" execute="@this"  render="listadosComunidadesTable"/> 
+                                    </h:inputText>
+                                </h:panelGrid> 
+                            </f:facet>
+                            <h:outputText value="#{comunidad.codigoRr}" />      
+                        </div>                                  
+                    </h:column>    
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="C&oacute;digo Location" /><BR/>
+                            </f:facet>
+                            <h:inputText maxlength="10" id="idCodigoLocation"
+                                         value="#{comunidad.codigoLocation}">
+                                <f:ajax listener="#{cmtInfoAdiMantenimientoBean.guardaComunidadLocation(comunidad)}" 
+                                        event="change" execute="@this" render=":formPrincipal:listadoComunidadesComponente"/>
+                            </h:inputText>   
+                        </div>                                  
+                    </h:column>                
+                    <h:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Operaciones" />
+                        </f:facet>  
+                        
+                        <h:commandLink id="lnkReagendar" rendered="#{comunidad.codigoLocation != null}"
+                                       value="" title="Deshacer"
+                                       styleClass="btnIconDeshacer">
+                        <f:ajax render=":formPrincipal:listadoComunidadesComponente" execute="@this" 
+                                 event="click" listener="#{cmtInfoAdiMantenimientoBean.quitarInfoAdiTipoTrabajo(comunidad)}"/>
+                        </h:commandLink>
+                       </h:column>
+                    <f:facet name="footer">
+                        <div class="pagination2">
+                            <h:panelGroup>
+                                <h:commandButton value= ""  
+                                                 class="botonTPagInicioCm botonBaselista">
+                                    <f:ajax   render="listadosComunidadesTable" execute="@this" 
+                                              event="click" listener="#{cmtInfoAdiMantenimientoBean.pageFirstCom}"/>
+                                </h:commandButton>
+                                <h:commandButton  value= ""
+                                                  class="botonTPagAnteriorCm botonBaselista">
+                                    <f:ajax  render="listadosComunidadesTable" execute="@this" 
+                                             event="click" listener="#{cmtInfoAdiMantenimientoBean.pagePreviousCom}"/>
+
+                                </h:commandButton>
+                                <h:commandButton value="#{cmtInfoAdiMantenimientoBean.pageActualCom}" />
+                                <h:selectOneMenu  value="#{cmtInfoAdiMantenimientoBean.numPagina}" 
+                                                  styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{cmtInfoAdiMantenimientoBean.paginaList}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>    
+                                    <f:ajax render="listadosComunidadesTable"  event="change" 
+                                            listener="#{cmtInfoAdiMantenimientoBean.irPaginaCom()}"  execute="@this" />                                         
+                                </h:selectOneMenu>  
+                                <h:commandButton  value= ""
+                                                  class="botonTPagSiguienteCm botonBaselista">
+                                    <f:ajax  render="listadosComunidadesTable" execute="@this" 
+                                             event="click" listener="#{cmtInfoAdiMantenimientoBean.pageNextCom}"/>
+                                </h:commandButton>
+                                <h:commandButton  value= ""
+                                                  class="botonTPagFinCm botonBaselista">
+                                    <f:ajax  render="listadosComunidadesTable" execute="@this" 
+                                             event="click" listener="#{cmtInfoAdiMantenimientoBean.pageLastCom}"/>
+                                </h:commandButton>
+                              <h:commandLink id="gurdarRegId" immediate="true"
+                               value="Guardar Registros" 
+                               action="#{cmtInfoAdiMantenimientoBean.guardaComunidadLocationBD()}"/> 
+                            </h:panelGroup>
+                        </div>
+                    </f:facet>
+                </h:dataTable>
+
+                <h:commandLink id="volverAtrasId2" immediate="true"
+                               value="Volver" 
+                               action="#{cmtInfoAdiMantenimientoBean.cerrarPopupCom()}" />
+            </fieldset>
+        </div>
+    </h:panelGroup>        
+</ui:composition>

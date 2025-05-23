@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      template="/view/MGL/template/main.xhtml">
+    
+    <body>
+        <ui:composition template="/view/MGL/template/cm.xhtml">
+            <ui:define name="title"><span class="TituloSeccion">Black List</span></ui:define>
+            <ui:define name="message"><span class="error"> #{blackListMglBean.message}</span></ui:define>
+            <ui:define name="content">
+                <h3>Log General</h3>                
+                <h:dataTable id="BlackListMglTable" 
+                             binding="#{blackListMglBean.dataTable}" value="#{blackListMglBean.cmtBlackListMglInactivo}" var="blackListMglList" rows="10"                         
+                             styleClass="constructGTable" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow " style="width: 700px;">
+
+                    <h:column>
+                        <f:facet name="header">
+                            <t:outputText value="Tipo"/>
+                        </f:facet>
+                        <div >
+                            <h:outputText value="#{blackListMglList.tipo}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <t:outputText value="Descripción"/>
+                        </f:facet>
+                        <div >
+                            <h:outputText value="#{blackListMglList.descripcion}"/>
+                        </div>
+                    </h:column>
+                    
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Estado " />
+                        </f:facet>
+                        <div align="center">
+                            <h:outputText value="#{blackListMglList.estado}" style="#{blackListMglList.estado eq Inactivo?'display: none;':''}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <t:outputText value="Fecha Creación"/>
+                        </f:facet>
+                        <div >
+                            <h:outputText value="#{blackListMglList.fechaCreacion}"/>
+                        </div>
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">
+                            <t:outputText value="Fecha Modificación"/>
+                        </f:facet>
+                        <div >
+                            <h:outputText value="#{blackListMglList.fechaModificacion}"/>
+                        </div>
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">
+                            <t:outputText value="Usuario"/>
+                        </f:facet>
+                        <div >
+                            <h:outputText value="#{blackListMglList.usuario}"/>
+                        </div>
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">
+                            <t:outputText value="Perfil"/>
+                        </f:facet>
+                        <div >
+                            <h:outputText value="#{blackListMglList.perfil}"/>
+                        </div>
+                    </h:column>
+                    
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Detalle" />
+                        </f:facet>
+                        <div align="center">
+                            <h:outputText value="#{blackListMglList.detalle}"/>
+                        </div>
+                    </h:column>
+                </h:dataTable>
+                
+                <div class="buttonArea">
+                    <h:commandButton action="#{applicationDataMB.cambiarTab(13)}" value="Regresar" styleClass="btn"/>                    
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+  <ui:composition template="./../../../template/VT/migracionVtTemplate.xhtml">
+
+    <ui:define name="content">
+      <h:form id="form_edit_parametros_calle">
+        <h1>
+          <h:outputText value="Administrador de parámetros (Direcciones)"/>
+          <br/>
+          <br/>
+          <h:outputText value="Actualizando"/>
+        </h1>
+        <h:panelGrid columns="2">
+          <h:outputLabel 
+            value="Tipo" 
+            for="idTipo" />
+          <h:outputText 
+            id="idTipo"
+            styleClass="input"
+            value="#{parametrosCallesController.selected.idTipo}" 
+            title="Tipo" />
+          <h:outputLabel 
+            value="Identificador" 
+            for="idParametro" />
+          <h:outputText 
+            id="idParametro" 
+            value="#{parametrosCallesController.selected.idParametro}" 
+            title="Identificador" 
+            styleClass="input"
+            />
+          <h:outputLabel 
+            value="Descripción"
+            for="descripcion" />
+          <h:inputText 
+            id="descripcion" 
+            styleClass="input"
+            value="#{parametrosCallesController.selected.descripcion}" 
+            title="Descripción"/>
+        </h:panelGrid>
+        <br/>
+        <br/>
+        <h:commandLink
+          id="guardar"
+          styleClass="btn"
+          action="#{parametrosCallesController.update}" 
+          value="Guardar"/>
+        <h:commandLink
+          id="administrar"
+          styleClass="btn"
+          action="#{parametrosCallesController.prepareList}" 
+          value="Administrar" 
+          immediate="true"/>
+        <br />
+      </h:form>
+    </ui:define>
+  </ui:composition>
+
+</html>

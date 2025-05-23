@@ -1,0 +1,352 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml">
+    <ui:define name="content">
+        #{solicitudSolicitudCMBean.iniciarTiempoCreaSol()}
+        #{cuentaMatrizBean.initializedComponents()}
+        #{OtMglBean.initializedBean()}
+        #{visitaTecnicaBean.initializeBean()}
+
+        #{validadorDireccionBean.init()}
+        <h2>Consulta Cuentas Matrices </h2>
+        <div id="panelBusquedadCm">
+
+            <table  style="width: 100%">
+                <tr>
+
+                    <td style="width:2%;" />
+                    <td style="width:8%;" />
+                    <td style="width:10%;" />
+                    <td style="width:2%;" />
+                    <td style="width:8%;" />
+                    <td style="width:10%;" />
+                    <td style="width:2%;" />
+                    <td style="width:8%;" />
+                    <td style="width:10%;" />
+                    <td style="width:2%;" />
+                    <td style="width:8%;" />
+                    <td style="width:10%;" />
+
+                </tr> 
+
+                <tr> <td></td>
+
+                    <td> <h:outputText value="Nombre:" styleClass="formColumn1"/>   </td>
+                    <td> <h:inputText style="width: 200px" value="#{consultaCuentasMatricesBean.nombreCuenta}"  /> </td>
+                    <td/>
+                    <td/>
+
+                    <td> <h:outputText value="No. Cuenta RR:" styleClass="formColumn1" />  </td>
+                    <td> <h:inputText value="#{consultaCuentasMatricesBean.numeroCuenta}" maxlength="15"
+                                      style="width: 140px" converterMessage="El campo No. cuenta es numérico">
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                            <f:ajax event="change" execute="@this" render="@form"
+                                    listener="#{consultaCuentasMatricesBean.verficarConsulta}" />
+                        </h:inputText>
+                    </td>
+                    <td/>
+                    <td> <h:outputText value="No. Cuenta MGL:" styleClass="formColumn1" />  </td>
+                    <td> <h:inputText value="#{consultaCuentasMatricesBean.numeroCuentaMGL}" maxlength="15"
+                                      style="width: 140px" converterMessage="El campo No. cuenta MGL es numérico">
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                            <f:ajax event="change" execute="@this" render="@form"
+                                    listener="#{consultaCuentasMatricesBean.verficarConsulta}" />
+                        </h:inputText>
+                    </td>
+                </tr>           
+
+                <tr><td></td>
+                    <td> <h:outputText value="Departamento:" styleClass="formColumn1"/>   </td>
+
+                    <td> <h:selectOneMenu id="selectDepartamento" 
+                                          value="#{consultaCuentasMatricesBean.departamento}"
+                                          style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{consultaCuentasMatricesBean.departamentoList}" 
+                                           var="departamento"
+                                           itemValue="#{departamento.gpoId}"
+                                           itemLabel="#{departamento.gpoNombre}"/>    
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{consultaCuentasMatricesBean.consultarCiudades()}" 
+                                    render="selectMunicipio selectCentroPoblado"/>
+                        </h:selectOneMenu> </td>
+                    <td/>
+                    <td/>
+                    <td><h:outputText value="Ciudad" styleClass="formColumn2"/> </td>
+                    <td> <h:selectOneMenu id="selectMunicipio" 
+                                          value="#{consultaCuentasMatricesBean.municipio}"
+                                          required="#{consultaCuentasMatricesBean.ciudadObligatoria}"
+                                          requiredMessage="La ciudad es obligatoria"
+                                          style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{consultaCuentasMatricesBean.ciudadList}" 
+                                           var="ciud"
+                                           itemValue="#{ciud.gpoId}"
+                                           itemLabel="#{ciud.gpoNombre}"/>
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{consultaCuentasMatricesBean.consultarCentroPoblado()}" 
+                                    render="selectCentroPoblado"/>
+                        </h:selectOneMenu> </td>
+
+
+                    <td/>
+                    <td>  <h:outputText value="Centro Poblado:" style="display: inline-block; width: 85px;"/> </td>
+                    <td>  <h:selectOneMenu id="selectCentroPoblado" 
+                                           value="#{consultaCuentasMatricesBean.centroProblado}"
+                                           required="#{consultaCuentasMatricesBean.ciudadObligatoria}"
+                                           requiredMessage="El centro poblado es obligatorio"
+                                           style="width: 140px">
+                            <f:selectItem itemValue="" itemLabel=""/>
+                            <f:selectItems value="#{consultaCuentasMatricesBean.centroPobladoList}" 
+                                           var="centroPob"
+                                           itemValue="#{centroPob.gpoId}"
+                                           itemLabel="#{centroPob.gpoNombre}">
+                            </f:selectItems>
+                            <f:ajax event="change" 
+                                    execute="@this" 
+                                    listener="#{consultaCuentasMatricesBean.obtenerCentroPobladoSeleccionado()}" />
+                        </h:selectOneMenu> </td>
+                </tr>
+                <tr><td></td>
+                    <td> <h:outputText value="No. OT:" styleClass="formColumn1"/> </td>
+                    <td> <h:inputText value="#{consultaCuentasMatricesBean.numeroOt}"
+                                      style="width: 140px"  converterMessage="El campo No. OT es numérico" maxlength="15">
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                            <f:ajax event="change" execute="@this"  render="@form" listener="#{consultaCuentasMatricesBean.verficarConsulta}" />                
+                        </h:inputText>  
+                    </td>
+                    <td/>
+                    <td/>
+
+                    <td> <h:outputText value="Cuenta Suscriptor:" style="display: inline-block; width: 100px;"/> </td> 
+                    <td>      <h:inputText value="#{consultaCuentasMatricesBean.cuentaSucriptor}"
+                                           style="width: 200px;" converterMessage="El campo cuenta subscriptor es numérico" maxlength="9">
+
+                            <f:ajax event="change" execute="@this" render="@form" listener="#{consultaCuentasMatricesBean.verficarConsulta}" />                
+                        </h:inputText> </td> 
+                    <td/>
+                    <td><h:outputText value="Teléfono:" styleClass="formColumn1"/>    </td>
+                    <td><h:inputText value="#{consultaCuentasMatricesBean.telefono}"
+                                     style="width: 140px;" converterMessage="El campo teléfono es numérico" maxlength="10">
+                            <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                            <f:ajax event="change" execute="@this" render="@form" listener="#{consultaCuentasMatricesBean.verficarConsulta}" />                
+                        </h:inputText></td> 
+                    <td/>
+                </tr>
+                <tr><td></td>
+                    <td> <h:outputText value="Administración:" styleClass="formColumn1"/>   </td>
+                    <td> 
+                        <h:inputText value="#{consultaCuentasMatricesBean.administracion}"
+                                     style="width: 200px;" converterMessage="El campo administración: es alfanumérico" maxlength="30" >
+                            <f:ajax event="change" execute="@this" render="@form" listener="#{consultaCuentasMatricesBean.verficarConsulta}" />                
+                        </h:inputText>
+                    </td>
+                    <td/><td/>
+                    <td> <h:outputText value="Administrador:" styleClass="formColumn1"/>   </td>
+                    <td> <h:inputText value="#{consultaCuentasMatricesBean.administrador}" 
+                                      style="width: 200px;" converterMessage="El campo administrador: es alfanumérico" maxlength="30">
+                            <f:ajax event="change" execute="@this" render="@form" listener="#{consultaCuentasMatricesBean.verficarConsulta}" />                
+                        </h:inputText> </td>
+                    <td> <h:outputText value="Serial Equipo:" style="display: inline-block; width: 80px;" rendered="false"/> </td>
+                    <td> 
+                        <h:inputText value="#{consultaCuentasMatricesBean.serialEquipo}"
+                                     style="width: 200px;" converterMessage="El campo cuenta subscriptor es numérico"
+                                     maxlength="9" rendered="false">
+
+                            <f:ajax event="change" execute="@this" render="@form" listener="#{consultaCuentasMatricesBean.verficarConsulta}" />                
+                        </h:inputText></td>
+                    <td/> 
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <h:panelGroup id="textoDireccionPanel">
+                            <h:panelGrid columns="8" styleClass="formulario3" id="textoDireccionPanelGrid">
+                                <h:outputText value="Dirección:"
+                                              style="display: inline-block; width: 80px; padding-left: 14px; margin-right: 10px;"/>
+                                <h:inputText value="#{consultaCuentasMatricesBean.direccionBusqueda}"
+                                             style="width: 313px" maxlength="100"  
+                                             disabled="#{consultaCuentasMatricesBean.direccionValidada}" 
+                                             validatorMessage="El campo dirección debe contener más de 8 caracteres">
+                                    <!--<f:validateRegex pattern="((\w|\s|-){8,})?"/> -->
+                                </h:inputText>
+
+                                <h:commandButton action="#{consultaCuentasMatricesBean.irPopUpDireccion()}"  
+                                                 title="Validar dirección"
+                                                 image="/view/img/home.gif">
+                                </h:commandButton>
+                                <h:graphicImage id="limpiarDir" style="width: 13px; " title="Limpiar dirección" value="/view/img/reset.png">
+                                    <f:ajax render="textoDireccionPanel wraptableCmPanel wrapBarrios" execute="@this" 
+                                            event="click" listener="#{consultaCuentasMatricesBean.limpiarDireccion()}"/>
+                                </h:graphicImage>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </td>
+                </tr>   
+                <tr>
+                    <td colspan="6">    
+                        <h:panelGroup  id="wrapBarrios" >   
+
+                            <h:panelGroup id="gupBarrios" rendered="#{consultaCuentasMatricesBean.direccionMultiorigen}"  >
+                                <h:panelGrid columns="8" styleClass="formulario3">
+                                    <h:outputText  style="display: inline-block; width: 80px; padding-left: 14px; margin-right: 10px;" escape="false" value="Barrio" class="txtLabelsMgl" rendered="#{consultaCuentasMatricesBean.direccionMultiorigen}"/>
+                                    <h:selectOneMenu id="SelectorBarrios" value="#{consultaCuentasMatricesBean.selectedBarrio}" style="width: 100px;"
+                                                     rendered="#{consultaCuentasMatricesBean.barrioslist.size()>0  and !consultaCuentasMatricesBean.otroBarrio}"         >
+                                        <f:selectItem itemValue="" itemLabel="Seleccione uno"/>
+                                        <f:selectItems value="#{consultaCuentasMatricesBean.barrioslist}" var="lbar" itemLabel="#{lbar}" itemValue="#{lbar}" />       
+                                    </h:selectOneMenu>
+                                    <h:inputText style="width: 100px;" id="barriodigitado" value="#{consultaCuentasMatricesBean.selectedBarrio}" rendered="#{!(consultaCuentasMatricesBean.barrioslist.size()>0)  or consultaCuentasMatricesBean.otroBarrio}">
+                                    </h:inputText>
+                                    <h:commandButton style="width: 15px !important;" id="mostrarOtroBarrio" value="#{consultaCuentasMatricesBean.otroBarrio?'L':'O'}" rendered="#{consultaCuentasMatricesBean.barrioslist.size()>0}" styleClass="btng">
+                                        <f:ajax render="wrapBarrios" execute="@this" 
+                                                event="click" listener="#{consultaCuentasMatricesBean.mostrarOtrobarrio()}" />
+                                    </h:commandButton>
+                                </h:panelGrid>
+                            </h:panelGroup> 
+                        </h:panelGroup>     
+
+                        <h:panelGroup id="ComponenteDireccionPanel" rendered="false">
+                            <h:commandButton styleClass="btn" immediate="true" id="mostrarOcultarButton" value="Dirección texto" action="#{consultaCuentasMatricesBean.ocultarComponente()}"  />
+                            <cc:componente-dirJsf id="componenteDirecciones"
+                                                  address="#{consultaCuentasMatricesBean.drDireccion}" 
+                                                  barriosMultiorigen="#{consultaCuentasMatricesBean.listBarrios}" 
+                                                  configurationAddressComponent="#{consultaCuentasMatricesBean.configurationAddressComponent}" 
+                                                  esMultiorigen="#{consultaCuentasMatricesBean.multiorigen eq '1'}" 
+                                                  esConsulta="true">
+                            </cc:componente-dirJsf>
+                        </h:panelGroup>   
+                    </td>  
+
+                </tr>
+                <tr><td></td>
+                    <td>  
+                    </td>
+                    <td colspan="7">
+                        <h:commandButton disabled="#{!consultaCuentasMatricesBean.validarBusCM()}"
+                                         value="Buscar" id="buttonBuscarCm" styleClass="btn"
+                                         action="#{consultaCuentasMatricesBean.generarConsulta()}">
+                        </h:commandButton>
+                        <h:commandButton  value="Exportar Tabla" id="buttonExportXls"                                         
+                                          styleClass="btn unblockClaro" immediate="true"
+                                          action="#{consultaCuentasMatricesBean.exportExcel()}"
+                                          disabled="#{consultaCuentasMatricesBean.habilitaObj eq false}"/>
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+
+        <div style="text-align: center;">
+            <h:commandLink value="Ver Ultimas Cuentas Matrices Creadas" disabled="#{!consultaCuentasMatricesBean.validarBusCM()}"
+                           id="linkVerUltimasCm" style="text-align: center;"
+                           actionListener="#{consultaCuentasMatricesBean.latestCmCreated()}"
+                           rendered="#{consultaCuentasMatricesBean.habilitaObj eq false}"
+                           immediate="true">
+            </h:commandLink>
+        </div>
+        <BR/>
+        <h:panelGroup id="wraptableCmPanel">
+            <h:panelGroup id="tableCmPanel">
+                <h:dataTable id="cmTable" class="tablefeel " style="width: 100%"
+                             var="cm" 
+                             value="#{consultaCuentasMatricesBean.cuentaMatrizList}" 
+                             rendered="#{consultaCuentasMatricesBean.habilitaObj}">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="N° Cuenta RR"/>
+                        </f:facet>
+                        <h:commandLink value="#{cm.numeroCuenta}" immediate="true"
+                                       action="#{consultaCuentasMatricesBean.goCuentaMatriz}" 
+                                       disabled="#{!consultaCuentasMatricesBean.validarEdicion()}" >
+                            <f:setPropertyActionListener target="#{consultaCuentasMatricesBean.cuentaMatriz}" value="#{cm}" />                                
+                        </h:commandLink>
+                    </h:column>            
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nombre Edificio"/>
+                        </f:facet>
+                        <h:outputText value="#{cm.nombreCuenta}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Dirección"/>
+                        </f:facet>
+                        <h:outputText  value="#{cm.direccionPrincipal.direccionObj.dirFormatoIgac}"/>
+                    </h:column>
+                    <h:column >
+
+                        <f:facet name="header">
+                            <h:outputText value="Barrio"/>
+                        </f:facet>
+                        <h:outputText value="#{cm.direccionPrincipal.barrio}"/>
+
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Ciudad"/>
+                        </f:facet>
+                        <h:outputText value="#{cm.municipio.gpoNombre}"/>
+                    </h:column>
+
+                    <h:column>              
+
+                        <f:facet name="header">
+                            <h:outputText value="Departamento"/>
+                        </f:facet>
+                        <h:outputText value="#{cm.departamento.gpoNombre}"/>
+
+                    </h:column>
+
+                    <h:column>              
+
+                        <f:facet name="header">
+                            <h:outputText value="Centro Poblado"/>
+                        </f:facet>
+                        <h:outputText value="#{cm.centroPoblado.gpoNombre}"/>
+
+                    </h:column>
+
+                    <!--espinosadiea: modificacion 09 de junio 2018 agregar campo numero de cuenta de mgl-->
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="N° Cuenta MGL"/>
+                        </f:facet>
+                        <h:commandLink value="#{cm.cuentaMatrizId}" immediate="true"
+                                       action="#{consultaCuentasMatricesBean.goCuentaMatriz}" 
+                                       disabled="#{!consultaCuentasMatricesBean.validarEdicion()}" >
+                            <f:setPropertyActionListener target="#{consultaCuentasMatricesBean.cuentaMatriz}" value="#{cm}" />                                
+                        </h:commandLink>
+                    </h:column>
+
+                    <f:facet name="footer" >
+                        <h:panelGroup  rendered="#{consultaCuentasMatricesBean.pintarPaginado}">
+                            <div class="pagination2">
+                                <h:commandButton value= "&#171;"  action="#{consultaCuentasMatricesBean.pageFirst}" />
+                                <h:commandButton value= "&#60;" action="#{consultaCuentasMatricesBean.pagePrevious}" />
+                                <h:commandButton value= "#{consultaCuentasMatricesBean.pageActual}"   />
+
+                                <h:selectOneMenu  value="#{consultaCuentasMatricesBean.numPagina}" >
+                                    <f:selectItems value="#{consultaCuentasMatricesBean.paginaList}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>    
+                                    <f:ajax render="@form"  event="change"  listener="#{consultaCuentasMatricesBean.irPagina()}"  execute="@this" />                                         
+                                </h:selectOneMenu>  
+                                <h:commandButton value= "&#62;" action="#{consultaCuentasMatricesBean.pageNext}"/>
+                                <h:commandButton value= "&#187;" action="#{consultaCuentasMatricesBean.pageLast}"/>
+                            </div>
+                        </h:panelGroup>
+
+                    </f:facet>                            
+                </h:dataTable>
+            </h:panelGroup>
+        </h:panelGroup>
+
+    </ui:define>
+</ui:composition>

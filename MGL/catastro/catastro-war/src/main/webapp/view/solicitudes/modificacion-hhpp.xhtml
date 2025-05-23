@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/template/home.xhtml"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes">
+    <ui:define name="title"><span class="TituloSeccion">Modificación de HHPP</span></ui:define>
+    <ui:define name="message"><span class="error"> </span></ui:define>
+    <ui:define name="content">
+        <script>
+            function ocultar(obj) {
+                obj.style.display = 'none'
+
+            }
+        </script>
+        <h:form id="form">
+            <h:messages id="messges"  globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="solicitud" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="regional" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="ciudad" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="tipoSolicitud" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="contacto" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="telContacto" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="solicitante" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="telSolicitante" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="correoSolicitante" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="observaciones" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="tipoMod" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="otroBarrio" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="nuevoNodo" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="nuevaCalle" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="nuevaPlaca" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="nuevoApto" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="nuevoEstado" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+
+            <h:panelGrid columns="4">
+                <h:outputText value="Tipo de solicitud: "/>
+                <h:selectOneMenu id="solicitud" value="#{modificacionHHPPMBean.tipoSolicitud}" disabled="#{modificacionHHPPMBean.panelRegion}" required="true" requiredMessage="Ingrese Tipo de Solicitud">
+                    <f:selectItem itemLabel="" itemValue="" />
+                    <f:selectItem itemLabel="HHPP Unidireccional" itemValue="U" />
+                    <f:selectItem itemLabel="Verificación de Casa" itemValue="B" />
+                    <f:ajax event="change" execute="solicitud componente" listener="#{modificacionHHPPMBean.obtenerListaRegionales()}"  render="regional ciudad multi componente"/>
+                </h:selectOneMenu>
+                <h:outputText/>
+                <h:outputText/>
+                <h:outputText value="Regional:"/>
+                <h:selectOneMenu id="regional" value="#{modificacionHHPPMBean.rrRegional}" disabled="#{modificacionHHPPMBean.panelRegion}" required="true" requiredMessage="Ingrese Regional">
+                    <f:selectItem itemLabel="" itemValue="" />
+                    <f:selectItems value="#{modificacionHHPPMBean.regionalList}" 
+                                   var="regional" itemLabel="#{regional.nombre}" 
+                                   itemValue="#{regional.codigo}"/>
+                    <f:ajax event="change" execute="regional" listener="#{modificacionHHPPMBean.obtenerListaCiudades()}"  render="ciudad multi"/>
+                </h:selectOneMenu>
+                <h:outputText  value="Ciudad:" />
+                <h:selectOneMenu id="ciudad" value="#{modificacionHHPPMBean.rrCiudad}" disabled="#{modificacionHHPPMBean.panelRegion}" required="true" requiredMessage="Ingrese Ciudad" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{modificacionHHPPMBean.ciudadesList}" 
+                                   var="ciudad"  itemValue="#{ciudad.codigo}" itemLabel="#{ciudad.nombre}"/>
+                    <f:ajax event="change" execute="ciudad componente" render="multi nodoEstado messges componente" listener="#{modificacionHHPPMBean.esMultiorigen()}"/>
+                </h:selectOneMenu>
+            </h:panelGrid>
+            <hr size="5" width="100%" align="LEFT"/>
+            <h:outputText  value="Seleccione el tipo de Modificacion sobre el HHPP:" class="EtiquetaConsulta"/>
+            <h:selectManyCheckbox label="Tipo de Modificación: " id="tipoMod" disabled="#{!modificacionHHPPMBean.panelSelectTipoMod}"
+                                  required="true" requiredMessage="Ingrese Tipo de Modificación"
+                                  value="#{modificacionHHPPMBean.tipoModificacionList}" >
+                <f:selectItem itemValue="1" itemLabel="Dirección" />
+                <f:selectItem itemValue="2" itemLabel="Nodo" />
+                <f:selectItem itemValue="3" itemLabel="Estado" />
+                <f:ajax event="change" execute="@this" render="dirLabel" listener="#{modificacionHHPPMBean.tipoModificacionChage()}"/>
+            </h:selectManyCheckbox>
+            <hr size="5" width="100%" align="LEFT"/>
+            <h:panelGroup id="multi">
+                <t:panelGrid columns="6"  rendered="#{modificacionHHPPMBean.renderMulti}">
+                    <t:panelGroup colspan="1"><h:commandButton rendered="#{!modificacionHHPPMBean.botonNuevaDir}" action="#{modificacionHHPPMBean.validarBarrio()}" value="Validar Barrio"/></t:panelGroup>
+                    <t:panelGroup colspan="1"><h:commandButton rendered="#{modificacionHHPPMBean.botonNuevaDir}" action="#{modificacionHHPPMBean.limpiarCamposMultiorigen()}" value="Nueva Dirección" immediate="true"/></t:panelGroup>              
+                    <t:panelGroup rendered="#{modificacionHHPPMBean.barrioField}" colspan="1"><h:outputText value="Barrio" /></t:panelGroup>
+                    <t:panelGroup rendered="#{modificacionHHPPMBean.barrioField}" colspan="1">
+                        <h:selectOneMenu id="barrios" value="#{modificacionHHPPMBean.barrio}" required="#{modificacionHHPPMBean.renderMulti}">
+                            <f:selectItem itemLabel="" itemValue="" />
+                            <f:selectItems value="#{modificacionHHPPMBean.barriosList}" 
+                                           var="barrios" itemLabel="#{barrios.neighborhood}" itemValue="#{barrios.neighborhood}" />
+                            <f:ajax event="change" execute="barrios" render="multi" listener="#{modificacionHHPPMBean.esOtroBarrio()}"/>
+                        </h:selectOneMenu>
+                    </t:panelGroup>
+                    <t:panelGroup rendered="#{modificacionHHPPMBean.nuevoBarrioField}" colspan="1"><h:outputText value="Otro Barrio" /></t:panelGroup>
+                    <t:panelGroup rendered="#{modificacionHHPPMBean.nuevoBarrioField}" colspan="1"><h:inputText id="otroBarrio" value="#{modificacionHHPPMBean.barrioSugerido}" required="true" requiredMessage="Barrio Obligatorio"/></t:panelGroup>
+                </t:panelGrid>
+            </h:panelGroup>
+            <hr size="5" width="100%" align="LEFT"/>
+            <!-- Direccion Actual -->
+            <h:outputText id="dirLabel" value="#{modificacionHHPPMBean.direccionLabel}" style=" color:red; font-weight: bold;font-size: 14px; padding-left: 2px;"/>
+
+            <h:panelGroup id="componente">
+                <componentes:componente-direccion />
+            </h:panelGroup>
+            <hr size="5" width="100%" align="LEFT"/>
+            <t:panelGrid columns="4">
+
+                <t:panelGroup colspan="1"><h:outputText value="Tipo Solicitud" /></t:panelGroup>
+                <t:panelGroup colspan="1">
+                    <h:selectOneMenu required="true" requiredMessage="Ingrese Tipo Solicitud"
+                                     id="tipoSolicitud" value="#{modificacionHHPPMBean.solicitud.tipoSol}">
+                        <f:selectItem itemLabel="" itemValue=""/>
+                        <f:selectItems value="#{modificacionHHPPMBean.obtenerDireccionPorTipo('TIPO_SOLICITUD')}" 
+                                       var="tipoSol" itemLabel="#{tipoSol.idParametro}" itemValue="#{tipoSol.idParametro}" />
+
+                    </h:selectOneMenu>
+                </t:panelGroup>
+
+                <t:panelGroup colspan="1"><h:outputText value="Contacto:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText required="true" requiredMessage="Ingrese Nombre de Contacto" id="contacto" value="#{modificacionHHPPMBean.solicitud.contacto}" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Teléfono Contacto:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText required="true" requiredMessage="Ingrese Telefono de Contacto" id="telContacto" value="#{modificacionHHPPMBean.telContacto}" /></t:panelGroup>
+
+                <t:panelGroup colspan="1"><h:outputText value="Solicitante:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText required="true" requiredMessage="Ingrese Nombre de Solicitante" id="solicitante" value="#{modificacionHHPPMBean.solicitud.solicitante}" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Teléfono Solicitante:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText required="true" requiredMessage="Ingrese Telefono de Solicitante" id="telSolicitante" value="#{modificacionHHPPMBean.telSolicitante}" /></t:panelGroup>
+
+                <t:panelGroup colspan="1"><h:outputText value="Correo Solicitante:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:inputText required="true" requiredMessage="Ingrese Correo de Solicitante" id="correoSolicitante" value="#{modificacionHHPPMBean.solicitud.correo}" /></t:panelGroup>
+
+                <t:panelGroup colspan="1"><h:outputText value="Observaciones Especiales:" /></t:panelGroup>
+                <t:panelGroup colspan="3"><h:inputTextarea required="true" requiredMessage="Ingrese Observaciones" id="observaciones" style="width: 400px; height: 50px;" value="#{modificacionHHPPMBean.solicitud.motivo}" /></t:panelGroup>
+
+
+
+            </t:panelGrid>
+            <hr size="5" width="100%" align="LEFT"/>
+            <h:outputText value="Dirección Estandarizada en Formato RR:" class="EtiquetaConsulta" rendered="true"/>
+            <t:panelGrid columns="6" rendered="true">
+                <t:panelGroup colspan="1"><h:outputText value="Nombre de Calle:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="#{modificacionHHPPMBean.streetNameStr}" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Placa:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="#{modificacionHHPPMBean.houseNumberStr}" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="Número de Apartamento:" /></t:panelGroup>
+                <t:panelGroup colspan="1"><h:outputText value="#{modificacionHHPPMBean.aptoStr}" /></t:panelGroup>                
+            </t:panelGrid>
+            <hr size="5" width="100%" align="LEFT"/>
+            #{modificacionHHPPMBean.obtenerListaEstadoHhpp()}
+
+            <!-- Informacion Actual del HHPP-->
+            <t:panelGrid columns="4" id="nodoEstado" >
+                <!-- Campos para la direccion antigua-->
+                <h:outputText value="Ingrese Dirección Antigua del HHPP:" class="EtiquetaConsulta" rendered="#{modificacionHHPPMBean.cambioDirRender}"/>
+                <h:panelGrid columns="2" rendered="#{modificacionHHPPMBean.cambioDirRender}">
+                    <h:outputText value="Nombre de Calle:" />
+                    <h:inputText id="nuevaCalle" value="#{modificacionHHPPMBean.antStreetNameStr}" required="#{modificacionHHPPMBean.cambioDirRender}"/>
+                    <h:outputText value="Placa:" />
+                    <h:inputText id="nuevaPlaca" value="#{modificacionHHPPMBean.antHouseNumberStr}" required="#{modificacionHHPPMBean.cambioDirRender}"/>
+                    <h:outputText value="Número de Apartamento:" />
+                    <h:inputText id="nuevoApto" value="#{modificacionHHPPMBean.antAptoStr}" required="#{modificacionHHPPMBean.cambioDirRender}"/>     
+                    <h:commandButton rendered="#{modificacionHHPPMBean.cambioDirRender}" action="#{modificacionHHPPMBean.validarDireccionRR}" value="Validar Dirección RR"/>
+                </h:panelGrid>
+                <!-- Campos de informacion del nodo-->
+                <t:panelGroup rendered="#{modificacionHHPPMBean.nodoRender}" colspan="4">
+                    <h:outputText value="Nodo:" />
+                    <h:inputText readonly="true" value="#{modificacionHHPPMBean.solicitud.nodo}" />
+                    <h:outputText value="Nuevo Nodo:" />
+                    <h:inputText id="nuevoNodo" value="#{modificacionHHPPMBean.solicitud.cambioNodo}" required="#{modificacionHHPPMBean.nodoRender}" />
+
+                </t:panelGroup>
+                <!-- Campos de informacion del estado-->
+                <t:panelGroup rendered="#{modificacionHHPPMBean.estadoRender}" colspan="4">
+                    <h:outputText value="Estado" />
+                    <h:inputText readonly="true" value="#{modificacionHHPPMBean.obtenerEstado(modificacionHHPPMBean.solicitud.estadoHhpp)}" />
+                    <h:outputText value="Nuevo Estado:" />
+                    <h:selectOneMenu id="nuevoEstado" value="#{modificacionHHPPMBean.solicitud.estadoHhppNuevo}" required="#{modificacionHHPPMBean.estadoRender}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItem itemLabel="NEVER SERV" itemValue="N"/>
+                        <f:selectItem itemLabel="PRE-WIRE" itemValue="P"/>
+                        <f:selectItem itemLabel="EXISTS" itemValue="E"/>
+                        <f:selectItem itemLabel="DISCONNECT" itemValue="D"/>
+                        <!--<f:selectItems value="#.{modificacionHHPPMBean.estadoHhppList}" var="estado" itemLabel="#.{estado.ehhNombre}" itemValue="#.{estado.ehhId}" />-->
+                    </h:selectOneMenu>
+                </t:panelGroup>
+
+                <t:panelGroup colspan ="1"><h:commandButton rendered="#{modificacionHHPPMBean.botonValidar}" action="#{modificacionHHPPMBean.validarDireccion}" value="Validar Dirección" /></t:panelGroup>
+                <t:panelGroup colspan ="1"><h:commandButton rendered="#{modificacionHHPPMBean.botonCrear}" action="#{modificacionHHPPMBean.crear}" value="Crear" onclick="ocultar(this);"/></t:panelGroup>
+                <t:panelGroup colspan ="2"><h:commandButton rendered="#{modificacionHHPPMBean.botonRegresar}" action="#{modificacionHHPPMBean.limpiarCampos()}" value="Regresar" immediate="true"/></t:panelGroup>
+            </t:panelGrid>
+        </h:form>
+
+
+        <hr size="5" width="100%" align="LEFT"/>
+    </ui:define>
+
+
+</ui:composition>

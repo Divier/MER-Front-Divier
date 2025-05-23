@@ -1,0 +1,534 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+   
+    xmlns:p="http://primefaces.org/ui"
+    template="/view/MGL/template/infoAdiTemplate.xhtml">
+
+    
+    
+    <ui:define name="title"><span class="TituloSeccion">Administrador tablasBasicas</span></ui:define>
+    <ui:define name="message"><span class="error"> #{cmtInfoAdiMantenimientoBean.message}</span></ui:define>
+    <ui:define name="content">
+        
+        <br></br>
+        <h2>Tablas Básicas [#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.tipoBasicaObj.nombreTipo}]</h2>
+        <fieldset>
+            <legend>Tabla Basica</legend>
+            <div id="tableTipoTablaBasica">
+                <table style="width: 100%">
+                    <tr><td></td>
+                        <td>   <h:outputText value="Id" id="asc_idlb"    />  </td>
+                        <td>  <h:outputText id="IdSqlTxt" value="#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.basicaId}" />    </td>
+
+                        <td>   <h:outputText value="#{cmtInfoAdiMantenimientoBean.estiloObligatorio}Nombre" id="asc_nombrelb" escape="false" /></td>
+                        <td>  <h:inputText id="asc_nombreTxt" 
+                                           value="#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.nombreBasica}"
+                                           required="true"
+                                           maxlength="30" requiredMessage="El campo nombre es requerido">
+                            </h:inputText>  </td>
+                    </tr> 
+                    <tr></tr>
+                    <tr><td></td>
+                        <td> <h:outputText escape="false" 
+                                           value="#{cmtInfoAdiMantenimientoBean.estiloObligatorio}
+                                           Código#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.tipoBasicaObj.tipoDatoCodigo eq 'A'?'(Alf)':'(Num)'}"
+                                           id="asc_codigolb"/> </td>
+                        <td>     <h:inputText id="asc_codigoTxt" 
+                                              value="#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.codigoBasica}"  
+                                              maxlength="8" 
+                                              disabled="#{!(cmtInfoAdiMantenimientoBean.tablasBasicasMgl.basicaId eq 0)}" 
+                                              requiredMessage="El valor código Básica es obligatorio" required="true">
+                            </h:inputText> </td>
+                    </tr> 
+                    <tr></tr>
+                    <tr><td></td>
+                        <td> <h:outputText escape="false" value="#{cmtInfoAdiMantenimientoBean.estiloObligatorio}Abreviatura"
+                                           id="asc_head_endlb" rendered="#{cmtInfoAdiMantenimientoBean.lblAbreviatura}"/> 
+                            <h:outputText escape="false" value="#{cmtInfoAdiMantenimientoBean.estiloObligatorio}Código OFSC_CCMM"
+                                          id="codigoOFSCId"  rendered="#{cmtInfoAdiMantenimientoBean.lblCodigoOfsc}"/> 
+                        </td>
+                        <td> <h:inputText id="asc_head_endTxt" maxlength="8" 
+                                          value="#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.abreviatura}"
+                                          requiredMessage="El campo Abreviatura o Código OFSC_CCMM es requerido"
+                                          disabled="#{(cmtInfoAdiMantenimientoBean.disableAbreviatura())}">
+                                <f:validateRequired />
+                            </h:inputText>    </td>
+                        <td>   <h:outputText escape="false" value="#{cmtInfoAdiMantenimientoBean.estiloObligatorio}Descripción" id="asc_campo_adicional1lb"/> </td>
+                        <td>    <h:inputTextarea  id="asc_campo_adicional1Txt"  
+                                                  value="#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.descripcion}" 
+                                                  rows="3" requiredMessage="El campo descripción es requerido" >
+                                <f:validateRequired />
+                            </h:inputTextarea>    </td>
+                    </tr> 
+                    <tr></tr>
+                    <tr><td></td>
+                        <td> <h:outputText escape="false" value="#{cmtInfoAdiMantenimientoBean.estiloObligatorio}Estado" id="asc_campo_adicional2lb"/> </td>
+                        <td>  <h:selectOneMenu id="listEstadoBasica" value="#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.activado}" 
+                                               disabled="#{(cmtInfoAdiMantenimientoBean.tablasBasicasMgl.basicaId  eq 0)}"
+                                               styleClass="ListaConsulta">
+                                <f:selectItem itemValue="Y" itemLabel="Activo" />
+                                <f:selectItem itemValue="N" itemLabel="Inactivo" />
+                            </h:selectOneMenu>  </td>
+                        <td>   <h:outputText escape="false" value="#{cmtInfoAdiMantenimientoBean.estiloObligatorio}Justificación ultimo cambio(200)" id="asc_campo_justificacion1lb" /></td>
+                        <td>   <h:inputTextarea  id="asc_campo_justificaTxt"
+                                                 value="#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.justificacion}" 
+                                                 rows="3"  
+                                                 required="true"
+                                                 requiredMessage="El campo justificación es requerido para cualquier
+                                                 modificación o eliminación del registro"
+                                                 rendered="#{(!(cmtInfoAdiMantenimientoBean.tablasBasicasMgl.basicaId eq null)
+                                                             and !(cmtInfoAdiMantenimientoBean.tablasBasicasMgl.basicaId eq 0))}"   >
+                            </h:inputTextarea></td>
+                    </tr> 
+                </table>
+            </div>
+        </fieldset>
+        <br></br><br></br>   
+        <h:panelGrid columns="4" id="tablasBasicasMgl2" styleClass="panelInfo">
+            <h:panelGroup id="botonesAcciones" rendered="#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.estadoRegistro eq 1}">
+                <h:commandButton value="Actualizar" styleClass="btn" id="btnAct"
+                                 action="#{cmtInfoAdiMantenimientoBean.actualizarlTablasBasicasMgl()}"
+                                 rendered="#{cmtInfoAdiMantenimientoBean.editarBasica and !(cmtInfoAdiMantenimientoBean.tablasBasicasMgl.basicaId  eq 0)}" />
+                <h:commandButton value="Crear" styleClass="btn"
+                                 disabled="#{(cmtInfoAdiMantenimientoBean.guardado)}"
+                                 action="#{cmtInfoAdiMantenimientoBean.crearTablasBasicasMgl()}"
+                                 rendered="#{cmtInfoAdiMantenimientoBean.crearBasica and (cmtInfoAdiMantenimientoBean.tablasBasicasMgl.basicaId  eq 0)}"/>
+                <h:commandButton value="Eliminar" styleClass="btn"
+                                 action="#{cmtInfoAdiMantenimientoBean.eliminarlTablasBasicasMgl()}"
+                                 rendered="#{cmtInfoAdiMantenimientoBean.borrarBasica and !(cmtInfoAdiMantenimientoBean.tablasBasicasMgl.basicaId  eq 0)}"
+                                 onclick="return confirm('¿Está seguro que desea Eliminar el registro?');" />
+
+
+                <h:commandButton id="InfoAdiButton" value="Info Adicional" styleClass="btn" immediate="true"
+                                 disabled="#{cmtInfoAdiMantenimientoBean.mglExtendidaTecnologia.idExtTec != null
+                                             or (cmtInfoAdiMantenimientoBean.lstInfoAdiTipoTrabajoMgls != null 
+                                             and cmtInfoAdiMantenimientoBean.lstInfoAdiTipoTrabajoMgls.size() > 0)}"
+                                 action="#{cmtInfoAdiMantenimientoBean.mostrarPanelInfoAdicional()}"
+                                 rendered="#{cmtInfoAdiMantenimientoBean.activeBottonInfoAdi}" />
+                <h:commandButton value="Volver" action="#{cmtInfoAdiMantenimientoBean.volverList}" styleClass="btn" immediate="true"></h:commandButton>
+            </h:panelGroup>
+
+        </h:panelGrid>
+
+        <br></br>
+        <h:panelGroup id="idPnGroupGral">
+            <fieldset>
+                <div id="tableTipoTecBasica">
+                    <table style="width: 100%">
+                        <h:panelGrid id="idPnGridSinRr" columns="2"  rendered="#{cmtInfoAdiMantenimientoBean.tablasBasicasMgl.tipoBasicaObj.nombreTipo eq 'TIPO_TECNOLOGIA'}">
+                            <h:panelGroup id="idPnGroup">
+                                <fieldset>
+                                    <legend>SINCRONIZA CON RR</legend>
+                                    <div id="nodos" >
+                                        <table class="header" style="width: 100%">
+                                            <tr><td></td>
+                                                <th>Parametrización</th>
+                                                <th >Y/N</th>
+
+                                            </tr>
+                                            <ui:repeat var="tbl" value="#{cmtInfoAdiMantenimientoBean.basicaExtMgls}" > 
+                                                <tr><td></td>
+                                                    <td> <h:outputText class="txtLabelsMgl" value="#{tbl.idTipoBasicaExt.labelCampo}"/></td>
+                                                    <td> <h:selectOneMenu   styleClass="ListaConsulta" 
+                                                                            value="#{tbl.valorExtendido}" 
+                                                                            style="width: 150%;">
+                                                            <f:selectItems value="#{tbl.idTipoBasicaExt.camposYN}" var="val" itemValue="#{val}" />   
+                                                        </h:selectOneMenu> 
+
+                                                    </td>
+                                                </tr> 
+                                            </ui:repeat>
+                                            <tr><td></td>
+                                            </tr> 
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </h:panelGroup>
+                            <h:panelGroup id="mttoTablas" rendered="#{cmtInfoAdiMantenimientoBean.tblTecnologia}">
+                                <fieldset>
+                                    <legend>EXTENDIDA TECNOLOGÍA </legend>
+                                    <div id="extTec" >
+                                        <table class="header" style="width: 100%">
+                                            <tr>
+                                                <td>
+                                            <h:panelGrid columns="4">    
+                                                <h:outputText  value="TIPO DE VALIDACIÓN" style="background: lightgrey;"/>
+                                                <h:outputText  value="VALOR DE VALIDACIÓN" style="background: lightgrey;"/>
+                                                <h:outputText  value="TIPO DE VALIDACIÓN" style="background: lightgrey;"/>
+                                                <h:outputText  value="VALOR DE VALIDACIÓN" style="background: lightgrey;"/>
+
+                                                <h:outputText  value="Soporte"/>
+                                                <h:selectOneMenu id="soporte" value="#{cmtInfoAdiMantenimientoBean.mglExtendidaTecnologia.reqSoporte}"  
+                                                                 styleClass="ListaConsulta" required="true" requiredMessage="Debe ingresar un valor en el campo soporte">
+                                                    <f:selectItem itemValue="" itemLabel="" />
+                                                    <f:selectItem itemValue="1" itemLabel="Requerido"/>
+                                                    <f:selectItem itemValue="2" itemLabel="No Requerido"/>
+                                                    <f:selectItem itemValue="3" itemLabel="No Aplica"/>
+                                                </h:selectOneMenu> 
+
+                                                <h:outputText value="SubEdificio"/>
+                                                <h:selectOneMenu id="subedificio" value="#{cmtInfoAdiMantenimientoBean.mglExtendidaTecnologia.reqSubedificios}"  
+                                                                 styleClass="ListaConsulta" required="true" requiredMessage="Debe ingresar un valor en el campo subedificio">
+                                                    <f:selectItem itemValue="" itemLabel="" />
+                                                    <f:selectItem itemValue="1" itemLabel="Requerido" />
+                                                    <f:selectItem itemValue="2" itemLabel="No Requerido" />
+                                                    <f:selectItem itemValue="3" itemLabel="No Aplica" />
+                                                </h:selectOneMenu>
+
+                                                <h:outputText  value="Tipo de Vivienda"/>
+                                                <h:selectOneMenu id="tipoVivienda"   value="#{cmtInfoAdiMantenimientoBean.tipoVivienda}"  
+                                                                 styleClass="ListaConsulta" required="true" requiredMessage="Debe ingresar un valor en el campo tipo vivienda" >
+                                                    <f:selectItem itemValue="0" itemLabel="" />
+                                                    <f:selectItem itemValue="1" itemLabel="Requerido" />
+                                                    <f:selectItem itemValue="2" itemLabel="No Requerido" />
+                                                    <f:selectItem itemValue="3" itemLabel="No Aplica" />          
+                                                    <f:ajax event="change" 
+                                                            execute="@this" 
+                                                            render="panelInfoAdi" 
+                                                            listener="#{cmtInfoAdiMantenimientoBean.validacambio()}" 
+                                                            />  
+                                                </h:selectOneMenu>
+
+                                                <h:outputText  value="Nombre Tecnología en OFSC"/>
+                                                <h:selectOneMenu value="#{cmtInfoAdiMantenimientoBean.nombreTecnoOFSCSelected}"
+                                                                 id="tipoSolicitudList">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{cmtInfoAdiMantenimientoBean.basicasMglNombresTecOFSClist}" 
+                                                                   var="tecOfsc" 
+                                                                   itemValue="#{tecOfsc.basicaId}" 
+                                                                   itemLabel="#{tecOfsc.nombreBasica}"/>
+                                                </h:selectOneMenu>
+                                            </h:panelGrid>
+                                            </td>
+                                                <td>
+                                            <h:panelGrid columns="2">
+                                                    <h:outputText  value="CUADRANTES A NODO" style="background: lightgrey;"/>
+                                                    <h:outputText value=""/>
+                                                    
+                                                            <h:outputText value="Modulo Gestion"/>
+                                                            <h:selectOneMenu  styleClass="ListaConsulta" value="#{cmtInfoAdiMantenimientoBean.moduloGestion}" 
+                                                                              disabled="#{cmtInfoAdiMantenimientoBean.desactivarModuloGestion()}"
+                                                                              style="width: 150%;">
+                                                                <f:selectItems value="#{cmtInfoAdiMantenimientoBean.cuadrantesNodo.idTipoBasicaExt.camposYN}" />          
+                                                            </h:selectOneMenu> 
+
+                                                           <h:outputText  value="Ofsc"/>         
+                                                           <h:selectOneMenu   styleClass="ListaConsulta" value="#{cmtInfoAdiMantenimientoBean.ofsc}" 
+                                                                              disabled="#{cmtInfoAdiMantenimientoBean.desactivarOfsc()}"
+                                                                              style="width: 150%;">
+                                                               <f:selectItems value="#{cmtInfoAdiMantenimientoBean.cuadrantesNodo.idTipoBasicaExt.camposYN}" /> 
+                                                            </h:selectOneMenu> 
+                                                
+                                                           <h:outputText  value="Sgo"/>            
+                                                           <h:selectOneMenu   styleClass="ListaConsulta" value="#{cmtInfoAdiMantenimientoBean.sgo}" 
+                                                                              disabled="#{cmtInfoAdiMantenimientoBean.desactivarSgo()}"
+                                                                              style="width: 150%;">
+                                                               <f:selectItems value="#{cmtInfoAdiMantenimientoBean.cuadrantesNodo.idTipoBasicaExt.camposYN}" />  
+                                                            </h:selectOneMenu>
+                                                                                                        
+                                                </h:panelGrid>
+                                                    </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </fieldset>  
+                                <tr><td></td>
+                                </tr> 
+                                <h:panelGroup  id="panelInfoAdi"  styleClass="panelInfo" >
+                                    <div id="extUni" >
+                                        <table  class="header" style="width: 100%">
+
+                                            <tr><td></td>
+                                                <th>UNIDADES</th>
+                                            </tr>
+                                            <tr><td></td>
+
+                                                <td>
+                                                    <h:selectManyCheckbox value="#{cmtInfoAdiMantenimientoBean.tipoViviendaSelected}"   
+                                                                          id = "chkAprobacion"  rendered="#{cmtInfoAdiMantenimientoBean.habilitaPanelInfoAdi}" >
+
+
+                                                        <f:selectItems value="#{cmtInfoAdiMantenimientoBean.listTipoNivel5}" 
+                                                                       var="tec"  itemValue="#{tec.descripcion}" itemLabel="#{tec.descripcion}"/>
+
+
+                                                        <h:commandLink id="todosCommandlink" 
+                                                                       value="Todos" rendered="#{cmtInfoAdiMantenimientoBean.selectTodos}">  
+                                                            <f:ajax 
+                                                                event="click" execute="@this" 
+                                                                listener="#{cmtInfoAdiMantenimientoBean.seleccionarTodos}"
+                                                                render="panelInfoAdi"
+                                                                />  
+                                                        </h:commandLink>
+                                                        <h:commandLink id="deshacerCommandlink" 
+                                                                       value="Deshacer" rendered="#{cmtInfoAdiMantenimientoBean.deshacerTodos}">  
+                                                            <f:ajax 
+                                                                event="click" execute="@this" 
+                                                                listener="#{cmtInfoAdiMantenimientoBean.seleccionarTodos}"
+                                                                render="panelInfoAdi"
+                                                                />  
+                                                        </h:commandLink>
+                                                    </h:selectManyCheckbox> 
+                                                </td>
+                                            </tr>
+
+                                        </table>
+                                    </div>
+                                </h:panelGroup>
+                                <h:commandButton value="Crear" id="CrearInfoAdiButton" 
+                                                 rendered="#{cmtInfoAdiMantenimientoBean.mglExtendidaTecnologia.idExtTec == null}"
+                                                 styleClass="btn"
+                                                 action="#{cmtInfoAdiMantenimientoBean.crearInformacionAdicional()}"/>
+
+                                <h:commandButton value="Actualizar"
+                                                 id="ActualizarInfoAdiButton" styleClass="btn"
+                                                 action="#{cmtInfoAdiMantenimientoBean.actualizarInformacionAdicional()}"
+                                                 rendered="#{cmtInfoAdiMantenimientoBean.mglExtendidaTecnologia.idExtTec != null}"/>
+
+                                <h:commandButton value="Eliminar Complementos" 
+                                                 id="EliminarInfoAdiButton" styleClass="btn" 
+                                                 action="#{cmtInfoAdiMantenimientoBean.eliminarInformacionAdicional()}"
+                                                 rendered="#{cmtInfoAdiMantenimientoBean.mglExtendidaTecnologia.idExtTec != null}"
+                                                 onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"/>
+
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </table>
+                </div>
+            </fieldset>
+        </h:panelGroup>
+        
+        
+            <h:panelGroup id="tblPlantCorreos" rendered="#{cmtInfoAdiMantenimientoBean.tblTiposTrabajo}">
+                <br></br>
+                <fieldset>
+                    <legend>PLANTILLAS CORREOS</legend>
+                    <div id="plantilla" >
+                        <table class="header">
+                            <tr><td></td>
+                                <th>Parametrizacion</th>
+                                <th >Y/N</th>
+                            </tr>
+
+                            <ui:repeat var="tbl" value="#{cmtInfoAdiMantenimientoBean.basicaExtMgls}" > 
+                                <tr><td></td>
+                                    <td> <h:outputText class="txtLabelsMgl" value="#{tbl.idTipoBasicaExt.labelCampo}"/></td>
+                                    <td> <h:selectOneMenu   styleClass="ListaConsulta" 
+                                                            value="#{tbl.valorExtendido}" 
+                                                            style="width: 120%;">
+                                              <f:selectItem itemValue="#{null}" itemLabel="" />
+                                            <f:selectItems value="#{tbl.idTipoBasicaExt.camposYN}" var="val" itemValue="#{val}" />   
+                                        </h:selectOneMenu> 
+
+                                    </td>
+                                </tr> 
+                            </ui:repeat>
+                            <tr><td></td>
+                            </tr> 
+                        </table>
+                    </div>
+                </fieldset>
+            </h:panelGroup>
+
+        <h:panelGroup id="panelAdiTipoTrabajo" rendered="#{cmtInfoAdiMantenimientoBean.tblTiposTrabajo}">
+
+            <h:panelGrid columns="5">
+                <h:commandLink id="selectedComId" 
+                               value="Crear Información Adicional" immediate="true"
+                               action="#{cmtInfoAdiMantenimientoBean.mostrarTablaComunidades()}" />
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <h:outputText  value="Cargar Ubicacion Masiva:"/>
+                 <p:fileUpload  id="idArchivo"   
+                                label="Seleccionar Archivo:"  accept="UTF-8"  
+                                value="#{cmtInfoAdiMantenimientoBean.fileMasivoUbicacion}" 
+                                 mode="simple" skinSimple="true"/>
+                <h:commandButton value="Procesar Documento" id="btnProcesar"
+                                 styleClass="btn"  action="#{cmtInfoAdiMantenimientoBean.procesarArchivo()}">                    
+                </h:commandButton>                   
+            </h:panelGrid>
+            <BR/>
+            <BR/>
+                <h1>Información Adicional</h1>  
+
+                <h:dataTable id="listaInfoTable" style="width:100%;margin:0 auto;" 
+                             value="#{cmtInfoAdiMantenimientoBean.lstInfoAdiTipoTrabajoMgls}" var="infoAdi"
+                             styleClass="constructGTable" rows="5"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow " >
+                    <h:column>  
+                        <div align="center">
+                            <f:facet name="header">
+                                <h:outputText value="Código Location" /><BR/> <!--onkeypress="return submitByEnter(event); en el input"-->
+                                <h:inputText  maxlength="50" id="codigoId" 
+                                              style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{cmtInfoAdiMantenimientoBean.filtroConsultaExtendidaTipoTrabajoDtos.codigoLocationSeleccionado}">
+                                    <f:ajax listener="#{cmtInfoAdiMantenimientoBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="listaInfoTable"/>
+                                </h:inputText>
+                            </f:facet>  
+                            <h:inputText maxlength="10" id="idCodigoLocation" immediate="true"
+                                         value="#{infoAdi.locationCodigo}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>   
+                        <div align="center">
+                            <f:facet name="header">
+                                <h:outputText value="Comunidad" /><BR/>
+                                <h:inputText  maxlength="50" id="comunidadId" 
+                                              style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{cmtInfoAdiMantenimientoBean.filtroConsultaExtendidaTipoTrabajoDtos.comunidaSeleccionada}">
+                                    <f:ajax listener="#{cmtInfoAdiMantenimientoBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="listaInfoTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{infoAdi.comunidadRrObj.nombreComunidad}" />      
+                        </div>                                  
+                    </h:column>   
+                    
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Comunidad RR" /><BR/>
+                                 <h:inputText  maxlength="50" id="codigoComId" 
+                                              style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{cmtInfoAdiMantenimientoBean.filtroConsultaExtendidaTipoTrabajoDtos.codigoComunidad}">
+                                    <f:ajax listener="#{cmtInfoAdiMantenimientoBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="listaInfoTable"/>
+                                </h:inputText>
+                            </f:facet>
+                            <h:outputText value="#{infoAdi.comunidadRrObj.codigoRr}" />      
+                        </div>                                  
+                    </h:column> 
+                    
+                    <h:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Creación" /><BR/>
+                            <p:calendar id="button" 
+                                        value="#{cmtInfoAdiMantenimientoBean.filtroConsultaExtendidaTipoTrabajoDtos.fechaCreacionSeleccionada}" 
+                                        style="white-space: nowrap;"
+                                        styleClass="estiloCalendar"
+                                        showOn="both">
+                                <f:ajax event="dateSelect" listener="#{cmtInfoAdiMantenimientoBean.filtrarInfo()}"  
+                                        execute="@this listaInfoTable" 
+                                        render="listaInfoTable"/>
+                            </p:calendar>
+                        </f:facet>  
+                        <h:outputText value="#{infoAdi.fechaCreacion}">
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm"/>
+                        </h:outputText>   
+                    </h:column>
+                    <h:column>
+                        <div align="center">
+                            <f:facet name="header">
+                                <h:outputText value="Acción" />
+                            </f:facet>  
+                            <h:panelGrid columns="2">
+                                <h:commandLink id="idEliminar" title="Eliminar Registro"
+                                               styleClass="btnIconEliminar"
+                                               action="#{cmtInfoAdiMantenimientoBean.eliminarComplemento(infoAdi)}"
+                                               onclick="return confirm('¿Está seguro que desea Eliminar el registro?');">
+                                </h:commandLink>
+                                <h:commandLink id="lnkActualizar" 
+                                               value="" title="Actualizar Registro"
+                                               actionListener="#{cmtInfoAdiMantenimientoBean.updateInfoAdiTipoTrabajo(infoAdi)}"
+                                               styleClass="btnIconUpdate"/>
+                            </h:panelGrid>
+                        </div>
+                    </h:column>
+                    <h:column> 
+                        <div align="center">
+                            <f:facet name="header">
+                                <h:outputText value="Técnico Anticipado" />
+                                <BR/>
+                                <h:selectOneMenu id="segmentoId"  style="width: 100px"
+                                                 value="#{cmtInfoAdiMantenimientoBean.filtroConsultaExtendidaTipoTrabajoDtos.tecnicoAntSeleccionada}">
+                                    <f:selectItem itemLabel="Todos" itemValue=""/>
+                                    <f:selectItem itemLabel="Activar" itemValue="0"/>
+                                    <f:selectItem itemLabel="Desactivar" itemValue="1"/> 
+                                    <f:ajax listener="#{cmtInfoAdiMantenimientoBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="listaInfoTable"/>
+                                </h:selectOneMenu> 
+                            </f:facet>  
+                            <h:commandLink id="idActivar" value="#{infoAdi.tecnicoAnticipado eq '0' ? 'Activar' : 'Desactivar'}"
+                                           title="Activar/Inactivar tecnico anticipado" 
+                                           action="#{cmtInfoAdiMantenimientoBean.activarTecnicoAnticipado(infoAdi)}"
+                                           onclick="return confirm('¿Está seguro que desea modificar el registro?');">
+                            </h:commandLink>
+                        </div>
+                    </h:column>
+                     <h:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Agenda Inmediata" />
+                                                             <BR/>
+                                <h:selectOneMenu id="inactId"  style="width: 100px"
+                                                 value="#{cmtInfoAdiMantenimientoBean.filtroConsultaExtendidaTipoTrabajoDtos.agendaInmediataSeleccionada}">
+                                    <f:selectItem itemLabel="Todos" itemValue=""/>
+                                    <f:selectItem itemLabel="Activar" itemValue="0"/>
+                                    <f:selectItem itemLabel="Desactivar" itemValue="1"/> 
+                                    <f:ajax listener="#{cmtInfoAdiMantenimientoBean.filtrarInfo()}"
+                                            event="change" 
+                                            execute="@this" 
+                                            render="listaInfoTable"/>
+                                </h:selectOneMenu> 
+                        </f:facet>  
+                         <h:commandLink id="idActivarAgeInm" value="#{infoAdi.agendaInmediata eq '0' ? 'Activar' : 'Desactivar'}"
+                                           title="Activar/Inactivar Agenda inmediata" 
+                                           action="#{cmtInfoAdiMantenimientoBean.activarAgendaInmediata(infoAdi)}"
+                                           onclick="return confirm('¿Está seguro que desea modificar el registro?');">
+                            </h:commandLink>
+                    </h:column>
+                    <f:facet name="footer">
+                        <div class="pagination2">
+                            <h:panelGroup>
+                                <h:commandButton value= ""
+                                                 class="botonTPagInicioCm botonBaselista">
+                                    <f:ajax  render="listaInfoTable" execute="@this" 
+                                             event="click" listener="#{cmtInfoAdiMantenimientoBean.pageFirstExtTipoWork}"/>
+                                </h:commandButton>
+                                <h:commandButton  value= "" 
+                                                  class="botonTPagAnteriorCm botonBaselista">
+                                    <f:ajax  render="listaInfoTable" execute="@this" 
+                                             event="click" listener="#{cmtInfoAdiMantenimientoBean.pagePreviousExtTipoWork}"/>
+                                </h:commandButton>
+                                <h:commandButton value="#{cmtInfoAdiMantenimientoBean.pageActualExtTipoWork}" />
+                                <h:selectOneMenu  value="#{cmtInfoAdiMantenimientoBean.numPaginaExtTipoWork}" 
+                                                  styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{cmtInfoAdiMantenimientoBean.paginaListExtTipoWork}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>    
+                                    <f:ajax render="listaInfoTable"  event="change" 
+                                            listener="#{cmtInfoAdiMantenimientoBean.irPaginaExtTipoWork()}"  execute="@this" />                                         
+                                </h:selectOneMenu>  
+                                <h:commandButton  value= ""
+                                                  class="botonTPagSiguienteCm botonBaselista">
+                                    <f:ajax  render="listaInfoTable" execute="@this" 
+                                             event="click" listener="#{cmtInfoAdiMantenimientoBean.pageNextExtTipoWork}"/>
+                                </h:commandButton>
+                                <h:commandButton  value= ""
+                                                  class="botonTPagFinCm botonBaselista">
+                                    <f:ajax  render="listaInfoTable" execute="@this" 
+                                             event="click" listener="#{cmtInfoAdiMantenimientoBean.pageLastExtTipoWork}"/>
+                                </h:commandButton>
+                            </h:panelGroup>
+                        </div>
+                    </f:facet>
+                </h:dataTable>
+        </h:panelGroup> 
+    </ui:define>
+</ui:composition>

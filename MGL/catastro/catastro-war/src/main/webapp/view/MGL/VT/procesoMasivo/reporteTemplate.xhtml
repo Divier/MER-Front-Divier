@@ -1,0 +1,731 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <body>
+        <ui:composition template="./../../template/VT/proceso_masivo.xhtml">
+            <ui:define name="content">
+                <h:form id="formReporte">
+                    <h:panelGrid>
+                        <f:facet name="header">
+                            <ui:insert name="TitleReporte"/>                            
+                        </f:facet>
+                        <h:panelGrid>                          
+                            <h:outputLabel  escape="false" class="txtLabelsMgl"  value="#{proReporteBean.estiloObligatorio} Tipo de Tecnología"/>
+                            <h:selectOneMenu
+                                id="idtipotecnologia"
+                                disabled="#{not(proReporteBean.puedeProcesar)}"
+                                style="width:160px;"
+                                required="false"
+                                
+                                value="#{proReporteBean.tipoTecnologia}"
+                                valueChangeListener="#{proReporteBean.tiposTecnologiasChange}">                            
+                                <f:selectItems
+                                    value="#{proReporteBean.itemsTiposTecnologiasList}"/>
+                                <f:ajax 
+                                    execute="idtipotecnologia"
+                                    listener="#{proReporteBean.setCiudadMultiOrigen(false)}"
+                                    render="idnodo msg_idtipotecnologia"/>
+                            </h:selectOneMenu>
+                            <h:message
+                                id="msg_idtipotecnologia"
+                                for="idtipotecnologia"
+                                style="color: red"
+                                />
+                        </h:panelGrid>
+                     
+                        <h:panelGrid columns="5">
+                            <h:panelGrid>
+                                <h:outputLabel  escape="false" class="txtLabelsMgl"  value="#{proReporteBean.estiloObligatorio} Departamento"/>
+                                <h:selectOneMenu
+                                    id="iddepartamento"
+                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                    required="false"
+                                    
+                                    style="width:160px;"
+                                    value="#{proReporteBean.departamento}"
+                                    valueChangeListener="#{proReporteBean.departamentosChange}"
+                                    >
+                                    <f:selectItems
+                                        value="#{proReporteBean.itemsDepartamentosList}"/>
+                                    <f:ajax 
+                                        execute="iddepartamento"
+                                        listener="#{proReporteBean.setCiudadMultiOrigen(false)}"
+                                        render="idciudad msg_idDepto idcentropoblado idnodo"/>
+                                </h:selectOneMenu>
+                                 <h:message
+                                id="msg_idDepto"
+                                for="iddepartamento"
+                                style="color: red"
+                                />
+                            </h:panelGrid>
+                            <h:panelGrid>
+                                <h:outputLabel escape="false" class="txtLabelsMgl" value="#{proReporteBean.estiloObligatorio} Ciudad"/>
+                                <h:selectOneMenu
+                                    id="idciudad"
+                                    disabled="#{not(proReporteBean.puedeProcesar)}"                                    
+                                    style="width:160px;"
+                                    value="#{proReporteBean.ciudad}"
+                                    required="false"
+                                    
+                                    valueChangeListener="#{proReporteBean.ciudadesChange}"
+                                    >
+                                    <f:selectItems
+                                        value="#{proReporteBean.itemsCiudades}"/>
+                                    <f:ajax
+                                        execute="idciudad"
+                                        listener="#{proReporteBean.setCiudadMultiOrigen(false)}"
+                                        render="idcentropoblado idnodo msg_idciudad panelWrapper"/>
+                                </h:selectOneMenu>
+                                <h:message
+                                    id="msg_idciudad"
+                                    for="idciudad"
+                                    style="color: red"
+                                    />
+                            </h:panelGrid>
+                            <h:panelGrid>
+                                <h:outputLabel escape="false" class="txtLabelsMgl" value="#{proReporteBean.estiloObligatorio} Centro Poblado"/>
+                                <h:selectOneMenu
+                                    id="idcentropoblado"
+                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                    required="false"
+                                    
+                                    style="width:160px;"
+                                    valueChangeListener="#{proReporteBean.centroPobladoChange}"
+                                    value="#{proReporteBean.centroPoblado}"
+                                    >
+                                    <f:ajax
+                                        execute="idcentropoblado"
+                                        listener="#{proReporteBean.setCiudadMultiOrigen(false)}"
+                                        render="idnodo"/>
+                                    <f:selectItems
+                                        value="#{proReporteBean.itemsCentrosPoblados}"/>
+                                </h:selectOneMenu>
+                                <h:message
+                                    id="msg_idcentropoblado"
+                                    for="idcentropoblado"
+                                    style="color: red"
+                                    />
+                            </h:panelGrid>
+                            <h:panelGrid>
+                                <h:outputLabel value="Nodo"/>
+                                <h:selectOneMenu
+                                    id="idnodo"
+                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                    style="width:160px;"
+                                required="false"
+                                
+                                    
+                                    value="#{proReporteBean.nodo}"
+                                    >
+                                    <f:selectItems
+                                        value="#{proReporteBean.itemsNodos}"/>
+                                    <f:ajax
+                                        execute="atributo"
+                                        render="idatributos"
+                                        listener="#{proReporteBean.setCiudadMultiOrigen(false)}"
+                                        />
+                                </h:selectOneMenu>
+                            </h:panelGrid>
+                               <h:panelGrid>
+                                <h:outputLabel value="Etiquetas"/>
+                                <h:selectOneMenu
+                                    id="idEtiquetas"
+                                    style="width:160px;"
+                                    required="#{(proReporteBean.mostrarNombreAtributo(proReporteBean.atributo) eq 'ETIQUETA')}"
+                                    requiredMessage="Etiqueta Requerido "
+                                    value="#{proReporteBean.etiquetaSeleccionada}"
+                                    >
+                                    <f:selectItems
+                                        value="#{proReporteBean.itemsEtiquetas}"/>
+                                    <f:ajax
+                                        execute="atributo"
+                                        render="idatributos"
+                                        listener="#{proReporteBean.setCiudadMultiOrigen(true)}"
+                                        />
+                                </h:selectOneMenu>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <ui:insert name="fechaInhabilitar"/> 
+                        <h:panelGrid columns="3">
+                            <h:panelGrid>
+                                <h:outputLabel  escape="false" class="txtLabelsMgl"  value="#{proReporteBean.estiloObligatorio} Tipo de reporte"/>
+                                <h:selectOneRadio
+                                    id="idtiporeporte"
+                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                    required="false"
+                                    value="#{proReporteBean.tipoReporte}"
+                                    valueChangeListener="#{proReporteBean.tipoReporteChange}"
+                                    >
+                                    <f:selectItems value="#{proReporteBean.itemstipoReportes}"/>
+                                    <f:ajax
+                                        execute="idtiporeporte"
+                                        render="idatributos msg_idtiporeporte"/>
+                                </h:selectOneRadio>
+                                <h:message
+                                    id="msg_idtiporeporte"
+                                    for="idtiporeporte"
+                                    style="color: red"
+                                    />  
+                            </h:panelGrid>
+                          
+                            <h:panelGrid style="width: 200px;">
+                                <h:outputLabel value=""/>
+                                <h:outputLabel value=""/>
+                            </h:panelGrid>
+                                
+                            <h:panelGrid style="display: inline-flex" >
+                                <h:outputText class="columnReadForm" 
+                                              value="Creado por Ficha" />      
+                                <h:selectBooleanCheckbox  value="#{proReporteBean.creadoXFicha}" 
+                                                          id = "chkAprobacion">
+                                </h:selectBooleanCheckbox>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <h:panelGrid id="idatributos">
+                            <h:panelGrid rendered="#{proReporteBean.atributosVisible eq true}">
+                                
+                                <h:panelGrid columns="6">
+                                <h:outputLabel value="Id CCMM MGL"/>
+                                 <h:inputText
+                                    id="idCcmmMgl"                                    
+                                    style="width:240px; "
+                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                    value="#{proReporteBean.idCcmmMgl}">
+                                </h:inputText>
+                                
+                                <h:outputLabel value="Id CCMM RR"/>
+                                 <h:inputText
+                                    id="idRrMgl"                                    
+                                    style="width:240px; "
+                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                    value="#{proReporteBean.idCcmmRr}">                                   
+                                </h:inputText>
+                                 </h:panelGrid>
+                                
+                                
+                                
+                                <h:outputLabel value="Atributo"/>
+                                <h:selectOneMenu
+                                    id="atributo"
+                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                    style="width:160px;"
+                                    required="true"
+                                    requiredMessage="Atributo Requerido"
+                                    value="#{proReporteBean.atributo}"
+                                    valueChangeListener="#{proReporteBean.atributosChange}">
+                                    <f:selectItems
+                                        value="#{proReporteBean.itemsAtributos}"/>
+                                    <f:ajax
+                                        execute="atributo"
+                                        render="msg_atributo opcionvaloratributos"
+                                        rendered="#{proReporteBean.mostrarNombreAtributo(proReporteBean.atributo) eq 'DIRECCION'}"
+                                        listener="#{consultaDireccionBean.reiniciarDireccion()}"
+                                        event="change"
+                                        />
+                                    <f:ajax
+                                        event="change" 
+                                        listener="#{proReporteBean.setCiudadMultiOrigen(false)}"
+                                        />
+                                </h:selectOneMenu>
+                                <h:message
+                                    id="msg_atributo"
+                                    for="atributo"
+                                    style="color: red"
+                                    />
+                            </h:panelGrid>
+                            <h:panelGrid id="opcionvaloratributos"
+                                         rendered="#{proReporteBean.atributosVisible eq true }">
+                                <h:outputLabel value="Valor Atributo" 
+                                               rendered="#{not(proReporteBean.mostrarNombreAtributo(proReporteBean.atributo) eq 'DIRECCION')
+                                               and (proReporteBean.mostrarNombreAtributo(proReporteBean.atributo) != 'COBERTURA')
+                                               and (proReporteBean.mostrarNombreAtributo(proReporteBean.atributo) != 'TIPO VIVIENDA')
+                                               and (proReporteBean.mostrarNombreAtributo(proReporteBean.atributo) != 'ETIQUETA')}"/>
+                                <h:inputText
+                                    id="valoratributo"
+                                    rendered="#{not(proReporteBean.mostrarNombreAtributo(proReporteBean.atributo) eq 'DIRECCION')
+                                               and (proReporteBean.mostrarNombreAtributo(proReporteBean.atributo) != 'COBERTURA')
+                                               and (proReporteBean.mostrarNombreAtributo(proReporteBean.atributo) != 'TIPO VIVIENDA')
+                                               and (proReporteBean.mostrarNombreAtributo(proReporteBean.atributo) != 'ETIQUETA')}"
+                                    required="true"
+                                    requiredMessage="Valor Atributo Requerido"
+                                    style="width:240px; "
+                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                    value="#{proReporteBean.valorAtributo}">
+                                    <f:ajax
+                                        render="msg_valoratributo"/>
+                                </h:inputText>
+                                <h:message
+                                    id="msg_valoratributo"
+                                    for="valoratributo"
+                                    style="color: red"/>
+                                <h:panelGroup
+                                    id="panelDirecciones"
+                                    rendered="#{proReporteBean.
+                                                mostrarNombreAtributo(proReporteBean.atributo) eq 'DIRECCION'}">
+                                    <div style="border-radius: 15px;
+                                         background: #D8DDE3;
+                                         padding: 20px;" >
+                                        <h2 align="center">
+                                            Crear el valor de la direcci&oacute;n
+                                        </h2>
+                                        <br/>
+                                        <h:panelGrid
+                                            id="modeloHhppMgl">
+                                            <h:outputText
+                                                id="tipoDireccion"
+                                                value="Tipo Dirección:"/>
+                                            <h:selectOneMenu
+                                                id="tipoDireccionComboBox"
+                                                disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                style="width:150px"
+                                                value="#{consultaDireccionBean.tipoDireccion}">
+                                                <f:selectItem  itemLabel="CALLE - CARRERA" itemValue="CK" />
+                                                <f:selectItem itemLabel="BARRIO - MANZANA" itemValue="BM"/>
+                                                <f:selectItem itemLabel="INTRADUCIBLE" itemValue="IT"/>
+                                                <f:ajax  event="change" execute="tipoDireccionComboBox"
+                                                         listener="#{consultaDireccionBean.tipoDireccionSeleccionada()}"
+                                                         render="panelWrapper direccionStrLabel" />
+                                                <f:ajax  
+                                                    event="change"
+                                                    listener="#{proReporteBean.setCiudadMultiOrigen(false)}" />
+                                            </h:selectOneMenu>
+                                        </h:panelGrid>
+                                        <br/>
+                                        <h:panelGroup id="panelWrapper" >
+                                            <!--Calle Karrera-->
+                                            <h:panelGrid
+                                                rendered="#{consultaDireccionBean.showCKPanel}">
+                                                <h:panelGrid id="id1">
+                                                    <h:panelGroup>
+                                                        <h:outputLabel
+                                                            style="font-weight:bold; font-size: 16px;color: red;"
+                                                            value="*" rendered="false"/>
+                                                        <h:outputLabel
+                                                            value="Ingrese la dirección:"
+                                                            for="iddirck"/>
+                                                    </h:panelGroup>
+                                                    <h:inputText           
+                                                        id="iddirck"
+                                                        disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                        style="width: 400px; margin-right: 10px;"
+                                                        maxlength="49"
+                                                        value="#{consultaDireccionBean.direccionCk}"/>
+                                                    <h:panelGroup rendered="#{proReporteBean.ciudadMultiOrigen}">
+                                                        <h:outputLabel
+                                                            style="font-weight:bold; font-size: 16px;color: red;"
+                                                            value="*"/>
+                                                        <h:outputLabel
+                                                            value="Barrio - Ciudad Multiorigen."/>
+                                                    </h:panelGroup>
+                                                    <h:panelGroup id="panelSelBarrioCk">
+                                                        <h:selectOneMenu
+                                                            id="selbarrioCk"
+                                                            rendered="#{proReporteBean.ciudadMultiOrigen}"
+                                                            disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                            style="width:150px"
+                                                            value="#{consultaDireccionBean.barrioSugeridoSeleccionado}">
+                                                            
+                                                            <f:ajax  event="change"
+                                                                     listener="#{consultaDireccionBean.validarBarrioSugeridoSeleccionado()}"
+                                                                     execute="panelSelBarrioCk"
+                                                                     render="panelSelBarrioCk"/>
+                                                            <f:selectItems
+                                                                value="#{consultaDireccionBean.barriosMultiOrigen}"/>
+                                                        </h:selectOneMenu>
+                                                        <h:message id="msg_idtselbarrioCk" for="idselbarrioCk" style="color: red" />
+                                                        <h:inputText       
+                                                            id="txtbarrioCk"
+                                                            rendered="#{consultaDireccionBean.barrioSugeridoSeleccionado eq 'Otro'}"
+                                                            disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                            style="width: 250px; margin-right: 10px;"
+                                                            maxlength="49"
+                                                            value="#{consultaDireccionBean.barrioCkTxt}"                                                           
+                                                            />
+                                                    <h:message id="msg_idtxtbarrioCk" for="idtxtbarrioCk" style="color: red" />                                                        
+                                                    </h:panelGroup>
+                                                </h:panelGrid>
+                                                <h:commandButton
+                                                    id="btnConstruirDireccionCK"
+                                                    styleClass="btn"
+                                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                    title="Construir Direccion"
+                                                    value="Guardar"
+                                                    >
+                                                    <f:ajax  
+                                                        event="click" execute="panelDirecciones"
+                                                        listener="#{consultaDireccionBean.
+                                                                    construir(proReporteBean, 
+                                                                    consultaDireccionBean.DIRECCIONCK)}"
+                                                        render="panelDirecciones direccionStrLabel" />
+                                                </h:commandButton>
+
+                                            </h:panelGrid>
+                                            <!--Barrio Manzana-->
+                                            <h:panelGrid
+                                                rendered="#{consultaDireccionBean.showBMPanel}"
+                                                >
+                                                <h:panelGroup>
+                                                    <h:outputLabel
+                                                        style="font-weight:bold; font-size: 16px;color: red;"
+                                                        value="*"/>
+                                                    <h:outputText
+                                                        id="addInfo"
+                                                        value="Ingrese uno a uno los valores:"
+                                                        />
+                                                </h:panelGroup>
+                                                <h:panelGroup id="id2">
+                                                    <h:selectOneMenu 
+                                                        id="selectBM"
+                                                        disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                        style="width:150px"
+                                                        value="#{consultaDireccionBean.tipoNivelBm}"
+                                                        >
+                                                        <f:selectItem
+                                                            itemLabel="Seleccione Uno"
+                                                            itemValue=""
+                                                            />
+                                                        <f:selectItems
+                                                            value="#{consultaDireccionBean.bmList}"
+                                                            var="barriomanzana"
+                                                            itemValue="#{barriomanzana.idParametro}"
+                                                            itemLabel="#{barriomanzana.descripcion}"
+                                                            />
+                                                        <f:ajax
+                                                            event="change" 
+                                                            execute="selectBM"
+                                                            />
+                                                    </h:selectOneMenu>
+                                                    &nbsp;
+                                                    <h:inputText
+                                                        id="txtnvbm"
+                                                        disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                        value="#{consultaDireccionBean.nivelValorBm}"
+                                                        maxlength="250"
+                                                        />
+                                                    <h:commandButton
+                                                        styleClass="btn"
+                                                        disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                        title="Construir Direccion"
+                                                        value="Guardar"
+                                                        >
+                                                        <f:ajax  
+                                                            event="click" 
+                                                            execute="txtnvbm"
+                                                            listener="#{consultaDireccionBean.
+                                                                        construir(proReporteBean, 
+                                                                        consultaDireccionBean.DIRECCIONBM)}"
+                                                            render="panelDirecciones" />
+                                                    </h:commandButton>
+                                                </h:panelGroup>
+                                            </h:panelGrid>
+                                            <!--Intraducible-->
+                                            <h:panelGrid
+                                                rendered="#{consultaDireccionBean.showITPanel}"
+                                                >
+                                                <h:panelGroup>
+                                                    <h:outputText
+                                                        style="font-weight:bold; font-size: 16px;color: red;"
+                                                        value="*"/>
+                                                    <h:outputText
+                                                        value="Ingrese uno a uno los valores:"
+                                                        />
+                                                </h:panelGroup>
+                                                <h:panelGroup>
+                                                    <h:selectOneMenu
+                                                        id="selectIT"
+                                                        disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                        style="width:150px"
+                                                        value="#{consultaDireccionBean.tipoNivelIt}"
+                                                        >
+                                                        <f:selectItem
+                                                            itemLabel="Seleccione Uno"
+                                                            itemValue=""
+                                                            />
+                                                        <f:selectItems
+                                                            value="#{consultaDireccionBean.itList}"
+                                                            var="intraducible"
+                                                            itemValue="#{intraducible.idParametro}"
+                                                            itemLabel="#{intraducible.descripcion}"
+                                                            />
+                                                        <f:ajax
+                                                            event="change" 
+                                                            execute="selectIT"
+                                                            />
+                                                    </h:selectOneMenu>
+                                                    &nbsp;
+                                                    <h:inputText
+                                                        id="txtnvIT"
+                                                        value="#{consultaDireccionBean.nivelValorIt}"
+                                                        maxlength="250"
+                                                        />
+                                                    <h:commandButton
+                                                        disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                        title="Construir Direccion"
+                                                        styleClass="btn"
+                                                        value="Guardar"
+                                                        >
+                                                        <f:ajax  
+                                                            event="click"
+                                                            execute="txtnvIT"
+                                                            listener="#{consultaDireccionBean.
+                                                                        construir(proReporteBean, 
+                                                                        consultaDireccionBean.DIRECCIONIT)}"
+                                                            render="panelDirecciones" />
+                                                    </h:commandButton>
+                                                </h:panelGroup>
+                                            </h:panelGrid>
+                                        </h:panelGroup>
+                                        <br/>
+                                        <!--Complemento-->
+                                        <h:panelGrid >
+                                            <h:outputText
+                                                id="complementoLabel"
+                                                style="font-weight:bold"
+                                                value="Complemento:" />
+                                            <h:panelGroup >
+                                                <h:selectOneMenu
+                                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                    id="tipoComplementoComboBox"
+                                                    style="width:150px"
+                                                    value="#{consultaDireccionBean.tipoNivelComplemento}"
+                                                    >
+                                                    <f:selectItem
+                                                        itemLabel="Seleccione Uno"
+                                                        itemValue=""
+                                                        />
+                                                    <f:selectItems
+                                                        value="#{consultaDireccionBean.complementoList}"
+                                                        var="complemento"
+                                                        itemValue="#{complemento.idParametro}"
+                                                        itemLabel="#{complemento.descripcion}"
+                                                        />
+                                                </h:selectOneMenu>
+                                                &nbsp;
+                                                <h:inputText
+                                                    id="complementoParametro"
+                                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                    maxlength="50"
+                                                    value="#{consultaDireccionBean.complemento}" />
+                                                <h:commandButton
+                                                    title="Construir Direccion"
+                                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                    id="agregarComplementoButton"
+                                                    styleClass="btn"
+                                                    actionListener="#{consultaDireccionBean.
+                                                                    construir(proReporteBean, 
+                                                                    consultaDireccionBean.DIRECCIONCOMPLEMENTO)}"
+                                                    value="Guardar"
+                                                    >
+                                                    
+                                                </h:commandButton>
+                                            </h:panelGroup>
+                                        </h:panelGrid>
+                                        <br/>
+                                        <!--Apartamento-->
+                                        <h:panelGrid >
+                                            <h:outputText
+                                                style="font-weight:bold"
+                                                id="apartamentoLabel"
+                                                value="Apartamento:"
+                                                />
+                                            <h:panelGroup >
+
+                                                <h:selectOneMenu
+                                                    id="tipoApartamentoComboBox"
+                                                    style="width: 150px"
+                                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                    value="#{consultaDireccionBean.tipoNivelApartamento}"
+                                                    >
+                                                    <f:selectItem
+                                                        itemLabel="Seleccione Uno"
+                                                        itemValue=""/>
+                                                    <f:selectItems
+                                                        value="#{consultaDireccionBean.aptoList}"
+                                                        var="apartamento"
+                                                        itemValue="#{apartamento.idParametro}"
+                                                        itemLabel="#{apartamento.descripcion}"
+                                                        />
+                                                </h:selectOneMenu>
+                                                &nbsp;
+                                                <h:inputText
+                                                    id="apartamentoParametro"
+                                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                    maxlength="10"
+                                                    value="#{consultaDireccionBean.apartamento}" />
+                                                <h:commandButton
+                                                    id="agregarApartamentoButton"
+                                                    styleClass="btn"
+                                                    disabled="#{not(proReporteBean.puedeProcesar)}"
+                                                    actionListener="#{consultaDireccionBean.
+                                                                      construir(proReporteBean, 
+                                                                      consultaDireccionBean.DIRECCIONAPTO)}"
+                                                    title="Construir Direccion"
+                                                    value="Guardar"
+                                                    >
+                                                    <!--                          <f:ajax
+                                                                                event="click" execute="tipoApartamentoComboBox apartamentoParametro"
+                                                                                listener=""
+                                                                                render="panelDirecciones tipoApartamentoComboBox valoratributo" />-->
+                                                </h:commandButton>
+                                            </h:panelGroup>
+                                        </h:panelGrid>
+                                        <!--Label de la direccion traducida-->
+                                        <div style="width: 300px; text-align: center;" >
+                                            <h:outputText
+                                                id="direccionStrLabel"
+                                                style="font-size: 20px;font-weight: bold;font-style: oblique;"
+                                                value="#{consultaDireccionBean.direccionLabel} #{consultaDireccionBean.barrioCk}"
+                                                />
+                                        </div>
+                                    </div>
+                                </h:panelGroup>
+                                
+                                <h:panelGroup id="tipoviviendapanelgroup"  rendered="#{proReporteBean.
+                                                mostrarNombreAtributo(proReporteBean.atributo) eq 'TIPO VIVIENDA'}">
+                                    <h:selectOneMenu id="tipoViviendaComboBox"                                   
+                                                     disabled="#{not(proReporteBean.puedeProcesar)}" 
+                                                     style="width: 90%"
+                                                     value="#{proReporteBean.valorAtributo}">
+                                        <h:outputText style="font-weight:bold" id="tipoViviendaLabel" value="Tipo de Vivienda:" />
+                                        <f:selectItems
+                                            value="#{proReporteBean.itemsTipoVivienda}" />
+
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+
+
+                            </h:panelGrid>
+                        </h:panelGrid>
+
+                        <f:facet name="footer" >
+                           
+                            <h:panelGroup 
+                                id="exportar"
+                                style = "display:block; text-align:center;">
+                                <ui:insert name="procesar"/>                                
+                                <h:commandButton
+                                    id="exportarxls"
+                                    styleClass="btn unblockClaro"
+                                    rendered="#{proReporteBean.puedeExportarXls}"
+                                    type="submit"
+                                    value="Exportar xls"
+                                    actionListener="#{proReporteBean.exportarXls()}"
+                                    />
+                                <h:commandButton
+                                    id = "exportartxt"
+                                    styleClass="btn unblockClaro"
+                                    rendered="#{proReporteBean.puedeExportarTxt}"
+                                    value = "Exportar txt"
+                                    actionListener="#{proReporteBean.exportarTxt()}"
+                                    />
+                                <h:commandButton
+                                    id = "exportarcsv"
+                                    styleClass="btn unblockClaro"
+                                    value = "Exportar csv"
+                                    rendered="#{proReporteBean.puedeExportarCsv}"
+                                    actionListener="#{proReporteBean.exportarCsv()}"
+                                    />
+                                <h:commandButton
+                                    id = "preparenuevo"
+                                    styleClass="btn unblockClaro"
+                                    value = "Nuevo"
+                                    >
+                                    <f:ajax listener="#{proReporteBean.prepareNuevo()}"/>
+                                    <f:ajax listener="#{consultaDireccionBean.reiniciarDireccion()}"/>
+                                    <f:ajax listener="#{proReporteBean.reload()}"/>
+                                </h:commandButton>
+                            </h:panelGroup>
+                        </f:facet>
+                    </h:panelGrid>
+
+                    <p:fieldset legend="Historico de reportes" id="fieldFiltros" style="margin-bottom:20px;background-color: white;color: black">
+                        <br></br>
+                        <p:dataTable id="tablaconsultamasivos" var="con" value="#{proReporteBean.registrosFiltro}"
+                                     style="text-align: center">
+
+                            <p:column headerText="Nombre Archivo" style="text-align: center" >
+                                <h:outputText value="#{con.arc}"/>
+                            </p:column>
+
+                            <p:column headerText="Fecha" style="text-align: center" >
+                                <h:outputText value="#{con.fechaReg}"/>
+                            </p:column>
+
+                            <p:column headerText="Filtro" style="text-align: center" >
+                                <h:outputText value="#{con.filtro}"/>
+                            </p:column>
+
+                            <p:column headerText="Estado" style="text-align: center">
+                                <p:commandLink value="#{con.estado}" ajax="false"
+                                               action="#{proReporteBean.consultarRegistrosSegunEstado() }"
+                                               styleClass="unblockClaro"
+                                               style="#{con.estado eq 'PROCESADO'? 'color:green' : 'color:red' or con.estado eq 'POR PROCESAR'? 'color:blue' : 'color:red' or con.estado eq 'EN PROCESO'? 'color:blue' : 'color:red' or con.estado eq 'ODI EN PROCESO'? 'color:blue' : 'color:red' or con.estado eq 'ODI PROCESADO'? 'color:blue' : 'color:red' or con.estado eq 'ERROR INTERNO'? 'color:red' : 'color:red'}"
+                                               update="tablaconsultamasivos">
+                                </p:commandLink>
+                            </p:column>
+
+
+                            <p:column headerText="Archivo" style="text-align: center" >
+                                <p:commandLink
+                                        ajax="false"
+                                        action="#{carguemasivo.descargarArchivo(con.linMasivoId,proReporteBean.informacionIncialReportes.rutaOut,con.arcOut, con, proReporteBean.informacionIncialReportes.PBase, proReporteBean.informacionIncialReportes.encabezado) }"
+                                        styleClass="unblockClaro"
+                                        rendered="#{con.estado.toString() eq 'PROCESADO'}">
+                                    <h:graphicImage value="/view/images/csvpositivo.png" style="width: 30px;height: 30px;" />
+                                </p:commandLink>
+                            </p:column>
+
+                            <f:facet name="footer">
+                                <div class="pagination2">
+                                    <h:panelGroup rendered="#{proReporteBean.registrosFiltro.size() gt 0}">
+                                        <h:commandButton value="&#171;"
+                                                         styleClass="btn unblockClaro"
+                                                         action="#{proReporteBean.pageFirstCargues()}"/>
+
+                                        <h:commandButton value="&#60;"
+                                                         styleClass="btn unblockClaro"
+                                                         action="#{proReporteBean.pagePreviousCargues()}"/>
+
+                                        <h:commandButton
+                                                value="#{proReporteBean.obtainActualPageCargues()}"/>
+
+                                        <h:selectOneMenu id="listTablaCargue"
+                                                         value="#{proReporteBean.selectedPageCargue}">
+
+                                            <f:selectItems value="#{proReporteBean.pageNumberSelectorCargue}"
+                                                           var="pag" itemValue="#{pag}" itemLabel="#{pag}"/>
+
+                                            <f:ajax listener="#{proReporteBean.goToSelectedPage()}"
+                                                    event="change"
+                                                    execute="@this" render="tablaconsultamasivos"/>
+                                        </h:selectOneMenu>
+
+                                        <h:commandButton value="&#62;"
+                                                         styleClass="btn unblockClaro"
+                                                         action="#{proReporteBean.pageNextCargues()}"/>
+
+                                        <h:commandButton value="&#187;"
+                                                         styleClass="btn unblockClaro"
+                                                         action="#{proReporteBean.pageLastCargues()}"/>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup rendered="#{empty proReporteBean.registrosFiltro
+                                                                          or proReporteBean.registrosFiltro.size() eq 0}">
+                                        <h:outputText value="No hay archivos CSV cargados"/>
+                                    </h:panelGroup>
+                                </div>
+                            </f:facet>
+
+
+                        </p:dataTable>
+                    </p:fieldset>
+
+                </h:form>      
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

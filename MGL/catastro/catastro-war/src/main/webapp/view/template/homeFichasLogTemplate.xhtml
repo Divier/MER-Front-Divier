@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/table-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <h:outputScript library="primefaces" name="jquery/jquery.js" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/scriptv2.js"/>
+    </h:head>
+
+    <h:body>
+        <ui:include src="../MGL/CM/panelMensajes.xhtml" /> 
+        <div id="header">
+            <h:panelGroup layout="block" rendered="#{bienvenidaBean.modulo eq 'CM'}">
+                <ui:include src="../MGL/CM/name.xhtml" />  
+            </h:panelGroup>
+            <h:panelGroup layout="block" rendered="#{bienvenidaBean.modulo eq 'HHPP'}">
+                <ui:include src="../MGL/template/menu/VT/name.xhtml" />  
+            </h:panelGroup>
+            <h:panelGroup layout="block" rendered="#{bienvenidaBean.modulo != 'CM' and bienvenidaBean.modulo != 'HHPP' }">
+                <ui:include src="../MGL/template/name.xhtml" />  
+            </h:panelGroup>
+        </div>
+ 
+        <h:form style="min-height: 0%;">
+        <!--Panel de validación de direcciones Fichas -->
+        <h:panelGroup id="direccionComponent" rendered="#{validadorDireccionBean.mostrarPopupSub}">
+                <div id="iluminado" class="white_content" style="display : block;">
+                    <ui:include src="../MGL/CM/tabsVt/validacionDireccionNewFicha.xhtml" />
+                </div>
+                <div id="sombra" class="black_overlay" style="display : block;"></div>
+        </h:panelGroup> 
+            <div id="cssmenu">
+                <ui:include src="../MGL/template/menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../MGL/CM/version.xhtml" />
+            </div>
+        </h:form>
+        <div id="centrar">
+            <div id="center" style="width: 98%;">                
+                <div id="espacio" >                
+                    <div id="contenedorEspacio" >
+                        <h1 style= "text-align: center">LOG Actualizaciones en BATCH</h1>                        
+                    </div>                
+                </div>
+
+                <div id="layout">
+                    <div id="content-fichas" >
+                        <h:panelGrid id="principal" styleClass="home" columns="1">
+                            <h:panelGrid id="lbltittle" styleClass="principaltittle">
+                                <ui:insert name="title"></ui:insert>
+                            </h:panelGrid>
+                            <h:panelGrid id="lblmessage" styleClass="message">
+                                <ui:insert name="message"></ui:insert>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <h1 style="background-position: center; margin:0px" id="htitulo">
+                            <ui:insert name="content"></ui:insert>
+                        </h1>
+                    </div>
+                </div>
+
+                <div id="content" align="center" >
+                    <ui:insert name="contenido"/>
+                </div>
+
+                <div id="footer">
+                    <h:panelGroup style="background: black !important" id="login-Footer" >
+                        <center>
+                            <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                            <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                        </center>
+                    </h:panelGroup>
+                </div> 
+            </div>
+        </div>
+    </h:body>
+</html>

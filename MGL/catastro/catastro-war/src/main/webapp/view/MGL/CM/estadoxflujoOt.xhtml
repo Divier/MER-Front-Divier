@@ -1,0 +1,449 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml" 
+     xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title"><span class="TituloSeccion">Estados x Flujos Ot</span></ui:define>
+    <ui:define name="message"><span class="error"> #{estadosxFlujosBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <br></br>
+        <h2>Estados Por Flujo</h2>    
+
+        <h:panelGroup rendered="#{estadosxFlujosBean.mostrarPanelCrearEstadoXFlujo}" >
+            <fieldset>
+                
+                <div id="tablaEstadoxFlujo" >
+                  
+                    <table style="width: 100%">
+                        <tr>
+                            <td></td>
+
+                            <td><h:outputText value="Código" style="font-weight:bold"/></td>
+                            <td><h:outputText value="#{estadosxFlujosBean.cmtEstadoxFlujoMgl.estadoxFlujoId}"  style="font-weight:bold"/></td>
+
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td>  <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Tipo Flujo:" id="tipoFlujo1" rendered="#{estadosxFlujosBean.cargar}"   />
+                                <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Tipo Flujo:" id="tipoFlujo2"  rendered="#{!estadosxFlujosBean.cargar}" /></td>
+                            <td>   <h:selectOneMenu  rendered="#{estadosxFlujosBean.cargar}" 
+                                                     value="#{estadosxFlujosBean.tipoOtlist}" 
+                                                     styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{estadosxFlujosBean.listTablaBasicaFlujoOT}" var="tipoOt"
+                                                   itemValue="#{tipoOt.basicaId}"
+                                                   itemLabel="#{tipoOt.nombreBasica}">
+                                    </f:selectItems>
+                                </h:selectOneMenu> 
+                                <h:selectOneMenu  rendered="#{!estadosxFlujosBean.cargar}" 
+                                                  value="#{estadosxFlujosBean.tipoOtSelected}" 
+                                                  styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="#{null}" itemLabel="" />
+                                    <f:selectItems value="#{estadosxFlujosBean.listTablaBasicaFlujoOT}" var="tipoOt"
+                                                   itemValue="#{tipoOt.basicaId}"
+                                                   itemLabel="#{tipoOt.nombreBasica}">
+                                    </f:selectItems>
+                                </h:selectOneMenu> 
+                            </td>
+
+                            <td>  <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Estado Interno:" id="estadInterno"  rendered="#{estadosxFlujosBean.cargar}" />
+                                <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Estado Interno:" id="estadInterno2"  rendered="#{!estadosxFlujosBean.cargar}" />
+                            </td>
+                            <td>   <h:selectOneMenu  rendered="#{estadosxFlujosBean.cargar}" 
+                                                     value="#{estadosxFlujosBean.estadoInternolist}" 
+                                                     styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{estadosxFlujosBean.listTablaBasicaEstadoInternoOt}" var="estInterno"
+                                                   itemValue="#{estInterno.basicaId}"
+                                                   itemLabel="#{estInterno.nombreBasica}">
+                                    </f:selectItems>
+                                </h:selectOneMenu>
+                                <h:selectOneMenu  rendered="#{!estadosxFlujosBean.cargar}" 
+                                                  value="#{estadosxFlujosBean.estadoInternoSelected}" 
+                                                  styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{estadosxFlujosBean.listTablaBasicaEstadoInternoOt}" var="estInterno"
+                                                   itemValue="#{estInterno.basicaId}"
+                                                   itemLabel="#{estInterno.nombreBasica}">
+                                    </f:selectItems>
+                                </h:selectOneMenu>
+                            </td>
+
+                            <td> <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Tecnología:" /> </td>
+                            <td>
+                                <h:selectOneMenu  value="#{estadosxFlujosBean.tecnologiaSelected}" 
+                                                  styleClass="ListaConsulta" style="width: 85%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{estadosxFlujosBean.listBasicaTecnologia}" var="tecnologia"
+                                                   itemValue="#{tecnologia.basicaId}"
+                                                   itemLabel="#{tecnologia.nombreBasica}">
+                                    </f:selectItems>
+                                </h:selectOneMenu>
+                            </td>
+
+                        </tr> 
+
+                        <tr>
+                            <td></td>
+
+                            <td><h:outputText value="#{estadosxFlujosBean.estiloObligatorio}Formulario:" escape="false" id="Formulario" rendered="#{estadosxFlujosBean.cargar}" ></h:outputText> 
+                                <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Formulario" id="Formulario2"  rendered="#{!estadosxFlujosBean.cargar}" /></td>
+                            <td>  <h:selectOneMenu rendered="#{estadosxFlujosBean.cargar}" 
+                                                   value="#{estadosxFlujosBean.formVtList}" 
+                                                   styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{estadosxFlujosBean.listTablaBasicaForm}" var="form_vt"
+                                                   itemValue="#{form_vt.basicaId}"
+                                                   itemLabel="#{form_vt.nombreBasica}">
+                                    </f:selectItems>   
+
+                                </h:selectOneMenu>  
+                                <h:selectOneMenu rendered="#{!estadosxFlujosBean.cargar}" 
+                                                 value="#{estadosxFlujosBean.formVtSelected}" 
+                                                 styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{estadosxFlujosBean.listTablaBasicaForm}" var="form_vt"
+                                                   itemValue="#{form_vt.basicaId}"
+                                                   itemLabel="#{form_vt.nombreBasica}">
+                                    </f:selectItems>   
+
+                                </h:selectOneMenu>  
+                            </td>
+                            
+                            <td> <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Gestión de Roles:" />   </td>
+                            <td> <h:inputText id="asc_GestionTxt1" value="#{estadosxFlujosBean.cmtEstadoxFlujoMgl.gestionRol}" style="width: 75%"  >
+                                </h:inputText> 
+                            </td>
+                            
+                            <td>  <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Estado al que pasa CCMM:" id="estadoCM" rendered="#{estadosxFlujosBean.cargar}"/>
+                                <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Estado al que pasa CCMM:" id="estadoCM2" rendered="#{!estadosxFlujosBean.cargar}" /></td>
+                            <td>   <h:selectOneMenu  rendered="#{estadosxFlujosBean.cargar}" 
+                                                     value="#{estadosxFlujosBean.estadoCMlist}" 
+                                                     styleClass="ListaConsulta" style="width: 85%;" >
+                                    <f:selectItem  itemValue="" itemLabel="No cambia el estado de la CCMM." />
+                                    <f:selectItems value="#{estadosxFlujosBean.listTablaBasicaEstadoCM}" var="estadoCM"
+                                                   itemValue="#{estadoCM.basicaId}"
+                                                   itemLabel="#{estadoCM.nombreBasica}">
+                                    </f:selectItems>
+                                </h:selectOneMenu>  
+                                <h:selectOneMenu  rendered="#{!estadosxFlujosBean.cargar}" 
+                                                  value="#{estadosxFlujosBean.estadoCMSelected}" 
+                                                  styleClass="ListaConsulta" style="width: 85%;" >
+                                    <f:selectItem  itemValue="" itemLabel="No cambia el estado de la CCMM." />
+                                    <f:selectItems value="#{estadosxFlujosBean.listTablaBasicaEstadoCM}" var="estadoCM"
+                                                   itemValue="#{estadoCM.basicaId}"
+                                                   itemLabel="#{estadoCM.nombreBasica}">
+                                    </f:selectItems>
+                                </h:selectOneMenu>  
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            
+                            <td> <h:outputText escape="false" value="Sub_Tipo Orden OFSC:" /> </td>
+                            <td>
+                                <h:selectOneMenu  value="#{estadosxFlujosBean.subTipoOrdenOfscSelected}" 
+                                                  styleClass="ListaConsulta" style="width: 75%;" >
+                                    <f:ajax event="change" render="valoresEstadosRR" execute="@this"></f:ajax>
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{estadosxFlujosBean.listBasicaSubtipoOrdenOFSC}" var="subTipoOrden"
+                                                   itemValue="#{subTipoOrden.basicaId}"
+                                                   itemLabel="#{subTipoOrden.nombreBasica}">
+                                    </f:selectItems>   
+
+                                </h:selectOneMenu>
+                            </td>
+
+                            <td> <h:outputText escape="false" value="Días a Mostrar Agenda:" />   </td>
+                            <td> <h:inputText id="asc_MostrarDiasAge" value="#{estadosxFlujosBean.dias}" 
+                                              style="width: 75%" label="Días a Mostrar Agenda" >
+                                    <f:convertNumber integerOnly="true"/>
+                                </h:inputText> 
+                            </td>
+
+                            <td> <h:outputText id="estadoIni" escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Tipo de Estado:" /></td>
+                            <td> <h:selectOneMenu styleClass="ListaConsulta" value="#{estadosxFlujosBean.estadoInicialSelected}"  style="width: 85%;">
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItem itemLabel="Inicial" itemValue="Y" />
+                                    <f:selectItem itemLabel="No Inicial" itemValue="N" />
+                                    <f:selectItem itemLabel="Estado Final" itemValue="F" />
+                                    <f:selectItem itemLabel="Cancelado" itemValue="C" />
+                                    <f:ajax event="change"
+                                            execute="@this" listener="#{estadosxFlujosBean.mostrarEstadoCCMMIni()}"
+                                            render="valoresEstadosCCMMIni estadoCCMMIniAs estadoCCMMIniLabel LstEstadoCCMMIni"/>
+                                 </h:selectOneMenu>
+                            </td>
+
+                        </tr>
+                    </table>
+					
+					<br/>
+                    <h:panelGroup id="valoresEstadosCCMMIni" style="width: 100%">
+                        <table style="width: 100%">
+							<tr>
+								<td></td>
+							</tr>
+                            <tr>
+                                <td style="width: 1%;"></td>
+                                <td style="width: 15%;">
+				<h:outputText rendered="#{estadosxFlujosBean.estadoCCMMVisible}"
+                                                   style="font-weight:bold; font-size: 16px;color: red;"  
+                                                   id="estadoCCMMIniAs" value="*"/>  
+                                    <h:outputText escape="false" id="estadoCCMMIniLabel" rendered="#{estadosxFlujosBean.estadoCCMMVisible}"
+                                                  value="Estado de CCMM para el flujo:" /></td>
+                                <td style="width: 20%;">
+                                    
+				 <p:selectCheckboxMenu id="tiposOrdenes" rendered="#{estadosxFlujosBean.estadoCCMMVisible}" 
+                                                       value="#{estadosxFlujosBean.listEstadoCCMMParaFlujoSelected}" label="Estados de CCMM"
+                                                                       filter="true" filterMatchMode="startsWith" >
+                                                     <f:selectItems value="#{estadosxFlujosBean.listTablaBasicaEstadoCM}"
+                                                                    var="basica"  
+                                                                    itemValue="#{basica.basicaId}" 
+                                                                    itemLabel="#{basica.nombreBasica}"/>
+                                </p:selectCheckboxMenu> 
+                                </td>
+			<td style="width: 60%;"></td>
+                            </tr>
+                        </table>
+                    </h:panelGroup>
+
+
+					<br/>
+                    <h:panelGroup id="valoresEstadosRR" style="width: 100%">
+                        <table style="width: 100%">
+                            <tr>
+                                <td style="width: 1%;"></td>
+                                <td style="width: 6.8%;">
+                                    <h:outputText  escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Tipo OT RR:" rendered="#{estadosxFlujosBean.subTipoOrdenOfscSelected != null}"/>
+                                </td>
+                                <td style="width: 19.8%;">
+                                    <h:selectOneMenu  id="tipoTrabajoRR" value="#{estadosxFlujosBean.tipoTrabajoRRSelect}" rendered="#{estadosxFlujosBean.subTipoOrdenOfscSelected != null}" styleClass="ListaConsulta" style="width: 75%;">
+                                        <f:selectItem itemValue="" itemLabel="" />
+                                        <f:selectItems value="#{estadosxFlujosBean.listadoTipodeTrabajo}" var="tipoot" itemValue="#{tipoot.basicaId}" itemLabel="#{tipoot.nombreBasica}" />
+                                    </h:selectOneMenu>
+                                </td>
+                                <td style="width: 11.7%;">
+                                    <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Estado Inicial RR:" rendered="#{estadosxFlujosBean.subTipoOrdenOfscSelected != null}"/>
+                                </td>
+                                <td style="width: 28%;">
+                                    <h:selectOneMenu id="estadoIniRR"   value="#{estadosxFlujosBean.estadoResultadoInicialRRSelect}" rendered="#{estadosxFlujosBean.subTipoOrdenOfscSelected != null}" styleClass="ListaConsulta" style="width: 75%;">
+                                        <f:selectItem itemValue="" itemLabel="" />
+                                        <f:selectItems value="#{estadosxFlujosBean.listadoEstadoInicial}" var="estadoInicial" itemValue="#{estadoInicial.basicaId}" itemLabel="#{estadoInicial.descripcion}" />
+                                    </h:selectOneMenu>
+                                </td>
+                                <td style="width: 11.2%;" >
+                                    <h:outputText  escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Estado Cierre RR:" rendered="#{estadosxFlujosBean.subTipoOrdenOfscSelected != null}" />
+                                </td>
+                                <td>
+                                    <h:selectOneMenu id="estadoCierreRR" value="#{estadosxFlujosBean.estadoResultadoCierreRRSelect}" rendered="#{estadosxFlujosBean.subTipoOrdenOfscSelected != null}" styleClass="ListaConsulta" style="width: 76%;">
+                                        <f:selectItem itemValue="" itemLabel="" />
+                                        <f:selectItems value="#{estadosxFlujosBean.listadoEstadoCierre}" var="estadoCierre" itemValue="#{estadoCierre.basicaId}" itemLabel="#{estadoCierre.descripcion}" />
+                                    </h:selectOneMenu>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 1%;"></td>
+                                <td colspan="2">
+                                    <h:outputText escape="false" value="#{estadosxFlujosBean.estiloObligatorio}Se puede agendar antes de: (tiempo en minutos):" rendered="#{estadosxFlujosBean.subTipoOrdenOfscSelected != null}" />
+                                </td>
+                                <td colspan="2">
+                                    <h:inputText id="tiempoAgendaTxt" value="#{estadosxFlujosBean.tiempoAgendaOfsc}" 
+                                                 maxlength="2" label="Tiempo Agenda" style="width: 80%;"
+                                                 rendered="#{estadosxFlujosBean.subTipoOrdenOfscSelected != null}" >
+                                    </h:inputText>
+                                </td>
+                            </tr>
+                        </table>
+
+					<br/>
+                    </h:panelGroup>
+                </div>
+            </fieldset>
+                    
+
+            <h:panelGrid columns="4" id="estadoxFlujoBtn" styleClass="panelInfo">
+                <h:panelGroup id="botonesAcciones">
+                    <h:commandButton value="Guardar" styleClass="btn"
+                                     rendered="#{estadosxFlujosBean.btnActivo}"
+                                     action="#{estadosxFlujosBean.guardarEstadoxFlujo()}" />
+                    <h:commandButton value="Actualizar" styleClass="btn"
+                                     rendered="#{!estadosxFlujosBean.btnActivo}"
+                                     action="#{estadosxFlujosBean.actualizaEstadoxFlujo()}" />
+                    <h:commandButton value="Limpiar Campos" styleClass="btn"
+                                     action="#{estadosxFlujosBean.nuevoRegistro()}" />
+                    <h:commandButton value="Volver" styleClass="btn" rendered="true"  immediate="true"
+                                     action="#{estadosxFlujosBean.volver}" />
+                </h:panelGroup>
+            </h:panelGrid>
+        </h:panelGroup>
+
+        <br/>
+
+        <br/>
+        <h:panelGroup id="panelListEstXFlujo" rendered="#{estadosxFlujosBean.mostrarPanelListEstXFlujo}">
+
+            <div class="tableContent" >
+                <h:dataTable id="tablaEstadoxFlujoMglTable"                              
+                             binding="#{estadosxFlujosBean.dataTable}" value="#{estadosxFlujosBean.listCmtEstadoxFlujoMgl}" 
+                             var="tablasEstadoxFlujosMgl" rows="8"                         
+                             styleClass="constructGTable"
+                             headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                    <h:column>    
+                        <div align="left" >
+                            <f:facet name="header">
+                                <h:outputText value="Código " /><br/>
+                            </f:facet>
+                            <h:commandLink id="estxflujo" accesskey=""
+                                           value="#{tablasEstadoxFlujosMgl.estadoxFlujoId}"
+                                           action="#{estadosxFlujosBean.goActualizar(tablasEstadoxFlujosMgl.estadoxFlujoId)}"
+                                           disabled="#{!estadosxFlujosBean.validarOpcionLinkCodigo()}"/>
+                        </div>                                    
+                    </h:column>
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Flujo    " />
+                            <h:inputText maxlength="50" id="tipo" style="width: 100px" value="#{estadosxFlujosBean.tipoFlujoOtObj}">
+                                <f:ajax event="change" listener="#{estadosxFlujosBean.findByFiltro()}" render="tablaEstadoxFlujoMglTable" resetValues="tipo"/>
+                            </h:inputText>
+                        </f:facet>
+                        <div align="left"   >
+                            <h:outputText value="#{tablasEstadoxFlujosMgl.tipoFlujoOtObj.nombreBasica}" />     
+                        </div>                                  
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Estado Interno" /><br/>
+                            </f:facet>
+                            <h:outputText value="#{tablasEstadoxFlujosMgl.estadoInternoObj.nombreBasica}" />     
+                        </div>                                  
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left">
+                            <f:facet name="header">
+                                <h:outputText value="Estado CM" /><br/>
+                            </f:facet>
+                            <h:outputText value="#{tablasEstadoxFlujosMgl.cambiaCmEstadoObj.nombreBasica}" />      
+                        </div>                                  
+                    </h:column>
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Formulario" /><br/>
+                            </f:facet>
+                            <h:outputText value="#{tablasEstadoxFlujosMgl.formulario.nombreBasica}" />  
+                        </div>      
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Roles" /><br/>
+                            </f:facet>
+                            <h:outputText value="#{tablasEstadoxFlujosMgl.gestionRol}" />  
+                        </div>      
+                    </h:column>
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Estado Inicial" /><br/>
+                            </f:facet>
+                            <h:outputText value="#{tablasEstadoxFlujosMgl.esEstadoInicial}" />  
+                        </div>      
+                    </h:column>
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="Tecnología    " />
+                            <h:inputText maxlength="50" id="tec" style="width: 100px" value="#{estadosxFlujosBean.tecnologiaFilter}">
+                                <f:ajax listener="#{estadosxFlujosBean.findByFiltro}" event="change" render="tablaEstadoxFlujoMglTable" resetValues="tec"/>
+                            </h:inputText>
+                        </f:facet>
+                        <div align="left"   >
+                            <h:outputText value="#{tablasEstadoxFlujosMgl.basicaTecnologia.nombreBasica}" />  
+                        </div>      
+                    </h:column>
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="SubTipo Orden OFSC    " />
+                            <h:inputText maxlength="50" id="sub" style="width: 100px" value="#{estadosxFlujosBean.subTipoOrdenOFSCFilter}">
+                                <f:ajax listener="#{estadosxFlujosBean.findByFiltro}" event="change" render="tablaEstadoxFlujoMglTable" resetValues="sub"/>
+                            </h:inputText>
+                        </f:facet>
+                        <div align="left"   >
+                            <h:outputText value="#{tablasEstadoxFlujosMgl.subTipoOrdenOFSC.nombreBasica}" />  
+                        </div>      
+                    </h:column>
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Días" /><br/>
+                            </f:facet>
+                            <h:outputText value="#{tablasEstadoxFlujosMgl.diasAMostrarAgenda}" />  
+                        </div>      
+                    </h:column>
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Acción" />
+                        </f:facet>
+
+
+                        <h:commandLink immediate="true" title="Eliminar"
+                                       id="Eliminar" styleClass="btnIconEliminar"
+                                       disabled="#{!estadosxFlujosBean.validarOpcionEliminar()}"
+                                       action="#{estadosxFlujosBean.eliminarEstadoxFlujoMgl(tablasEstadoxFlujosMgl)}"
+                                       onclick="return confirm('¿Est&aacute; seguro de eliminar el registro seleccionado ${tablasEstadoxFlujosMgl.estadoInternoObj.nombreBasica} ?');" />
+                    </h:column>
+
+                    <f:facet name="footer" >
+                        <h:panelGroup rendered="#{estadosxFlujosBean.pintarPaginado}">
+                            <h:commandButton value="" 
+                                             class="botonTPagInicioCm botonBaselista">
+                                <f:ajax render="tablaEstadoxFlujoMglTable"  event="click"  
+                                        listener="#{estadosxFlujosBean.pageFirst}"  execute="@this" /> 
+                            </h:commandButton>
+                            <h:commandButton value=""
+                                             class="botonTPagAnteriorCm botonBaselista">
+                                <f:ajax render="tablaEstadoxFlujoMglTable"  event="click"  
+                                        listener="#{estadosxFlujosBean.pagePrevious}"  execute="@this" /> 
+                            </h:commandButton>
+                            <h:commandButton value="#{estadosxFlujosBean.pageActual}" styleClass="botonTPagInicio"    />
+                            <h:selectOneMenu id="listTabla" value="#{estadosxFlujosBean.numPagina}" 
+                                             styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                <f:selectItems value="#{estadosxFlujosBean.paginaList}" var="pag"
+                                               itemValue="#{pag}"
+                                               itemLabel="#{pag}"/>    
+                                <f:ajax render="tablaEstadoxFlujoMglTable"  event="change"  
+                                        listener="#{estadosxFlujosBean.irPagina()}"  execute="@this" />
+                            </h:selectOneMenu>
+                            <h:commandButton value="" 
+                                             class="botonTPagSiguienteCm botonBaselista">
+                                <f:ajax render="tablaEstadoxFlujoMglTable"  event="click"  
+                                        listener="#{estadosxFlujosBean.pageNext}"  execute="@this" /> 
+                            </h:commandButton>
+                            <h:commandButton value="" 
+                                             class="botonTPagFinCm botonBaselista">
+                                <f:ajax render="tablaEstadoxFlujoMglTable"  event="click"  
+                                        listener="#{estadosxFlujosBean.pageLast}"  execute="@this" /> 
+                            </h:commandButton> 
+                        </h:panelGroup>
+                    </f:facet>
+                </h:dataTable>  
+            </div>
+               <h:commandButton value="Nuevo" styleClass="btn" disabled="#{!estadosxFlujosBean.validarOpcionNuevo()}"
+                                     action="#{estadosxFlujosBean.crearNuevoEstadoXFlujo()}" />
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

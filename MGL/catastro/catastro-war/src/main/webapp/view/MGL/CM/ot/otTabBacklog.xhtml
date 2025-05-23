@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/otTemplate.xhtml"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes">
+
+    <ui:define name="title"><span class="TituloSeccion">BackLog</span></ui:define>
+    <ui:define name="content">
+        
+        <h:panelGroup id="panelCrearBacklog"  rendered="#{cmtBlacklogMglBean.mostrarPanelCrearBacklog}">
+            <h2 id="myhMmData">BackLog [#{cmtBlacklogMglBean.subEdificioMgl.nombreSubedificio}]</h2>
+            <br></br>
+            <fieldset>
+                <h:panelGrid columns="6" style="width: 100%">  
+
+                    <h:outputText escape="false" value="#{cmtBlacklogMglBean.estiloObligatorio}Tipo de Gestión Back Log:" styleClass="formColumn1" />
+                    <h:selectOneMenu id="tipoBL"  value="#{cmtBlacklogMglBean.tipoGestionBackSelected.basicaId}" style="width: 75%" 
+                                     >
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtBlacklogMglBean.tipoGestBackList}" var="tpGes"
+                                       itemValue="#{tpGes.basicaId}"
+                                       itemLabel="#{tpGes.nombreBasica}"/>                 
+                    </h:selectOneMenu>
+                    <h:outputText escape="false" value="#{cmtBlacklogMglBean.estiloObligatorio}Resultado Back Log:" styleClass="formColumn1" /> 
+                    <h:selectOneMenu id="resultadoBL"  value="#{cmtBlacklogMglBean.resGestionBackSelected.basicaId}" style="width: 75%" 
+                                     >
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{cmtBlacklogMglBean.tipoResGestBackList}" var="resGestBack"
+                                       itemValue="#{resGestBack.basicaId}"
+                                       itemLabel="#{resGestBack.nombreBasica}"/>                 
+                    </h:selectOneMenu>
+                    <h:outputText value="Usuario:" styleClass="formColumn1"/> 
+                    <h:inputText value="#{cmtBlacklogMglBean.usuarioVT}" 
+                                 maxlength="15" style="width: 75%"  disabled="true" >
+                    </h:inputText>
+                    <h:outputText escape="false" value="#{cmtBlacklogMglBean.estiloObligatorio}Nota(500c)" id="hhh"/> 
+                    <h:inputTextarea  id="notaBL"  value="#{cmtBlacklogMglBean.cmtBacklogMgl.nota}" rows="3" 
+                                      style="width: 100%"  disabled="#{notasMglBean.notaMgl.notasId != null}"
+                                      validatorMessage="'Nota' Número máximo de caracteres es 500">
+                    </h:inputTextarea> 
+                </h:panelGrid>
+            </fieldset>
+
+            <h:panelGrid id="backLog" columns="2">
+                <h:commandButton value="Crear" styleClass="btn" id="activartButton"> 
+                    <f:ajax event="click" listener="#{cmtBlacklogMglBean.validacionesObligatoriedad()}"  
+                            execute="@form" render="form33646"/>
+                </h:commandButton>  
+
+                <h:commandButton value="Volver" id="volverContButton" immediate="true"
+                                 styleClass="btn" action="#{cmtBlacklogMglBean.volver()}"/>
+
+            </h:panelGrid>
+            
+        </h:panelGroup>
+    
+        <br></br>
+
+        <h:panelGroup id="panelListarBacklog"  rendered="#{cmtBlacklogMglBean.mostrarPanelListaBacklog}">
+            <h2 id="myhMmData">BackLog [#{cmtBlacklogMglBean.subEdificioMgl.nombreSubedificio}]</h2>
+            <br></br>
+
+            <div class="tableContent" >
+                <h:dataTable id="listadosBacklogsTable" style="width:100%;margin:0 auto;"
+                             rendered="#{cmtBlacklogMglBean.lstBacklogMgls != null 
+                                 and  cmtBlacklogMglBean.lstBacklogMgls.size() >0}"
+                             binding="#{cmtBlacklogMglBean.dataTable}" 
+                             value="#{cmtBlacklogMglBean.lstBacklogMgls}" var="backlogs"
+                             styleClass="constructGTable" rows="10"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow " >
+                    <h:column>  
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Número Backlog" /><BR/>
+                                <h:panelGrid columns="2" style="width: 100%"  >
+                                    <h:inputText maxlength="30" id="idBacklogConsulta"
+                                                 style="width: 105px" 
+                                                 value="#{cmtBlacklogMglBean.cmtFiltroConsultaBacklogsDto.idBacklog}">
+                                        <f:ajax  event="change" listener="#{cmtBlacklogMglBean.findByFiltro()}" 
+                                                 render="listadosBacklogsTable" resetValues="idBacklogConsulta"/> 
+
+                                    </h:inputText>
+                                </h:panelGrid> 
+                            </f:facet>  
+                            <h:outputText value="#{backlogs.idBacklog}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Gestión Backlog" /><BR/>
+                                <h:selectOneMenu id="consultaListGestionBackBasica"   
+                                                 styleClass="ListaConsulta"
+                                                 style="width: 61px"
+                                                 value="#{cmtBlacklogMglBean.cmtFiltroConsultaBacklogsDto.tipoGestionBacklog}">
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{cmtBlacklogMglBean.tipoGestBackList}" var="tpGes"
+                                                   itemValue="#{tpGes.nombreBasica}"
+                                                   itemLabel="#{tpGes.nombreBasica}"/>   
+
+                                    <f:ajax listener="#{cmtBlacklogMglBean.findByFiltro}"
+                                            event="change" execute="@this" render="listadosBacklogsTable"/>
+                                </h:selectOneMenu>  
+                            </f:facet>
+                            <h:outputText value="#{backlogs.tipoGesBac.nombreBasica}" />      
+                        </div>                                  
+                    </h:column>
+
+                    <h:column>   
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Resultado Backlog" /><BR/>
+                                <h:selectOneMenu id="consultaListResGesBackBasica"   
+                                                 styleClass="ListaConsulta"
+                                                 style="width: 61px"
+                                                 value="#{cmtBlacklogMglBean.cmtFiltroConsultaBacklogsDto.resGestionBacklog}">
+                                    <f:selectItem itemValue="" itemLabel="" />
+                                    <f:selectItems value="#{cmtBlacklogMglBean.tipoResGestBackList}" var="resGes"
+                                                   itemValue="#{resGes.nombreBasica}"
+                                                   itemLabel="#{resGes.nombreBasica}"/>   
+
+                                    <f:ajax listener="#{cmtBlacklogMglBean.findByFiltro}"
+                                            event="change" execute="@this" render="listadosBacklogsTable"/>
+                                </h:selectOneMenu>  
+                            </f:facet>
+                            <h:outputText value="#{backlogs.resultadoGesBac.nombreBasica}" />      
+                        </div>                                  
+                    </h:column>
+
+
+                    <h:column>  
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Fecha Creación" /><BR/>
+                                <h:inputText maxlength="30" id="fechaConsulta"
+                                             style="width: 105px"
+                                             value="#{cmtBlacklogMglBean.cmtFiltroConsultaBacklogsDto.fechaGestion}"
+                                             onkeypress="return submitByEnter(event);">
+                                    <f:ajax listener="#{cmtBlacklogMglBean.findByFiltro}" 
+                                            event="change" execute="@this" render="listadosBacklogsTable"/>
+                                </h:inputText>
+                            </f:facet>  
+                            <h:outputText value="#{backlogs.fechaCreacion}">
+                                <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss"/>
+                            </h:outputText>
+                        </div>
+                    </h:column>
+
+                    <h:column>  
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Usuario Gestión" /><BR/>
+                                <h:inputText maxlength="30" id="usuarioConsulta"
+                                             style="width: 105px"
+                                             value="#{cmtBlacklogMglBean.cmtFiltroConsultaBacklogsDto.usuarioGestion}"
+                                             onkeypress="return submitByEnter(event);">
+                                    <f:ajax listener="#{cmtBlacklogMglBean.findByFiltro}" 
+                                            event="change" execute="@this" render="listadosBacklogsTable"/>
+                                </h:inputText>
+                            </f:facet>  
+                            <h:outputText value="#{backlogs.usuarioCreacion}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column>  
+                        <div align="left"   >
+                            <f:facet name="header">
+                                <h:outputText value="Nota" /><BR/>
+                                <h:inputText maxlength="30" id="notaConsulta"
+                                             style="width: 105px"
+                                             value="#{cmtBlacklogMglBean.cmtFiltroConsultaBacklogsDto.notaBacklog}"
+                                             onkeypress="return submitByEnter(event);">
+                                    <f:ajax listener="#{cmtBlacklogMglBean.findByFiltro}" 
+                                            event="change" execute="@this" render="listadosBacklogsTable"/>
+                                </h:inputText>
+                            </f:facet>  
+                            <h:outputText value="#{backlogs.nota}"/>
+                        </div>
+                    </h:column>
+
+                    <h:column> 
+                        <f:facet name="header">
+                            <h:outputText value="Eliminar" />
+                        </f:facet>  
+                        <h:commandLink id="Deshacer" title="Eliminar Registro"
+                                       immediate="true" styleClass="btnIconEliminar"
+                                       action="#{cmtBlacklogMglBean.eliminarBacklog(backlogs.idBacklog)}"
+                                       rendered="#{cmtBlacklogMglBean.validarBorrado()}"
+                                       onclick="return confirm('¿Está seguro que desea Eliminar el registro?');">
+                        </h:commandLink>
+                    </h:column>
+                    <f:facet name="footer">
+                        <div class="pagination2">
+                            <h:panelGroup>
+                                <h:commandButton value= ""  action="#{cmtBlacklogMglBean.pageFirst}" class="botonTPagInicioCm botonBaselista"/>
+                                <h:commandButton  value= "" action="#{cmtBlacklogMglBean.pagePrevious}" class="botonTPagAnteriorCm botonBaselista"/>
+                                <h:commandButton value="#{cmtBlacklogMglBean.pageActual}" />
+                                <h:selectOneMenu  value="#{cmtBlacklogMglBean.numPagina}" 
+                                                  styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{cmtBlacklogMglBean.paginaList}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>    
+                                    <f:ajax render="listadosBacklogsTable"  event="change"  listener="#{cmtBlacklogMglBean.irPagina()}"  execute="@this" />                                         
+                                </h:selectOneMenu>  
+                                <h:commandButton  value= "" action="#{cmtBlacklogMglBean.pageNext}"
+                                                  onkeypress="return submitByEnter(event);"
+                                                  class="botonTPagSiguienteCm botonBaselista">
+                                </h:commandButton>
+                                <h:commandButton  value= "" action="#{cmtBlacklogMglBean.pageLast}" class="botonTPagFinCm botonBaselista"/>
+
+                            </h:panelGroup>
+                        </div>
+                    </f:facet>
+                </h:dataTable>
+            </div> 
+           <h:commandButton value="Nuevo" id="nuevaContButton"
+           styleClass="btn" action="#{cmtBlacklogMglBean.nuevoBacklogCrear()}"
+           disabled="#{!cmtBlacklogMglBean.rolCrear}"/>
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,298 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <body>
+
+        <ui:composition template="/view/MGL/template/main.xhtml">
+            <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+            <ui:define name="content">
+                <h2>Estado Interno GA</h2>
+                <h:panelGroup rendered="#{!estadoInternoGABean.renderAuditoria}">
+
+                    <h:panelGroup id="panelTableList" rendered="#{!estadoInternoGABean.isDetalle}">
+                        <h:panelGrid id="panelFiltros" class="formulario" columns="2" style="width: 60%" >
+                            <h:outputText value="Estado Inicial CM" />
+                            <h:selectOneMenu id="estadoIniCmFiltro" value="#{estadoInternoGABean.estadoIniCmFiltro}">
+                                <f:selectItem itemValue="0" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.estadoCmList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputText value="Tipo Gestión de Avanzada" />
+                            <h:selectOneMenu id="tipoGaCmFiltro" value="#{estadoInternoGABean.tipoGaFiltro}">
+                                <f:selectItem itemValue="0" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.listTipoGa}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputText value="Estado Externo Anterior GA" />
+                            <h:selectOneMenu id="estadoExternoAntGaFiltro" value="#{estadoInternoGABean.estadoExternoAntGaFiltro}">
+                                <f:selectItem itemValue="0" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.estadoExternoGaList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputText value="Estado Interno GA" />
+                            <h:selectOneMenu id="estadoInternoGaFiltro" value="#{estadoInternoGABean.estadoInternoGaFiltro}">
+                                <f:selectItem itemValue="0" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.descEstadoInternoGaList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputText value="Estado Externo Posterior GA" />
+                            <h:selectOneMenu id="estadoExternoPostGaFiltro" value="#{estadoInternoGABean.estadoExternoPostGaFiltro}">
+                                <f:selectItem itemValue="0" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.estadoExternoGaList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+
+                            <h:outputText value="Estado Final CM" />
+                            <h:selectOneMenu id="estadoFinalCmFiltro" value="#{estadoInternoGABean.estadoFinalCmFiltro}" >
+                                <f:selectItem itemValue="0" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.estadoCmList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">                        
+                            <h:commandButton value="Filtrar" styleClass="btn"
+                                             disabled="#{!estadoInternoGABean.validarCodigoRol()}"
+                                             actionListener="#{estadoInternoGABean.filtrarTabla()}"/> 
+                            <h:commandButton value="Limpiar" styleClass="btn"
+                                             actionListener="#{estadoInternoGABean.limpiarFiltro()}"/>
+                        </h:panelGrid>
+
+                        <div  class="tableContent">
+                            <h:dataTable id="prefichaValidarTable"  
+                                         value="#{estadoInternoGABean.estadoInternoGaMgList}" var="estado"
+                                         styleClass="constructGTable5"
+                                         headerClass="constructGTableHeader" 
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                                <h:column >
+                                    <f:facet name="header">
+                                        <h:outputText value="Código"/>
+                                    </f:facet>
+                                    <h:commandLink value="#{estado.codigo}"
+                                                   disabled="#{!estadoInternoGABean.validarCodigoRol()}"
+                                                   actionListener="#{estadoInternoGABean.actualizarDetalle(estado)}"/>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Abreviatura" />
+                                    </f:facet>
+                                    <h:outputText value="#{estado.abreviatura}" />  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estado Inicial CM" />
+                                    </f:facet>
+                                    <h:outputText value="#{estado.estadoInicialCM.nombreBasica}" />  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estado Inicial CM" />
+                                    </f:facet>
+                                    <h:outputText value="#{estado.estadoInicialCM.nombreBasica}" />  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Tipo Gestión Avanzada" />
+                                    </f:facet>
+                                    <h:outputText value="#{estado.tipoGaObj.nombreBasica}" />  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estado Interno GA" />
+                                    </f:facet>
+                                    <h:outputText value="#{estado.estadoInternoGA.nombreBasica}" />  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estado Externo Posterior GA" />
+                                    </f:facet>
+                                    <h:outputText value="#{estado.estadoExternoPosteriorGA.nombreBasica}" />  
+                                </h:column>                        
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estado Final CM" />
+                                    </f:facet>
+                                    <h:outputText value="#{estado.estadoFinalCM.nombreBasica}" />  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Descripción" />
+                                    </f:facet>
+                                    <h:outputText value="#{estado.descripcion}" />  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Documentación" />
+                                    </f:facet>
+                                    <h:outputText value="#{estado.documentacion}" />  
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estado" />
+                                    </f:facet>
+                                    <h:outputText value="#{estado.estado eq 'Y'?'Activo':'Inactivo'}" />  
+                                </h:column>
+                                <h:column>   <div align="left"   >
+                                        <f:facet name="header">
+                                            <h:outputText value="Log" />
+                                        </f:facet>
+                                        <h:commandLink value="Log" actionListener="#{estadoInternoGABean.mostrarAuditoria(estado)}" />      </div>                                  
+                                </h:column>
+
+
+
+                            </h:dataTable>
+                        </div>
+                        <h:panelGrid id="panelBtnTable" columns="5">
+                            <h:commandButton value="Crear Registro" styleClass="btn"
+                                             disabled="#{!estadoInternoGABean.validarCrearRol()}"
+                                             actionListener="#{estadoInternoGABean.crearNuevoRegsitro()}"/> 
+                            <h:commandButton id="exportBtnTable" value="Exportar" styleClass="btn unblockClaro" 
+                                             disabled="#{!estadoInternoGABean.validarExportarRol()}"
+                                             actionListener="#{estadoInternoGABean.exportExcel()}"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+
+                    <h:panelGroup id="panelDetalle" rendered="#{estadoInternoGABean.isDetalle}">
+                        <h:panelGrid class="formulario" columns="2" style="width: 60%" >
+                            <h:outputText value="Código" />
+                            <h:inputText value="#{estadoInternoGABean.estadoInternoGaMgl.codigo}" 
+                                         required="true" id="codigo"  
+                                         disabled="#{!(estadoInternoGABean.estadoInternoGaMgl.estadoInternoGaid eq null)}"
+                                         requiredMessage="El código es obligatorio" validatorMessage="El código debe ser alfanumúrico sin espacios">
+                                <f:validateRegex  pattern="^[0-9a-zA-Z]*" />
+                            </h:inputText>
+
+                            <h:outputText value="Abreviatura" />
+                            <h:inputText value="#{estadoInternoGABean.estadoInternoGaMgl.abreviatura}" required="true" id="abreviatura"  requiredMessage="La Abreviatura es obligatoria"/>
+
+
+                            <h:outputText value="Estado Inicial CM" />
+                            <h:selectOneMenu id="estadoIniCm" value="#{estadoInternoGABean.estadoIniCm}" required="true" requiredMessage="Ingrese Estado Inicial CM">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.estadoCmList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputText value="Tipo Gestión de Avanzada" />
+                            <h:selectOneMenu id="tipoGa" value="#{estadoInternoGABean.tipoGa}" required="true" requiredMessage="Ingrese tipo GA">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.listTipoGa}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputText value="Estado Externo Anterior GA" />
+                            <h:selectOneMenu id="estadoExternoAntGa" value="#{estadoInternoGABean.estadoExternoAntGa}" required="true" requiredMessage="Ingrese Estado Externo Anterior GA">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.estadoExternoGaList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputText value="Estado Interno GA" />
+                            <h:selectOneMenu id="estadoInternoGa" value="#{estadoInternoGABean.estadoInternoGa}" required="true" requiredMessage="Ingrese Estado Interno GA">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.descEstadoInternoGaList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputText value="Estado Externo Posterior GA" />
+                            <h:selectOneMenu id="estadoExternoPostGa" value="#{estadoInternoGABean.estadoExternoPostGa}" required="true" requiredMessage="Ingrese Estado Externo Posterior GA">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.estadoExternoGaList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+
+                            <h:outputText value="Estado Final CM" />
+                            <h:selectOneMenu id="estadoFinalCm" value="#{estadoInternoGABean.estadoFinalCm}" required="true" requiredMessage="Ingrese Estado Final CM">
+                                <f:selectItem itemValue="" itemLabel="" />
+                                <f:selectItems value="#{estadoInternoGABean.estadoCmList}" var="estCm"
+                                               itemValue="#{estCm.basicaId}"
+                                               itemLabel="#{estCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+
+                            <h:outputText value="Descripción" />
+                            <h:inputTextarea value="#{estadoInternoGABean.estadoInternoGaMgl.descripcion}" 
+                                             required="true" requiredMessage="Ingrese Descripción"
+                                             rows="3"/>
+
+                            <h:outputText value="Documentación(500)" />
+                            <h:inputTextarea  value="#{estadoInternoGABean.estadoInternoGaMgl.documentacion}" 
+                                            required="true" requiredMessage="Ingrese Documentación"
+                                             rows="3" >
+                                <f:validateLength maximum="500" />
+                            </h:inputTextarea>
+
+                            <h:outputText value="Estado" />
+                            <h:selectOneRadio id="estado" required="true"  class="radioB" requiredMessage="Estado obligatorio"
+                                              value="#{estadoInternoGABean.estadoInternoGaMgl.estado}" disabled="#{(estadoInternoGABean.estadoInternoGaMgl.estadoInternoGaid eq null)}">
+                                <f:selectItem itemLabel="Activo" itemValue="Y"/>
+                                <f:selectItem itemLabel="Inactivo" itemValue="N"/>
+                            </h:selectOneRadio>
+
+                            <h:outputText value="justificación" rendered="#{!(estadoInternoGABean.estadoInternoGaMgl.estadoInternoGaid eq null)}"/>
+                            <h:inputTextarea value="#{estadoInternoGABean.estadoInternoGaMgl.justificacion}" 
+                                             rendered="#{!(estadoInternoGABean.estadoInternoGaMgl.estadoInternoGaid eq null)}"
+                                             required="true" requiredMessage="Ingrese justificación para cualquier cambio sobre el registro"
+                                             rows="3"/>
+
+                        </h:panelGrid>
+                        <h:panelGrid id="panelBotonesDetalle" columns="4">
+                            <h:commandButton value="Crear" styleClass="btn" 
+                                             rendered="#{(estadoInternoGABean.estadoInternoGaMgl.estadoInternoGaid eq null)}" 
+                                             actionListener="#{estadoInternoGABean.crearEstado()}"
+                                             onclick="if (!confirm('Est&aacute; seguro que desea Adicionar este registro'))
+                                                         return false;"/>                        
+                            <h:commandButton value="Actualizar" styleClass="btn" 
+                                             rendered="#{estadoInternoGABean.validarEdicion() and
+                                                         !(estadoInternoGABean.estadoInternoGaMgl.estadoInternoGaid eq null)}" 
+                                             actionListener="#{estadoInternoGABean.actualizarEstado()}"
+                                             onclick="if (!confirm('Est&aacute; seguro que desea Modificar el registro'))
+                                                         return false;"/>
+                            <h:commandButton value="Eliminar" styleClass="btn" 
+                                             rendered="#{estadoInternoGABean.validarBorrado() and
+                                                         !(estadoInternoGABean.estadoInternoGaMgl.estadoInternoGaid eq null)}" 
+                                             actionListener="#{estadoInternoGABean.eliminarEstado()}"
+                                             onclick="if (!confirm('Est&aacute; seguro que desea Eliminar el registro'))
+                                                         return false;"/>
+
+                            <h:commandButton value="Volver" styleClass="btn" 
+                                             rendered="true"  immediate="true"
+                                             actionListener="#{estadoInternoGABean.volver()}"/>
+
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{estadoInternoGABean.renderAuditoria}">
+                    <span class="TituloSeccion">Auditoría de Registro [#{estadoInternoGABean.descripcionEstadoInternoGaAuditoria}]</span>
+                    <cc:componente-auditoria auditoriaDto="#{estadoInternoGABean.informacionAuditoria}">
+
+                    </cc:componente-auditoria>
+                    <h:commandLink value="Volver" actionListener="#{estadoInternoGABean.ocultarAuditoria}" />     
+                </h:panelGroup>                   
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>
+

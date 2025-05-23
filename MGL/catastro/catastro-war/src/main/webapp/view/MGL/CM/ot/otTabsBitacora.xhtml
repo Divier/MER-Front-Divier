@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/otTemplate.xhtml"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes">
+
+    <ui:define name="title"><span class="TituloSeccion">BITÁCORA</span></ui:define>
+    <ui:define name="content">
+        <h2>BITACORA</h2>
+        <h:dataTable id="tablaAuditoria" value="#{OtMglBean.informacionAuditoria}" var="a"
+                     transient="true"  
+                     styleClass="constructGTable2"
+                     headerClass="horarioTableHeader" 
+                     rowClasses="auditoriaTableEvenRow,auditoriaTableOddRow">
+            <h:column id="columnUnoAuditoria">
+                <f:facet name="header">Usuario Creación</f:facet>
+                <div id="divUnoAuditoria"  >
+                    <h:outputText value="#{a.usuarioCreacion}"/>
+                </div>
+            </h:column>    
+            <h:column id="columnDosAuditoria">
+                <f:facet name="header">Fecha Creación</f:facet>
+                <div id="divDosAuditoria"  >
+                    <h:outputText value="#{a.fechaCreacion}">
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd hh:mm:ss"/>
+                    </h:outputText>    
+                </div>
+            </h:column>    
+            <h:column id="columnTresAuditoria">
+                <f:facet name="header">Usuario Modificacion</f:facet>
+                <div id="divTresAuditoria"  >
+                    <h:outputText value="#{a.usuarioModificacion}"/>
+                </div>
+            </h:column>    
+            <h:column id="columnCuatroAuditoria">
+                <f:facet name="header">Fecha Modificacion</f:facet>
+                <div id="divCuatroAuditoria"  >
+                    <h:outputText value="#{a.fechaModificacion}">
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd hh:mm:ss"/>
+                    </h:outputText>    
+                </div>
+            </h:column>    
+            <h:column id="columnCincoAuditoria">
+                <f:facet name="header">Valores Anteriores</f:facet>
+                <div id="divCincoAuditoria"  >
+                    <h:outputText value="#{a.antes}" escape="false" />
+                </div>
+            </h:column>    
+            <h:column id="columnSeisAuditoria">
+                <f:facet name="header">Valores Nuevos</f:facet>
+                <div id="divSeisAuditoria"  >
+                    <h:outputText value="#{a.despues}" escape="false"/>
+                </div>
+            </h:column>    
+            <h:column id="columnSieteAuditoria">
+                <f:facet name="header">Justificación</f:facet>
+                <div id="divSieteAuditoria"  >
+                    <h:outputText value="#{a.justificacion}"/>
+                </div>
+            </h:column>    
+        </h:dataTable>
+    </ui:define>
+</ui:composition>

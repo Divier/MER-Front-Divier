@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/otTemplate.xhtml"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes">
+
+    <ui:define name="title"><span class="TituloSeccion">Contactos</span></ui:define>
+    <ui:define name="content">
+
+        <h:panelGroup id="panelListcontactos" rendered="#{contactosMglBean.mostrarListaCont}">
+            <h2 id="myhMmData">Contactos</h2>
+
+            <br></br>
+            <fieldset>
+                <legend>Contactos - Orden Trabajo [#{contactosMglBean.ordenTrabajoMgl.idOt}]</legend>
+                <div>
+                    <h:dataTable id="tablaContactoList"                              
+                                 value="#{contactosMglBean.listaContactos}"
+                                 var="contacto" rows="10"                         
+                                 styleClass="constructGTable"
+                                 headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Nombre"  /><BR/>
+                            </f:facet>
+                            <h:outputText value="#{contacto.nombreApellido}"/>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Correo Electrónico"  /><BR/>
+                            </f:facet>
+                            <h:outputText value="#{contacto.correoElectronico}"/>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Teléfono Principal"  /><BR/>
+                            </f:facet>
+                            <h:outputText value="#{contacto.telefonoPrincipal}"/>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Teléfono Secundario"  /><BR/>
+                            </f:facet>
+                            <h:outputText value="#{contacto.telefonoSecundario}"/>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Notas Descriptivas"  /><BR/>
+                            </f:facet>
+                            <h:outputText value="#{contacto.comentario}"/>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Acciones"  /><BR/>
+                            </f:facet>
+
+                            <h:commandLink id="Deshacer" title="Eliminar" value="Eliminar"
+                                           immediate="true" 
+                                           action="#{contactosMglBean.eliminarContacto(contacto)}"
+                                           rendered="#{contactosMglBean.validarBorrado()}"
+                                           onclick="return confirm('¿Est&aacute; seguro que desea Eliminar el registro?');">
+                            </h:commandLink>
+
+                        </h:column>
+                        <f:facet name="footer">
+                            <h:commandButton value="" title=""  
+                                             class="botonTPagInicioCm botonBaselista" >
+                                <f:ajax   render="@form" execute="@this" 
+                                          event="click" listener="#{contactosMglBean.pageFirst}" />
+                            </h:commandButton> 
+                            <h:commandButton value="" title=""  
+                                             class="botonTPagAnteriorCm botonBaselista">
+                                <f:ajax   render="@form" execute="@this" 
+                                          event="click" listener="#{contactosMglBean.pagePrevious}" />
+                            </h:commandButton> 
+                            <h:commandButton value="#{contactosMglBean.pageActual}" styleClass="botonTPagInicio"    />
+                            <h:selectOneMenu id="listTabla" value="#{contactosMglBean.numPagina}" 
+                                             styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                <f:selectItems value="#{contactosMglBean.paginaList}" var="pag"
+                                               itemValue="#{pag}"
+                                               itemLabel="#{pag}"/>    
+                                <f:ajax render="@form"  event="change"  listener="#{contactosMglBean.irPagina()}"  execute="@this" />                                         
+                            </h:selectOneMenu>  
+
+                            <h:commandButton value="" title="Next"  
+                                             class="botonTPagSiguienteCm botonBaselista" >
+                                <f:ajax   render="@form" execute="@this" 
+                                          event="click" listener="#{contactosMglBean.pageNext}" />
+                            </h:commandButton> 
+                            <h:commandButton value="" title="Last"  
+                                             class="botonTPagFinCm botonBaselista" >
+                                <f:ajax   render="@form" execute="@this" 
+                                          event="click" listener="#{contactosMglBean.pageLast}" />
+                            </h:commandButton>       
+                        </f:facet>
+                    </h:dataTable>  
+                </div> 
+            </fieldset>
+           
+            <h:commandButton value="Nuevo" id="nuevaContButton"
+           styleClass="btn" action="#{contactosMglBean.nuevoContactoCrear()}"
+                             disabled="#{!contactosMglBean.rolCrear}"/>
+        </h:panelGroup>
+       
+        <br/>
+        <br/>
+        <h:panelGroup id="panelGroupId" rendered="#{contactosMglBean.validarCreacion()
+                                                    and contactosMglBean.mostrarPanelCrearCont}">
+            <h2 id="myhMmData">Contactos</h2>
+
+            <br></br>
+            <fieldset>
+                <legend>Nuevo Contacto</legend>
+
+                <h:panelGrid columns="5" id="panelNuevoContacto" >
+                    <h:outputText escape="false" value="#{contactosMglBean.estiloObligatorio} Nombre y Apellido"/>
+                    <h:outputText escape="false" value="#{contactosMglBean.estiloObligatorio} Correo Electrónico"/>
+                    <h:outputText escape="false" value="#{contactosMglBean.estiloObligatorio} Teléfono Principal"/>
+                    <h:outputText escape="false" value="#{contactosMglBean.estiloObligatorio} Teléfono Secundario"/>
+                    <h:outputText escape="false" value="#{contactosMglBean.estiloObligatorio} Notas Descriptivas(2000c)"/>
+
+                    <h:inputText value="#{contactosMglBean.nuevoContacto.nombreApellido}" maxlength="200"
+                                 required="true" requiredMessage="El nombre y apellido del contacto es requerido" validatorMessage="El nombre solo permite caracteres alfabéticos y espacios" >
+                        <f:validateRegex pattern="([a-zA-Z]| ){0,200}"/>
+                    </h:inputText>
+                    <h:inputText value="#{contactosMglBean.nuevoContacto.correoElectronico}" maxlength="200"
+                                 required="true" requiredMessage="El campo correo electrónico es requerido"
+                                 validatorMessage="El correo electrónico  no tiene el formato requerido">
+                        <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>
+                    </h:inputText>
+                    <h:inputText value="#{contactosMglBean.nuevoContacto.telefonoPrincipal}"
+                                 required="true" maxlength="10" converterMessage="El teléfono es numérico"
+                                 requiredMessage="El teléfono asesor es requerido"
+                                 validatorMessage="El teléfono debe tener 7 o 10 dígitos" >
+                        <f:validateLength minimum="7" maximum="10"/>                       
+                        <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                    </h:inputText>
+                    <h:inputText value="#{contactosMglBean.nuevoContacto.telefonoSecundario}"
+                                 required="true" maxlength="10" converterMessage="El telefono es numerico" 
+                                 requiredMessage="El telefono asesor es requerido"  
+                                 validatorMessage="El telefono debe tener 7 o 10 digitos" >
+                        <f:validateLength minimum="7" maximum="10"/>                       
+                        <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                    </h:inputText>
+                    <h:inputTextarea value="#{contactosMglBean.nuevoContacto.comentario}" style="width: 400px; height: 13px" 
+                                     required="true" requiredMessage="El comentario del contacto es requerido"/>
+                </h:panelGrid>
+
+                <br/>
+                <hr/>
+                <h:commandButton id="crearContactoBtn" styleClass="btn"
+                                 value="Guardar Contacto"
+                                 action="#{contactosMglBean.guardarContacto()}"
+                                 />
+                <h:commandButton value="Volver" id="volverContButton" immediate="true"
+                                 styleClass="btn" action="#{contactosMglBean.volver()}"/>
+            </fieldset>
+
+            <!--        <br></br>
+                    <fieldset>
+                        <legend>Notas Descriptivas</legend>
+                        <h:panelGrid id="comentariosxNota"  columns="1" style="width: 100%"  >
+            
+                            <h:inputTextarea  id="asc_campo_ComentaioTxt"  value="# {notasMglBean.notaOtComentarioStr}" style="width: 100%"  rows="3" > </h:inputTextarea> 
+                        </h:panelGrid>
+                    </fieldset>
+            
+                    <h:panelGroup>
+                        <div class="pagination">
+                            <ui:repeat var="coberturas" value="# {cuentaMatrizBean.cuentaMatriz.coberturasList}" varStatus="myVarStatus"> > 
+                                <h:commandLink  action="# {subEdificiosMglBean.getSelectedTorre(subEdificiosMgl.subEdificioId)}" > 
+                                    # {myVarStatus.index + 1}  </h:commandLink>
+                            </ui:repeat>
+                        </div>-->
+
+        </h:panelGroup>
+    </ui:define>
+
+</ui:composition>

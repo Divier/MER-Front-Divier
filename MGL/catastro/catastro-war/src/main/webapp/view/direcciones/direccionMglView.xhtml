@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/template/home.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Administrador direccion</span></ui:define>
+    <ui:define name="message"><span class="error"> #{direccionMglBean.message}</span></ui:define>
+    <ui:define name="content">
+        <script language="javascript" type="text/javascript">
+            //*** Este Codigo permite Validar que sea un campo Numerico
+            function Solo_Numerico(variable) {
+                Numer = parseInt(variable);
+                if (isNaN(Numer)) {
+                    return "";
+                }
+                return Numer;
+            }
+            function ValNumero(Control) {
+                Control.value = Solo_Numerico(Control.value);
+            }
+            //*** Fin del Codigo para Validar que sea un campo Numerico
+        </script>
+        <h:form id="form1">
+
+            <h:panelGrid columns="4" id="direccionMgl" class="EtiquetaConsulta" width="100%" >
+                <h:outputText value="Id direccion" id="Iddireccionlb"/>
+                <h:inputText id="IddireccionTxt" value="#{direccionMglBean.direccionMgl.dirId}"  disabled="true" /> 
+
+
+                <h:outputText value="Formato IGAC" id="ddirFormatoIgaclb"/>
+                <h:inputText id="dirFormatoIgacTxt" value="#{direccionMglBean.direccionMgl.dirFormatoIgac}"/> 
+
+                <h:outputText value="Servicio información" id="dirServinformacionlb"/>
+                <h:inputText id="dirServinformacionTxt" value="#{direccionMglBean.direccionMgl.dirServinformacion}"/> 
+
+                <h:outputText value="Dirección No standar" id="dirNostandarlb"/>
+                <h:inputText id="dirNostandarTxt" value="#{direccionMglBean.direccionMgl.dirNostandar}"/> 
+
+                <h:outputText value="Dirección origen" id="dirOrigenlb" />
+                <h:inputText id="dirOrigenTxt" value="#{direccionMglBean.direccionMgl.dirOrigen}" /> 
+
+                <h:outputText value="Confiabilidad" id="dirConfiabilidadRlb"/>
+                <h:inputText id="dirConfiabilidadTxt" value="#{direccionMglBean.direccionMgl.dirConfiabilidad}" onkeyup="return ValNumero(this);" maxlength="2"/> 
+
+                <h:outputText value="Estrato" id="dirEstratolb"/>
+                <h:inputText id="dirEstratoTxt" value="#{direccionMglBean.direccionMgl.dirEstrato}" onkeyup="return ValNumero(this);" maxlength="2"/>  
+                <h:outputText value="Nivel socioeconómico" id="dirNivelSocioeconolb"/>
+                <h:inputText id="dirNivelSocioeconoTxt" value="#{direccionMglBean.direccionMgl.dirNivelSocioecono}" onkeyup="return ValNumero(this);" maxlength="2" />  
+                <h:outputText value="Localidad" id="dirLocalidadlb"/>
+                <h:inputText id="dirLocalidadTxt" value="#{direccionMglBean.direccionMgl.dirLocalidad}" maxlength="35"/> 
+                <h:outputText value="Manzana catastral" id="dirManzanaCatastrallb"/>
+                <h:inputText id="dirManzanaCatastralTxt" value="#{direccionMglBean.direccionMgl.dirManzanaCatastral}" maxlength="30"/>  
+                <h:outputText value="Manzana" id="dirManzanalb"/>
+                <h:inputText id="dirManzanaTxt" value="#{direccionMglBean.direccionMgl.dirManzana}" maxlength="10"/>  
+                <h:outputText value="Fecha creación" id="dirFechaCreacionlb"/>
+                <h:inputText id="dirFechaCreacionTxt" value="#{direccionMglBean.direccionMgl.dirFechaCreacion}" disabled="true" />   
+                <h:outputText value="Usuario creación" id="dirUsuarioCreacionlb"/>
+                <h:inputText id="dirUsuarioCreacionTxt" value="#{direccionMglBean.direccionMgl.dirUsuarioCreacion}" disabled="true" />  
+                <h:outputText value="Fecha modificación" id="dirFechaModificacionlb"/>
+                <h:inputText id="dirFechaModificacionTxt" value="#{direccionMglBean.direccionMgl.dirFechaModificacion}" disabled="true" />   
+                <h:outputText value="Usuario modificación" id="dirUsuarioModificacionlb"/>
+                <h:inputText id="dirUsuarioModificacionTxt" value="#{direccionMglBean.direccionMgl.dirUsuarioModificacion}" disabled="true"/> 
+                <h:outputText value="Revisar" id="dirRevisarlb"/>
+                <h:inputText id="dirRevisarTxt" value="#{direccionMglBean.direccionMgl.dirRevisar}"/>   
+                <h:outputText value="Actividad económica" id="dirActividadEconolb"/>
+                <h:inputText id="dirActividadEconoTxt" value="#{direccionMglBean.direccionMgl.dirActividadEcono}"/>  
+                <h:outputText value="Comentario socioeconómico" id="dirComentarioSocioeconomicolb"/>
+                <h:inputText id="dirComentarioSocioeconomicoTxt" value="#{direccionMglBean.direccionMgl.dirComentarioSocioeconomico}"/> 
+                <h:outputText value="Nodo uno" id="dirNodounolb"/>
+                <h:inputText id="dirNodounoTxt" value="#{direccionMglBean.direccionMgl.dirNodouno}"/>    
+                <h:outputText value="Nodo dos" id="dirNododoslb"/>
+                <h:inputText id="dirNododosTxt" value="#{direccionMglBean.direccionMgl.dirConfiabilidad}"/>     
+                <h:outputText value="Nodo tres" id="dirNodotreslb"/>
+                <h:inputText id="dirNodotresTxt" value="#{direccionMglBean.direccionMgl.dirConfiabilidad}"/> 
+
+
+                <h:outputText value="Tipo dirección" id="tdiIdlb"/>
+                <h:selectOneMenu id="listtipoDireccionMgl" value="#{direccionMglBean.tipoDireccion}" 
+                                 styleClass="ListaConsulta" >
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{direccionMglBean.listTipoDireccionMgl}" var="ltd"
+                                   itemValue="#{ltd.tdiId}"
+                                   itemLabel="#{ltd.tdiValor}"/>                
+                </h:selectOneMenu> 
+
+
+                <h:outputText value="Ubicación" id="ubiIdlb"/>
+
+                <h:selectOneMenu id="listUbicacionMgl" value="#{direccionMglBean.ubicacion}" 
+                                 styleClass="ListaConsulta" >
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{direccionMglBean.listUbicacionMgl}" var="lu"
+                                   itemValue="#{lu.ubiId}"
+                                   itemLabel="#{lu.ubiNombre}"/>                
+                </h:selectOneMenu> 
+
+                <div  style="width: 160px" ><h:inputHidden  id="nodHid" value="hid" ></h:inputHidden> </div><div  style="width: 150px" ></div>
+
+
+
+            </h:panelGrid>
+            <br></br><br></br>
+            <h:panelGrid columns="4" id="nodoMgl2" styleClass="panelInfo">
+
+                <h:commandButton value="Actualizar" action="#{direccionMglBean.actualizardireccionMgl()}"  styleClass="buttonl" rendered="#{!((direccionMglBean.direccionMgl.dirId eq 0) or (direccionMglBean.direccionMgl.dirId eq null)) }" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+                <h:commandButton value="Guardar" action="#{direccionMglBean.creardireccionMgl()}" styleClass="buttonl"   rendered="#{(direccionMglBean.direccionMgl.dirId eq 0) or (direccionMglBean.direccionMgl.dirId eq null)}"  style="text-align: center; color:#FFFFFF;"></h:commandButton>
+                <h:commandButton value="Eliminar" action="#{direccionMglBean.eliminardireccionMgl()}" styleClass="buttonl"  rendered="#{!((direccionMglBean.direccionMgl.dirId eq 0) or (direccionMglBean.direccionMgl.dirId eq null)) }" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+                <h:commandButton value="Volver" action="direccionMglListView" styleClass="buttonl" style="text-align: center; color:#FFFFFF;"></h:commandButton>
+
+            </h:panelGrid>
+
+        </h:form>
+    </ui:define>
+
+
+</ui:composition>
+

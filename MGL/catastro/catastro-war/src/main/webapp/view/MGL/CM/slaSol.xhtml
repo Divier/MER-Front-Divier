@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml"
+    >
+
+    <ui:define name="title"><span class="TituloSeccion">SLA Tipo Solicitud</span></ui:define>
+    <ui:define name="message"><span class="error"> #{slaSolicitudOtBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <h:panelGroup >
+            <br></br>
+            <br></br>
+            <h:panelGroup rendered="#{slaSolicitudOtBean.mostrarPanelCrearModtipoSol}">
+                <fieldset>
+                    <legend>SLA Tipo Solicitud</legend>
+                    <div id="slaTipoOt">
+                        <table style="width: 100%">
+                            <tr></tr>
+                            <tr></tr>
+                            <tr><td></td>
+                                <td> <h:outputText escape="false" value="#{slaSolicitudOtBean.estiloObligatorio}Nombre Tipo" id="nombreOutTxt1"/>  </td>
+                                <td>   <h:inputText  id="nombreTipo"  value="#{slaSolicitudOtBean.cmtTipoSolicitudMgl.nombreTipo}"  style="width: 300px" requiredMessage="El campo descripci&oacute;n es requerido" >
+                                    </h:inputText>   </td>
+                                <td>  <h:outputText id="slaOtInputEst" escape="false" value="#{slaSolicitudOtBean.estiloObligatorio}Estado"  /></td>
+                                <td>  <h:selectOneMenu id="idEstadoOt" value="#{slaSolicitudOtBean.cmtTipoSolicitudMgl.estadoRegistro}"  
+                                                       styleClass="ListaConsulta" style="width: 300px">
+                                        <f:selectItem itemValue="1" itemLabel="Activo" />
+                                        <f:selectItem itemValue="0" itemLabel="Inactivo" />
+                                    </h:selectOneMenu>  </td>
+                            </tr> 
+
+                            <tr><td></td>
+                                <td> <h:outputText escape="false" value="#{slaSolicitudOtBean.estiloObligatorio}Creaci&oacute;n de Rol" id="nombreOutTxt2"/>  </td>
+                                <td>   <h:inputText  id="creacionRol"  value="#{slaSolicitudOtBean.cmtTipoSolicitudMgl.creacionRol}"  style="width: 300px" requiredMessage="El campo descripción es Requerido" >
+                                    </h:inputText>   </td>
+                                <td> <h:outputText escape="false" value="#{slaSolicitudOtBean.estiloObligatorio}Gesti&oacute;n Tipo" id="nombreOutTxt3"/>  </td>
+                                <td>   <h:inputText  id="gestionRol"  value="#{slaSolicitudOtBean.cmtTipoSolicitudMgl.gestionRol}"  style="width: 300px" requiredMessage="El campo descripción es Requerido" >
+                                    </h:inputText>   </td>
+
+                            </tr> 
+                            <tr></tr>
+
+                            <tr><td></td>
+
+                                <td>  <h:outputText  escape="false" value="#{slaSolicitudOtBean.estiloObligatorio}SLA (Tiempo en minutos)" /></td>
+                                <td>    <h:inputText  id="Sla"   maxlength="3"  value="#{slaSolicitudOtBean.cmtTipoSolicitudMgl.ans}"  style="width: 300px" requiredMessage="El campo descripci&oacute;n es requerido" >
+                                    </h:inputText></td>
+                                <td>  <h:outputText  escape="false" value="#{slaSolicitudOtBean.estiloObligatorio}SLA Aviso (Tiempo en minutos)" /></td>
+                                <td>    <h:inputText  id="slaAviso"  maxlength="3"  value="#{slaSolicitudOtBean.cmtTipoSolicitudMgl.ansAviso}"  style="width: 300px" requiredMessage="El campo descripci&oacute;n es requerido" >
+                                    </h:inputText></td>
+                            </tr> 
+                            <tr><td></td>
+                            </tr> 
+                        </table>
+                    </div>
+                </fieldset>
+                <br></br>
+                <br></br>
+                <h:panelGrid columns="4" id="slaotBtn" styleClass="panelInfo">
+                    <h:panelGroup id="botonesAcciones">
+                        <h:commandButton value="Crear" styleClass="btn"
+                                         action="#{slaSolicitudOtBean.crearSlaMgl()}"
+                                         rendered="#{slaSolicitudOtBean.btnActivo}" />
+                        <h:commandButton value="Actualizar" styleClass="btn"
+                                         action="#{slaSolicitudOtBean.actualizarSlaMgl()}"
+                                         rendered="#{!slaSolicitudOtBean.btnActivo}"/>
+                       <h:commandButton value="Limpiar" styleClass="btn" 
+                                        action="#{slaSolicitudOtBean.limpiarCampos()}"/>
+                        <h:commandButton value="Volver" styleClass="btn" immediate="true"
+                                         action="#{slaSolicitudOtBean.volverListTipoSol()}"/>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </h:panelGroup>
+
+            <br></br>
+            <br></br>
+            <h:panelGroup rendered="#{slaSolicitudOtBean.mostrarPanelListTipoSol}">
+                <h2>Tipos De Solicitud</h2>
+                <div class="tableContent" >
+                    <h:dataTable id="tablaSlaSol"
+                                 value="#{slaSolicitudOtBean.listCmtTipoSolicitudMgl}" 
+                                 var="slaSolTable" rows="8"                         
+                                 styleClass="constructGTable"
+                                 headerClass="constructGTableHeader" rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        <h:column>    
+                            <div align="left" >
+                                <f:facet name="header">
+                                    <h:outputText value="C&oacute;digo " /><BR/>
+                                    <h:inputText  maxlength="50" id="codigoId" 
+                                                  style="width: 50px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{slaSolicitudOtBean.filtroConsultaSolicitudDto.codigoSeleccionado}">
+                                        <f:ajax listener="#{slaSolicitudOtBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaSol"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:commandLink id="tipoSol"
+                                               value="#{slaSolTable.tipoSolicitudId}"
+                                               disabled="#{!slaSolicitudOtBean.validarOpcionLinkCod()}"
+                                               action="#{slaSolicitudOtBean.goActualizar(slaSolTable)}" />
+
+                            </div>                                    
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre" /><BR/>
+                                    <h:inputText  maxlength="50" id="nombreId" 
+                                                  style="width: 200px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{slaSolicitudOtBean.filtroConsultaSolicitudDto.nombreSeleccionado}">
+                                        <f:ajax listener="#{slaSolicitudOtBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaSol"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{slaSolTable.nombreTipo}" />     
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left">
+                                <f:facet name="header">
+                                    <h:outputText value="Estado" /><BR/>
+                                    <h:selectOneMenu id="estadoId"  style="width: 100px"
+                                                     value="#{slaSolicitudOtBean.filtroConsultaSolicitudDto.estadoSeleccionado}">
+                                        <f:selectItem itemLabel="Todos" itemValue=""/>
+                                        <f:selectItem itemLabel="Activado" itemValue="Activado"/>
+                                        <f:selectItem itemLabel="Desactivado" itemValue="Desactivado"/>   
+                                        <f:ajax listener="#{slaSolicitudOtBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaSol"/>
+                                    </h:selectOneMenu> 
+                                </f:facet>
+                                <h:outputText value="#{slaSolTable.estadoRegistro eq 1 ? 'Activado':'Desactivado'}" />      
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Creaci&oacute;n Rol" /><BR/>
+                                    <h:inputText  maxlength="50" id="creaRolId" 
+                                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{slaSolicitudOtBean.filtroConsultaSolicitudDto.creaRolSeleccionado}">
+                                        <f:ajax listener="#{slaSolicitudOtBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaSol"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{slaSolTable.creacionRol}" />     
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Gesti&oacute;n Rol" /><BR/>
+                                    <h:inputText  maxlength="50" id="gestionRolId" 
+                                                  style="width: 100px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{slaSolicitudOtBean.filtroConsultaSolicitudDto.gestionRolSeleccionado}">
+                                        <f:ajax listener="#{slaSolicitudOtBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaSol"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{slaSolTable.gestionRol}" />     
+                            </div>                                  
+                        </h:column>
+
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="SLA" /><BR/>
+                                    <h:inputText  maxlength="50" id="slaId" 
+                                                  style="width: 50px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{slaSolicitudOtBean.filtroConsultaSolicitudDto.slaSeleccionado}">
+                                        <f:ajax listener="#{slaSolicitudOtBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaSol"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{slaSolTable.ans}" />     
+                            </div>                                  
+                        </h:column>
+
+                        <h:column>   
+                            <div align="left">
+                                <f:facet name="header">
+                                    <h:outputText value="SLA Aviso" /><BR/>
+                                    <h:inputText  maxlength="50" id="slaAvisoId" 
+                                                  style="width: 50px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{slaSolicitudOtBean.filtroConsultaSolicitudDto.slaAvisoSeleccionado}">
+                                        <f:ajax listener="#{slaSolicitudOtBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaSol"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText    value="#{slaSolTable.ansAviso}" />      
+                            </div>                                  
+                        </h:column>
+
+
+                        <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Acci&oacute;n" />
+                            </f:facet>
+                            <h:commandLink id="Eliminar" title="Eliminar"
+                                           immediate="true" styleClass="btnIconEliminar"                                      
+                                           action="#{slaSolicitudOtBean.eliminarSlaSolMgl(slaSolTable)}"
+                                           disabled="#{!slaSolicitudOtBean.validarOpcionEliminar()}"
+                                           onclick="return confirm('¿Est&aacute; seguro de eliminar el registro seleccionado ${slaSolTable.nombreTipo} ?');" />
+                        </h:column>
+
+
+                        <f:facet name="footer" >
+                            <h:panelGroup rendered="#{slaSolicitudOtBean.pintarPaginado}">
+                                <h:commandButton value="" action="#{slaSolicitudOtBean.pageFirst}"
+                                                 class="botonTPagInicioCm botonBaselista"/>
+                                <h:commandButton value="" action="#{slaSolicitudOtBean.pagePrevious}"
+                                                 class="botonTPagAnteriorCm botonBaselista"/>
+                                <h:commandButton value="#{slaSolicitudOtBean.pageActual}" styleClass="botonTPagInicio"    />
+                                <h:selectOneMenu id="listTabla" value="#{slaSolicitudOtBean.numPagina}" 
+                                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{slaSolicitudOtBean.paginaList}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>    
+                                    <f:ajax render="@form"  event="change"  listener="#{slaSolicitudOtBean.irPagina()}"  execute="@this" />                                         
+                                </h:selectOneMenu>  
+                                <h:commandButton value="" action="#{slaSolicitudOtBean.pageNext}"
+                                                 class="botonTPagSiguienteCm botonBaselista"/>
+                                <h:commandButton value="" action="#{slaSolicitudOtBean.pageLast}"
+                                                 class="botonTPagFinCm botonBaselista"/>
+                            </h:panelGroup>
+                        </f:facet>  
+                    </h:dataTable>  
+                    <h:commandButton value="Nuevo" styleClass="btn"
+                                     action="#{slaSolicitudOtBean.nuevoTipoSolicitud()}"
+                                     disabled="#{!slaSolicitudOtBean.validarOpcionNuevo()}"/>
+                </div>     
+            </h:panelGroup>   
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

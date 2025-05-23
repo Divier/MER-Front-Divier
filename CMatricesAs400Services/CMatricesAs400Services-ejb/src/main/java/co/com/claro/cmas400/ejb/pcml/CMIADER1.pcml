@@ -1,0 +1,14 @@
+<pcml version="4.0">
+   <!-- RPG program: CMIADER1  -->
+   <!-- created: 2014-09-19-09.07.39 -->
+   <!-- source: CMWEBF0/QRPGLESRC(CMIADER1) -->
+   <!-- 55 -->
+   <program name="CMIADER1" path="/QSYS.LIB/TVCABLEEXE.LIB/CMIADER1.PGM">
+      <data name="CUENTA" type="char" length="9" usage="inputoutput" />
+      <data name="PCML" type="char" length="2" usage="inputoutput" />
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />
+      <data name="MENSAJE" type="char" length="63" usage="inputoutput" />
+      <data name="TABLARTA" type="char" length="140" count="500" usage="inputoutput" />
+   </program>
+</pcml>

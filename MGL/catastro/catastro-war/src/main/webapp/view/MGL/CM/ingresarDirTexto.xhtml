@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition     
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    template="/view/MGL/template/whiteTemplate.xhtml" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <ui:define name="title"><span class="TituloSeccion">Ingresar Direccion</span></ui:define>
+    <ui:define name="content">
+
+
+        <h:outputText class="txtLabelsMgl"  value="Ingresar Dirección:"/>
+        <h:inputText id="idIngresarDirTexto" style="width: 400px;" 
+                     value="#{ingresarDirTextoBean.direccionTexto}">
+        </h:inputText>   
+
+        <h:panelGrid columns="2">
+            <h:commandButton value="Tabular Dirección"
+                             title="Tabular Dirección"
+                             class="btn"
+                             action="#{ingresarDirTextoBean.tabularDireccion()}">
+            </h:commandButton>   
+
+            <h:commandButton value="Limpiar"
+                             title="Limpiar Campos"
+                             class="btn"
+                             action="#{ingresarDirTextoBean.limpiarCampos()}">   
+            </h:commandButton>
+        </h:panelGrid>        
+
+        <h:panelGroup id="visualizacionDirTabulada" 
+                      rendered="#{ingresarDirTextoBean.dirTabuladaLst != null 
+                                  and ingresarDirTextoBean.dirTabuladaLst.size() > 0}">        
+            <div class="tableContent" >
+                <h:dataTable value="#{ingresarDirTextoBean.dirTabuladaLst}"
+                             var="drDireccion"  
+                             styleClass="constructGTable" rows="10"
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+
+                    <h:column>
+                        <f:facet name="header">Tipo Via Principal</f:facet>
+                        <h:outputText value="#{drDireccion.tipoViaPrincipal}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Número Via Principal</f:facet>
+                        <h:outputText value="#{drDireccion.numViaPrincipal}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">LT Via Principal</f:facet>
+                        <h:outputText value="#{drDireccion.ltViaPrincipal}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">NL Via Principal</f:facet>
+                        <h:outputText value="#{drDireccion.nlPostViaP}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Bis Via Principal</f:facet>
+                        <h:outputText value="#{drDireccion.bisViaPrincipal}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Cuad Via Principal</f:facet>
+                        <h:outputText value="#{drDireccion.cuadViaPrincipal}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Tipo Via Generadora</f:facet>
+                        <h:outputText value="#{drDireccion.tipoViaGeneradora}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Número Via Generadora</f:facet>
+                        <h:outputText value="#{drDireccion.numViaGeneradora}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">LT Via Generadota</f:facet>
+                        <h:outputText value="#{drDireccion.ltViaGeneradora}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">NL Via Generadora</f:facet>
+                        <h:outputText value="#{drDireccion.nlPostViaG}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Letra 3G</f:facet>
+                        <h:outputText value="#{drDireccion.letra3G}" />
+                    </h:column>      
+
+                    <h:column>
+                        <f:facet name="header">Bis Via Generadora</f:facet>
+                        <h:outputText value="#{drDireccion.bisViaGeneradora}" />
+                    </h:column>   
+
+                    <h:column>
+                        <f:facet name="header">Cuad Via Generadora</f:facet>
+                        <h:outputText value="#{drDireccion.cuadViaGeneradora}" />
+                    </h:column> 
+
+                    <h:column>
+                        <f:facet name="header">Placa</f:facet>
+                        <h:outputText value="#{drDireccion.placaDireccion}" />
+                    </h:column>    
+                </h:dataTable>
+            </div>
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>

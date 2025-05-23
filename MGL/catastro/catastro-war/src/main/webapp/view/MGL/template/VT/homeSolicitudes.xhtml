@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>        
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <h:outputScript library="primefaces" name="jquery/jquery.js" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/scriptv2.js"/>
+        <title> <ui:insert name="title"></ui:insert></title>
+    </h:head>
+    <h:body>
+
+        <ui:include src="../../CM/panelMensajes.xhtml" />
+        <h:form id="formSolicitud" enctype="multipart/form-data">
+            <div id="header">
+               <h:panelGroup layout="block">
+                    <ui:include src="../../template/menu/VT/name.xhtml" />  
+                </h:panelGroup>
+            </div>
+            <div id="cssmenu">
+                <ui:include src="../menu/menu-cm.xhtml" />
+            </div>
+
+            <div id="head-right">
+                <ui:include src="../../CM/version.xhtml" />
+            </div>
+            <div id="head-left">
+ 
+            </div>
+            <div id="content">
+                <div id="subcontent">
+                    <section class="tabs">
+
+                        <div id="contenido">
+                            <ui:insert name="content">
+
+                            </ui:insert>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </h:form>
+        <div id="footer">
+             <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

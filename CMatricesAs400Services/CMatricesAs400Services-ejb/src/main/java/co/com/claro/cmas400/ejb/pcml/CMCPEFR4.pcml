@@ -1,0 +1,15 @@
+<pcml version="4.0">                                                           
+   <!-- RPG program: CMCPEFR4  -->                                             
+   <!-- created: 2015-12-17-17.34.02 -->                                       
+   <!-- source: TVCSRC/CMRPGLESRC(CMCPEFR4) -->                                
+   <!-- 29 -->                                                                 
+   <program name="CMCPEFR4" path="/QSYS.LIB/TVCABLEEXE.LIB/CMCPEFR4.PGM">      
+      <data name="PCML" type="char" length="2" usage="inputoutput" />          
+      <data name="PNTEL1_A" type="char" length="10" usage="inputoutput" />     
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />     
+      <data name="MENSAJE" type="char" length="63" usage="inputoutput" />     
+      <data name="PRNUED" type="char" length="9" usage="inputoutput" />        
+      <data name="T_CMCEDFR1" type="char" length="832" usage="inputoutput" /> 
+   </program>                                                                  
+</pcml>                                                                        
+

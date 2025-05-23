@@ -1,0 +1,147 @@
+/* 
+    Document   : claro-mgl-styles
+    Created on : 25/03/2018, 01:09:34 PM
+    Author     : villamilc
+    Description:
+        Purpose of the stylesheet follows.
+*/
+root { 
+    display: block;
+}
+/*
+    Start ShceduleTable
+*/
+.slotUsed{
+    border-color: lightsalmon;
+    background-color: lightsalmon;
+    width:100%;
+    height:35px;    
+    text-align: center;
+}
+
+.slotAvailable{
+    border-color: mediumspringgreen;
+    background-color: mediumspringgreen;
+    width:100%;
+    height:35px;    
+    cursor:pointer;
+    text-align: center;
+}
+
+.slotAvailable:hover{
+    border-color: greenyellow;
+    background-color: greenyellow;
+    width:100%;
+    height:35px;   
+    cursor:pointer;
+    text-align: center;
+}
+
+
+
+.slotUnAvailable{
+    border-color: lightpink;
+    background-color: lightpink;
+    width:100%;
+    height:35px;    
+    text-align: center;
+}
+
+
+.slotSelected{
+    border-color: deepskyblue;
+    background-color: deepskyblue;
+    width:100%;
+    height:35px;   
+    cursor:pointer;
+    text-align: center;
+}
+.slotSelected:hover{
+    border-color: greenyellow;
+    background-color: greenyellow;
+    width:100%;
+    height:35px;    
+    cursor:pointer;
+    text-align: center;
+}
+
+.exampleAvailable{
+    border-color: mediumspringgreen;
+    background-color: mediumspringgreen;
+    width:25%;
+    height:100%;    
+    text-align:left;
+    font-size:12px;
+    font-family:Arial;
+    font-weight:normal;
+}
+
+
+.exampleSelected{
+    border-color: deepskyblue;
+    background-color: deepskyblue;
+    width:25%;
+    height:100%;    
+    text-align:left;
+    font-size:12px;
+    font-family:Arial;
+    font-weight:normal;
+}
+
+.exampleUsed{
+    border-color: lightsalmon;
+    background-color: lightsalmon;
+    width:25%;
+    height:100%;
+    text-align:left;
+    font-size:12px;
+    font-family:Arial;
+    font-weight:normal;
+}
+
+.exampleUnAbailable{
+    border-color: lightpink;
+    background-color: lightpink;
+    width:25%;
+    height:100%;
+    text-align:left;
+    font-size:12px;
+    font-family:Arial;
+    font-weight:normal;
+}
+
+
+.scheduleTable{
+    border-collapse:collapse ;
+    border-color: lightslategrey;
+}
+
+.scheduleTable td {
+    border: 1px solid lightslategrey;
+    text-align: center;
+    vertical-align:middle;
+}
+
+.scheduleTableHeader{
+    text-align:center;
+    font-size:10px;
+    font-family:Arial;
+    font-weight:bold;
+    color:black;
+}
+
+
+.scheduleTableRow{
+    height: 35px;
+    vertical-align:middle;
+    border:gray ;
+    text-align:left;
+    font-size:12px;
+    font-family:Arial;
+    font-weight:normal;
+}
+
+.headerStyleDays{
+   background-color: grey; 
+   height: 15px;
+}

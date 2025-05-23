@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+    <ui:composition template="/view/template/home.xhtml">
+        <ui:define name="title"><span class="TituloSeccion">Cambiar Estado de Direcciones Pendientes por Validar</span></ui:define>
+        <ui:define name="message"><span class="error">#{cambiarEstadoDirPendientesMBean.message}</span></ui:define>
+        <ui:define name="content">
+            <f:view>
+                <h:form id="formulario">
+                    <div class="elemento">         
+                        <h:panelGrid id="principal" rendered="#{cambiarEstadoDirPendientesMBean.showMaestro}" style="text-align: center;">
+                            <h:panelGrid style="text-align: center;" rendered="true">
+                                <rich:panel style="text-align: center; width: 500px;">
+                                    <h:panelGrid id="panelPais">
+                                        <a4j:outputPanel id="paisId">
+                                            <div class="EtiquetaConsulta etiqueta">Pais:</div>
+                                            <div class="elemento">
+                                                <h:selectOneMenu id="lstpaises" value="#{cambiarEstadoDirPendientesMBean.dir_pais}" 
+                                                                 styleClass="ListaConsulta"
+                                                                 valueChangeListener="#{cambiarEstadoDirPendientesMBean.updateRegionales}">
+                                                    <f:selectItem itemValue="0" itemLabel="#{cambiarEstadoDirPendientesMBean.vacio}" />
+                                                    <f:selectItems value="#{cambiarEstadoDirPendientesMBean.listPaises}"/>
+                                                    <a4j:ajax event="change" render="regionalId" execute="@this" />
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </a4j:outputPanel>
+
+                                        <a4j:outputPanel id="regionalId">
+                                            <div class="EtiquetaConsulta etiqueta">Departamento:</div>
+                                            <div class="elemento">
+                                                <h:selectOneMenu id="lstdeptos" value="#{cambiarEstadoDirPendientesMBean.dir_regional}" 
+                                                                 styleClass="ListaConsulta"
+                                                                 valueChangeListener="#{cambiarEstadoDirPendientesMBean.updateCiudades}">
+                                                    <f:selectItem itemValue="0" itemLabel="#{cambiarEstadoDirPendientesMBean.vacio}" />
+                                                    <f:selectItems value="#{cambiarEstadoDirPendientesMBean.listRegionales}"/>
+                                                    <a4j:ajax event="change" render="ciudadId" execute="@this" />	
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </a4j:outputPanel>
+
+                                        <a4j:outputPanel id="ciudadId">
+                                            <div class="EtiquetaConsulta etiqueta">Ciudad</div>
+                                            <div class="elemento">
+                                                <h:selectOneMenu id="lstciudades" 
+                                                                 value="#{cambiarEstadoDirPendientesMBean.dir_ciudad}"
+                                                                 valueChangeListener="#{cambiarEstadoDirPendientesMBean.updateValorCiudad}"
+                                                                 styleClass="ListaConsulta">
+                                                    <f:selectItem itemValue="0" itemLabel="#{cambiarEstadoDirPendientesMBean.vacio}"/>
+                                                    <f:selectItems id="ssciudades" value="#{cambiarEstadoDirPendientesMBean.listCiudades}"/>
+                                                    <a4j:ajax event="blur" render="ciudadId" execute="@form" />	
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </a4j:outputPanel>
+
+                                        <h:panelGrid id="panelDirID" columns="2" >
+                                            <div class="EtiquetaConsulta etiqueta" style="width: 93px;">Dirección:</div>
+                                            <div class="elemento">
+                                                <h:inputText title="Dirección que desea buscar." style="padding-left: 3px;"
+                                                             value="#{cambiarEstadoDirPendientesMBean.dir_ingresadaTexto}" 
+                                                             styleClass="ListaConsulta" maxlength="200"/>
+                                            </div>
+                                        </h:panelGrid>
+                                        <h:outputLink  onclick="window.open('../direcciones/cargaArchivo.jsp', 'popupWindowName', 'dependent=yes, menubar=no, toolbar=no,titlebar=no,width=600,height=120');
+                                                         return false;" value="Carga Archivo">
+                                            <h:outputText value="Carga Archivo" />
+                                        </h:outputLink>
+
+
+                                    </h:panelGrid>
+                                </rich:panel>
+                                <h:commandButton value="Consultar"  
+                                                 actionListener="#{cambiarEstadoDirPendientesMBean.doConsultar}" 
+                                                 styleClass="buttonl"  style="color:#FFFFFF;"></h:commandButton>
+                            </h:panelGrid>
+
+                        </h:panelGrid>
+                    </div>
+
+                    <div class="elemento">         
+                        <!--Panel de Tabla de resultados-->
+                        <h:panelGroup id="tablaResultado" rendered="#{cambiarEstadoDirPendientesMBean.showTablaResultado}">
+                            <h:panelGrid id="rtaSencilla" style="text-align: center" columns="2">
+                                <rich:dataTable id="tablaRes" var="direccion" value="#{cambiarEstadoDirPendientesMBean.direcciones}"
+                                                rowKeyVar="numeroRegistro" 
+                                                styleClass="altrowstable" 
+                                                rendered="true"
+                                                rows="10">
+                                    /*Inicio de cambios adicion de columnas y 
+                                    * cambio en el tamaño de fuentes Ivan Turriago*/
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Id Dir" id="ot1a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.cm_idDireccion}" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Dirección" id="ot2a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.cm_direccion}" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Fuente" id="ot3a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.origen}" />    
+                                    </rich:column> 
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Confiabilidad" id="ot4a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.cm_confiabilidad}" />
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Nivel Económico" id="ot5a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.cm_nivelSocio}" style="font-size: 10px;"/>
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Estrato" id="ot6a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.cm_estrato}" style="font-size: 10px;"/>
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Actividad económica" id="ot7a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.actividadEconomica}" style="font-size: 10px;"/>
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Código Manzana" id="ot8a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.cmDirManzanaCatastral}" style="font-size: 10px;"/>
+                                    </rich:column> 
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Dirección Alterna" id="ot9a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.direccionAlterna}" style="font-size: 10px;"/>
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Existencia" id="ot10a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.existencia}" style="font-size: 10px;"/>
+                                    </rich:column>
+                                    <!--Fin Modificacion Ivan Turriago-->
+                                    <!--Inicio Modificacion Fase I nodos Carlos Villamil V 1.1 -->
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Nodo Bi" id="ot12a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.nodoUno}" style="font-size: 10px;"/>
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Nodo UniUno" id="ot13a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.nodoDos}" style="font-size: 10px;"/>
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="Nodo UniDos" id="ot14a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <h:outputText value="#{direccion.nodoTres}" style="font-size: 10px;"/>
+                                    </rich:column>
+                                    <rich:column>
+                                        <f:facet name="header">
+                                            <h:outputLabel value="" id="ot15a" style="font-size: 10px;" />
+                                        </f:facet>
+                                        <a4j:commandLink actionListener="#{cambiarEstadoDirPendientesMBean.onSeleccionar}"
+                                                         action="#{cambiarEstadoDirPendientesMBean.onIrAccion}">
+                                            <h:graphicImage  value="../img/select.gif"/>
+                                            <f:param name="val" id="idDir" value="#{direccion.cm_idDireccion}"/>
+                                            <a4j:ajax event="click" render="prueba, tablaResultado, lblmessage" execute="@form" />	
+                                        </a4j:commandLink>
+                                    </rich:column>
+                                    /*Fin de cambios adicion de columnas y 
+                                    * cambio en el tamaño de fuentes Ivan Turriago*/
+                                    <f:facet name="footer">
+                                        <rich:dataScroller id="sc2" for="tablaRes" 
+                                                           rendered="#{cambiarEstadoDirPendientesMBean.showTablaResultado}"
+                                                           page="#{cambiarEstadoDirPendientesMBean.scrollerPage}" 
+                                                           renderIfSinglePage="true"
+                                                           stepControls="show" 
+                                                           boundaryControls="auto" 
+                                                           maxPages="5" 
+                                                           fastControls="auto" 
+                                                           fastStep="5">
+                                            <f:facet name="first">
+                                                <h:outputText value="Primero"/>
+                                            </f:facet>
+                                            <f:facet name="last">
+                                                <h:outputText value="Último"/>
+                                            </f:facet>
+                                        </rich:dataScroller>
+                                    </f:facet>  
+                                </rich:dataTable>
+                            </h:panelGrid>
+                            /*Inicio cambios adicion de funcionalidad exportar archivo csv Ivan Turriago*/
+                            <h:commandButton value="Exportar a CSV" id="exportar" 
+                                             action="#{cambiarEstadoDirPendientesMBean.doExportSelectedDataToCSV}" 
+                                             rendered="#{cambiarEstadoDirPendientesMBean.showBotonExportar}"
+                                             styleClass="buttonl"
+                                             style="color:#FFFFFF;"></h:commandButton>
+
+                            /*Inicio cambios adicion de funcionalidad exportar archivo csv Ivan Turriago*/
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </f:view>
+        </ui:define> 
+    </ui:composition>
+</ui:composition>

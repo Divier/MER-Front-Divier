@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+        
+        
+        <h:panelGroup id="groupBotonSolicitud" rendered="#{!solicitudModificacionCMBean.modoGestion}" >
+            <h:panelGrid columns="3"  >
+                <h:commandButton id="guardarSolDatosCm"  action="#{solicitudModificacionCMBean.preGuardarModificarDatosCM}" 
+                                 rendered="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'DATOSCM' }" 
+                                 disabled="#{!(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}"
+                                 styleClass="btn"  value="Confirmar Solicitud"/>
+                <h:commandButton id="guardarSolDireccion"  action="#{solicitudModificacionCMBean.preGuardarModificarDireccion}" 
+                                 rendered="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'DIRECCION' }"  
+                                 disabled="#{!(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}"
+                                 styleClass="btn"  value="Confirmar Solicitud"/>
+
+                <h:commandButton id="guardarSolSubedificios"  action="#{solicitudModificacionCMBean.preGuardarModificarsubEdificio()}"   
+                                 rendered="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'SUBEDIFICIOS' and 
+                                             !solicitudModificacionCMBean.mostrarCrearSubedificio}" 
+                                 disabled="#{!(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}"
+                                 styleClass="btn"  value="Confirmar Solicitud" />
+                
+                <h:commandButton id="validarSolNodo"  action="#{solicitudModificacionCMBean.validarNodos()}" 
+                                 rendered="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'COBERTURA' }"  
+                                 disabled="#{!(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}"
+                                 styleClass="btn"  value="Validar Nodos"/>
+                <h:commandButton id="guardarSolCobertura"  action="#{solicitudModificacionCMBean.preGuardarModificarCobertura}" 
+                                 rendered="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'COBERTURA' }"  styleClass="btn"  
+                                 disabled="#{!(encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId == null)}"
+                                 value="Confirmar Solicitud"/>
+                <h:commandButton  styleClass="btn"  value="Confirmar Solicitud"
+                                  rendered="#{encabezadoSolicitudModificacionCMBean.activoCheckModSubedificios and 
+                                                               solicitudModificacionCMBean.mostrarCrearSubedificio}">
+                    <f:ajax  execute="@form" event="click" listener="#{solicitudModificacionCMBean.preguardarSolicitudCrearSubedificio()}" />
+                </h:commandButton>
+                <h:commandButton   styleClass="btn"  value="Cancelar" immediate="true" 
+                                   rendered="#{encabezadoSolicitudModificacionCMBean.activoCheckModSubedificios and 
+                                                               solicitudModificacionCMBean.mostrarCrearSubedificio}" >
+                    <f:ajax render="@form" execute="@form" event="click" listener="#{solicitudModificacionCMBean.ocultarCrearSubedificio()}" />
+                </h:commandButton>
+
+               
+            </h:panelGrid>
+
+        </h:panelGroup>
+    
+        <h:panelGroup id="groupBotonGestion" rendered="#{solicitudModificacionCMBean.modoGestion}" >
+            <h:panelGrid columns="3"  >
+                <h:commandButton  id="gestionarGeneral" action="#{solicitudModificacionCMBean.gestionarHHPP}" 
+                                  rendered="#{(encabezadoSolicitudModificacionCMBean.selectedTab eq 'DATOSCM' and encabezadoSolicitudModificacionCMBean.activoCheckModDatosCM )
+                                              or (encabezadoSolicitudModificacionCMBean.selectedTab eq 'DIRECCION' and encabezadoSolicitudModificacionCMBean.activoCheckModDireccion )
+                                              or (encabezadoSolicitudModificacionCMBean.selectedTab eq 'SUBEDIFICIOS' and encabezadoSolicitudModificacionCMBean.activoCheckModSubedificios ) }" 
+                                              disabled ="#{!solicitudModificacionCMBean.mostrarGestionHHPP or 
+                                                           encabezadoSolicitudModificacionCMBean.solicitudModCM.fechaGestionHhpp!=null }"
+                                  styleClass="btn"  value="Gestionar Solicitud"/>
+                <h:commandButton id="validarGestNodo"  action="#{solicitudModificacionCMBean.validarNodos()}" 
+                                 rendered="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'COBERTURA' and encabezadoSolicitudModificacionCMBean.activoCheckModCobertura }"  
+                                 styleClass="btn"  value="Validar Nodos"/>
+                <h:commandButton  id="gestionarCobertura" action="#{solicitudModificacionCMBean.gestionarDisenoRed}" 
+                                  rendered="#{encabezadoSolicitudModificacionCMBean.selectedTab eq 'COBERTURA' and encabezadoSolicitudModificacionCMBean.activoCheckModCobertura }"  
+                                   styleClass="btn"  value="Gesti&oacute;n Cobertura"/>
+
+            </h:panelGrid>
+        </h:panelGroup>
+
+    </body>
+</html>

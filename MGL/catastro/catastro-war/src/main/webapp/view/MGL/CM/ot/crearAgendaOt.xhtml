@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/otTemplate.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Crear Agenda</span></ui:define>
+    <ui:define name="content">
+        <h:panelGroup id="creacionAgendas" > <!--rendered="# {visitaTecnicaBean.nuevaAgenda}"-->
+            <div class="wizard-form">
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel for="fechaAgenda" value="Fecha de consulta" />
+                    </div>
+                    <h:panelGroup id="panelGruopFechaAgenda">
+                        <h:inputText label="Fecha habilitación" id="fechaAgenda" style="width: 80%"
+                                     value="#{cmtAgendamientoMglBean.fechaAgenda}"
+                                     readonly="false" disabled="false" styleClass="datepicker"
+                                     validatorMessage="Formato de fecha incorrecto en el campo Fecha de consulta">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:inputText>
+                    </h:panelGroup>
+                </div>
+                <div class="wizard-form-column">
+                    <h:commandButton value="Consultar capacidad"
+                                     title="Consulta la capacidad"
+                                     class="btn">
+                        <f:ajax render="capacidadAgendaTbl"
+                                listener="#{cmtAgendamientoMglBean.consultarAgenda()}" />
+                    </h:commandButton>
+                </div>
+                <hr />
+            </div>
+            <div class="wizard-form">
+                <h:dataTable id="capacidadAgendaTbl"
+                             value="#{cmtAgendamientoMglBean.capacidad}"
+                             var="capacidad" styleClass="constructGTable" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+
+                    <h:column>
+                        <f:facet name="header">Hora</f:facet>
+                        <h:outputText value="#{capacidad.timeSlot}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Tipo de trabajo</f:facet>
+                        <h:outputText value="#{capacidad.workSkill}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Capacidad total</f:facet>
+                        <h:outputText value="#{capacidad.quota}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Capacidad disponible</f:facet>
+                        <h:outputText value="#{capacidad.available}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Restricciones</f:facet>
+                        <h:commandButton value="ver" onclick="$('#dialogAgenda').dialog();"
+                                         rendered="#{not empty capacidad.restricciones}"
+                                         actionListener="#{cmtAgendamientoMglBean.verRestricciones(capacidad)}">
+                            <f:ajax render=":form33646:panelRestricciones" />
+                        </h:commandButton>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Solicitar Agenda</f:facet>
+                        <h:commandButton value="Agendar" styleClass="btn"
+                                         actionListener="#{cmtAgendamientoMglBean.agendar(capacidad)}">
+                        </h:commandButton>
+                    </h:column>
+
+                </h:dataTable>
+                <hr />
+            </div>
+            <div class="wizard-form">
+                <h:commandButton value="Crear agenda"
+                                 id="btnCrearAgenda"
+                                 title="Permite crear agenda para la ot"
+                                 class="btn">
+                    <f:ajax render="form33646"
+                            listener="#{cmtAgendamientoMglBean.adicionarAgenda()}"
+                            immediate="true"/>
+                </h:commandButton>
+
+                <h:commandButton value="Cancelar"
+                                 id="btnCancelarCrearAgenda"
+                                 title="Cancelacion de creacion agenda para la ot"
+                                 class="btn">
+                    <f:ajax render="form33646"
+                            listener="#{cmtAgendamientoMglBean.adicionarAgenda()}" />
+                </h:commandButton>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup id="panelRestricciones" style="width: 500px;">
+            <div id="dialogAgenda" title="Restricciones de la agenda"
+                 style="display: none;width: 500px;">
+                <h:dataTable id="restriccionesTbl" style="width: 500px;"
+                             value="#{cmtAgendamientoMglBean.restricciones}"
+                             var="restriccion" styleClass="constructGTable" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+                    <h:column>
+                        <f:facet name="header">Código</f:facet>
+                        <h:outputText value="#{restriccion.code}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Tipo</f:facet>
+                        <h:outputText value="#{restriccion.type}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Descripción</f:facet>
+                        <h:outputText value="#{restriccion.description}" />
+                    </h:column>
+                </h:dataTable>
+            </div>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

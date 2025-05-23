@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:form id="formEncabezadoVt">
+        <div id="visitaTecnica">
+            <table style="width: 100%; border-spacing: 7px;">
+                   <tr><td></td>
+                    <td>  <h:outputText class="txtLabelsMgl" value="N&uacute;mero Cuenta"/>  </td>
+                    <td>    <h:outputText class="columnReadForm" id="nCuenta" value="#{visitaTecnicaBean.vt.otObj.cmObj.numeroCuenta}"/></td>
+                    <td>  <h:outputText class="txtLabelsMgl" value="N&uacute;mero OT - VT"/></td>
+                    <td>  <h:outputText class="columnReadForm" id="OtVt" value="#{visitaTecnicaBean.vt.otObj.idOt}"/></td>
+                    <td>     <h:outputText class="txtLabelsMgl" value="Fecha"/></td>
+                    <td>   <h:outputText class="columnReadForm" id="fechaOtVt"  value="#{visitaTecnicaBean.vt.otObj.fechaCreacion}"/></td>
+
+                </tr> 
+                <tr></tr>
+                <tr><td></td>
+                    <td>   <h:outputText class="txtLabelsMgl" value="Inicio OT - VT"/></td>
+                    <td>  <h:outputText class="columnReadForm" id="inicioOtVt" value="#{visitaTecnicaBean.vt.otObj.fechaCreacion}"/></td>
+                    <td>  <h:outputText class="txtLabelsMgl" value="Segmento" /></td>
+                    <td>  <h:selectOneMenu id="TipoSegmentoFvtList"  value="#{visitaTecnicaBean.segmento.basicaId}"
+                                           style="width: 140px"
+                                           required="true" disabled="true">
+                           <f:selectItems value="#{visitaTecnicaBean.segmentoList}" var="ts"
+                                           itemValue="#{ts.basicaId}"
+                                           itemLabel="#{ts.nombreBasica}"/>                
+                        </h:selectOneMenu></td>
+                    <td>  <h:outputText class="txtLabelsMgl" value="Tipo Actividad" /></td>
+                    <td>  <h:selectOneMenu id="TipoActividadFvtList"  value="#{visitaTecnicaBean.actividad.basicaId}"
+                                           style="width: 140px"
+                                           required="true" disabled="true">
+                            <f:selectItems value="#{visitaTecnicaBean.tipoActividadList}" var="ta"
+                                           itemValue="#{ta.basicaId}"
+                                           itemLabel="#{ta.nombreBasica}"/>                 
+                        </h:selectOneMenu></td>
+                    <td>   <h:outputText value="Estado Interno" id="EstInternoOtLabel" class="txtLabelsMgl"/></td>
+                    <td> <h:selectOneMenu id="EstadoOtList"  value="#{OtMglBean.estadoOtId}"
+                                          style="width: 140px"
+                                          required="true" disabled="true"> <!--disabled="#{OtMglBean.ordenTrabajo.idOt == null}"-->
+                            <f:selectItem itemValue="#{OtMglBean.ordenTrabajo.estadoInternoObj.basicaId}" 
+                                          itemLabel="#{OtMglBean.ordenTrabajo.estadoInternoObj.nombreBasica}" />
+                            <f:selectItems value="#{OtMglBean.detalleFlujoEstActual}" var="lde"
+                                           itemValue="#{lde.proximoEstado.basicaId}"
+                                           itemLabel="#{lde.proximoEstado.nombreBasica}"/>                 
+                        </h:selectOneMenu></td>
+                </tr> 
+                <tr></tr>
+                <tr><td></td>
+                    <td>   <h:outputText value="Tecnolog&iacute;a" id="tecLabel" class="txtLabelsMgl"/></td>
+                    <td>   <h:selectOneMenu id="tecnologiasList"  value="#{visitaTecnicaBean.tecnologia.basicaId}" 
+                                            style="width: 140px"
+                                            required="true" disabled="true">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{visitaTecnicaBean.listTablaBasicaTecnologias}" var="tec"
+                                           itemValue="#{tec.basicaId}"
+                                           itemLabel="#{tec.nombreBasica}"/>                 
+                        </h:selectOneMenu></td>
+                    <td>   <h:outputText value="Tipo de Trabajo" id="TipoOtLabel" class="txtLabelsMgl"/></td>
+                    <td>  <h:selectOneMenu id="SubtipoTrabajoLabel"  value="#{visitaTecnicaBean.tipoTrabajo.basicaId}"
+                                           style="width: 140px"
+                                           required="true" disabled="true" >
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{visitaTecnicaBean.listTipoOrdenTrabajo}" var="tt"
+                                           itemValue="#{tt.basicaId}"
+                                           itemLabel="#{tt.nombreBasica}"/>                           
+                        </h:selectOneMenu></td>
+                    <td>  <h:outputText value="Sub Tipo de Trabajo" id="TipoSubOtLabel" class="txtLabelsMgl"/></td>
+                    <td>  <h:selectOneMenu id="tipoTrabajoOt"  value="#{visitaTecnicaBean.subTipoTrabajo.idTipoOt}"
+                                           style="width: 140px"
+                                           required="true" disabled="true">
+                            <f:selectItem itemValue="" itemLabel="" />
+                            <f:selectItems value="#{visitaTecnicaBean.listTipoTrabajoOt}" var="sub"
+                                           itemValue="#{sub.idTipoOt}"
+                                           itemLabel="#{sub.descTipoOt}"/>  
+
+                        </h:selectOneMenu></td>
+
+                </tr> 
+
+            </table>
+
+
+        </div>
+    </h:form>
+</ui:composition>

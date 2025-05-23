@@ -1,0 +1,673 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <ui:composition template="/view/MGL/template/main.xhtml">
+        <ui:define name="title">HHPP Marcacion Fraude Uno a Uno</ui:define>
+        <ui:define name="content">
+            <table style="width: 100%" >
+                <td style="width:96%" ><h2 id="solModData" style="margin-top: 0px; margin-left: -12px;text-align: center;">Busqueda/HHPP Fraudes</h2>  </td>
+                <td style="width:5%">
+                    <h:commandButton style="margin:0px 0 11px 0; " id="mostrarComponenteButtonDir" image="/view/img/ocultar.png" >
+                        <f:ajax render="panelcontenidoBusqueda buttonClean" 
+                                event="click" listener="#{fraudesHHPPUnoUno.showHideDireccion()}" />
+                    </h:commandButton>
+                </td>
+            </table>
+            <h:panelGroup id="panelcontenidoBusqueda">
+                <h:panelGroup id="contenidoBusqueda" rendered="#{fraudesHHPPUnoUno.showPanelBusquedaDireccion}">
+                    <h:panelGrid columns="9" id="modeloHhppMgl" class="formulario3"  style="width:100%;"  >        
+                        <h:panelGrid>
+                            <h:outputText style="font-weight:bold"  id="tipoDireccion" value="Tipo Dirección:" />  
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:selectOneMenu style="width: 140px;"  id="tipoDireccionComboBox" 
+                                             value="#{fraudesHHPPUnoUno.tipoDireccion}">                            
+                                <f:selectItem itemLabel="CALLE - CARRERA" itemValue="CK"/>
+                                <f:selectItem itemLabel="BARRIO - MANZANA" itemValue="BM"/>
+                                <f:selectItem itemLabel="INTRADUCIBLE" itemValue="IT"/>
+                                <f:ajax  event="change" execute="tipoDireccionComboBox" 
+                                         listener="#{fraudesHHPPUnoUno.validarTipoDireccion()}" 
+                                         render="panelWrapper direccionStrLabel" />
+                            </h:selectOneMenu>  
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight:bold" value="Departamento" /> 
+                        </h:panelGrid>            
+                        <h:panelGrid>                
+                            <h:selectOneMenu style="width: 140px;" value="#{fraudesHHPPUnoUno.departamento}"                                           
+                                             id="departamento" >                            
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                <f:selectItems value="#{fraudesHHPPUnoUno.departamentoList}" 
+                                               var="departamento" itemLabel="#{departamento.gpoNombre}" 
+                                               itemValue="#{departamento.gpoId}"/> 
+                                <f:ajax  event="change" execute="@form" 
+                                         listener="#{fraudesHHPPUnoUno.obtenerCiudadesList()}"
+                                         render="ciudad centroPoblado"/> 
+                            </h:selectOneMenu> 
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight:bold"  id="cityC" value="Ciudad:"></h:outputText>                
+                        </h:panelGrid>            
+                        <h:panelGrid>
+                            <h:selectOneMenu style="width: 140px;" value="#{fraudesHHPPUnoUno.ciudad}"                                           
+                                             id="ciudad" >                            
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                <f:selectItems value="#{fraudesHHPPUnoUno.ciudadesList}" 
+                                               var="ciudad" itemLabel="#{ciudad.gpoNombre}" 
+                                               itemValue="#{ciudad.gpoId}"/> 
+                                <f:ajax event="change" execute="@form" 
+                                        listener="#{fraudesHHPPUnoUno.obtenerCentroPobladoList()}"
+                                        render="centroPoblado "/> 
+                            </h:selectOneMenu>     
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:outputText style="font-weight:bold" value="Centro Poblado" /> 
+                        </h:panelGrid>
+                        <h:panelGrid>
+                            <h:selectOneMenu id="centroPoblado" style="width: 140px;"           
+                                             value="#{fraudesHHPPUnoUno.idCentroPoblado}" >
+                                <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                                <f:selectItems value="#{fraudesHHPPUnoUno.centroPobladoList}" 
+                                               var="centroPob"
+                                               itemValue="#{centroPob.gpoId}"
+                                               itemLabel="#{centroPob.gpoNombre}">
+                                </f:selectItems>   
+                                <f:ajax  event="change" execute="centroPoblado" render="panelWrapper"
+                                         listener="#{fraudesHHPPUnoUno.obtenerCentroPobladoSeleccionado(false)}"/>  
+                            </h:selectOneMenu> 
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <br/><br/>
+                    <hr size="5" width="100%" align="LEFT"/>
+                    <div style="padding:15px"> 
+                        <h:panelGroup id="panelWrapper" >
+                            <h:panelGroup id="ckPanel" rendered="#{fraudesHHPPUnoUno.showCKPanel}" >
+                                <h:panelGrid columns="6" >
+                                    <h:panelGroup  > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="dir" value="*"/>
+                                        <h:outputText id="direccionLabel" value="Ingrese la dirección:" /> </h:panelGroup>
+                                    <h:panelGroup > <h:inputText value="#{fraudesHHPPUnoUno.direccionCk}"
+                                                                 id="direccion" style="width: 490px; margin-right: 10px;"
+                                                                 maxlength="49" /> 
+                                    </h:panelGroup>
+                                    <h:panelGroup ><h:commandButton value="+" styleClass="btn"
+                                                                    title="Construir Direccion"                                                           
+                                                                    id="agregarDireccionCkButton"
+                                                                    action="#{fraudesHHPPUnoUno.construirDireccionCk()}"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>                   
+                                </h:panelGrid>
+                                <!--STAR-->
+                                <h:panelGroup rendered="#{!fraudesHHPPUnoUno.notGeoReferenciado}" id="pnNoRefences">
+                                    <table style="padding:5px 5px;" cellspacing="2" cellpadding="2">
+                                        <tr>
+                                            <td colspan="6" style="text-align: center; vertical-align: middle;height: 20px;">
+                                                <h:outputText id="compDircc4a" value="Calle" style=" text-decoration: underline;font-weight: bold; text-align: center; vertical-align: middle;" ></h:outputText>
+                                            </td>
+                                        </tr>    
+
+                                        <tr>
+                                            <td style="width:130px;margin: 5px 5px;">
+                                                <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegViaa" value="*"/><h:outputText id="compDircc5a" style="font-weight: bold;margin: 5px 5px;" value="Vía principal:"/>
+                                            </td>
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegNums" value="*"/><h:outputText id="compDircc6s" style="font-weight: bold;margin: 5px 5px;" value="Núm:" />
+                                            </td>
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:outputText id="compDircc7a" style="font-weight: bold;margin: 5px 5px;" value="Letra:"/>
+                                            </td>
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:outputText id="compDircc8s" style="font-weight: bold;margin: 5px 5px;" value="Letra 2:"/>
+                                            </td>
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:outputText id="compDircc9a" style="font-weight: bold;margin: 5px 5px;" value="Bis:"/>
+                                            </td>
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:outputText  id="compDircc10s" style="font-weight: bold;margin: 5px 5px;" value="Cardinales:"/>
+                                            </td>
+                                        </tr>                                             
+
+                                        <tr>
+                                            <td style="width:130px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="viaPrincipala"  value="#{fraudesHHPPUnoUno.drDireccion.tipoViaPrincipal}" style="width:120px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems   value="#{fraudesHHPPUnoUno.obtenerListadoTipoSolicitudList('CALLES_DIR')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+
+                                            <td style="width:120px;margin: 5px 5px;">                                                                           
+                                                <h:inputText  id="compDircc12a"  value="#{fraudesHHPPUnoUno.drDireccion.numViaPrincipal}" style="width:105px;" >                              
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:inputText>  
+                                            </td>
+
+                                            <td style="width:70px;margin: 5px 5px;"> 
+                                                <h:selectOneMenu id="letraUnoPrincipala"  value="#{fraudesHHPPUnoUno.drDireccion.ltViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems  value="#{fraudesHHPPUnoUno.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>      
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+
+                                            <td style="width:70px;margin: 5px 5px;"> 
+                                                <h:selectOneMenu id="letraDosPrincipala"  value="#{fraudesHHPPUnoUno.drDireccion.nlPostViaP}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems  value="#{fraudesHHPPUnoUno.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>                                    
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+
+                                            <td style="width:70px;margin: 5px 5px;"> 
+                                                <h:selectOneMenu id="bisPrincipala"   value="#{fraudesHHPPUnoUno.drDireccion.bisViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems    value="#{fraudesHHPPUnoUno.optionBisDir('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>                                   
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+
+                                            <td style="width:120px;margin: 5px 5px;"> 
+                                                <h:selectOneMenu id="cuadrantePrincipala"  value="#{fraudesHHPPUnoUno.drDireccion.cuadViaPrincipal}" style="width:100px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems    value="#{fraudesHHPPUnoUno.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6">
+                                                <h:outputText  id="compDircc17a" value="#"  style=" font-size: 25px; text-align: center;margin:5px 5px;"></h:outputText>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <table id="calleCarrera_9a" style="padding:5px 5px;" cellpadding="2" cellspacing="2">
+                                        <tr>
+                                            <td style="text-align:center;" colspan="9">
+                                                <h:outputText id="compDircc18s" value="Placa" style="text-decoration:underline;font-weight:bold;text-align:center;vertical-align: middle;" ></h:outputText>
+                                            </td>
+                                        </tr> 
+                                        <tr>
+                                            <td style="width:130px;margin:5px 5px;">                
+                                                <h:outputText  id="compDircc20a" style="font-weight:bold;margin:5px 5px;" value="Cruce"/>
+                                            </td>
+                                            <td style="width:120px;margin:5px 5px;">                     
+                                                <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegNumGena" value="*"/>
+                                                <h:outputText  id="compDircc21s" style="font-weight:bold;margin:5px 5px;" value="Núm:"/>
+                                            </td>
+                                            <td style="width:70px;margin:5px 5px;">
+                                                <h:outputText  id="compDircc22a" style="font-weight:bold;margin:5px 5px;" value="Letra:"/>
+                                            </td>
+                                            <td style="width:70px;margin:5px 5px;">
+                                                <h:outputText  id="compDircc23d" style="font-weight:bold;margin:5px 5px;" value="Letra 2:"/>
+                                            </td>
+                                            <td style="width:70px;margin:5px 5px;">
+                                                <h:outputText  id="compDircc24a" style="font-weight:bold;margin:5px 5px;" value="Letra 3:"/>
+                                            </td>
+                                            <td style="width:120px;margin:5px 5px;">
+                                                <h:outputText  id="compDircc25d" style="font-weight:bold;margin:5px 5px;" value="Bis:"/>
+                                            </td>
+                                            <td style="width:120px;margin:5px 5px;">
+                                                <h:outputText  id="compDircc26a" style="font-weight:bold;margin:5px 5px;" value="Cardinales:"/>
+                                            </td>
+                                            <td>
+                                                <h:outputText></h:outputText>
+                                            </td>
+                                            <td style="width:120px;margin:5px 5px;">
+                                                <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegPlaa" value="*"/>
+                                                <h:outputText  id="compDircc27a" value="No. Placa:" style="font-weight:bold;margin:5px 5px;"/>
+                                            </td>                  
+                                        </tr>
+                                        <tr>
+                                            <td style="width:130px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="viaGeneradoras" value="#{fraudesHHPPUnoUno.drDireccion.tipoViaGeneradora}" style="width:120px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{fraudesHHPPUnoUno.obtenerListadoTipoSolicitudList('CALLES_DIR_GEN')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu> 
+                                            </td>
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:inputText id="compDircc261a" value="#{fraudesHHPPUnoUno.drDireccion.numViaGeneradora}" style="width:105px;margin: 5px 5px;" >
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:inputText>
+                                            </td>
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:selectOneMenu  id="letraUnoGeneradoras" value="#{fraudesHHPPUnoUno.drDireccion.ltViaGeneradora}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{fraudesHHPPUnoUno.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td> 
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="letraDosGeneradoraa" value="#{fraudesHHPPUnoUno.drDireccion.nlPostViaG}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{fraudesHHPPUnoUno.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+                                            <td style="width:70px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="letraTresGeneradoraa" value="#{fraudesHHPPUnoUno.drDireccion.letra3G}" style="width:60px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{fraudesHHPPUnoUno.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn"/>
+                                                </h:selectOneMenu>
+                                            </td> 
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="bisGeneradoras" value="#{fraudesHHPPUnoUno.drDireccion.bisViaGeneradora}" style="width:100px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{fraudesHHPPUnoUno.optionBisDir('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>                                   
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:selectOneMenu id="cuadranteGeneradoras" value="#{fraudesHHPPUnoUno.drDireccion.cuadViaGeneradora}" style="width:100px;margin: 5px 5px;">
+                                                    <f:selectItem itemValue="" itemLabel=""/>
+                                                    <f:selectItems value="#{fraudesHHPPUnoUno.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                                </h:selectOneMenu>
+                                            </td>
+                                            <td>
+                                                <h:outputText  id="compDircc3a4" value="#{' '}-#{' '}" style="font-size: 25px; font-weight:bold"></h:outputText>
+                                            </td> 
+                                            <td style="width:120px;margin: 5px 5px;">
+                                                <h:inputText id="compDircc35a1"  value="#{fraudesHHPPUnoUno.drDireccion.placaDireccion}" style="width:90px;margin:5px 5px;">   
+                                                    <f:ajax event="change" listener="#{fraudesHHPPUnoUno.buildDireccion()}" render="createDireccionn direccionStrLabel compDircc35a1"/>
+                                                </h:inputText>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align:center;" colspan="9">
+                                                <h:outputText value="#{fraudesHHPPUnoUno.createDireccion}" style="font-weight:bold;color:red;" id="createDireccionn"/>
+                                            </td>
+                                        </tr>                        
+                                    </table>                               
+                                </h:panelGroup>
+                            </h:panelGroup>
+                            <h:panelGroup id="bmPanel" rendered="#{fraudesHHPPUnoUno.showBMPanel}">
+                                <h:panelGrid columns="6" >
+                                    <h:panelGroup > 
+                                        <h:outputText id="addInfo" value="Ingrese uno a uno los valores:" /> </h:panelGroup>
+                                    <h:panelGroup >
+                                        <h:selectOneMenu                                     
+                                            style="width: 100%" id="tipoDireccionBMComboBox" 
+                                            value="#{fraudesHHPPUnoUno.tipoNivelBm}">
+                                            <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                            <f:selectItems value="#{fraudesHHPPUnoUno.bmList}" 
+                                                           var="barriomanzana"  itemValue="#{barriomanzana.idParametro}" 
+                                                           itemLabel="#{barriomanzana.descripcion}"/>
+                                        </h:selectOneMenu></h:panelGroup>
+                                    <h:panelGroup ><h:inputText value="#{fraudesHHPPUnoUno.nivelValorBm}" 
+                                                                id="tipoDireccionBM" style="width: 100%; margin-right: 10px;" maxlength="250"  />
+                                    </h:panelGroup>              
+                                    <h:panelGroup ><h:commandButton                                      
+                                            title="Construir Direccion"  value="+" styleClass="btn"
+                                            action="#{fraudesHHPPUnoUno.construirDireccionBm()}" 
+                                            id="agregarInfoBMButton" /></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+                                </h:panelGrid>
+                            </h:panelGroup>
+
+                            <h:panelGroup id="itPanel" rendered="#{fraudesHHPPUnoUno.showITPanel}">
+
+                                <h:panelGrid columns="6" >
+                                    <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="it" value="*"/> <h:outputText id="addInfoIt" value="Ingrese uno a uno los valores:" /> </h:panelGroup>
+                                    <h:panelGroup ><h:selectOneMenu style="width: 100%"  id="tipoDireccionITComboBox"  value="#{fraudesHHPPUnoUno.tipoNivelIt}">
+                                            <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                            <f:selectItems value="#{fraudesHHPPUnoUno.itList}" 
+                                                           var="intraducible"  itemValue="#{intraducible.idParametro}" itemLabel="#{intraducible.descripcion}"/>
+
+                                        </h:selectOneMenu></h:panelGroup>
+                                    <h:panelGroup ><h:inputText value="#{fraudesHHPPUnoUno.nivelValorIt}"  id="tipoDireccionIt" style="width: 100%;margin-right: 10px;" maxlength="250"  /></h:panelGroup>              
+                                    <h:panelGroup ><h:commandButton title="Construir Direccion" styleClass="btn" value="+" action="#{fraudesHHPPUnoUno.construirDireccionIt()}" id="agregarInfoItButton"  /></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+                                </h:panelGrid>
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGrid columns="8"   style="width:100%;"> 
+                            <h:outputText style="font-weight:bold" id="complementoLabel" value="Complemento:" />               
+                            <h:selectOneMenu style="width: 90%"  id="tipoComplementoComboBox" 
+                                             value="#{fraudesHHPPUnoUno.tipoNivelComplemento}"> 
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                <f:selectItems value="#{fraudesHHPPUnoUno.complementoList}" 
+                                               var="complemento"  itemValue="#{complemento.idParametro}" 
+                                               itemLabel="#{complemento.descripcion}"/>
+                            </h:selectOneMenu>   
+                            <h:inputText maxlength="50" style="margin-right: 10px;width: 90%" id="complementoParametro" 
+                                         value="#{fraudesHHPPUnoUno.complemento}" />  
+                            <h:commandButton title="Construir Direccion"
+                                             action="#{fraudesHHPPUnoUno.construirDireccionComplemento()}"
+                                             id="agregarComplementoButton" styleClass="btn" value="+"> 
+                            </h:commandButton> 
+                            <h:outputText style="font-weight:bold" id="apartamentoLabel" value="Apartamento:" />         
+
+                            <h:selectOneMenu style="width: 90%"  id="tipoApartamentoComboBox" 
+                                             value="#{fraudesHHPPUnoUno.tipoNivelApartamento}">
+                                <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                <f:selectItems value="#{fraudesHHPPUnoUno.aptoList}" 
+                                               var="apartamento"  itemValue="#{apartamento.idParametro}"
+                                               itemLabel="#{apartamento.descripcion}"/>
+                            </h:selectOneMenu>  
+                            <h:inputText maxlength="10" style="margin-right: 10px;width: 90%" id="apartamentoParametro" 
+                                         value="#{fraudesHHPPUnoUno.apartamento}" />             
+                            <h:commandButton title="Construir Dirección"  
+                                             action="#{fraudesHHPPUnoUno.construirDireccionApartamento()}"
+                                             id="agregarApartamentoButton" styleClass="btn" value="+"/>          
+                                 
+                        </h:panelGrid>
+                    </div>
+
+                    <h:panelGroup id="barriosSugeridospanelWrapper" >
+                        <h:panelGroup id="barriosSugeridosPanel" rendered="#{fraudesHHPPUnoUno.showBarrio}" >
+                            <hr size="5" width="100%" align="LEFT"/>
+                            <div style="border: 2px groove #f70808; margin: 9px;padding: 8px;">
+
+                                <span class="TituloSeccion"> <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="barriospan" value="BARRIO SUGERIDO"/></span>
+                                <br/>
+                                <h:panelGrid columns="6" >
+
+                                    <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="barrioSug" value="*"/> <h:outputText id="barrioSugeridoLabel"
+                                                                                                                                                                  value="Seleccione barrio sugerido:" /> </h:panelGroup>
+                                    <h:panelGroup > 
+                                        <h:selectOneMenu 
+                                            style="width: 100%"  id="barrioSugeridoComboBox" 
+                                            value="#{fraudesHHPPUnoUno.barrioSugerido}">
+                                            <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                            <f:selectItems value="#{fraudesHHPPUnoUno.barrioSugeridoList}" var="barriomanzana"  itemValue="#{barriomanzana.neighborhood}" itemLabel="#{barriomanzana.neighborhood}" />
+                                            <f:ajax event="change" execute="barrioSugeridoComboBox"
+                                                    listener="#{fraudesHHPPUnoUno.validarBarrioSugeridoSeleccionado()}"
+                                                    render="barriosSugeridospanelWrapper barrioStrsa"/>
+                                        </h:selectOneMenu>
+                                    </h:panelGroup>
+                                    <h:panelGroup > 
+                                        <h:outputText id="barrioText" rendered="#{fraudesHHPPUnoUno.barrioSugeridoField}"
+                                                      value="Ingrese barrio:" /></h:panelGroup>
+                                    <h:panelGroup >
+                                        <h:inputText 
+                                            id="barrioField" rendered="#{fraudesHHPPUnoUno.barrioSugeridoField}"  value="#{fraudesHHPPUnoUno.barrioSugeridoStr}"/></h:panelGroup>
+                                    <h:panelGroup >
+                                        <h:commandButton 
+                                            rendered="#{fraudesHHPPUnoUno.barrioSugeridoField}"
+                                            action="#{fraudesHHPPUnoUno.agregarBarrioSugerido()}"
+                                            id="agregarBarrioButton" value="Agregar Barrio" 
+                                            styleClass="btn" > 
+                                            <f:ajax event="change" execute="@this" render="barrioStrsa"/>
+                                        </h:commandButton></h:panelGroup>
+                                    <h:panelGroup ></h:panelGroup>
+
+                                </h:panelGrid>
+                            </div>
+                        </h:panelGroup>
+
+                    </h:panelGroup>
+
+
+
+                    <div style="width: 100%; text-align: center;" >
+                        <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;" 
+                                      id="direccionStrLabel" value="#{fraudesHHPPUnoUno.direccionLabel}" /> 
+
+                        <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;" id="barrioStrsa" value="#{fraudesHHPPUnoUno.barrioSugeridoStr}" /> 
+                    </div>
+
+
+                    <div style="width: 100%; text-align: center;" >
+                        <h:commandButton title="Buscar Hhpp"  
+                                         action="#{fraudesHHPPUnoUno.buscarHhpp()}"
+                                         id="searchHhppButton" styleClass="btn" value="Buscar"/>
+
+                        <h:commandButton title="Limpiar búsqueda Hhpp"  
+                                         action="#{fraudesHHPPUnoUno.limpiarBusqueda()}" 
+                                         immediate="#{fraudesHHPPUnoUno.borrarListaFraudes()}"
+                                         id="cleanButton" styleClass="btn" value="Limpiar" />
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <div style="width: 100%; text-align: center;margin: -6px;">
+                <h:panelGroup id="buttonClean" >
+                    <h:commandButton title="Limpiar búsqueda Hhpp" rendered="#{!fraudesHHPPUnoUno.showPanelBusquedaDireccion}"  
+                                     action="#{fraudesHHPPUnoUno.limpiarBusqueda()}" 
+                                     immediate="#{fraudesHHPPUnoUno.borrarListaFraudes()}"
+                                     id="cleanButtonBusqueda" styleClass="btn" value="Limpiar"/> 
+                </h:panelGroup>
+                <h:panelGroup  >
+                    <h2 style="margin-left: -12px">CONTENIDO</h2>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{fraudesHHPPUnoUno.direccionDetalladaList.size() > 0}" >
+                    <h2 style="margin-left: -12px">DIRECCIONES ENCONTRADAS </h2>
+                </h:panelGroup>
+            </div>
+
+
+            <h:dataTable id="dirList"
+                         value="#{fraudesHHPPUnoUno.direccionDetalladaList}" 
+                         var="dir" 
+                         styleClass="constructGTable"  
+                         headerClass="solicitudesGTableHeader"
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow"   
+                         style="width: 100%; padding: 0px;">
+                <f:facet name="headerButtoon">                                       
+
+                </f:facet>
+
+                <h:column >   
+                    <f:facet name="header">  
+                        <h:outputText value="Id Dirección" />                                 
+                    </f:facet>
+                    <h:outputText value="#{dir.direccionDetalladaId}"/>
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Dirección Completa" />                                                                     
+                    </f:facet>
+                    <h:commandLink value="#{dir.direccionTexto}" action="#{fraudesHHPPUnoUno.addDireccionAFraudes(dir)}" /> 
+                </h:column>                                 
+
+                <h:column >   
+                    <f:facet name="header">
+                        <h:outputText value="Barrio" />
+                    </f:facet>
+                    <h:outputText value="#{dir.barrio}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Ciudad" />
+                    </f:facet>
+                    <h:outputText value="#{dir.ciudad}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Departamento" />
+                    </f:facet>
+                    <h:outputText value="#{dir.departamento}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Centro Poblado" />
+                    </f:facet>
+                    <h:outputText value="#{dir.direccion.ubicacion.gpoIdObj.gpoNombre}"/>                                        
+                </h:column>
+
+                <f:facet name="footer" >
+                    <h:panelGroup rendered="#{fraudesHHPPUnoUno.showFooter}">
+                        <h:commandButton title="Primera Página" value="#{fraudesHHPPUnoUno.inicioPagina}" action="#{fraudesHHPPUnoUno.pageFirst}"
+                                         class="btn"/>
+                        <h:commandButton title="Página Anterior" value="#{fraudesHHPPUnoUno.anteriorPagina}" action="#{fraudesHHPPUnoUno.pagePrevious}"
+                                         class="btn"/>
+                        <h:commandButton title="Número Páginas" value="#{fraudesHHPPUnoUno.pageActual}" styleClass="botonTPagInicio"    />
+                        <h:selectOneMenu id="listTabla" value="#{fraudesHHPPUnoUno.numPagina}" 
+                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                            <f:selectItems value="#{fraudesHHPPUnoUno.paginaList}" var="pag"
+                                           itemValue="#{pag}"
+                                           itemLabel="#{pag}"/>    
+                            <f:ajax render="@form"  event="change"  
+                                    listener="#{fraudesHHPPUnoUno.irPagina()}"  
+                                    execute="@this" />                                         
+                        </h:selectOneMenu>  
+                        <h:commandButton title="Página Siguiente" value="#{fraudesHHPPUnoUno.siguientePagina}" action="#{fraudesHHPPUnoUno.pageNext}"
+                                         class="btn"/>
+                        <h:commandButton title="Última Página" value="#{fraudesHHPPUnoUno.finPagina}" action="#{fraudesHHPPUnoUno.pageLast}"
+                                         class="btn"/>
+
+                        <h:commandButton title="Mover Página" value="Mover Pagina" action="#{fraudesHHPPUnoUno.moverPaginaAFraudes()}"
+                                         class="btn"/>
+                        <h:commandButton title="Borrar Lista" value="Borrar Lista" action="#{fraudesHHPPUnoUno.borrarListaBusqueda()}"
+                                         class="btn"/>
+
+                    </h:panelGroup>
+                </f:facet>                           
+            </h:dataTable>
+
+
+            <div style="width: 100%; text-align: right; margin: 2px;">
+                <h:outputLabel value="Agregar / Eliminar Marcas" style="background-color: #D52B1E; color: white; margin: 1px;" rendered="#{!fraudesHHPPUnoUno.desmarcar}"/>
+                <h:outputLabel value="Eliminar Marca Global" style="background-color: #D52B1E; color: white; margin: 1px;" rendered="#{fraudesHHPPUnoUno.desmarcar}"/>
+
+                <ui:repeat var="mar" value="#{fraudesHHPPUnoUno.listaMarcasFraude}" varStatus="status">
+                    <h:commandLink action="#{fraudesHHPPUnoUno.addMarcaColorAll(mar)}" >
+                        <h:outputText value="#{mar.marCodigo} - " style="font-size:1.5em; font-weight: bold;  color: #{fraudesHHPPUnoUno.verificarColor(mar)};" />
+                    </h:commandLink>
+                </ui:repeat>
+                <h:commandButton title="Volver Marca Original" value="Volver Marca Original" action="#{fraudesHHPPUnoUno.volverTodasMarcasOriginal()}"
+                                 class="btn" rendered="#{fraudesHHPPUnoUno.desmarcar}"/>
+            </div>
+
+
+            <div style="width: 100%; text-align: center;margin: -6px;">
+                <h:panelGroup  >
+                    <h2 style="margin-left: -12px">DIRECCIONES SELECCIONADAS PARA  <h:outputLabel rendered="#{fraudesHHPPUnoUno.desmarcar}" value="DES"/>MARCAR </h2>
+                </h:panelGroup>
+            </div>
+
+            <h:dataTable id="dirListFraudes"
+                         value="#{fraudesHHPPUnoUno.direccionFraudesListMuestra}" 
+                         var="dir" 
+                         styleClass="constructGTable"  
+                         headerClass="solicitudesGTableHeader"
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow"   
+                         style="width: 100%; padding: 0px;">
+                <h:column>
+                    <f:facet name="header">  
+                        <h:outputText value="Id Dirección" />                                 
+                    </f:facet>
+                    <h:outputText value="#{dir.direccionDetalladaId}"/>  
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Dirección Completa" />                                                                     
+                    </f:facet>
+                    <h:outputText value="#{dir.direccionTexto}"/> 
+                </h:column>   
+                <h:column >   
+                    <f:facet name="header">
+                        <h:outputText value="Barrio" />
+                    </f:facet>
+                    <h:outputText value="#{dir.barrio}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Ciudad" />
+                    </f:facet>
+                    <h:outputText value="#{dir.ciudad}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Departamento" />
+                    </f:facet>
+                    <h:outputText value="#{dir.departamento}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Centro Poblado" />
+                    </f:facet>
+                    <h:outputText value="#{dir.direccion.ubicacion.gpoIdObj.gpoNombre}"/>                                        
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Marca" />
+                    </f:facet>
+
+                    <ui:repeat var="mar" value="#{fraudesHHPPUnoUno.listaMarcasFraude}" varStatus="status">
+                        <h:commandLink action="#{fraudesHHPPUnoUno.addMarca(dir,mar)}" rendered="#{!(fraudesHHPPUnoUno.verificarColor(dir,mar) eq 'blue')}" >
+                            <h:outputText value="#{mar.marCodigo} - " style="font-size:1.5em; font-weight: bold;  color: #{fraudesHHPPUnoUno.verificarColor(dir,mar)};" />
+                        </h:commandLink> 
+                    </ui:repeat>
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Eliminar" />
+                    </f:facet>
+                    <div style="text-align: center;">
+                        <h:commandLink immediate="#{fraudesHHPPUnoUno.removeDireccionFraudes(dir)}" action="#{fraudesHHPPUnoUno.pageNext}">
+                            <h:graphicImage value="/view/img/close.gif"  />
+                        </h:commandLink>
+
+                    </div>
+                </h:column>
+                <h:column rendered="#{fraudesHHPPUnoUno.desmarcar}">   
+                    <f:facet name="header">
+                        <h:outputText value="Volver Original" />
+                    </f:facet>
+                    <div style="text-align: center;">
+                        <h:commandLink action="#{fraudesHHPPUnoUno.volverMarcasOriginal(dir)}">
+                            <h:graphicImage value="/view/img/botonAnterior.png"  />
+                        </h:commandLink>
+
+                    </div>
+                </h:column>
+
+
+                <f:facet name="footer" >
+                    <h:panelGroup>
+                        <h:commandButton title="Primera Página" value="#{fraudesHHPPUnoUno.inicioPagina}" action="#{fraudesHHPPUnoUno.pageFirstFra}"
+                                         class="btn"/>
+                        <h:commandButton title="Página Anterior" value="#{fraudesHHPPUnoUno.anteriorPagina}" action="#{fraudesHHPPUnoUno.pagePreviousFra}"
+                                         class="btn"/>
+                        <h:commandButton title="Número Páginas" value="#{fraudesHHPPUnoUno.pageActualFra}" styleClass="botonTPagInicio"    />
+                        <h:selectOneMenu id="listTabla" value="#{fraudesHHPPUnoUno.numPaginaFra}" 
+                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                            <f:selectItems value="#{fraudesHHPPUnoUno.paginaListFra}" var="pag"
+                                           itemValue="#{pag}"
+                                           itemLabel="#{pag}"/>    
+                            <f:ajax render="@form"  event="change"  
+                                    listener="#{fraudesHHPPUnoUno.irPaginaFra()}"  
+                                    execute="@this" />                                         
+                        </h:selectOneMenu>  
+                        <h:commandButton title="Página Siguiente" value="#{fraudesHHPPUnoUno.siguientePagina}" action="#{fraudesHHPPUnoUno.pageNextFra}"
+                                         class="btn"/>
+                        <h:commandButton title="Última Página" value="#{fraudesHHPPUnoUno.finPagina}" action="#{fraudesHHPPUnoUno.pageLastFra}"
+                                         class="btn"/>
+
+                        <h:commandButton title="Borrar Lista" value="Borrar Lista" action="#{fraudesHHPPUnoUno.borrarListaFraudes()}"
+                                         class="btn"/>
+                        
+                    </h:panelGroup>
+                </f:facet>                           
+            </h:dataTable>
+
+            <h:commandButton title="Marcar direcciones fraudulentas" value="Marcar direcciones fraudulentas" action="#{fraudesHHPPUnoUno.guardarMarcasHHPP()}"
+                             class="btn" rendered="#{!fraudesHHPPUnoUno.desmarcar}" disabled="#{!fraudesHHPPUnoUno.validarOpcionMarcarDirFraudulentas()}"/>
+            
+            <h:commandButton title="Desmarcar direcciones fraudulentas" value="Desmarcar direcciones fraudulentas" 
+							 action="#{fraudesHHPPUnoUno.guardarMarcasHHPP()}" class="btn" rendered="#{fraudesHHPPUnoUno.desmarcar}"
+                                                         disabled="#{!fraudesHHPPUnoUno.validarOpcionDesmarcarDirFraudulentas()}"/>
+
+        </ui:define>  
+    </ui:composition>
+</ui:composition>
+

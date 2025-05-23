@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/solicitudHhppTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Actualizar HHPP</span></ui:define>
+
+    <ui:define name="content">
+        <h2>HHPP a modificar: #{encabezadoSolicitudModificacionCMBean.selectHhppMgl.hhpApart}</h2>
+        <h:panelGrid  class="formulario3" columns="6"  style="width: 100%">
+            <h:panelGroup>
+                <h:outputText value=" " class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Nivel 5"  />
+            </h:panelGroup>
+            <h:selectOneMenu id="listNivel5" 
+                             value="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl.opcionNivel5}"
+                             accesskey="" style="width:150px;"
+                             styleClass="ListaConsulta" 
+                             disabled="false">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{SolicitudHhppCMBean.dirNivel5List}" var="ltm5"
+                               itemValue="#{ltm5.descripcion}"
+                               itemLabel="#{ltm5.descripcion}"/>
+            </h:selectOneMenu>
+
+            <h:inputText  id="idSubNvl5"  
+                          value="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl.valorNivel5}" 
+                          required="false" requiredMessage="Campo 'Nivel 5' es requerido"
+                          disabled="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.solicitudCmId != null}"/>
+            <h:panelGroup>
+                <h:outputText value=" " class="txtCamposReqMgl" />
+                <h:outputText class="txtLabelsMgl" value="Nivel 6"  />
+            </h:panelGroup>
+            <h:selectOneMenu id="listNivel6"
+                             value="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl.opcionNivel6}"
+                             accesskey="" style="width:150px;"
+                             styleClass="ListaConsulta" 
+                             disabled="false">
+                <f:selectItem itemValue="" itemLabel="" />
+                <f:selectItems value="#{SolicitudHhppCMBean.dirNivel6List}" var="ltm6"
+                               itemValue="#{ltm6.descripcion}"
+                               itemLabel="#{ltm6.descripcion}"/>
+            </h:selectOneMenu>
+            <h:inputText  id="idSubNvl6"  
+                          value="#{SolicitudHhppCMBean.cmtSolicitudHhppMgl.valorNivel6}" 
+                          required="false" requiredMessage="Campo 'Nivel 6' es requerido"
+                          disabled="false"/>
+            
+            <h:commandButton id="buttonUpdateSolHhpp" value="Actualizar HHPP"
+                             styleClass="btn"
+                             action="#{SolicitudHhppCMBean.actualizarHhpp()}"/>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

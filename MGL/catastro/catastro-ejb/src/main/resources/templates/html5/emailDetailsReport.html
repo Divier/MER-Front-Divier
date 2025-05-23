@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de reporte / export de datos en MER</title>
+    <!-- By Gildardo Mora-->
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+<h3><strong>MÓDULO DE EXPANSIÓN DE RED (MER)</strong></h3>
+<P>
+    <br>
+</P>
+<h4>REPORTE SOLICITADO:</h4>
+
+<table>
+    <caption>Información general del reporte / exportación de datos</caption>
+    <tr>
+        <th scope="row" style="width: 20%">MÓDULO:</th>
+        <td>%modulo</td>
+    </tr>
+    <tr>
+        <th scope="row"> USUARIO:</th>
+        <td>%usuario</td>
+    </tr>
+    <tr>
+        <th scope="row"> NOMBRE DE USUARIO:</th>
+        <td>%nombreUsuario</td>
+    </tr>
+    <tr>
+        <th scope="row">HORA REPORTE:</th>
+        <td>%horaMinutos</td>
+    </tr>
+    <tr>
+        <th scope="row">FECHA REPORTE:</th>
+        <td>%fecha</td>
+    </tr>
+</table>
+<br> <strong>DETALLES DEL REPORTE:</strong>
+<br>
+%mensaje
+</body>
+</html>

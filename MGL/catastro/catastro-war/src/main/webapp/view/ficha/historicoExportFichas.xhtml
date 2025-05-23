@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                template="/view/template/homeFichasTemplate.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="title"><span class="TituloSeccion">Histórico Export Fichas</span></ui:define>
+                    
+    <ui:define name="contenido">
+        <h:form id="frm_historico_ficha">
+            <h:dataTable value="#{historicoFichaBean.historicosFichas}" var="historico" id="list_historico"
+                         styleClass="constructGTable" rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                <f:facet name="header">
+                    <p:outputLabel value="Historico Fichas Export"/>
+                </f:facet>
+                <h:column>
+                    <f:facet name="header">
+                        <p:outputLabel value="Nodo"/><br></br>
+                        <p:selectOneMenu value="#{historicoFichaBean.filtro.nodo.nodId}">
+                            <f:ajax event="change" listener="#{historicoFichaBean.consultarHistoricoFichas(1)}" execute="@form" render="frm_historico_ficha:list_historico"/>
+                            <f:selectItem itemValue="0" itemLabel="--Seleccione--"/>
+                            <f:selectItems value="#{historicoFichaBean.listadoNodos}" var="nodo" itemValue="#{nodo.nodId}" itemLabel="#{nodo.nodCodigo}"></f:selectItems>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <p:outputLabel value="#{historico.nodo.nodCodigo}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <p:outputLabel value="Tipo Tecnologia"/><br></br>
+                        <p:selectOneMenu value="#{historicoFichaBean.filtro.tipoTecnologiaId.basicaId}">
+                            <f:ajax event="change" listener="#{historicoFichaBean.cargarListadoNodos}" execute="@form" render="frm_historico_ficha:list_historico"/>
+                            <f:selectItem itemValue="0" itemLabel="--Seleccione--"/>
+                            <f:selectItems value="#{historicoFichaBean.listadoTiposTecnologia}" var="tecno" itemValue="#{tecno.basicaId}" itemLabel="#{tecno.nombreBasica}"></f:selectItems>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <p:outputLabel value="#{historico.tipoTecnologiaId.descripcion}"/>
+                </h:column>
+                 <h:column>
+                    <f:facet name="header">
+                        <p:outputLabel value="Nombre Archivo"/><br></br>
+                        <p:inputText value="#{historicoFichaBean.filtro.nombreArchivo}">
+                            <f:ajax event="change" listener="#{historicoFichaBean.consultarHistoricoFichas(1)}" execute="@form" render="frm_historico_ficha:list_historico"/>
+                        </p:inputText>
+                    </f:facet>
+                    <p:outputLabel value="#{historico.nombreArchivo}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <p:outputLabel value="Departamento"/><br></br>
+                        <p:selectOneMenu value="#{historicoFichaBean.filtro.departamento.gpoId}">
+                            <f:ajax event="change" listener="#{historicoFichaBean.cargarListadoCiudades}" execute="@form" render="frm_historico_ficha:list_historico"/>
+                            <f:selectItem itemValue="0" itemLabel="--Seleccione--"/>
+                            <f:selectItems value="#{historicoFichaBean.listadoDepartamentos}" var="dtpo" itemValue="#{dtpo.gpoId}" itemLabel="#{dtpo.gpoNombre}"></f:selectItems>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <p:outputLabel value="#{historico.departamento.gpoNombre}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <p:outputLabel value="Ciudad"/><br></br>
+                        <p:selectOneMenu value="#{historicoFichaBean.filtro.ciudad.gpoId}">
+                            <f:ajax event="change" listener="#{historicoFichaBean.cargarListadoCentroPoblado}" execute="@form" render="frm_historico_ficha:list_historico"/>
+                            <f:selectItem itemValue="0" itemLabel="--Seleccione--"/>
+                            <f:selectItems value="#{historicoFichaBean.listadoCiudades}" var="ciudad" itemValue="#{ciudad.gpoId}" itemLabel="#{ciudad.gpoNombre}"></f:selectItems>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <p:outputLabel value="#{historico.ciudad.gpoNombre}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <p:outputLabel value="Centro Poblado"/><br></br>
+                        <p:selectOneMenu value="#{historicoFichaBean.filtro.centroPoblado.gpoId}">
+                            <f:ajax event="change" listener="#{historicoFichaBean.cargarListadoNodos}" execute="@form" render="frm_historico_ficha:list_historico"/>
+                            <f:selectItem itemValue="0" itemLabel="--Seleccione--"/>
+                            <f:selectItems value="#{historicoFichaBean.listadoCentrosPoblado}" var="centro" itemValue="#{centro.gpoId}" itemLabel="#{centro.gpoNombre}"></f:selectItems>
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <p:outputLabel value="#{historico.centroPoblado.gpoNombre}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <p:outputLabel value="Usuario Creación"/><br></br>
+                        <p:inputText value="#{historicoFichaBean.filtro.usuarioCrea}" style="width: 90px;">
+                            <f:ajax event="change" listener="#{historicoFichaBean.consultarHistoricoFichas(1)}" execute="@form" render="frm_historico_ficha:list_historico"/>
+                        </p:inputText>
+                    </f:facet>
+                    <p:outputLabel value="#{historico.usuarioCrea}"/>
+                </h:column>
+                <h:column >
+                    <f:facet name="header">
+                        <p:outputLabel value="Fecha Creación"/><br></br>
+                        <p:calendar value="#{historicoFichaBean.filtro.fechaCreacion}" navigator="true" style="width: 85px;">
+                            <f:ajax event="change" listener="#{historicoFichaBean.consultarHistoricoFichas(1)}" />
+                            <f:ajax event="dateSelect" listener="#{historicoFichaBean.consultarHistoricoFichas(1)}"  />
+                        </p:calendar>
+                    </f:facet>
+                    <p:outputLabel value="#{historico.fechaCreacion}">
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                    </p:outputLabel>
+                </h:column>
+                <h:column>
+                    <h:commandLink value="Detalle" action="#{historicoFichaBean.irADetalleHistorico(historico)}"></h:commandLink>
+                </h:column>
+                <h:column>
+                    <h:commandButton value="Correo" disabled="#{!historicoFichaBean.validarOpcionCorreo()}" action="#{historicoFichaBean.enviarCorreoConInforme(historico)}"  styleClass="btn" style="color:#FFFFFF;"></h:commandButton>
+                </h:column>
+                <h:column>
+                    <h:commandLink value="Descargar" target="_blank" action="#{historicoFichaBean.descargaArchivoHistorico(historico)}" styleClass="buttonl" style="color:#FFFFFF;"></h:commandLink>
+                </h:column>
+                <f:facet name="footer">
+                    <h:commandButton title="Primera Página" value="Inicio" action="#{historicoFichaBean.consultarHistoricoFichas(1)}" class="btn"/>
+                    <h:commandButton title="Página Anterior" value="Anterior" action="#{historicoFichaBean.pagePrevious}" class="btn"/>
+                    <h:selectOneMenu id="listTabla" value="#{historicoFichaBean.numPagina}" 
+                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                        <f:selectItems value="#{historicoFichaBean.paginaList}" var="pag" itemValue="#{pag}" itemLabel="#{pag}"/>    
+                        <f:ajax event="change" listener="#{historicoFichaBean.irPagina()}"/>                                         
+                    </h:selectOneMenu>  
+                    <h:commandButton title="Página Siguiente" value="Siguiente" action="#{historicoFichaBean.pageNext}" class="btn"/>
+                    <h:commandButton title="Última Página" value="Fin" action="#{historicoFichaBean.pageLast}" class="btn"/>
+                </f:facet>
+            </h:dataTable>
+        </h:form>
+    </ui:define>
+    
+</ui:composition>

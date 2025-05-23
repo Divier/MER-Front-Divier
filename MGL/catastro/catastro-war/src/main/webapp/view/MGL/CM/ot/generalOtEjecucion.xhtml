@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    template="/view/MGL/template/otEjecucionTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">General OT Ejecucion</span></ui:define>
+
+    <ui:define name="content">
+        <script language="javascript" type="text/javascript">
+            function noatras() {
+                window.location.hash = "no-back-button";
+                window.location.hash = "Again-No-back-button"
+                window.onhashchange = function () {
+                    window.location.hash = "no-back-button";
+                }
+            }
+        </script>
+        <body  onload="noatras();">
+            <fieldset>
+                <legend> General OT Ejecucion</legend>
+                <table style="width: 100%; border-spacing: 10px;" >
+                    <tr>
+                        <td></td>
+                        <td> <h:outputText value="No OT:" id="NoOtLabel" /></td>
+                        <td>
+                            <h:inputText label="No OT" id="NoOtInput"  style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.idOt == null ? '':OtMglBean.ordenTrabajo.idOt}"
+                                         readonly="true" disabled="true"/>
+                        </td>
+
+                        <td>
+                            <h:outputText value="Tecnología:" id="tecLabel" />
+                        </td>
+                        <td>
+                            <h:inputText label="tecnología" id="NoOtInput1"  style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.basicaIdTecnologia.nombreBasica}"
+                                         readonly="true" disabled="true"/>     
+                        </td>
+
+                        <td> <h:outputText value="Segmento:" id="SegmentoOtLabel" styleClass="formColumn1"/></td>
+
+                        <td>
+                            <h:inputText label="segmento" id="NoOtInput2"  style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.segmento.nombreBasica}"
+                                         readonly="true" disabled="true"/>     
+                        </td>             
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><h:outputText value="Tipo de Trabajo:" id="SubTipoTrabajoOtLabel" /></td>
+                        <td>
+                            <h:inputText label="tipoTrabajo" id="NoOtInput3"  style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.basicaIdTipoTrabajo.nombreBasica}"
+                                         readonly="true" disabled="true"/>     
+                        </td>          
+
+                        <td> <h:outputText value="Sub Tipo de Trabajo" id="TipoTrabajoOtLabel" styleClass="formColumn1"/></td>
+
+                        <td>
+                            <h:inputText label="subTipoTrabajo" id="NoOtInput4"  style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.tipoOtObj.descTipoOt}"
+                                         readonly="true" disabled="true"/>     
+                        </td>     
+
+
+                        <td> <h:outputText value="Fecha Creación:" id="FcreacionOtLabel" styleClass="formColumn1"/></td>
+                        <td>
+
+                            <h:inputText label="Fecha Creación" id="FcreacionOtInput" style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.fechaCreacion}"
+                                         readonly="true" disabled="true" >
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                            </h:inputText>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td>
+                            <h:outputText value="Estado Interno:" id="EstInternoOtLabel" styleClass="formColumn1"/></td>
+                        <td>
+                            <h:selectOneMenu id="EstadoOtList"  value="#{OtMglBean.estadoOtId}"
+                                             styleClass="ListaConsulta"  style="width: 80%"  
+                                             disabled="#{OtMglBean.lstSubEdiVT.size() == 0}">
+                                <f:selectItem itemValue="#{OtMglBean.ordenTrabajo.estadoInternoObj.basicaId}"
+                                              itemLabel="#{OtMglBean.ordenTrabajo.estadoInternoObj.nombreBasica}" />
+                                <f:selectItems value="#{OtMglBean.detalleFlujoEstActual}" var="lde"
+                                               itemValue="#{lde.proximoEstado.basicaId}"
+                                               itemLabel="#{lde.proximoEstado.nombreBasica}"/>
+                            </h:selectOneMenu>
+                        </td>
+
+                        <td> <h:outputText value="Estado Externo:" id="EstExternoOtLabel" styleClass="formColumn1"/></td>
+                        <td>
+
+                            <h:inputText label="Estado Externo" id="EstExternoOtInput" style="width: 80%"
+                                         value="#{OtMglBean.estadoInternoExterno.idEstadoExt.nombreBasica}"
+                                         readonly="true" disabled="true"/>
+
+                        </td>
+
+                        <td><h:outputText value="Fecha Programación:" id="FprogramacionOtLabel" /></td>
+                        <td>
+                            <h:inputText label="Fecha Programación" id="FprogramacionOtInput" style="width: 80%"
+                                         value="#{OtMglBean.ordenTrabajo.fechaProgramacion}"
+                                         readonly="true" disabled="true">                   
+                            </h:inputText>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td><h:outputText value="Generar OT Acometida &lt;br /&gt; 
+                                          para el subedificio:" id="generaAcoTo" 
+                                          escape="false" rendered="#{OtMglBean.lstSubEdiVT.size() > 0}"/></td> 
+                        <br></br>   
+                        <br></br>
+                        <td style="display: inline-flex">
+                            <h:panelGroup rendered="#{OtMglBean.lstSubEdiVT.size() > 0}">
+                                <h:commandLink id="todosCommandlink" 
+                                               value="Todos" rendered="#{OtMglBean.selectTodos}"
+                                               action="#{OtMglBean.seleccionarTodos}">
+
+                                </h:commandLink>
+                                <h:commandLink id="deshacerCommandlink" 
+                                               value="Deshacer" rendered="#{OtMglBean.deshacerTodos}" 
+                                               action="#{OtMglBean.seleccionarTodos}">  
+                                </h:commandLink>
+                            </h:panelGroup>
+                            <br></br>   
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <h:panelGrid columns="10">
+                                <ui:repeat var="subEdiVt"    value="#{OtMglBean.lstSubEdiVT}"  rendered="#{OtMglBean.lstSubEdiVT.size() > 0}">  
+                                    <h:panelGrid columns="1" style="display: inline-flex" >
+                                        <h:outputText class="columnReadForm" 
+                                                      value="#{subEdiVt.subEdificioObj.nombreSubedificio}" title="#{subEdiVt.getDirSubEdificioVT()}"/>      
+
+                                        <h:selectBooleanCheckbox  value="#{subEdiVt.genAco}" 
+                                                                  id = "chkAprobacion">
+                                            <f:ajax  event="change" execute="@this" render="@this"
+                                                     listener="#{OtMglBean.crearAcoForSub(subEdiVt)}"/>
+                                        </h:selectBooleanCheckbox>
+
+                                    </h:panelGrid> 
+                                </ui:repeat>
+                            </h:panelGrid>
+                        </td>
+                    </tr>
+                    <tr>
+                    <td> </td>
+                    <td> </td>
+                    <td> <h:outputText value="Archivos OT:"  styleClass="formColumn1"/></td>
+                     <td> </td>
+                   
+                    <td> <h:outputText value="Archivos VT:"  styleClass="formColumn1"/></td>
+                </tr>
+                <tr>
+                        <td>
+                            <h:panelGroup id="idControlCargarArchivo" rendered="#{OtMglBean.activacionUCM}">
+                                
+                                <p:fileUpload id="idArchivo"
+                                                label="Seleccionar Documento:"
+                                                value="#{OtMglBean.uploadedFile}"
+                                                rendered="#{OtMglBean.lstSubEdiVT.size() > 0}"
+                                                mode="simple" skinSimple="true"
+                                                style="display:block;"/>
+
+                                <h:commandButton value="Guardar Documento" id="btnEditarCostos" rendered="#{OtMglBean.lstSubEdiVT.size() > 0}"
+                                                 styleClass="btn"
+                                                 action="#{OtMglBean.cargarArchivo()}">
+
+                                </h:commandButton>
+                            </h:panelGroup>
+                        </td>
+                     <td></td>
+                        <td>
+                        <div id="idDivTabArchivos" style="overflow-y: #{OtMglBean.lstArchivosAcoMgls != null and OtMglBean.lstArchivosAcoMgls.size() >= 4 ? 'scroll' : 'hidden'}; height: 120px;" >
+
+                                <h:dataTable id="tableCargaArchivo"
+                                         rendered="#{OtMglBean.lstArchivosAcoMgls != null 
+                                                     and OtMglBean.lstArchivosAcoMgls.size() > 0}"
+                                             styleClass="constructGTable2"
+                                             headerClass="constructGTableHeader" 
+                                         value="#{OtMglBean.lstArchivosAcoMgls}" var="archivosLst"
+                                             rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Archivo_OT"/>
+                                        </f:facet>
+                                        <h:outputText value="&#160;" />
+                                        <h:outputText value="#{archivosLst.idArchivosVt}" />  
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre Archivo"/>
+                                        </f:facet>
+                                        <h:outputText escape="false" 
+                                                      value="#{OtMglBean.armarUrl(archivosLst)}"/>       
+                                        <!-- <a href="# {archivosLst.rutaArchivo}" 
+                                            target="blank" id="linkDescarga2" >                                    
+                                             # {archivosLst.nombreArchivo}
+                                         </a>-->
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Acción"/>
+                                        </f:facet>
+                                        <h:commandLink id="lnkCancelar"
+                                                       value="" title="Eliminar"
+                                                       actionListener="#{OtMglBean.eliminarArchivo(archivosLst)}"
+                                                       styleClass="btnIconEliminar"
+                                                       onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"/>
+                                    </h:column>
+                                </h:dataTable> 
+                            </div>
+                        </td>  
+                    <td></td>
+                 
+                   
+                     <td>
+                        <div id="idDivTabArchivosVT" style="overflow-y: #{OtMglBean.lstArchivosVtMgls != null and OtMglBean.lstArchivosVtMgls.size() >= 4 ? 'scroll' : 'hidden'}; height: 120px;" >
+
+                            <h:dataTable id="tableCargaArchivoVT"
+                                         rendered="#{OtMglBean.lstArchivosVtMgls != null 
+                                                     and OtMglBean.lstArchivosVtMgls.size() > 0}"
+                                         styleClass="constructGTable2"
+                                         headerClass="constructGTableHeader" 
+                                         value="#{OtMglBean.lstArchivosVtMgls}" var="archivosVTLst"
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Archivo_OT"/>
+                                    </f:facet>
+                                    <h:outputText value="&#160;" />
+                                    <h:outputText value="#{archivosVTLst.idArchivosVt}" />  
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Archivo"/>
+                                    </f:facet>
+                                    <h:outputText escape="false" 
+                                                  value="#{OtMglBean.armarUrl(archivosVTLst)}"/>       
+                                    <!-- <a href="# {archivosLst.rutaArchivo}" 
+                                        target="blank" id="linkDescarga2" >                                    
+                                         # {archivosLst.nombreArchivo}
+                                     </a>-->
+                                </h:column>
+                                
+                            </h:dataTable> 
+                        </div>
+                    </td> 
+                    </tr>
+                </table>
+            </fieldset>
+        </body>
+        <h:commandLink value="Volver"
+                       id="volverId" immediate="true"
+
+                       action="#{OtMglBean.volverListaOtAprobadas()}"/>
+        <br/>
+        <h:panelGrid id="panelGridBotonesOt" columns="1" style="margin: 0 auto;">
+            <h:commandButton value="Actualizar"
+                             id="ActualizarOtButton" styleClass="btn" disabled="#{OtMglBean.lstSubEdiVT.size()== 0}"
+                             action="#{OtMglBean.actualizarEstadoOTEjecucion()}"/>
+        </h:panelGrid>
+
+    </ui:define>
+
+</ui:composition>

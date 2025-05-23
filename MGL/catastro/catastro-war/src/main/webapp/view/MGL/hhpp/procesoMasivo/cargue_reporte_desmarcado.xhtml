@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>        
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/script.js"></script>
+
+        <script language="javascript" type="text/javascript">
+            timeoutID = setTimeout(function() {
+            ${fraudesHHPPDesmarcadoCargueMasivo.ready}
+            if (${fraudesHHPPDesmarcadoCargueMasivo.progress}) {
+                document.getElementById("idFormMasivo").submit();
+            }
+            }, ${fraudesHHPPDesmarcadoCargueMasivo.refresh});
+            function stop() {
+            window.clearTimeout(timeoutID);
+            }
+        </script> 
+    </h:head>
+    <h:body>
+        <h:form id="idFormMasivo" enctype="multipart/form-data">
+            <hr></hr>
+            <ui:define name="title">Cargue de archivos para marcado de dirección fraudulenta</ui:define>
+            <!--Inicio includes -->
+            <ui:include src="../../CM/panelMensajes.xhtml" />
+            <div id="header">
+                <ui:include src="../../template/menu/VT/name.xhtml" />
+            </div>
+            <div id="cssmenu">
+                <ui:include src="../../template/menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../../CM/version.xhtml" />
+            </div>
+            <div id="content">
+                <div id="subcontent">
+                    <section class="tabs">
+                        <div id="contenido">
+                            <ui:insert name="content">
+                            </ui:insert>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!--Fin includes --> 
+
+            <h:panelGroup id="tabla">
+                <center>
+                    <br/>
+                    <h:panelGrid id="idPngRe" columns="1" style="width: 90%">
+                        <h2 class="cargueMasivoModificacion">Cargue de archivos para Desmarcado de dirección fraudulenta</h2> 
+                    </h:panelGrid>
+
+                    <table style="width: 90%">
+                        <td style="width:90%"><h2 id="valCarMar" style="text-align: left;">Validar Archivos</h2></td>
+                        <td style="width:5%">
+                            <h:commandButton style="margin:0px 0 11px 0; " id="mostrarComponenteValidarCargue" image="/view/img/ocultar.png" >
+                                <f:ajax render="panelValidarCargue" 
+                                        event="click" listener="#{fraudesHHPPDesmarcadoCargueMasivo.showHideValidarCargue()}" />
+                            </h:commandButton>
+                        </td>
+                    </table>
+                    <h:panelGroup id="panelValidarCargue">
+                        <h:panelGroup id="ValidarCargue">
+						 <p:fileUpload
+                                            id="idArchivo"  mode="simple" skinSimple="true"
+                                            label="Cargar Archivo"
+                                           value="#{fraudesHHPPDesmarcadoCargueMasivo.upFile}" 
+                                            />
+
+                            <h:panelGrid  id="idPng" columns="2" style="width: 100px; margin: 0 auto;">
+                               
+
+                                <h:commandButton id="btnCvsTxt" value="Procesar Archivo" styleClass="btn unblockClaro" 
+                                                 onclick="stop();" action="#{fraudesHHPPDesmarcadoCargueMasivo.cargarArchivo()}"
+                                                 disabled="#{!fraudesHHPPDesmarcadoCargueMasivo.validarOpcionProcesarArchivo()}" />
+                             
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <br/>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Nombre del Archivo: "/>
+                            <h:outputLabel value="#{fraudesHHPPDesmarcadoCargueMasivo.nameFile}"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                    
+                    <br/>
+                    <br/>
+                    <h:panelGroup id="procesoRegistros"  style="color:red; width: 100%; text-align: center;">
+                        <fieldset>
+                            <legend>Estado del Cargue</legend>
+                    <br/>
+                            <div>
+                                <h:outputText id="message" style="color:red; width: 100%; font-weight: bold;width: 50%; text-align: center;"  
+                                              value="Procesado:   #{fraudesHHPPDesmarcadoCargueMasivo.numRegProcesados}  de  #{fraudesHHPPDesmarcadoCargueMasivo.numRegAProcesar}"/>
+                            </div>
+                            <br/>
+                            <br/>
+                            <div>
+                                <h:outputText id="idLabUser" style="color:red; width: 100%; font-weight: bold;width: 50%; text-align: center;"  
+                                               value="Usuario que actualmente está utilizando el proceso: #{fraudesHHPPDesmarcadoCargueMasivo.usuarioProceso}"/>
+                            </div>
+                            <br/>
+                        </fieldset>
+                    </h:panelGroup>
+                    <br/>
+                    <br/>
+                    <table>
+                        <td style="width:100%">
+                            <h2 id="tabProc" style="text-align: left;">Tabla de Procesos</h2>
+                        </td>
+                        <td style="width:5%">
+                            <h:commandButton style="margin:0px 0 11px 0; " id="mostrarComponenteTabladeProcesos" image="/view/img/ocultar.png" >
+                                <f:ajax render="panelTabladeProcesos" 
+                                        event="click" listener="#{fraudesHHPPDesmarcadoCargueMasivo.showHideTablaProcesos()}" />
+                            </h:commandButton>
+                        </td>
+                    </table>
+                    <h:panelGroup id="panelTabladeProcesos" style="width:90%">
+                        <h:panelGroup id="TabladeProcesos">
+                            <h:panelGroup>
+                                <h:outputLabel 
+                                    rendered="#{fraudesHHPPDesmarcadoCargueMasivo.itemsArchivosUsuarioLogin.size() == 0}"
+                                    value="No hay procesos Cargados"/>
+
+                                <h:dataTable id="idtableProcesosUsuario" 
+                                             rendered="#{fraudesHHPPDesmarcadoCargueMasivo.itemsArchivosUsuarioLogin.size() > 0}"
+                                             value="#{fraudesHHPPDesmarcadoCargueMasivo.itemsArchivosUsuarioLogin}"
+                                             var="item" styleClass="constructGTable" 
+                                             rowClasses="constructGTableEvenRow, constructGTableOddRow ">
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="ID"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.idArchivoLog}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Fecha de Proceso"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.fechaRegistro}">
+                                            <f:convertDateTime pattern="yyyy-MM-dd hh:mm:ss a" 
+                                                               timeZone="America/Bogota"/>
+                                        </h:outputText>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre del Archivo"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.nombreArchivoCargue}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Registros procesados"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.cantidadProcesada}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Exitosos"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.cantidadExitoso}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Fallidos"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.cantidadFallido}"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Descargar Archivo Original"/>
+                                        </f:facet>
+                                        <h:commandLink id="exportarArchOrig"
+                                                       styleClass="unblockClaro"
+                                                       value="Exportar Original" title="Exportar CSV Original"
+                                                        onclick="stop();"  actionListener="#{fraudesHHPPDesmarcadoCargueMasivo.generarReporteFinal(1, item) }"/>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Descargar Archivo Procesado"/>
+                                        </f:facet>
+                                        <h:commandLink id="exportarArchProc"
+                                                       styleClass="unblockClaro"
+                                                       value="Exportar Procesado" title="Exportar CSV Procesado"
+                                                        onclick="stop();"  actionListener="#{fraudesHHPPDesmarcadoCargueMasivo.generarReporteFinal(2, item) }"/>
+                                    </h:column>
+
+                                    <f:facet name="footer" >
+                                        <h:panelGroup>
+                                            <div style="text-align: center;">
+                                                <h:commandButton title="Primera Página" value=""
+                                                                 class="botonTPagInicioCm botonBaselista" action="#{fraudesHHPPDesmarcadoCargueMasivo.pageFirstCap()}">
+                                                </h:commandButton>
+                                                <h:commandButton title="Página Anterior" value=""
+                                                                 class="botonTPagAnteriorCm botonBaselista" action="#{fraudesHHPPDesmarcadoCargueMasivo.pagePreviousCap()}">
+                                                </h:commandButton>
+                                                <h:commandButton title="Número Páginas" value="#{fraudesHHPPDesmarcadoCargueMasivo.pageActualCap}" styleClass="botonTPagInicio"/>
+                                                <h:selectOneMenu id="listTabla" value="#{fraudesHHPPDesmarcadoCargueMasivo.numPaginaCap}" 
+                                                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                                    <f:selectItems value="#{fraudesHHPPDesmarcadoCargueMasivo.paginaListcap}" var="pag"
+                                                                   itemValue="#{pag}"
+                                                                   itemLabel="#{pag}"/>
+                                                    <f:ajax render="idtableProcesosUsuario" event="change"
+                                                            listener="#{fraudesHHPPDesmarcadoCargueMasivo.irPaginaCap()}"
+                                                            execute="@this" />
+                                                </h:selectOneMenu>
+                                                <h:commandButton  title="Página Siguiente" value="" 
+                                                                  class="botonTPagSiguienteCm botonBaselista" action="#{fraudesHHPPDesmarcadoCargueMasivo.pageNextCap()}">
+                                                </h:commandButton>
+                                                <h:commandButton title="Última Página" value=""
+                                                                 class="botonTPagFinCm botonBaselista" action="#{fraudesHHPPDesmarcadoCargueMasivo.pageLastCap()}">
+                                                </h:commandButton>
+                                            </div>
+                                        </h:panelGroup>
+                                    </f:facet> 
+                                </h:dataTable>
+                                <br/>
+                                <br/>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                           
+                    </h:panelGroup>
+
+                </center>
+            </h:panelGroup>
+
+        </h:form>
+        <div id="footer">
+            <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

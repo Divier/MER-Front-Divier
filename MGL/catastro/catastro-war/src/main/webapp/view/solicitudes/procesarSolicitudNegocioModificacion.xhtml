@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:rich="http://richfaces.org/rich">
+    <ui:composition template="/view/template/home.xhtml">
+        <ui:define name="title">Procesar Solicitudes de Modificación de HHPP Visitas Técnicas</ui:define>
+        <ui:define name="message"> #{procesarSolicitudModificacionMBean.message}</ui:define>
+        <ui:define name="content">
+            <f:view>
+                <script type="text/javascript">
+                    function NewWindow(){
+                        document.getElementById("formulario:panelPopup").style.display='none'; 
+                        document.getElementById("formulario:procesar").style.display='none'; 
+                        document.getElementById("formulario:contador").style.display='none'; 
+                        document.getElementById("formulario:messagePopUp").style.display='none'; 
+                        var conta=document.getElementById("formulario:contador").value;
+                        var showOk=document.getElementById("formulario:procesar").value;
+                        var mensaje=document.getElementById("formulario:messagePopUp").value;
+                        if((showOk == 'false') ){
+                            document.getElementById("formulario:lstsols").style.disabled=false;
+                            document.getElementById("formulario:procesarb").style.display='none';
+                            document.getElementById("formulario:validarb").style.display='block'; 
+                            return " ";
+                        }
+                        if(showOk =='true'){
+                            mensaje=mensaje+" Por favor de click en Procesar.";
+                        }
+                        if(mensaje!=""){
+                            if (!confirm(mensaje+" Por favor de click en Procesar.")){
+                                //aqui entra cuando es NO
+                                document.getElementById("formulario:lstsols").style.disabled=false;
+                                document.getElementById("formulario:cancelarb").style.display='none';
+                                document.getElementById("formulario:procesarb").style.display='none';
+                                document.getElementById("formulario:validarb").style.display='block';
+                                
+                                if(mesj!=""){
+                                    history.go(-conta);
+                                    return " ";
+                                }else{
+                                    history.go(-conta);
+                                    return " ";
+                                }
+                            }else{
+                                document.getElementById("formulario:lstsols").style.disabled=true;
+                                document.getElementById("formulario:procesarb").style.display='block'; 
+                                document.getElementById("formulario:validarb").style.display='none';
+                                return " ";
+                            }
+                        }
+                    }
+                </script>
+                <h:form id="formulario">
+                    <h:panelGroup id="principal">
+                        <h:panelGrid id="contenedor" columns="2">
+                            <h:outputText value="Tipo de Solicitud" styleClass="contenidoLf"/>
+                            <h:selectOneMenu id="lstsols" value="#{procesarSolicitudModificacionMBean.son_tipoSolicitud}" styleClass="onemenu">
+                                <f:selectItem itemValue="0" itemLabel="#{procesarSolicitudModificacionMBean.seleccionar}" />
+                                <f:selectItems value="#{procesarSolicitudModificacionMBean.lstTSolicitud}"/>
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid  id="botones" columns="4">
+                            <h:commandButton id="validarb" value="Validar" styleClass="buttonm" 
+                                             actionListener="#{procesarSolicitudModificacionMBean.onActionValidar}" >
+                            </h:commandButton>
+                            <h:commandButton id="procesarb" value="Procesar" styleClass="buttonm" rendered="#{procesarSolicitudModificacionMBean.renderedProcesar}"
+                                             actionListener="#{procesarSolicitudModificacionMBean.onActionProcesar}">
+                            </h:commandButton>
+                            <h:commandButton id="cancelarb" value="Cancelar" styleClass="buttonm" rendered="#{procesarSolicitudModificacionMBean.renderedProcesar}"
+                                             actionListener="#{procesarSolicitudModificacionMBean.onActionCancel}">
+                            </h:commandButton>
+                            <h:commandButton id="descargarb" value="Descargar" styleClass="buttonm" rendered="#{procesarSolicitudModificacionMBean.renderedDescargar}"
+                                             actionListener="#{procesarSolicitudModificacionMBean.doExportObjectsToCSV}">
+                            </h:commandButton>
+                        </h:panelGrid>
+                        <h:panelGrid id="panelPopup">
+                            <h:inputText id="procesar" value="#{procesarSolicitudModificacionMBean.showpopUp}"/>
+                            <h:inputText id="contador" value="#{procesarSolicitudModificacionMBean.contador}"/>
+                            <h:inputText id="messagePopUp" value="#{procesarSolicitudModificacionMBean.messagePopup}"/>
+                            <f:view>
+                                <script>NewWindow();</script>
+                            </f:view>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </h:form>
+            </f:view>
+        </ui:define>
+</ui:composition>
+</html>

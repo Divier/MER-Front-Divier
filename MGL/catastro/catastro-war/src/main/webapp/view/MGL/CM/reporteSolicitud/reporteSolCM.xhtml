@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>        
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/script.js"></script>
+
+    
+    </h:head>
+    <h:body>
+
+
+
+        <h:form id="formPrincipal">
+            <ui:include src="../../CM/panelMensajes.xhtml" />
+            <div id="header">
+                <ui:include src="../../CM/name.xhtml" />
+            </div>
+            <div id="cssmenu">
+                <ui:include src="../../template/menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../../CM/version.xhtml" />
+            </div>
+            <div id="content">
+                <div id="subcontent">
+                    <section class="tabs">
+                        <div id="contenido">
+                            <ui:insert name="content">
+                                <h:panelGroup id ="panelForm" rendered="#{reportesSolCMBean.panelFormulario}">
+                                    <fieldset style="width: 80%">
+                                        <legend>Reporte Solicitudes CM</legend>
+                                        <div id="slaTipoOt">
+                                            <table style="width: 80%">
+                                                <tr>
+                                                    <td>  <h:outputText value="#{reportesSolCMBean.estiloObligatorio}Tipo Reporte"  id="slaSubOtLabel" escape="false"  /> 
+                                                    </td>
+                                                    <td>  <h:selectOneMenu id="idEstadoOt" value="#{reportesSolCMBean.tipoReporteSelected}"  
+                                                                           style="width: 75%;">
+                                                            <f:selectItem itemValue="1" itemLabel="General" />
+                                                            <f:selectItem itemValue="2" itemLabel="Detallado" />
+                                                           <!-- <f:ajax event="change" execute="@form" 
+                                                                    listener="# {reportesSolCMBean.getReportSelected}"/> -->
+                                                        </h:selectOneMenu> 
+                                                    </td>
+                                                </tr> 
+                                                <tr>
+                                                    <td>  <h:outputText id="slaOtDesText1" escape="false" value="#{reportesSolCMBean.estiloObligatorio}Fecha Inicial"  /></td>
+                                                    <td>    <h:inputText id="FprogramacionOtInput1"  style="width: 70%;"
+                                                                         value="#{reportesSolCMBean.fechaInicio}"
+                                                                         label="Fecha Inicial"
+                                                                         readonly="false" disabled="false" styleClass="datepicker"
+                                                                         validatorMessage="Formato de fecha incorrecto en el campo Fecha Programación">
+                                                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" locale="es"/>
+                                                        </h:inputText>
+                                                    </td>
+
+
+                                                    <td>  <h:outputText id="lblfechaFinal" escape="false" value="#{reportesSolCMBean.estiloObligatorio}Fecha Final" /></td>
+                                                    <td>    
+                                                        <h:inputText  id="fechaFInal"  style="width: 75%;"
+                                                                      value="#{reportesSolCMBean.fechaFinal}"
+                                                                      label="Fecha Final"
+                                                                      readonly="false" disabled="false" styleClass="datepicker"
+                                                                      validatorMessage="Formato de fecha incorrecto en el campo Fecha Programación">
+                                                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" locale="es"/>
+                                                        </h:inputText>
+
+                                                    </td>
+
+
+                                                </tr> 
+                                                <tr> 
+                                                    <td> <h:outputText  value="#{reportesSolCMBean.estiloObligatorio}Tipo de Solicitud" escape="false"/>  </td>
+                                                    <td>   <h:selectOneMenu  value="#{reportesSolCMBean.tipoSolicitudSelected}" 
+                                                                             style="width: 75%;"  
+                                                                             required="false" requiredMessage="Campo 'Nivel 6' es requerido">
+                                                            <f:selectItem itemValue="0" itemLabel="" />
+                                                            <f:selectItems value="#{reportesSolCMBean.listCmtTipoSolicitudMgl}" var="sol" 
+                                                                           itemLabel="#{sol.nombreTipo}" itemValue="#{sol.tipoSolicitudId}" />   
+                                                        </h:selectOneMenu> 
+                                                    </td>
+
+                                                </tr> 
+                                                <tr> 
+
+                                                    <td> <h:outputText escape="false" value="#{reportesSolCMBean.estiloObligatorio}Estado" />  </td>
+                                                    <td>   <h:selectOneMenu  value="#{reportesSolCMBean.estadoSelected}" 
+                                                                             style="width: 75%;">
+                                                            <f:selectItem itemValue="0" itemLabel="" />
+                                                            <f:selectItems value="#{reportesSolCMBean.listCmtSolicitudCmMgl}" var="est" 
+                                                                           itemLabel="#{est.nombreBasica}" itemValue="#{est.basicaId}" />   
+                                                        </h:selectOneMenu> 
+                                                    </td>
+                                                </tr> 
+
+                                            </table>
+                                        </div>
+                                    </fieldset>
+                                </h:panelGroup>
+                                <br></br>
+
+                                <h:panelGrid columns="4" id="btnreporte" style="text-align: center;">
+                                    <h:panelGroup id="botonesReporte" style="text-align: center;">
+                                        <h:commandButton value="Reporte" styleClass="btn" style=" text-align: center;" disabled="#{!reportesSolCMBean.validarReporteSolCm()}"
+                                                         action="#{reportesSolCMBean.getReporte()}" rendered="#{reportesSolCMBean.btnReporte}"/>
+                                    </h:panelGroup>
+
+                                </h:panelGrid>
+
+
+                                <br></br>  
+
+                                <h:panelGroup id="procesoRegistros"  style="color:red; width: 100%; text-align: center;" rendered="#{reportesSolCMBean.numRegAProcesar > 0}">
+                                    <h2 class="reporteCM">SOLICITUDES DE CUENTA MATRIZ</h2> 
+                                    <fieldset>
+                                        <legend>Estado del Reporte</legend>
+                                        <div>
+                                            <h:outputText id="mesage"  style="color:red; width: 100%; font-size: 1.5em; font-weight: bold;width: 50%; text-align: center;"  
+                                                          value="Resultados Encontrados:  #{reportesSolCMBean.numRegAProcesar} "  />
+                                        </div>                                       
+
+                                    </fieldset>
+                              
+
+
+                                <br></br>
+                                <br></br>
+                                <h:panelGroup id="botonesExportar" style="text-align: center;">
+
+                                    <h:commandButton value="Exportar .xls" styleClass="btn unblockClaro" style="text-align: center;"
+                                                     disabled="#{(reportesSolCMBean.numRegAProcesar>2000)}" 
+                                                     title="#{reportesSolCMBean.xlsMaxReg}"                                                     
+                                                     action="#{reportesSolCMBean.exportExcel()}"
+                                                     />
+                                    <h:commandButton value="Exportar .csv" styleClass="btn unblockClaro" style="text-align: center;"                                                       
+                                                     title="#{reportesSolCMBean.csvMaxReg}"  
+                                                     action="#{reportesSolCMBean.downloadCvsTxt('csv')}"
+                                                     />
+                                    <h:commandButton value="Exportar .txt" styleClass="btn unblockClaro" style="text-align: center;"                                                       
+                                                     title="#{reportesSolCMBean.txtMaxReg}"
+                                                     action="#{reportesSolCMBean.downloadCvsTxt('txt')}"
+                                                     />
+                                    <h:commandButton value="Volver" styleClass="btn" style="text-align: center;"
+                                                     action="#{reportesSolCMBean.volverList()}"/>
+                                </h:panelGroup>
+
+                               </h:panelGroup>
+                                <div class="tableContent2"  >
+                                    <h:dataTable id="tablaSolicitudCM"  class="tablefeel" style="width: 100%"  
+                                                 rendered="#{reportesSolCMBean.panelPintarPaginado and (reportesSolCMBean.tipoReporteSelected == 1) }"                         
+                                                 value="#{reportesSolCMBean.listCmtReporteGeneralDto}"  
+                                                 var="solicitudCM">
+
+
+                                        <h:column>    
+                                            <div align="left" >
+                                                <f:facet name="header">
+                                                    <h:outputText value="Cantidad " /><BR/>
+                                                </f:facet>
+                                                <h:outputText value="#{solicitudCM.cantSol}" />   
+
+                                            </div>                                    
+                                        </h:column>
+
+                                        <h:column>   
+                                            <div align="left"   >
+                                                <f:facet name="header">
+                                                    <h:outputText value="Fecha Inicio" /><BR/>
+                                                </f:facet>
+                                                <h:outputText value="#{solicitudCM.fechaCreacionSol}">
+                                                    <f:convertDateTime type="date" pattern="dd-MM-yyyy" locale="es"/>
+                                                </h:outputText>  
+                                            </div>                                  
+                                        </h:column>
+                                        <h:column>   
+                                            <div align="left"   >
+                                                <f:facet name="header">
+                                                    <h:outputText value="Estado" /><BR/>
+                                                </f:facet>
+                                                <h:outputText value="#{solicitudCM.estadoSol}" />     
+                                            </div>                                  
+                                        </h:column>
+
+                                        <h:column>   
+                                            <div align="left">
+                                                <f:facet name="header">
+                                                    <h:outputText value="Descripción" /><BR/>
+
+                                                </f:facet>
+                                                <h:outputText value="#{solicitudCM.descripcion}" />      
+                                            </div>                                  
+                                        </h:column>
+                                        <h:column>   
+                                            <div align="left">
+                                                <f:facet name="header">
+                                                    <h:outputText value="Departamento" /><BR/>
+
+                                                </f:facet>
+                                                <h:outputText value="#{solicitudCM.regional}" />      
+                                            </div>                                  
+                                        </h:column>
+
+
+                                        <f:facet name="footer" >
+                                            <div class="pagination2">
+                                                <h:panelGroup >
+                                                    <h:commandButton value= "&#171;"  action="#{reportesSolCMBean.pageFirst}"/>
+                                                    <h:commandButton value= "&#60;"  action="#{reportesSolCMBean.pagePrevious}"/>
+                                                    <h:commandButton value="#{reportesSolCMBean.pageActual}"    />
+                                                    <h:selectOneMenu  value="#{reportesSolCMBean.numPagina}" >
+                                                        <f:selectItems id="listTabla" value="#{reportesSolCMBean.paginaList}" var="pag"
+                                                                       itemValue="#{pag}"
+                                                                       itemLabel="#{pag}"/>    
+                                                        <f:ajax render="@form"  event="change"  listener="#{reportesSolCMBean.irPagina()}"  execute="@this" />                                         
+                                                    </h:selectOneMenu>  
+                                                    <h:commandButton value= "&#62;" action="#{reportesSolCMBean.pageNext}"/>
+                                                    <h:commandButton value= "&#187;" action="#{reportesSolCMBean.pageLast}"/>
+
+                                                </h:panelGroup>
+                                            </div>
+                                        </f:facet>  
+                                    </h:dataTable>  
+                                </div>
+                            </ui:insert>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </h:form>
+        <div id="footer">
+             <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

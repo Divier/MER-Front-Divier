@@ -1,0 +1,429 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/main.xhtml" >
+
+    <ui:define name="content">
+        #{actionManagedBean.setAction('SOLICITAR_CREACION_CUENTA_MATRIZ')}
+            <div  align="center">
+            <!--Creacion de cuenta matriz-->
+            <h:panelGrid
+             cellpadding = "10" cellspacing = "10">
+
+              <f:facet name = "header">
+                <h:outputText value = "SOLICITUD DE CREACIÓN CUENTA MATRIZ"/>
+              </f:facet>
+
+              <h:panelGrid
+                id="CM_paneldatos"   columns = "4"
+                cellpadding = "10" cellspacing = "10" border = "1"
+                >
+
+                <h:outputLabel
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "Id Solicitud"/>
+                <h:outputLabel
+                  id="CM_idSolicitud"
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "#{createsolicitud.solicitud.idSolicitud}" />
+                <h:outputLabel
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "Estado Solicitud"/>
+                <h:outputLabel
+                  id="CM_idestado"
+                  rendered="#{createsolicitud.canCreate eq false}"
+                  value = "#{createsolicitud.solicitud.estado}" />
+              </h:panelGrid>
+
+              <h:panelGrid>
+
+                <h:panelGrid columns="6">
+                  <h:outputLabel value = "Dirección Completa"  />
+                  <h:panelGrid>
+                    <h:selectOneMenu
+                      id="CM_dircompleta"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.dirTipoCalleCompleta}"
+                      styleClass="input"
+                      required="true"
+                      requiredMessage="Debe seleccionar un valor en el campo Dirección Completa"
+                      >
+                      <f:ajax event="blur" render="CM_msg_dircompleta"/>
+                      <f:selectItems value="#{createsolicitud.tiposDeVias}" />
+                    </h:selectOneMenu>
+                    <h:message id="CM_msg_dircompleta"
+                               style="color: red;"
+                               for="CM_dircompleta" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Calle" />
+                  <h:panelGrid>
+                    <h:inputText
+                      id="CM_dircallecompleta"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.dirCalleCompleta}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Calle"
+                      styleClass="input_peq"
+                      >
+                      <f:ajax event="blur" render="CM_msg_dircallecompleta"/>
+                    </h:inputText>
+                    <h:message id="CM_msg_dircallecompleta"
+                               style="color: red;"
+                               for="CM_dircallecompleta" />
+                  </h:panelGrid>
+
+                  <h:outputLabel  value = "Placa" />
+                  <h:panelGrid columns="3">
+                    <h:panelGrid>
+                      <h:inputText
+                        id="CM_numPuertaUno"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.numPuertaUno}"
+                        styleClass="input_mas_peq"
+                        required="true"
+                        requiredMessage="Debe ingresar un valor en el campo Placa"
+                        >
+                        <f:ajax event="blur" render="CM_msg_numPuertaUno"/>
+                      </h:inputText>
+                      <h:message id="CM_msg_numPuertaUno"
+                                 style="color: red;"
+                                 for="CM_numPuertaUno" />
+                    </h:panelGrid>
+                    <h:outputLabel value = "--" />
+                    <h:panelGrid>
+                      <h:inputText
+                        id="CM_numPuertaDos"
+                        disabled="#{createsolicitud.canCreate eq false}"
+                        value="#{createsolicitud.numPuertaDos}"
+                        styleClass="input_mas_peq"
+                        required="true"
+                        requiredMessage="Debe ingresar un valor en el campo Placa"
+                        >
+                        <f:ajax event="blur" render="CM_msg_numPuertaDos"/>
+                      </h:inputText>
+                      <h:message id="CM_msg_numPuertaDos"
+                                 style="color: red;"
+                                 for="CM_numPuertaDos" />
+                    </h:panelGrid>
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Dirección Alterna"  />
+                  <h:inputText
+                    id="CM_diralterna"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.dirTipoCalleAlterna}"
+                    styleClass="input"
+                    />
+
+                  <h:outputLabel value = "Calle" />
+                  <h:inputText
+                    id="CM_dircallealterna"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.dirCalleAlterna}"
+                    styleClass="input_peq"
+                    />
+
+                  <h:outputLabel value = "Placa" />
+                  <h:panelGrid columns="3">
+                    <h:inputText
+                      id="CM_dirplacaalternaUno"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.dirPlacaAlternaUno}"
+                      styleClass="input_mas_peq"/>
+                    <h:outputLabel value = "--" />
+                    <h:inputText
+                      id="CM_dirplacaalternaDos"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.dirPlacaAlternaDos}"
+                      styleClass="input_mas_peq"/>
+                  </h:panelGrid>
+                </h:panelGrid>
+
+                <h:panelGrid columns="4">
+                  <h:outputLabel value = "Barrio" />
+                  <h:panelGrid >
+                    <h:inputText
+                      id="CM_barrio"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.barrio}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Barrio"
+                      styleClass="input">
+                      <f:ajax event="blur" render="CM_msg_barrio"/>
+                    </h:inputText>
+                    <h:message id="CM_msg_barrio" style="color: red;" for="CM_barrio" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Regional" />
+                  <h:panelGrid>
+                    <h:selectOneMenu
+                      id="CM_idregional"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.idRegional}"
+                      valueChangeListener="#{createsolicitud.regionalCodeChanged}"
+                      required="true"
+                      requiredMessage="Debe seleccionar un valor en el campo Regional"
+                      styleClass="input">
+                        <f:selectItems value="#{createsolicitud.regionales}" />
+                      <f:ajax event="blur" render="CM_idciudad CM_msg_regional"/>
+                    </h:selectOneMenu>
+                    <h:message
+                      id="CM_msg_regional"
+                      style="color: red;"
+                      for="CM_idregional" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Ciudad" />
+                  <h:panelGrid >
+                    <h:selectOneMenu
+                      id="CM_idciudad"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.ciudadRr}"
+                      title="Ciudad"
+                      required="true"
+                      requiredMessage="Debe seleccionar un valor en el campo Ciudad"
+                      styleClass="input">
+                      <f:ajax event="blur" render="CM_msg_ciudad"/>
+                      <f:selectItems value="#{createsolicitud.ciudades}"/>
+                    </h:selectOneMenu>
+                    <h:message
+                      id="CM_msg_ciudad"
+                      style="color: red;"
+                      for="CM_idciudad" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Nodo" />
+                  <h:panelGrid>
+                    <h:inputText
+                      id="CM_idNodo" value="#{createsolicitud.solicitud.nodo}"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Nodo"
+                      styleClass="input">
+                      <f:ajax event="blur" render="CM_msg_nodo"/>
+                    </h:inputText>
+                    <h:message id="CM_msg_nodo" style="color: red;" for="CM_idNodo" />
+                  </h:panelGrid>
+
+                </h:panelGrid>
+
+                <h:outputLabel value = "Nombre Edificio" />
+                <h:panelGrid  style="width:100%">
+                  <h:inputText
+                    id="CM_nomedficio"
+                    disabled="#{createsolicitud.canCreate eq false}"
+                    value="#{createsolicitud.solicitud.edificio}"
+                    style="width:100%">
+                  </h:inputText>
+                </h:panelGrid>
+
+                <h:panelGrid columns="4">
+
+                  <h:outputLabel value = "Cantidad de Torres" />
+                  <h:panelGrid>
+                    <h:inputText
+                      id="CM_canttorres"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.torres}"
+                      converterMessage="Debe ingresar valores numéricos en el campo Cantidad de Torres"
+                      converter="bigDecimalConverter"
+                      styleClass="input">
+                      <f:ajax event="blur" render="CM_msg_canttorres"/>
+                    </h:inputText>
+                    <h:message id="CM_msg_canttorres"
+                               style="color: red;"
+                               for="CM_canttorres" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Cantidad HHPP" />
+                  <h:panelGrid>
+                    <h:inputText
+                      id="CM_canthhpp"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.cantidadHHPP}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Cantidad HHPP"
+                      converterMessage="Debe ingresar valores numéricos en el campo Cantidad HHPP"
+                      styleClass="input">
+                      <f:ajax event="blur" render="CM_msg_canthhpp"/>
+                    </h:inputText>
+                    <h:message id="CM_msg_canthhpp"
+                               style="color: red;"
+                               for="CM_canthhpp" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Administrador" />
+                  <h:panelGrid >
+                    <h:inputText
+                      id="CM_idadmin"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.contacto1}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Administrador"
+                      styleClass="input">
+                      <f:ajax event="blur" render="CM_msg_admin"/>
+                    </h:inputText>
+                    <h:message id="CM_msg_admin"
+                               style="color: red;"
+                               for="CM_idadmin" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Teléfono Administrador" />
+                  <h:panelGrid >
+                    <h:inputText
+                      id="CM_idteladmin"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.telContacto1}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Teléfono Administrador "
+                      validatorMessage="Debe ingresar valores numéricos en el campo Teléfono Administrador "
+                      styleClass="input">
+                      <f:validateRegex pattern="[0-9]*"/>
+                      <f:ajax event="blur" render="CM_msg_teladmin"/>
+                    </h:inputText>
+                    <h:message id="CM_msg_teladmin"
+                               style="color: red;"
+                               for="CM_idteladmin" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Contacto" />
+                  <h:panelGrid>
+                    <h:inputText
+                      id="CM_idcontacto"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.contacto}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Contacto"
+                      styleClass="input">
+                      <f:ajax event="blur" render="CM_msg_contacto"/>
+                    </h:inputText>
+                    <h:message id="CM_msg_contacto"
+                               style="color: red;"
+                               for="CM_idcontacto" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Teléfono Contacto" />
+                  <h:panelGrid >
+                    <h:inputText
+                      id="CM_idtelefonocontacto"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.telContacto}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Teléfono Contacto"
+                      validatorMessage="Debe ingresar valores numéricos en el campo Teléfono Contacto "
+                      styleClass="input">
+                      <f:validateRegex pattern="[0-9]*"/>
+                      <f:ajax event="blur" render="CM_msg_telefonoContacto"/>
+                    </h:inputText>
+                    <h:message id="CM_msg_telefonoContacto"
+                               style="color: red;"
+                               for="CM_idtelefonocontacto" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Solicitante" />
+                  <h:panelGrid>
+                    <h:inputText
+                      id="CM_idSolicitante"
+                      disabled="true"
+                      value="#{createsolicitud.solicitud.solicitante}"
+                      styleClass="input"/>
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Correo Solicitante"/>
+                  <h:panelGrid >
+                    <h:inputText
+                      id="CM_idcorreosolicitante"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.correo}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Correo Solicitante"
+                      styleClass="input">
+                      <f:ajax event="blur" render="CM_msg_correosolicitante"/>
+                    </h:inputText>
+                    <h:message id="CM_msg_correosolicitante"
+                               style="color: red;"
+                               for="CM_idcorreosolicitante" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Teléfono Solicitante" />
+                  <h:panelGrid >
+                    <h:inputText
+                      id="CM_id_tel_admin"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.telSolicitante}"
+                      required="true"
+                      requiredMessage="Debe ingresar un valor en el campo Teléfono Solicitante"
+                      validatorMessage="Debe ingresar valores numéricos en el campo Teléfono Solicitante "
+                      styleClass="input">
+                      <f:ajax event="blur" render="CM_msg_telefonoadministrador"/>
+                      <f:validateRegex pattern="[0-9]*"/>
+                    </h:inputText>
+                    <h:message
+                      id="CM_msg_telefonoadministrador"
+                      style="color: red;"
+                      for="CM_id_tel_admin" />
+                  </h:panelGrid>
+
+                  <h:outputLabel value = "Tipo solicitud" />
+                  <h:panelGrid>
+                    <h:selectOneMenu
+                      id="CM_idtipoSolicitud"
+                      disabled="#{createsolicitud.canCreate eq false}"
+                      value="#{createsolicitud.solicitud.tipoSol}"
+                      required="true"
+                      requiredMessage="Debe seleccionar un valor en el campo Tipo solicitud"
+                      styleClass="input">
+                      <f:ajax event="blur" render="CM_msg_idtiposolicitud"/>
+                      <f:selectItems
+                        value="#{createsolicitud.tipoSolicitudesTipoSolicitud}" />
+                    </h:selectOneMenu>
+                    <h:message id="CM_msg_idtiposolicitud"
+                               style="color: red;"
+                               for="CM_idtipoSolicitud" />
+                  </h:panelGrid>
+                </h:panelGrid>
+
+              </h:panelGrid>
+
+              <h:panelGrid style="width:100%;">
+                <f:facet name = "header">
+                  <h:outputText value = "Observaciones especiales"/>
+                </f:facet>
+                <h:inputTextarea
+                  id="CM_idmotivo"
+                  style="border:1px; background:#DFEDDF; width:100%; height:120px "
+                  disabled="#{createsolicitud.canCreate eq false}"
+                  value="#{createsolicitud.solicitud.motivo}"
+                  required="true"
+                  requiredMessage="Debe ingresar un valor en el campo Observaciones especiales">
+                  <f:ajax event="blur" render="CM_msg_idobservaciones"/>
+                </h:inputTextarea>
+                <h:message id="CM_msg_idobservaciones"
+                           style="color: red;"
+                           for="CM_idmotivo" />
+              </h:panelGrid>
+
+            </h:panelGrid>
+        
+        
+              <h:panelGroup >
+                <h:commandButton
+                  id = "CM_submit"                  
+                  styleClass="btn"
+                  value = "Ingresar Datos"
+                  disabled="#{!createsolicitud.validarOpcionIngresarCuentaMatriz()}"
+                  action="#{createsolicitud.prepareCreate(actionManagedBean.action)}">
+                 </h:commandButton>               
+              </h:panelGroup>
+                </div>
+       
+    </ui:define>
+
+</ui:composition>

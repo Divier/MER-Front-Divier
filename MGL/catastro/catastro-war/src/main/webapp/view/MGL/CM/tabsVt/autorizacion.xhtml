@@ -1,0 +1,296 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/vt.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Visitas Técnicas</span></ui:define>
+    <!-- <ui:define name="message"><span class="error"> # {direccionAlternaMglBean.message}</span></ui:define> -->
+    <ui:define name="content">
+        <h2>Autorización</h2>
+        <h4>Autorización de Administración</h4>
+        <h:panelGrid columns="6" class="formulario2" width="100%">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Nombre Administrador"/>
+            </h:panelGroup>            
+            <h:inputText id="nombreAdministrador" 
+                         value="#{visitaTecnicaBean.vt.nombreAdministrador}"
+                         maxlength="100"
+                         required="true" 
+                         requiredMessage="Se debe diligenciar el campo Nombre Administrador"
+                         validatorMessage="Nombre Administrador: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Celular Administrador" />
+            </h:panelGroup>
+            <h:inputText id="celularAdministrador" 
+                         value="#{visitaTecnicaBean.vt.celularAdministrador}"
+                         maxlength="10"
+                         required="true" 
+                         requiredMessage="Se debe diligenciar el campo Celular"
+                         validatorMessage="El Celular Administrador es un campo numérico de 10 dígitos">
+                <f:validateRegex pattern="[0-9]{10}"/>
+            </h:inputText>
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Teléfono Administrador"/>
+            </h:panelGroup>            
+            <h:inputText id="telefonoAdministrador" 
+                         value="#{visitaTecnicaBean.vt.telefonoAdministrador}"
+                         maxlength="10"
+                         required="true" 
+                         requiredMessage="Se debe diligenciar el campo Teléfono Administrador"
+                         validatorMessage="El Teléfono Administrador es un campo numérico de mínimo 7 dígitos y máximo 10">
+                <f:validateRegex pattern="[0-9]{7,10}"/>
+            </h:inputText>
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Fecha Autorización Admon"/>
+            </h:panelGroup>  
+            <h:panelGroup id="panelGruoptxtFechaAdministrador">
+                <h:inputText label="Fecha Autorización Admon" id="txtFechaAdministrador" style="width: 88%"
+                             value="#{visitaTecnicaBean.vt.fechaAutorizaAdministracion}"
+                             readonly="false" disabled="false" styleClass="datepicker"
+                             required="true" 
+                             requiredMessage="Se debe diligenciar el campo Fecha Autorización Admon">
+                    <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                </h:inputText>
+            </h:panelGroup>
+        </h:panelGrid>  
+        <h:panelGrid style="width: 100%; margin: 0px auto">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl"/>
+                <h:outputText value="Observaciones Autorización(2000 caracteres.)"/>
+            </h:panelGroup>
+            <h:inputTextarea id="observacionesAutorizacion" 
+                             value="#{visitaTecnicaBean.vt.observacionAutorizacion}"
+                             required="true" 
+                             requiredMessage="El campo observaciones autorización es requerido"
+                             style="width: 100%; resize: none; overflow-y: scroll" rows="2"
+                             validatorMessage="El número máximo de caracteres es de 2000.">
+                <f:validateLength maximum="2000"/>
+            </h:inputTextarea>
+        </h:panelGrid>
+        <h4>Información de Técnicos</h4>
+        <h:panelGrid columns="6" class="formulario2" width="100%">
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Aliado"/>
+            </h:panelGroup>
+            <h:inputText id="aliadoTecnico" 
+                         value="#{visitaTecnicaBean.vt.aliadoTecnico}"
+                         maxlength="100"
+                         required="true" 
+                         requiredMessage="Se debe diligenciar el campo Aliado"/>
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Técnico"/>
+            </h:panelGroup>
+            <h:inputText id="nombreTecnico" 
+                         value="#{visitaTecnicaBean.vt.nombreTecnico}"
+                         maxlength="100"
+                         required="true" 
+                         requiredMessage="Se debe diligenciar el campo Técnico"
+                         validatorMessage="Técnico: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:panelGroup>
+                <h:outputText value="*" class="txtCamposReqMgl" />
+                <h:outputText value="Teléfono Técnico"/>
+            </h:panelGroup>            
+            <h:inputText id="movilTecnico" 
+                         value="#{visitaTecnicaBean.vt.movilTecnico}"
+                         maxlength="10"
+                         required="true" 
+                         requiredMessage="Se debe diligenciar el campo Teléfono Técnico"
+                         validatorMessage="El campo Teléfono Técnico es un campo numérico">
+                <f:validateRegex pattern="[0-9]{7,10}"/>
+            </h:inputText>
+        </h:panelGrid>
+        <h4>Información Comercial</h4>
+        <h:panelGrid columns="5" class="formulario2" width="100%">
+            <h:panelGroup>
+                <h:outputText value="Responsable"   />
+            </h:panelGroup>            
+            <h:panelGroup>
+                <h:outputText value="Primer Apellido"   />
+            </h:panelGroup>            
+            <h:panelGroup>
+                <h:outputText value="Segundo Apellido"  />
+            </h:panelGroup>            
+            <h:panelGroup>
+                <h:outputText value="Nombres"   />
+            </h:panelGroup>            
+            <h:panelGroup>
+                <h:outputText value="Celular"   />
+            </h:panelGroup>            
+            <h:panelGroup>
+                <h:outputText value="Admin. Comercial"  />
+            </h:panelGroup>
+            <h:inputText id="pApellidoAdmComer" 
+                         value="#{visitaTecnicaBean.vt.PApellidoAdmonComerc}"
+                         maxlength="100"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Primer Apellido Admon. Comercial"
+                         validatorMessage="Primer Apellido Admon. Comercial: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:inputText id="sApellidoAdmComer" 
+                         value="#{visitaTecnicaBean.vt.SApellidoAdmonComerc}"
+                         maxlength="100"
+                         validatorMessage="Segundo Apellido Admon. Comercial: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:inputText id="nombresAdmComer" 
+                         value="#{visitaTecnicaBean.vt.nombreAdmonComerc}"
+                         maxlength="100"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Nombres Admon. Comercial"
+                         validatorMessage="Nombres Admon. Comercial: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:inputText id="celularAdmComer" value="#{visitaTecnicaBean.vt.telefonoAdmonComerc}"
+                         maxlength="10"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Celular Admon. Comercial"
+                         validatorMessage="El número Celular del Admin. Comercial es un campo numérico">
+                <f:validateRegex pattern="([0-9]{7,10})*"/>
+            </h:inputText>
+            <h:outputText value="Asesor"/>
+            <h:inputText id="pApellidoAsesor" 
+                         value="#{visitaTecnicaBean.vt.PApellidoAsesorComerc}"
+                         maxlength="100"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Primer Apellido Asesor"
+                         validatorMessage="Primer Apellido Asesor: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:inputText id="sApellidoAsesor" 
+                         value="#{visitaTecnicaBean.vt.SApellidoAsesorComerc}" 
+                         maxlength="100"
+                         validatorMessage="Segundo Apellido Asesor: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:inputText id="nombresAsesor" 
+                         value="#{visitaTecnicaBean.vt.nombreAsesorComerc}" 
+                         maxlength="100"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Nombres Asesor"
+                         validatorMessage="Nombre Administrador: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:inputText id="telefonoAsesor" 
+                         value="#{visitaTecnicaBean.vt.telefonoAsesorComerc}"
+                         maxlength="10"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Celular Asesor"
+                         validatorMessage="El número Celular de Asesor es un campo numérico">
+                <f:validateRegex pattern="([0-9]{7,10})*"/>
+            </h:inputText>
+        </h:panelGrid>
+        <h4><h:outputText value="*" class="txtCamposReqMgl" />Compromiso Comercial</h4>
+        <h:panelGrid columns="6" class="formulario2" width="100%">
+            <h:outputText value="Internet"/>
+            <h:selectBooleanCheckbox id="compromisoInternet" label="Internet" value="#{visitaTecnicaBean.internet}"/>
+            <h:outputText value="Telefonía"/>
+            <h:selectBooleanCheckbox id="compromisoTelefonia" label="Telefonía" value="#{visitaTecnicaBean.telefonia}"/>
+            <h:outputText value="Televisión"/>
+            <h:selectBooleanCheckbox id="compromisoTelevision" label="Televisión" value="#{visitaTecnicaBean.television}"/>
+            <h:panelGroup>
+                <h:outputText value="Hogares: "/>
+            </h:panelGroup>            
+            <h:inputText id="compromisoHogares" 
+                         value="#{visitaTecnicaBean.vt.compromisoHogares}"
+                         validatorMessage="El campo Hogares debe ser numérico.">
+                <f:validateRegex pattern="[0-9]*"/>
+            </h:inputText>
+            <h:panelGroup>
+                <h:outputText value="Fecha de inicio"/>
+            </h:panelGroup>   
+            <h:panelGroup id="panelGruoptxtCompromisoFecIni">
+                <h:inputText label="Fecha de inicio" id="txtCompromisoFecIni" style="width: 88%"
+                             value="#{visitaTecnicaBean.vt.compromisoFecIni}"
+                             readonly="false" disabled="false" styleClass="datepicker"
+                             required="false" 
+                             requiredMessage="Se debe diligenciar el campo Fecha de inicio">
+                    <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                </h:inputText>
+            </h:panelGroup>
+            <h:panelGroup>
+                <h:outputText value="Fecha de finalización"/>
+            </h:panelGroup>
+            <h:panelGroup id="panelGruoptxtCompromisoFecFin">
+                <h:inputText label="Fecha de inicio" id="txtCompromisoFecFin" style="width: 88%"
+                             value="#{visitaTecnicaBean.vt.compromisoFecFin}"
+                             readonly="false" disabled="false" styleClass="datepicker"
+                             required="false" 
+                             requiredMessage="Se debe diligenciar el campo Fecha de Finalización">
+                    <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                </h:inputText>
+            </h:panelGroup>
+        </h:panelGrid>
+        <h4>Aprobación Comercial</h4>
+        <h:panelGrid columns="3" class="formulario2" width="100%">
+            <h:panelGroup>
+                <h:outputText value="Asesor de Avanzada"/>
+            </h:panelGroup>            
+            <h:panelGroup>
+                <h:outputText value="Supervisor de Avanzada"/>
+            </h:panelGroup>            
+            <h:panelGroup>
+                <h:outputText value="Coordinador Comercial"/>
+            </h:panelGroup>            
+            <h:inputText id="asesorAvanzada" 
+                         value="#{visitaTecnicaBean.vt.asesorAvanzada}"
+                         maxlength="200"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Asesor de Avanzada"
+                         validatorMessage="Asesor de Avanzada: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:inputText id="supervisorAvanzada" 
+                         value="#{visitaTecnicaBean.vt.supervisorAvanzada}"
+                         maxlength="200"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Supervisor de Avanzada"
+                         validatorMessage="Supervisor de Avanzada: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:inputText id="coordinadorComercial" 
+                         value="#{visitaTecnicaBean.vt.coordinadorComercial}"
+                         maxlength="200"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Coordinador Comercial"/>
+            <h:panelGroup>
+                <h:outputText value="Interventor VT/Acometidas"/>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <h:outputText value="Lider/Coordinador Acometidas"/>
+            </h:panelGroup>
+
+            <h:outputText/>
+            <h:inputText id="interventorVtAcometidas" 
+                         value="#{visitaTecnicaBean.vt.interventorVtAcometida}"
+                         maxlength="200"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Interventor VT/Acometidas"
+                         validatorMessage="Interventor VT/Acometidas: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:inputText id="coordinadorAcometidas" 
+                         value="#{visitaTecnicaBean.vt.coordinadorAcometida}"
+                         maxlength="200"
+                         required="false" 
+                         requiredMessage="Se debe diligenciar el campo Lider/Coordinador Acometidas"
+                         validatorMessage="Lider/Coordinador Acometidas: Los nombres solo aceptan letras y espacios">
+                <f:validateRegex pattern="[a-zA-ZñÑ\s]*"/>                                            
+            </h:inputText>
+            <h:outputText/>
+        </h:panelGrid>
+    </ui:define>
+</ui:composition>

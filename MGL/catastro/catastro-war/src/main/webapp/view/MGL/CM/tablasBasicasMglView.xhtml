@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/main.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Administrador tablasBasicas</span></ui:define>
+    <ui:define name="message"><span class="error"> #{tablasBasicasMglBean.message}</span></ui:define>
+    <ui:define name="content">
+        <h2>Tablas Básicas [#{tablasBasicasMglBean.tablasBasicasMgl.tipoBasicaObj.nombreTipo}]</h2>
+        <h:form id="form1">
+            <h:panelGroup id="tblBasica">
+                <fieldset>
+                    <legend>Tabla Básica</legend>
+                    <div id="tableTipoTablaBasica">
+                        <table style="width: 100%">
+                            <tr><td></td>
+                                <td>   <h:outputText value="Id" id="asc_idlb"    />  </td>
+                                <td>  <h:outputText id="IdSqlTxt" value="#{tablasBasicasMglBean.tablasBasicasMgl.basicaId}" />    </td>
+                                <td>   <h:outputText value="#{tablasBasicasMglBean.estiloObligatorio}Nombre" id="asc_nombrelb" escape="false"/></td>
+                                <td>  <h:inputText id="asc_nombreTxt" value="#{tablasBasicasMglBean.tablasBasicasMgl.nombreBasica}" maxlength="30" requiredMessage="El campo nombre es Requerido">
+                                        <f:validateRequired />
+                                    </h:inputText>  </td>
+                            </tr> 
+                            <tr></tr>
+                            <tr><td></td>
+
+                                <td> <h:outputText escape="false" value="#{tablasBasicasMglBean.estiloObligatorio}Código#{tablasBasicasMglBean.tablasBasicasMgl.tipoBasicaObj.tipoDatoCodigo eq 'A'?'(Alf)':'(Num)'}" id="asc_codigolb"/> </td>
+                                <td>     <h:inputText id="asc_codigoTxt" 
+                                                      value="#{tablasBasicasMglBean.tablasBasicasMgl.codigoBasica}"  
+                                                      maxlength="#{tablasBasicasMglBean.tablasBasicasMgl.tipoBasicaObj.longitudCodigo}" 
+                                                      disabled="#{!(tablasBasicasMglBean.tablasBasicasMgl.basicaId eq 0)}" 
+                                                      validatorMessage="#{tablasBasicasMglBean.tablasBasicasMgl.tipoBasicaObj.tipoDatoCodigo eq 'A'?'El Código es Alfanum&eacute;rico sin espacios':'El Código es num&eacute;rico sin espacios'}"
+                                                      requiredMessage="El valor código Básica es obligatorio" required="true">
+                                        <f:validateRegex  pattern="#{tablasBasicasMglBean.tablasBasicasMgl.tipoBasicaObj.tipoDatoCodigo eq  'A'?'^[0-9a-zA-Z]*':'^[0-9]*'}"/>
+                                    </h:inputText> </td>
+                            </tr> 
+                            <tr></tr>
+                            <tr><td></td>
+                                <td> <h:outputText escape="false" value="#{tablasBasicasMglBean.estiloObligatorio}Abreviatura" id="asc_head_endlb"/> </td>
+                                <td>     <h:inputText id="asc_head_endTxt" maxlength="8" value="#{tablasBasicasMglBean.tablasBasicasMgl.abreviatura}" requiredMessage="El campo abreviatura es requerido" disabled="#{(tablasBasicasMglBean.tablasBasicasMgl.basicaId  eq 0 or tablasBasicasMglBean.tablasBasicasMgl.basicaId eq null)}">
+                                        <f:validateRequired />
+                                    </h:inputText>    </td>
+                                <td>   <h:outputText escape="false" value="#{tablasBasicasMglBean.estiloObligatorio}Descripción" id="asc_campo_adicional1lb"/> </td>
+                                <td>    <h:inputTextarea  id="asc_campo_adicional1Txt"  value="#{tablasBasicasMglBean.tablasBasicasMgl.descripcion}" rows="3" requiredMessage="El campo descripción es requerido" >
+                                        <f:validateRequired />
+                                    </h:inputTextarea>    </td>
+                            </tr> 
+                            <tr></tr>
+                            <tr><td></td>
+                                <td> <h:outputText escape="false" value="#{tablasBasicasMglBean.estiloObligatorio}Estado" id="asc_campo_adicional2lb"/> </td>
+                                <td>  <h:selectOneMenu id="listEstadoBasica" value="#{tablasBasicasMglBean.tablasBasicasMgl.activado}" rendered="#{tablasBasicasMglBean.tablasBasicasMgl.estadoRegistro eq 1}" 
+                                                       disabled="#{(tablasBasicasMglBean.tablasBasicasMgl.basicaId  eq 0)}"
+                                                       styleClass="ListaConsulta">
+                                        <f:selectItem itemValue="Y" itemLabel="Activo" />
+                                        <f:selectItem itemValue="N" itemLabel="Inactivo" />
+                                    </h:selectOneMenu>  </td>
+                                <td>   <h:outputText escape="false" value="#{tablasBasicasMglBean.estiloObligatorio}Justificación ultimo cambio(200)" id="asc_campo_justificacion1lb" rendered="#{(!(tablasBasicasMglBean.tablasBasicasMgl.basicaId eq null) and !(tablasBasicasMglBean.tablasBasicasMgl.basicaId eq 0))}"/></td>
+                                <td>   <h:inputTextarea  id="asc_campo_justificaTxt" value="#{tablasBasicasMglBean.tablasBasicasMgl.justificacion}" rows="3" requiredMessage="El campo justificación es requerido para cualquier modificación o eliminación del registro" rendered="#{(!(tablasBasicasMglBean.tablasBasicasMgl.basicaId eq null) and !(tablasBasicasMglBean.tablasBasicasMgl.basicaId eq 0))}" >
+                                        <f:validateRequired /> 
+                                    </h:inputTextarea></td>
+
+                            </tr> 
+
+                        </table>
+                    </div>
+                </fieldset>
+                <br></br><br></br>   
+                <h:panelGrid columns="4" id="tablasBasicasMgl2" styleClass="panelInfo">
+                    <h:panelGroup id="botonesAcciones" rendered="#{tablasBasicasMglBean.tablasBasicasMgl.estadoRegistro eq 1}">
+                        <h:commandButton value="Actualizar" styleClass="btn" id="btnAct"
+                                         action="#{tablasBasicasMglBean.actualizarlTablasBasicasMgl()}"
+                                         rendered="#{(tablasBasicasMglBean.editarBasica) and !(tablasBasicasMglBean.tablasBasicasMgl.basicaId eq null) and !(tablasBasicasMglBean.tablasBasicasMgl.basicaId  eq 0)}" />
+                        <h:commandButton value="Crear" styleClass="btn"
+                                         disabled="#{(tablasBasicasMglBean.guardado)}"
+                                         action="#{tablasBasicasMglBean.crearTablasBasicasMgl()}"
+                                         rendered="#{tablasBasicasMglBean.crearBasica and ( (tablasBasicasMglBean.tablasBasicasMgl.basicaId eq null)  or  (tablasBasicasMglBean.tablasBasicasMgl.basicaId  eq 0) )}"/>
+                        <h:commandButton value="Eliminar" styleClass="btn"
+                                         action="#{tablasBasicasMglBean.eliminarlTablasBasicasMgl()}"
+                                         rendered="#{tablasBasicasMglBean.borrarBasica and !(tablasBasicasMglBean.tablasBasicasMgl.basicaId eq null) and !(tablasBasicasMglBean.tablasBasicasMgl.basicaId  eq 0)}"
+                                         onclick="return confirm('¿Está seguro que desea Eliminar el registro?');" />
+                    </h:panelGroup>
+                    <h:commandButton value="Volver" action="#{tablasBasicasMglBean.volverList}" styleClass="btn" immediate="true"></h:commandButton>
+                </h:panelGrid>
+            </h:panelGroup>
+
+            <h:panelGroup id="tblEstCM" rendered="#{tablasBasicasMglBean.tblEstCM}">
+                <br></br>
+                <fieldset>
+                    <legend>#{tablasBasicasMglBean.tablasBasicasMgl.tipoBasicaObj.nombreTipo}</legend>
+                    <div id="nodos" >
+                        <table class="header">
+                            <tr><td></td>
+                                <th>Parametrizacion</th>
+                                <th >Y/N</th>
+
+                            </tr>
+
+                            <ui:repeat var="tbl" value="#{tablasBasicasMglBean.basicaExtMgls}" > 
+                                <tr><td></td>
+                                    <td> <h:outputText class="txtLabelsMgl" value="#{tbl.idTipoBasicaExt.labelCampo}"/></td>
+                                    <td> <h:selectOneMenu   styleClass="ListaConsulta" 
+                                                            value="#{tbl.valorExtendido}" 
+                                                            style="width: 120%;">
+                                              <f:selectItem itemValue="#{null}" itemLabel="" />
+                                            <f:selectItems value="#{tbl.idTipoBasicaExt.camposYN}" var="val" itemValue="#{val}" />   
+                                        </h:selectOneMenu> 
+
+                                    </td>
+                                </tr> 
+                            </ui:repeat>
+
+                            <tr><td></td>
+                            </tr> 
+
+                        </table>
+                    </div>
+                </fieldset>
+
+            </h:panelGroup>
+
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

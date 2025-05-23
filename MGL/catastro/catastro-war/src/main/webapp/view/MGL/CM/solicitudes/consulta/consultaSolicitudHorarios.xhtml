@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Track Solicitud</span></ui:define>
+    <ui:define name="content">
+
+
+        <h:commandButton  id="regresarButton" 
+                          class="btn2 btn2Active" 
+                          value="Regresar" 
+                          action="#{cmtEstadoSolicitudBean.regresarAConsulta()}"
+                          immediate="true" />    
+
+        <h:panelGroup id="panelGroupSolicitudTitle" style="width: 100%">
+            <h2 id="SolicitudTitle">SOLICITUD #{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.tipoSolicitudObj.nombreTipo}</h2>
+        </h:panelGroup>
+
+        <h:panelGrid columns="4" id="notasMgl" class="formulario3"  style="width:100%;"  > 
+
+            <h:outputText value="Número de Solicitud:" class="EtiquetaConsulta"/>
+            <h:outputText id="ccmsTxt" value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId}"  style="width: 100px;font-size: 14.5px;color:red;font-weight: bold; "/> 
+
+            <h:outputText value="Estado de la Solicitud:" class="EtiquetaConsulta"/>
+            <h:inputText id="esmsTxt" value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.estadoSolicitudObj.nombreBasica}"   disabled="true" style="width: 100px"/> 
+
+        </h:panelGrid> 
+
+        <h:panelGrid  class="formulario3"  columns="4">
+            <h:commandButton  id="irSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'SOLICITUD' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Solicitud" 
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('SOLICITUD')}"
+                              immediate="true" />
+            <h:commandButton  id="irEstadoSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'TRACK' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Track" 
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('TRACK')}" 
+                              immediate="true" />
+            <h:commandButton  id="irNotasSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Notas"
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('NOTAS')}"
+                              immediate="true" />
+            <h:commandButton  id="irHorarioSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'HORARIO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Horario de Atención"
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('HORARIO')}"
+                              rendered="#{cmtEstadoSolicitudBean.showHorario}"
+                              immediate="true" />
+
+        </h:panelGrid>
+        <BR/><BR/>
+
+        <h:panelGroup  rendered="#{cmtEstadoSolicitudBean.modifica}">
+            <h2>TIPO MODIFICACIÓN</h2> 
+            <h:panelGrid  class="formulario3" columns="9"  >
+                <h:outputLabel value="Datos CM" for="iMD" />
+                <h:selectBooleanCheckbox id="iMD" immediate="true"
+                                         value="#{cmtEstadoSolicitudBean.activoCheckModDatosCM}"
+                                         disabled="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId != null}">
+                </h:selectBooleanCheckbox>
+
+                <h:outputLabel value="Dirección" for="iMDir" />
+                <h:selectBooleanCheckbox id="iMDir" immediate="true"
+                                         value="#{cmtEstadoSolicitudBean.activoCheckModDireccion}"
+                                         disabled="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId != null}">
+                </h:selectBooleanCheckbox>
+
+                <h:outputLabel value="Subedificios" for="iMS" />
+                <h:selectBooleanCheckbox id="iMS" immediate="true"
+                                         value="#{cmtEstadoSolicitudBean.activoCheckModSubedificios}"
+                                         disabled="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId != null}">
+                </h:selectBooleanCheckbox>
+
+                <h:outputLabel value="Cobertura" for="iMC"/>
+                <h:selectBooleanCheckbox id="iMC" immediate="true"
+                                         value="#{cmtEstadoSolicitudBean.activoCheckModCobertura}"
+                                         disabled="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId != null}">
+                </h:selectBooleanCheckbox>
+
+            </h:panelGrid>
+        </h:panelGroup>
+
+        <BR/><BR/>
+
+        <h:panelGroup id="panelInfoHorario" style="margin: 0 auto; width: 100%;">
+
+            <h2>Horario Solicitud</h2>
+
+            <h:panelGroup id ="groupTableSubEdi">
+
+                    <h:dataTable id="subTable1" 
+                                 var="se" 
+                                 value="#{cmtEstadoSolicitudBean.horarioSolicitudList}" 
+                                 styleClass="constructGTable2"
+                                 headerClass="constructGTableHeader" 
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                 rows="10">
+
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Id Horario Res"/>
+                            </f:facet>
+                            <h:outputText  value="#{se.horRestriccionId}"/>
+                        </h:column>
+
+                        <h:column >
+                            <f:facet name="header">
+                                <h:outputText value="Día Inicio"/>
+                            </f:facet>
+                            <h:outputText  value="#{se.diaInicio}"/>
+                        </h:column>
+
+                        <h:column >
+                            <f:facet name="header">
+                                <h:outputText value="Día Fin"/>
+                            </f:facet>
+                            <h:outputText  value="#{se.diaFin}"/>
+                        </h:column>
+
+                        <h:column >
+                            <f:facet name="header">
+                                <h:outputText value="Dirección"/>
+                            </f:facet>
+                            <h:outputText  value="#{se.direccion}"/>
+                        </h:column>
+
+                        <h:column >
+                            <f:facet name="header">
+                                <h:outputText value="Hora Inicio"/>
+                            </f:facet>
+                            <h:outputText  value="#{se.horaInicio}"/>
+                        </h:column>
+
+                        <h:column >
+                            <f:facet name="header">
+                                <h:outputText value="Hora Fin"/>
+                            </f:facet>
+                            <h:outputText  value="#{se.horaFin}"/>
+                        </h:column>
+
+                        <h:column >
+                            <f:facet name="header">
+                                <h:outputText value="Razón Restricción"/>
+                            </f:facet>
+                            <h:outputText  value="#{se.razonRestriccion}"/>
+                        </h:column>
+
+                        <h:column >
+                            <f:facet name="header">
+                                <h:outputText value="Tipo Restricción"/>
+                            </f:facet>
+                            <h:outputText  value="#{se.tipoRestriccion.tipoRestriccion}"/>
+                        </h:column>
+
+
+                        <h:column >
+                            <f:facet name="header">
+                                <h:outputText value="Subedificio"/>
+                            </f:facet>
+                            <h:outputText  value="#{se.subEdificioObj.nombreSubedificio}"/>
+                        </h:column>
+
+                    </h:dataTable>  
+    
+            </h:panelGroup>
+
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>

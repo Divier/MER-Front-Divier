@@ -1,0 +1,511 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="valor" required="false" shortDescription="atributo valor de retorno"/>
+        <cc:attribute name="principal" required="false" shortDescription="atributo valor de retorno"/>
+    </cc:interface>
+
+    <cc:implementation>
+        <link  rel="stylesheet" type="text/css" href="/Visitas_Tecnicas/resources/stylesheet.css"/>
+        <h:panelGroup id="hhppform"> 
+            <h:panelGrid columns="4">
+                <h:outputText  id="compDircc1" value="Tipo Dirección:"/>
+                <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="tipoDireccionComboBox"  value="#{componenteDireccionMBean.tipoDireccion}">
+                    <f:selectItem itemLabel="CALLE - CARRERA" itemValue="CK"/>
+                    <f:selectItem itemLabel="BARRIO - MANZANA" itemValue="BM"/>
+                    <f:selectItem itemLabel="INTRADUCIBLE" itemValue="IT"/>
+                    <f:ajax  event="change" execute="tipoDireccionComboBox"  listener="#{componenteDireccionMBean.clearprintDirPrint()}" render="hhppform"/>
+                </h:selectOneMenu>
+                <h:outputText  id="compDircc2" value="Estado Dir:" />
+                <h:inputText disabled="true"  id="compDircc3" value="#{componenteDireccionMBean.dirEstado}"/>
+            </h:panelGrid>
+            <hr size="5" width="100%" align="LEFT"/>
+            <h:panelGrid columns="7" id="calleCarrera" rendered="#{componenteDireccionMBean.tipoDireccion.equalsIgnoreCase('CK')}">
+                <div style="width: 80px;"></div>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText    id="compDircc4" value="Calle" style=" text-decoration: underline;" ></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+
+                <h:panelGroup><h:outputText  id="compDircc5" value="Vía principal:"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc6" value="Núm:" /></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc7" value="Letra:"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc8" value="Letra 2:"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc9" value="Bis:"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc10" value="Cardinales:"/></h:panelGroup>
+                <h:outputText></h:outputText>
+
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="viaPrincipal"  value="#{componenteDireccionMBean.dirVia}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems   value="#{componenteDireccionMBean.obtenerDireccionPorTipo('CALLES_DIR')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                        <f:ajax event="change"  execute="@this"  listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc12" value="#{componenteDireccionMBean.dirNum}" style="width:60px" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>  </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="letraUnoPrincipal"   value="#{componenteDireccionMBean.dirLetra}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="letraDosPrincipal" value="#{componenteDireccionMBean.dirLetra2}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="bisPrincipal"   value="#{componenteDireccionMBean.dirBis}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.optionBisDir('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="cuadrantePrincipal"  value="#{componenteDireccionMBean.dirCuadrante}">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_CUADRANTE')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                    <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                </h:selectOneMenu>
+                <h:outputText  id="compDircc17" value="#"  style=" font-size: 25px; text-align: center;"></h:outputText>
+            </h:panelGrid>
+
+            <h:panelGrid columns="9" id="calleCarrera_9" rendered="#{componenteDireccionMBean.tipoDireccion.equalsIgnoreCase('CK')}">
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText   id="compDircc18" value="Placa" style=" text-decoration: underline;" ></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+
+
+
+                <h:panelGroup><h:outputText  id="compDircc20" value="Cruce"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc21" value="Núm:" /></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc22" value="Letra:"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc23" value="Letra 2:"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc24" value="Letra 3:"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc25" value="Bis:"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc26" value="Cardinales:"/></h:panelGroup>
+                <h:outputText></h:outputText>
+                <h:panelGroup><h:outputText  id="compDircc27" value="No. Placa:"/></h:panelGroup>
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly or componenteDireccionMBean.disableViaGen}" id="viaGeneradora"  value="#{componenteDireccionMBean.dirGenVia}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('CALLES_DIR_GEN')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc261" value="#{componenteDireccionMBean.dirGenNum}" style="width:60px" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="letraUnoGeneradora" value="#{componenteDireccionMBean.dirGenLetra}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="letraDosGeneradora"  value="#{componenteDireccionMBean.dirGenLetra2}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems   value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="letraTresGeneradora"  value="#{componenteDireccionMBean.dirGenLetra3}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="bisGeneradora" value="#{componenteDireccionMBean.dirGenBis}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.optionBisDir('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="cuadranteGeneradora"   value="#{componenteDireccionMBean.dirGenCuadrante}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_CUADRANTE')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+                <h:outputText  id="compDircc34" value="#{' '}-#{' '}" style="font-size: 25px; font-weight: bold "  ></h:outputText>
+                <h:panelGroup>
+                    <h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc351" value="#{componenteDireccionMBean.dirGenPlaca}" style="width:60px" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+            </h:panelGrid>
+
+
+
+
+
+            <h:panelGrid columns="6" id="barrioManzana" rendered="#{componenteDireccionMBean.tipoDireccion.equalsIgnoreCase('BM')}" >
+                <h:panelGroup ><h:outputText  id="compDircc35" value="Barrio:"/></h:panelGroup>
+                <h:panelGroup><h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="barrioBM"   value="#{componenteDireccionMBean.barrioBM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems   value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_NIVEL_UNO')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu></h:panelGroup>
+                <h:outputText></h:outputText>
+                <h:panelGroup><h:outputText  id="compDircc37" value="Nombre Barrio:"/></h:panelGroup>
+                <h:panelGroup ><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc38" value="#{componenteDireccionMBean.barrioTxtBM}">
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+                <h:outputText></h:outputText>
+
+                <div style=" height: 5px;" ></div>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+
+                <h:panelGroup><h:outputText  id="compDircc39" value="Tipo"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc40" value="Nombre"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc41" value="Subdivisión"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc42" value="Nombre"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc43" value="Subdivisión 1"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc44" value="Nombre"/></h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="nivel1BM"  value="#{componenteDireccionMBean.nivel1BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_NIVEL_UNO')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup >
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc46" value="#{componenteDireccionMBean.nivelTxt1BM}">
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="nivel2BM"   value="#{componenteDireccionMBean.nivel2BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems  value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_NIVEL_DOS')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup >
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc48" value="#{componenteDireccionMBean.nivelTxt2BM}">                
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+
+
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="nivel3BM"  value="#{componenteDireccionMBean.nivel3BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_NIVEL_TRES')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc50" value="#{componenteDireccionMBean.nivelTxt3BM}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+
+
+                <div style=" height: 5px;" ></div>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+
+
+                <h:panelGroup><h:outputText  id="compDircc51" value="Subdivisión 2"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc52" value="Nombre"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc53" value="Tipo Vivienda"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc54" value="Complemento Vivienda"/></h:panelGroup>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+
+
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="nivel4BM" value="#{componenteDireccionMBean.nivel4BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_NIVEL_CUATRO')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc56" value="#{componenteDireccionMBean.nivelTxt4BM}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>                
+                </h:panelGroup>
+
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="nivel5BM"  value="#{componenteDireccionMBean.nivel5BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_NIVEL_CINCO')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup ><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc58" value="#{componenteDireccionMBean.nivelTxt5BM}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText> 
+                </h:panelGroup>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+            </h:panelGrid>
+
+
+
+
+            <h:panelGrid columns="6" id="intraducible" rendered="#{componenteDireccionMBean.tipoDireccion.equalsIgnoreCase('IT')}" >
+
+                <h:panelGroup><h:outputText  id="compDircc59" value="Vía Pricipal"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc60" value="Nombre Vía"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc61" value="Complemento Vía"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc62" value="#KM"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc63" value="Zona Rural"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc64" value="Nombre Zona"/></h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="intraducible1"  value="#{componenteDireccionMBean.nivel1BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_INTRADUCIBLE')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc66" value="#{componenteDireccionMBean.nivelTxt1BM}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText></h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="intraducible2"  value="#{componenteDireccionMBean.nivel2BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems   value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_INTRADUCIBLE2')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc68" value="#{componenteDireccionMBean.nivelTxt2BM}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText></h:panelGroup>               
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="intraducible3" value="#{componenteDireccionMBean.nivel3BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_INTRADUCIBLE3')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>               
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc70" value="#{componenteDireccionMBean.nivelTxt3BM}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText></h:panelGroup>
+
+                <div style=" height: 5px;" ></div>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+                <h:outputText></h:outputText>
+
+
+                <h:panelGroup><h:outputText  id="compDircc71" value="Subdivisión"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc72" value="Nombre"/></h:panelGroup> 
+                <h:panelGroup><h:outputText  id="compDircc73" value="Subdivisión 1"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc74" value="Nombre"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc75" value="Tipo"/></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc76" value="Nombre"/></h:panelGroup>
+
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="intraducible4"  value="#{componenteDireccionMBean.nivel4BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems   value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_INTRADUCIBLE4')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc78" value="#{componenteDireccionMBean.nivelTxt4BM}">
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>                      
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="intraducible5" value="#{componenteDireccionMBean.nivel5BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_INTRADUCIBLE5')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc80" value="#{componenteDireccionMBean.nivelTxt5BM}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="intraducible6"   value="#{componenteDireccionMBean.nivel6BM}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_INTRADUCIBLE6')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc82" value="#{componenteDireccionMBean.nivelTxt6BM}"  >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+            </h:panelGrid>
+
+            <hr size="5" width="100%" align="LEFT"/>
+
+
+
+            <h:panelGrid columns="6" id="complementoPanel"   rendered="#{componenteDireccionMBean.subENiveles}"  >
+                <h:panelGroup><h:outputText  id="compDircc83" value="SubE-Nivel 1:"/></h:panelGroup>
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly or componenteDireccionMBean.verificacionCasa}" id="subNivel1"  value="#{componenteDireccionMBean.nivel1}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_SUB_EDIFICIO')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup >
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly or componenteDireccionMBean.verificacionCasa}"  id="compDircc84" value="#{componenteDireccionMBean.nivelTxt1}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc85" value="SubE-Nivel 2:"/></h:panelGroup>
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly or componenteDireccionMBean.verificacionCasa}" id="subNivel2"  value="#{componenteDireccionMBean.nivel2}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_SUB_EDIFICIO')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup >
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly or componenteDireccionMBean.verificacionCasa}"  id="compDircc86" value="#{componenteDireccionMBean.nivelTxt2}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+
+                <h:panelGroup><h:outputText  id="compDircc87" value="SubE-Nivel 3:"/></h:panelGroup>
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly or componenteDireccionMBean.verificacionCasa}" id="subNivel3"  value="#{componenteDireccionMBean.nivel3}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems   value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_SUB_EDIFICIO')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup >
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly or componenteDireccionMBean.verificacionCasa}"  id="compDircc88" value="#{componenteDireccionMBean.nivelTxt3}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc89" value="SubE-Nivel 4:"/></h:panelGroup>
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly or componenteDireccionMBean.verificacionCasa}" id="subNivel4"  value="#{componenteDireccionMBean.nivel4}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_SUB_EDIFICIO')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup >
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly or componenteDireccionMBean.verificacionCasa}"  id="compDircc90" value="#{componenteDireccionMBean.nivelTxt4}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText></h:panelGroup>
+
+                <h:panelGroup rendered="#{componenteDireccionMBean.tipoDireccion.equalsIgnoreCase('IT')}" ><h:outputText  id="compDircc91" value="Placa:"/></h:panelGroup>
+                <h:panelGroup rendered="#{componenteDireccionMBean.tipoDireccion.equalsIgnoreCase('IT')}" >
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly}" id="placaIntraducible"   value="#{componenteDireccionMBean.placaIT}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_PLACA_IT')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{componenteDireccionMBean.tipoDireccion.equalsIgnoreCase('IT')}" >
+                    <h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc92" value="#{componenteDireccionMBean.placaTxtIT}"  >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText>
+                </h:panelGroup> 
+                <h:panelGroup rendered="#{componenteDireccionMBean.tipoDireccion.equalsIgnoreCase('IT')}" ><h:outputText  id="compDircc93" value=""/></h:panelGroup> 
+                <h:panelGroup rendered="#{componenteDireccionMBean.tipoDireccion.equalsIgnoreCase('IT')}" ><h:outputText  id="compDircc94" value=""/></h:panelGroup> 
+                <h:panelGroup rendered="#{componenteDireccionMBean.tipoDireccion.equalsIgnoreCase('IT')}" ><h:outputText  id="compDircc95" value=""/></h:panelGroup> 
+
+
+
+                <h:panelGroup><h:outputText  id="compDircc96" value="Nivel 5:"/></h:panelGroup>
+                <h:panelGroup>
+                    <h:selectOneMenu rendered="#{componenteDireccionMBean.verificacionCasa}" disabled="#{componenteDireccionMBean.readOnly}" id="nivel5_vc"  value="#{componenteDireccionMBean.nivel5}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems   value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_NIVEL_5_VC')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.isNivel5Plus()}" render="nivel6 nivel6txt"/>
+                    </h:selectOneMenu>
+                    <h:selectOneMenu rendered="#{!componenteDireccionMBean.verificacionCasa}" disabled="#{componenteDireccionMBean.readOnly}" id="nivel5"  value="#{componenteDireccionMBean.nivel5}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems    value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_NUM_APTO')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.isNivel5Plus()}" render="nivel6 nivel6txt"/>
+                    </h:selectOneMenu>
+                </h:panelGroup >
+                <h:panelGroup><h:inputText disabled="#{componenteDireccionMBean.readOnly}"  id="compDircc97" value="#{componenteDireccionMBean.nivelTxt5}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText></h:panelGroup>
+                <h:panelGroup><h:outputText  id="compDircc98" value="Nivel 6:"/></h:panelGroup>
+                <h:panelGroup>
+                    <h:selectOneMenu disabled="#{componenteDireccionMBean.readOnly || componenteDireccionMBean.nivel5plus}" required="#{!componenteDireccionMBean.nivel5plus}" id="nivel6"  value="#{componenteDireccionMBean.nivel6}">
+                        <f:selectItem itemValue="" itemLabel=""/>
+                        <f:selectItems   value="#{componenteDireccionMBean.obtenerDireccionPorTipo('DIR_NUM_APTOC')}" var="nivel" itemLabel="#{nivel.descripcion}" itemValue="#{nivel.descripcion}"/>
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:selectOneMenu>
+                </h:panelGroup >
+                <h:panelGroup><h:inputText id="nivel6txt" disabled="#{componenteDireccionMBean.readOnly || componenteDireccionMBean.nivel5plus}"  value="#{componenteDireccionMBean.nivelTxt6}" >
+                        <f:ajax event="change" listener="#{componenteDireccionMBean.printDirPrint()}" render="compDirPrint"/>
+                    </h:inputText></h:panelGroup>                             
+            </h:panelGrid>
+            <h:panelGrid columns="3">
+                <h:outputText></h:outputText>
+                <h:panelGroup><h:outputText  id="compDirPrint" value="#{componenteDireccionMBean.dirPrint}"  style="font-size: 15px; font-weight: bold; text-align:  center; "  /></h:panelGroup>
+                <h:outputText></h:outputText>
+
+                <h:outputText></h:outputText>
+                <div style=" width: 500px;" ></div>
+                <h:outputText></h:outputText>
+
+            </h:panelGrid>
+        </h:panelGroup>
+    </cc:implementation>
+</html>

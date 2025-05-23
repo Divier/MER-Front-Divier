@@ -1,0 +1,393 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                template="/view/MGL/template/solicitudCmCreateTemplate.xhtml">
+    <ui:define name="content">
+
+        <h:panelGroup id="groupInfoCuentaMatriz" style="width: 100%">
+            <h2 id="datosCM">INFORMACIÓN CUENTA MATRIZ</h2>
+        </h:panelGroup>
+
+        <h:panelGroup class="formulario3" style="width: 100%" >
+            <h:commandLink value="Ir a detalle CM"
+                           id="RegresarCmBtn" immediate="true"
+                           action="#{eliminarCmBean.ingresarGestionCm()}"/>
+            <hr />
+            <div class="wizard-form">
+
+                
+
+                
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Departamento: " for="Departamento" />
+                    </div>
+                    <h:outputText id="Departamento" 
+                                  value="#{eliminarCmBean.solicitudCmMgl.departamentoGpo.gpoNombre}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Ciudad: " for="Ciudad" />
+                    </div>
+                    <h:outputText id="Ciudad" 
+                                  value="#{eliminarCmBean.solicitudCmMgl.ciudadGpo.gpoNombre}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Centro Poblado: " for="CentroPoblado" />
+                    </div>
+                    <h:outputText id="CentroPoblado" 
+                                  value="#{eliminarCmBean.solicitudCmMgl.centroPobladoGpo.gpoNombre}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Dirección: " for="Direccion" />
+                    </div>
+                    <h:outputText id="Direccion" 
+                                  value="#{eliminarCmBean.direccionLabel}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Barrio: " for="Barrio" />
+                    </div>
+                    <h:outputText id="Barrio" 
+                                  value="#{eliminarCmBean.drDireccion.barrio}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Nombre Cuenta matriz: " for="NombreCuentamatriz" />
+                    </div>
+                    <h:outputText id="NombreCuentamatriz" 
+                                  value="#{eliminarCmBean.solicitudSub.nombreSubedificio}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Tipo Edificio: " for="TipoEdificio" />
+                    </div>
+                    <h:outputText id="TipoEdificio" 
+                                  value="#{eliminarCmBean.solicitudSub.tipoEdificioObj.nombreBasica}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Cantidad Torres: " for="CantidadTorres" />
+                    </div>
+                    <h:outputText id="CantidadTorres" 
+                                  value="#{eliminarCmBean.cantidadSubedificios}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Nodo: " for="Nodo" />
+                    </div>
+                    <h:outputText id="Nodo" 
+                                  value="#{eliminarCmBean.solicitudSub.nodoObj.nodCodigo}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Cantidad HHPP: " for="CantidadHhpp" />
+                    </div>
+                    <h:outputText id="CantidadHhpp" 
+                                  value="#{eliminarCmBean.cantidadHhpp}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Constructora: " for="Constructora" />
+                    </div>
+                    <h:outputText id="Constructora" 
+                                  value="#{eliminarCmBean.solicitudSub.companiaConstructoraObj.nombreCompania}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Contacto constructora: " for="Contactoconstructora" />
+                    </div>
+                    <h:outputText id="Contactoconstructora" 
+                                  value="#{eliminarCmBean.solicitudSub.contactoConstructora}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Administración: " for="Administracion" />
+                    </div>
+                    <h:outputText id="Administracion" 
+                                  value="#{eliminarCmBean.solicitudSub.companiaAdministracionObj.nombreCompania}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Contacto Administración: " for="ContactoAdministracion" />
+                    </div>
+                    <h:outputText id="ContactoAdministracion" 
+                                  value="#{eliminarCmBean.solicitudSub.administrador}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Ascensores: " for="Ascensores" />
+                    </div>
+                    <h:outputText id="Ascensores" 
+                                  value="#{eliminarCmBean.solicitudSub.companiaAscensorObj.nombreCompania}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Contacto Ascensores: " for="ContactoAscensores" />
+                    </div>
+                    <h:outputText id="ContactoAscensores" 
+                                  value="#{eliminarCmBean.solicitudSub.contactoAcsensores}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Teléfono Portería: " for="TelefonoPorteria" />
+                    </div>
+                    <h:outputText id="TelefonoPorteria" 
+                                  value="#{eliminarCmBean.solicitudSub.telefonoPorteria}"/>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="Fecha Entrega: " for="FechaEntrega" />
+                    </div>
+                    <h:outputText id="FechaEntrega" 
+                                  value="#{eliminarCmBean.solicitudSub.fechaEntregaEdificio}">
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd"/>
+                    </h:outputText>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="No Cuenta RR: "/>
+                    </div>
+                    <h:outputText id="NoCuentaRr" 
+                                  value="#{eliminarCmBean.cuentaMatriz.numeroCuenta}" 
+                                  style="color: red;font-weight: bold;">
+                    </h:outputText>
+                </div>
+
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel value="No Cuenta MGL: "/>
+                    </div>
+                    <h:outputText id="NoCuentaMgl" 
+                                  value="#{eliminarCmBean.cuentaMatriz.cuentaMatrizId}" 
+                                  style="color: red;font-weight: bold;">
+                    </h:outputText>
+                </div>
+                <hr/>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{!eliminarCmBean.escaladoAcometida}">
+            <h:panelGroup id="groupInfoSolicitanteT" style="width: 100%">
+                <h2 id="datosCMTitle">DATOS SOLICITANTE</h2>
+            </h:panelGroup>
+
+            <h:panelGroup class="formulario3" style="width: 100%" >
+                <div class="wizard-form">
+                    <div class="wizard-form-column">
+                        <div class="wizard-form-label">
+                           
+                            <h:outputLabel  value="Tipo de solicitud" for="listtipoSolModCM" />
+                        </div>
+                        <h:outputText id="listtipoSolModCM"
+                                      value="#{eliminarCmBean.solicitudCmMgl.origenSolicitud.nombreBasica}" />
+                    </div>
+                    <div class="wizard-form-column">
+                        <div class="wizard-form-label">
+                           
+                            <h:outputLabel value="Usuario" for="usuarioModCM"/>
+                        </div>
+                        <h:outputText id="usuarioModCM"
+                                      value="#{eliminarCmBean.usuarioVT}" />
+                    </div>
+                    <div class="wizard-form-column">
+                        <div class="wizard-form-label">
+                            
+                            <h:outputLabel value="Correo Usuario" for="correoUsuarioModCM"/>
+                        </div>
+                        <h:outputText id="correoUsuarioModCM"
+                                      value="#{eliminarCmBean.usuarioLogin.email}" />
+                    </div>
+                    <div class="wizard-form-column">
+                        <div class="wizard-form-label">
+                           
+                            <h:outputLabel value="Copia a" for="copiaModCM"/>
+                        </div>
+                        <h:outputText id="copiaModCM"
+                                      value="#{eliminarCmBean.solicitudCmMgl.correoCopiaSolicitud}" />
+                    </div>
+                      <div class="wizard-form-column">
+                        <div class="wizard-form-label">
+                          
+                            <h:outputLabel value="Área" for="areaSol"/>
+                        </div>
+                        <h:outputText id="areaSol"
+                                      value="#{eliminarCmBean.solicitudCmMgl.areaSolictud}" />
+                    </div>
+                    <div class="wizard-form-column">
+                        <div class="wizard-form-label">
+                            
+                            <h:outputLabel  value="Asesor" for="codAsesorModCM"/>
+                        </div>
+                        <h:outputText id="codAsesorModCM"
+                                      value="#{eliminarCmBean.solicitudCmMgl.asesor}" />
+                    </div>
+                    <div class="wizard-form-column">
+                        <div class="wizard-form-label">
+                            
+                            <h:outputLabel  value="Correo Asesor" for="correoAsesorModCM" />
+                        </div>
+                        <h:outputText id="correoAsesorModCM" 
+                                      value="#{eliminarCmBean.solicitudCmMgl.correoAsesor}"/>
+                    </div>
+                    <div class="wizard-form-column">
+                        <div class="wizard-form-label">
+                          
+                            <h:outputLabel value="Teléfono Asesor" for="telAsesorModCM"/>
+                        </div>
+                        <h:outputText id="telAsesorModCM"
+                                      value="#{eliminarCmBean.solicitudCmMgl.telefonoAsesor}" />
+                    </div>
+                    <hr />
+                </div>
+
+                <div class="wizard-form">
+                    <h:outputText style="font-size: 16px;color: red;" value="*" />
+                    <h:outputLabel value="Observaciones (4000 Caracteres)" for="ObservacionesModCM" />
+                    <h:inputTextarea id="ObservacionesModCM"
+                                     style="width:99%; height: 50px;" disabled="true"
+                                     value="#{eliminarCmBean.solicitudCmMgl.justificacion}" />
+                    <hr />
+                </div>
+                <hr />
+            </h:panelGroup>
+
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{eliminarCmBean.escaladoAcometida}">
+
+            <h:panelGroup id="groupInfoOrdenes" style="width: 100%">
+                <h2 id="datosOTTitle">Ordenes de trabajo</h2>
+            </h:panelGroup>
+
+            <h:panelGroup class="formulario3" style="width: 100%" >
+                <div class="wizard-form">
+                    <h:dataTable value="#{eliminarCmBean.ordenesTrabajo}" var="ot"
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                 styleClass="constructGTable2" headerClass="constructGTableHeader">
+                        <h:column>
+                            <f:facet name="header">Id OT</f:facet>
+                            <h:commandLink value="#{ot.idOt}" disabled="true" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Tipo de orden</f:facet>
+                            <h:outputText value="#{ot.tipoOtObj.descTipoOt}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Cancelar orden</f:facet>
+                            <h:commandLink value="Cancelar" rendered="#{eliminarCmBean.validarCancelarOt()}"
+                                           actionListener="#{eliminarCmBean.cancelarOrdenTrabajo(ot)}" />
+                        </h:column>
+                        <hr />
+                    </h:dataTable>
+                </div>
+            </h:panelGroup>
+
+        </h:panelGroup>
+
+        <h:panelGroup class="formulario3" style="width: 100%"
+                      rendered="#{eliminarCmBean.solicitudCmMgl.estadoSolicitudObj.
+                                  identificadorInternoApp eq '@B_ESP' or 
+                                  eliminarCmBean.solicitudCmMgl.estadoSolicitudObj.
+                                  identificadorInternoApp eq '@B_EPEA' }">
+            <h:panelGroup id="groupInfoGestionador" style="width: 100%">
+                <h2 id="datosCMTitle">DATOS GESTIONADOR</h2>
+            </h:panelGroup>
+            <div class="wizard-form">
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+
+                        <h:outputLabel value="Usuario Gestión"/>
+                    </div>
+                    <h:outputText id="usuarioModCMGestion"
+                                  value="#{eliminarCmBean.usuarioVT}" />
+                </div>
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+
+                        <h:outputLabel value="Correo Usuario Gestión" />
+                    </div>
+                    <h:outputText id="correoUsuarioModCMGestion"
+                                  value="#{eliminarCmBean.usuarioLogin.email}" />
+                </div>
+                
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputText style="font-size: 16px;color: red;" value="*" />
+                        <h:outputLabel value="Tipo de acción: " for="tipoAccion" />
+                    </div>
+                    <h:selectOneMenu id="tipoAccion" value="#{eliminarCmBean.tipoAccion}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Seleccione la acción a realizar" />
+                        <f:selectItems value="#{eliminarCmBean.tiposAccion}"
+                                       var="tipo" itemValue="#{tipo.tipoBasicaId}"
+                                       itemLabel="#{tipo.nombreTipo}"/>
+                        <f:ajax render="accion" event="change"
+                                listener="#{eliminarCmBean.buscarBasicasEliminacion()}"/>
+                    </h:selectOneMenu>
+                </div>
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputText style="font-size: 16px;color: red;" value="*" />
+                        <h:outputLabel value="Acción: " for="accion" />
+                    </div>
+                    <h:selectOneMenu id="accion" value="#{eliminarCmBean.accion}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Seleccione la acción a realizar" />
+                        <f:selectItems value="#{eliminarCmBean.acciones}"
+                                       var="accion" itemValue="#{accion.basicaId}"
+                                       itemLabel="#{accion.nombreBasica}"/>
+                        <f:ajax render="comentario" event="change"
+                                listener="#{eliminarCmBean.escribeComentario()}"/>
+                    </h:selectOneMenu>
+                </div>
+                <hr />
+                <div class="wizard-form-label">
+                    <h:outputText style="font-size: 16px;color: red;" value="*" />
+                    <h:outputLabel value="Comentario: " for="comentario" />
+                </div>
+                <hr />
+                <h:inputTextarea id="comentario" rows="5"
+                                 style="width: 100%" value="#{eliminarCmBean.comentario}" />
+            </div>
+        </h:panelGroup>
+
+        <h:commandButton id="buttonEscalarCM"
+                         rendered="#{eliminarCmBean.solicitudCmMgl.estadoSolicitudObj.
+                                  identificadorInternoApp eq '@B_ESP' or 
+                                  eliminarCmBean.solicitudCmMgl.estadoSolicitudObj.
+                                  identificadorInternoApp eq '@B_EPEA' }"
+                         value="Gestionar" styleClass="btn"
+                         action ="#{eliminarCmBean.gestionar()}"/>
+        <div>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+
+        </div>
+
+    </ui:define>
+</ui:composition>

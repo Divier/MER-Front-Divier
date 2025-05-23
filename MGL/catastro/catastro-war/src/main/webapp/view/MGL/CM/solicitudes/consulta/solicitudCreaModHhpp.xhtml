@@ -1,0 +1,432 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"                
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="content">
+
+
+        <h:commandButton  id="regresarButton" 
+                          class="btn2 btn2Active" 
+                          value="Regresar" 
+                          action="#{cmtEstadoSolicitudBean.regresarAConsulta()}"
+                          immediate="true" />
+
+        <h:panelGroup id="panelGroupSolicitudTitle" style="width: 100%">
+            <h2 id="SolicitudTitle">SOLICITUD #{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                                tipoSolicitudObj.nombreTipo}</h2>
+        </h:panelGroup>
+
+        <h:panelGrid columns="6" id="notasMgl" class="formulario3"  style="width:100%;"  > 
+
+            <h:outputText value="Número de Solicitud:" class="EtiquetaConsulta"/>
+            <h:outputText id="ccmsTxt" value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.solicitudCmId}" 
+                          style="width: 100px;font-size: 14.5px;color:red;font-weight: bold; "/> 
+
+            <h:outputText value="Estado de la Solicitud:" class="EtiquetaConsulta"/>
+            <h:inputText id="esmsTxt" value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                               estadoSolicitudObj.nombreBasica}" 
+                         disabled="true" style="width: 100px"   /> 
+
+            <h:outputText value="Tiempo Solicitud:" class="EtiquetaConsulta"/>
+            <h:inputText id="eimsTxt" 
+                         style="width: 100px" 
+                         value="#{cmtEstadoSolicitudBean.tiempoCreacionSol}"/> 
+        </h:panelGrid> 
+
+        <h:panelGrid  class="formulario3"  columns="4">
+            <h:commandButton  id="irSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'SOLICITUD' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Solicitud" 
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('SOLICITUD')}"
+                              immediate="true" />
+            <h:commandButton  id="irEstadoSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'TRACK' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Track" 
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('TRACK')}" 
+                              immediate="true" />
+            <h:commandButton  id="irNotasSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Notas"
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('NOTAS')}"
+                              immediate="true" />
+            <h:commandButton  id="irHorarioSolicitudCM" 
+                              class="#{cmtEstadoSolicitudBean.selectedTab == 'HORARIO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Horario de Atención"
+                              action="#{cmtEstadoSolicitudBean.cambiarTab('HORARIO')}"
+                              rendered="#{cmtEstadoSolicitudBean.showHorario}"
+                              immediate="true" />
+        </h:panelGrid>
+
+
+        <h:panelGroup>
+            <!-- ***********************************************************
+            **************************SECCION ENCABEZADO******************
+            **************************************************************-->
+            <h2 id="hMmData">CUENTA MATRIZ</h2>
+            <h:panelGrid  styleClass="formularioSol" columns="8" >
+
+                <h:outputText class="txtLabelsMgl"  value="No. Cuenta RR:"/>
+                <h:outputText class="columnReadFormNumero"  
+                              style="color: red;font-weight: bold;"
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.numeroCuenta}" />
+                
+                <h:outputText class="txtLabelsMgl" value="Tipo:"/>
+                <h:outputText class="columnReadForm"  
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.
+                                       subEdificioGeneral.tipoEdificioObj.nombreBasica}" />
+                
+                <h:outputText class="txtLabelsMgl" value="Nombre Edificio:"/>
+                <h:outputText class="columnReadForm"  
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.nombreCuenta}" />
+                <h:outputText class="txtLabelsMgl" value="Estado:"/>
+                
+                <h:outputText class="columnReadForm"  
+                              style="color: red; font-weight: bold;" 
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.
+                                       subEdificioGeneral.estadoSubEdificioObj.nombreBasica}" />
+                       
+                <h:outputText class="txtLabelsMgl" value="División:"/>
+                <h:outputText class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.division}" />
+                
+                <h:outputText class="txtLabelsMgl" value="Comunidad:"/>
+                <h:outputText class="columnReadForm"  
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.comunidad}" />
+                
+                <h:outputText class="txtLabelsMgl" value="Departamento:"/>
+                <h:outputText class="columnReadForm"  
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.departamento.gpoNombre}" />
+ 
+                <h:outputText class="txtLabelsMgl" value="Municipio:"/>
+                <h:outputText class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.municipio.gpoNombre}" />
+                
+                <h:outputText class="txtLabelsMgl" value="Centro Poblado:"/>
+                <h:outputText class="columnReadForm"  
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.centroPoblado.gpoNombre}" />
+                
+                <h:outputText class="txtLabelsMgl" value="Barrio:"/>
+                <h:outputText class="columnReadForm"
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.direccionPrincipal.barrio}" />
+                
+                <h:outputText class="txtLabelsMgl" value="Dirección:"/>
+                <h:outputText class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.
+                                       direccionPrincipal.direccionObj.dirFormatoIgac}" />              
+             
+                <h:outputText class="txtLabelsMgl" value="Dirección Antigua:"/>
+                <h:outputText class="columnReadForm" 
+                              value="" style="color: pink;font-weight: bold;" />
+                
+                <h:outputText class="txtLabelsMgl" value="Telófono Porteróa 1:"/>
+                <h:outputText class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.
+                                       subEdificioGeneral.telefonoPorteria}" />
+                
+                <h:outputText class="txtLabelsMgl" value="Telófono Porteróa 2:"/>
+                <h:outputText class="columnReadForm" 
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.
+                                       subEdificioGeneral.telefonoPorteria2}" />
+                <h:outputText class="txtLabelsMgl"  value="No. Cuenta MGL:"/>
+                <h:outputText class="columnReadFormNumero"  
+                              style="color: red;font-weight: bold;"
+                              value="#{cmtEstadoSolicitudBean.cuentaMatriz.cuentaMatrizId}" />
+                <h:outputText class="txtLabelsMgl" value="" />
+                <h:outputText id="txtB2"   class="columnReadForm" 
+                              value=""/>
+                
+            </h:panelGrid>
+            <!-- ***********************************************************
+            **************************SECCION ENCABEZADO******************
+            **************************************************************-->
+
+
+            <!-- ***********************************************************
+             *******************SECCION SOLICITANTE*********************
+             **************************************************************-->
+            <table style="width: 100%" >
+                <td style="width:100%" > <h2 id="solModData" >DATOS SOLICITANTE </h2> </td>
+            </table>
+
+            <h:panelGroup id="groupInfoSolicitante" style="width: 100%" >
+                <h:panelGroup id="groupSolicitante" style="width: 100%" >
+                    <h:panelGrid   class="formulario3" columns="8"  style="width: 100%"  >
+                        <h:outputText class="txtLabelsMgl" value="Tipo de solicitud:"  />
+                        <h:outputText class="columnReadForm" 
+                                      value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                               origenSolicitud.nombreBasica}"/>
+
+                        <h:outputText class="txtLabelsMgl"   value="Usuario:"/> 
+                        <h:outputText class="columnReadForm" 
+                                      value="#{cmtEstadoSolicitudBean.usuarioSolicitud.usuario}"/>
+
+                        <h:outputText class="txtLabelsMgl"  value="Correo Usuario:"/>
+                        <h:outputText class="columnReadForm" 
+                                      value="#{cmtEstadoSolicitudBean.usuarioSolicitud.email}"/>
+
+                        <h:outputText class="txtLabelsMgl"  value="Copia a:"/>
+                        <h:outputText class="columnReadForm" 
+                                      value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                               correoCopiaSolicitud}"/>
+
+                        <h:outputText class="txtLabelsMgl" value="Asesor:"/>
+                        <h:outputText class="columnReadForm" 
+                                      value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                               asesor}"/>
+
+                        <h:outputText class="txtLabelsMgl"  value="Correo Asesor:" /> 
+                        <h:outputText class="columnReadForm" 
+                                      value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                               correoAsesor}"/>
+
+                        <h:outputText class="txtLabelsMgl"  value="Telófono Asesor:"/>
+                        <h:outputText class="columnReadForm" 
+                                      value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                               telefonoAsesor}"/>
+
+                    </h:panelGrid>
+                    
+                     <h:panelGrid class="formulario3" columns="1"  style="width: 100%">           
+                        <h:outputText class="txtLabelsMgl"  value="Observaciones (4000 Caracteres):"/>
+                        <h:inputTextarea id="ObservacionesModCM"  style="width:100%; height: 100%;" disabled="true" 
+                                         value="#{cmtEstadoSolicitudBean.cmtNotasSolicitudMgl.nota}">                
+                        </h:inputTextarea>
+                    </h:panelGrid>
+
+                </h:panelGroup>
+            </h:panelGroup>
+            <!-- ***********************************************************
+            *******************FIN SECCION DATOS SOLICITANTE****************
+            **************************************************************-->
+        </h:panelGroup>
+        <!-- ***********************************************************
+            ***********SECCION CREACION/ MODIFICACION HHPP******** 
+            **************************************************************-->
+        <h:panelGroup id="idPanelCreModHhpp">
+            <h:dataTable styleClass="constructGTable2" 
+                         headerClass="constructGTableHeader" 
+                         style="width: 100%;" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow" 
+                         rows="#{cmtEstadoSolicitudBean.filasPag}" 
+                         value="#{cmtEstadoSolicitudBean.hhppCmList}" 
+                         var="hhppCm">
+                <f:facet name="header">
+                    <h:outputText value="Unidades de la Cuenta Matriz" style="width: 100%; text-align: center"/>
+                </f:facet>
+                <h:column > 
+                    <f:facet name="header">
+                        <h:outputText value="Dirección" />
+                    </f:facet>
+                    <div align="left"  >
+                        <h:outputText value="#{hhppCm.subDireccionObj != null?hhppCm.subDireccionObj.sdiFormatoIgac: 
+                                               (hhppCm.direccionObj != null?hhppCm.direccionObj.dirFormatoIgac:'')}"/>      
+                    </div>                                  
+                </h:column>
+                <h:column  > 
+                    <f:facet name="header">
+                        <h:outputText value="Dirección RR" />
+                    </f:facet>
+                    <div align="left"  >
+                        <h:outputText value="#{hhppCm.hhpCalle} | #{hhppCm.hhpPlaca} | #{hhppCm.hhpApart}"  />      
+                    </div>                                  
+                </h:column>
+                <h:column  > 
+                    <f:facet name="header">
+                        <h:outputText value="Nodo" />
+                    </f:facet>
+                    <div align="left"  >
+                        <h:outputText value="#{hhppCm.nodId.nodCodigo}"  />      
+                    </div>                                  
+                </h:column>
+                <h:column  > 
+                    <f:facet name="header">
+                        <h:outputText value="Estrato" />
+                    </f:facet>
+                    <div align="left"  >
+                        <h:outputText value="#{hhppCm.subDireccionObj != null and 
+                                               hhppCm.subDireccionObj.sdiNivelSocioecono != null? 
+                                               (hhppCm.subDireccionObj.sdiNivelSocioecono eq '0'? 'NR' : 
+                                               hhppCm.subDireccionObj.sdiNivelSocioecono) : 
+                                               (hhppCm.direccionObj != null 
+                                               and hhppCm.direccionObj.dirNivelSocioecono != null ? 
+                                               (hhppCm.direccionObj.dirNivelSocioecono eq '0' ? 'NR' : 
+                                               hhppCm.direccionObj.dirNivelSocioecono) : 'NG')}"/>      
+                    </div>                                  
+                </h:column>
+                <h:column  > 
+                    <f:facet name="header">
+                        <h:outputText value="Estado" />
+                    </f:facet>
+                    <div align="left"  >
+                        <h:outputText value="#{hhppCm.ehhId.ehhNombre}"  />      
+                    </div>                                  
+                </h:column>
+
+                <h:column  > 
+                    <f:facet name="header">
+                        <h:outputText value="N° Cuenta" />
+                    </f:facet>
+                    <div align="left"  >
+                        <h:outputText value="#{hhppCm.cuenta}" />
+                    </div>                                  
+                </h:column>
+                <f:facet name="footer">
+                    <h:panelGroup>
+                        <h:commandButton  action="#{cmtEstadoSolicitudBean.pageFirst}" 
+                                          class="botonTPagInicioCm botonBaselista"/>
+                        <h:commandButton  action="#{cmtEstadoSolicitudBean.pagePrevious}" 
+                                          class="botonTPagAnteriorCm botonBaselista"/>
+                        <h:commandButton value="#{cmtEstadoSolicitudBean.pageActual}" />
+                        <h:selectOneMenu id="listTabla" value="#{cmtEstadoSolicitudBean.numPagina}" 
+                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                            <f:selectItems value="#{cmtEstadoSolicitudBean.paginaList}" var="pag"
+                                           itemValue="#{pag}"
+                                           itemLabel="#{pag}"/>    
+                            <f:ajax render="@form"  event="change"  listener="#{cmtEstadoSolicitudBean.irPagina()}" 
+                                    execute="@this" />                                         
+                        </h:selectOneMenu>  
+                        <h:commandButton  action="#{cmtEstadoSolicitudBean.pageNext}" 
+                                          class="botonTPagSiguienteCm botonBaselista"/>
+                        <h:commandButton  action="#{cmtEstadoSolicitudBean.pageLast}" 
+                                          class="botonTPagFinCm botonBaselista"/>
+                    </h:panelGroup>
+                </f:facet>
+            </h:dataTable>
+            <h:outputText value="&#160;" id="blancohhppCMTable" style="width: 100%"/>
+            <h:dataTable  id="hhppTable"
+                          value="#{cmtEstadoSolicitudBean.cmtSolicitudHhppMglListToChanges}" 
+                          var="listHhpp"
+                          class="constructGTable tableViewCont"
+                          rowClasses="constructGTableEvenRow, constructGTableOddRow" 
+                          rendered="#{(cmtEstadoSolicitudBean.cmtSolicitudHhppMglListToChanges.size())>0}">
+                <f:facet name="header">
+                    <h:outputText value="Cambios de la Solicitud" />
+                </f:facet>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="PROCESO"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.tipoSolicitud == 1 ? 'CREACIÓN' : 'MODIFICACIÓN' }"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Dirección"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.cmtSubEdificioMglObj.cmtCuentaMatrizMglObj.direccionPrincipal.direccionObj.dirFormatoIgac}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Apartamento"/>
+                    </f:facet>
+                    <h:outputText value="#{cmtEstadoSolicitudBean.consultarAudHHppMod(listHhpp.hhppMglObj)}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="SUBEDIFICIO"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.cmtSubEdificioMglObj.nombreSubedificio}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="OPCION_NIVEL5"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.opcionNivel5}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="VALOR_NIVEL5"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.valorNivel5}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="OPCION_NIVEL6"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.opcionNivel6}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="VALOR_NIVEL6"/>
+                    </f:facet>
+                    <h:outputText value="#{listHhpp.valorNivel6}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="TIPO DE VIVIENDA "/>
+                    </f:facet>
+                    <h:selectOneMenu id="listTabla" value="#{SolicitudHhppCMBean.tipoHhpp}" 
+                                     styleClass="ListaConsulta" style="width: 90px; height:19px;">
+                        <f:selectItems value="#{SolicitudHhppCMBean.listaTipoHhpp}" var="listTipo"
+                                       itemValue="#{listTipo.thhID}"
+                                       itemLabel="#{listTipo.thhID.concat(' - ').concat(listTipo.thhValor)}"/>
+
+                    </h:selectOneMenu>  
+                </h:column>
+            </h:dataTable>
+        </h:panelGroup>
+        <!-- ***********************************************************
+         *******************SECCION DATOS GESTIONADOR*********************
+         **************************************************************-->
+        <h:panelGroup style="width: 100%">
+            <h2 id="solModDataSub">DATOS GESTIONADOR</h2> 
+            <h:panelGrid  class="formulario3" columns="6"  style="width: 100%">
+
+                <h:outputText class="txtLabelsMgl"   value="Usuario:"/> 
+                <h:outputText class="txtLabelsMgl" id="usuariogGestCMSub" 
+                              value="#{cmtEstadoSolicitudBean.usuarioGestSolicitudCm.usuario}"
+                              styleClass="columnReadForm"/>
+
+
+                <h:outputText class="txtLabelsMgl"  value="Correo Usuario:"/>
+                <h:outputText class="txtLabelsMgl" id="usuariogGestCorreoSub" 
+                              value="#{cmtEstadoSolicitudBean.usuarioGestSolicitudCm.email}"
+                              styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl"  value="Copia a:"/>
+                <h:outputText class="txtLabelsMgl" id="usuariogGestCopiaSub" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.correoCopiaGestion}"
+                              styleClass="columnReadForm"/>
+
+                <h:outputText class="txtLabelsMgl" value="Acción:"/>
+                <h:outputText class="txtLabelsMgl" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.
+                                       resultGestion.tipoBasicaObj.nombreTipo}"/>
+
+                <h:outputText class="txtLabelsMgl" value="Resultado Gestión:"/>
+                <h:outputText class="txtLabelsMgl" 
+                              value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.resultGestion.nombreBasica}"/>
+
+            </h:panelGrid>
+
+            <h:panelGrid class="formulario3" columns="1"  style="width: 100%">           
+                <h:outputText class="txtLabelsMgl"  value="Respuesta Actual (4000 Caracteres):"/>
+                <h:inputTextarea id="RespuestaActualGestCMSub"  style="width:100%; height: 100%;" disabled="true" 
+                                 value="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.respuestaActual }">                
+                </h:inputTextarea>
+            </h:panelGrid>
+        </h:panelGroup>
+
+       
+        <h:commandButton id="detalleCm"
+                         action="#{cmtEstadoSolicitudBean.goCuentaMatriz}"   
+                         rendered="#{cmtEstadoSolicitudBean.cmtSolicitudCmMgl.estadoSolicitudObj.nombreBasica eq 'FINALIZADO'}"
+                         styleClass="btn"  value="Ir al Detalle CM" />
+        
+         <h:commandButton id="finaliza"
+                          action="#{cmtEstadoSolicitudBean.regresarCM()}"   
+                         rendered="true"
+                         styleClass="btn"  value="Finalizar"
+                          disabled="#{!cmtEstadoSolicitudBean.rolFinalizar}"/>
+
+    </ui:define> 
+</ui:composition>    
+<!-- ***********************************************************
+*******************FIN SECCION CREACION VT****************
+**************************************************************-->  

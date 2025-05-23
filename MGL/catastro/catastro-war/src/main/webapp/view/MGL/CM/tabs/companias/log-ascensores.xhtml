@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/cm.xhtml">
+    <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+    <ui:define name="content">
+        <ul id="nav">
+            <li ><h:commandLink action="gestion-administracion" value="Compañ&iacute;as Administraci&oacute;n" /></li>
+            <li ><h:commandLink action="gestion-constructoras" value="Compañ&iacute;as Constructoras" /></li>
+            <li class="active"><h:commandLink action="gestion-ascensores" value="Compañ&iacute;as de Ascensores" /></li>
+        </ul>
+        #{ascensoresMglBean.logAscensores()}
+        <h:panelGroup id="formCon">
+            <h:panelGrid class="formulario" columns="4">
+                <h:outputText value="Nombre Compañ&iacute;a" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" value="#{ascensoresMglBean.ascensoresAud.nombreCompania}" /> 
+                <h:outputText value="Departamento" />
+                <h:selectOneMenu disabled="#{ascensoresMglBean.updateCompania}" id="departamento" value="#{ascensoresMglBean.geograficoPoliticoMgl}"  requiredMessage="Ingrese departamento">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{ascensoresMglBean.listGeograficoMgl}" var="depto"
+                                   itemValue="#{depto.gpoId}"
+                                   itemLabel="#{depto.gpoNombre}"/>    
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{ascensoresMglBean.consultarCiudades()}" render="muni"/>
+                </h:selectOneMenu>
+                <h:outputText value="NIT" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}"  id="nit" value="#{ascensoresMglBean.ascensoresAud.nitCompania}" requiredMessage="El NIT es obligatorio"/>
+                <h:outputText value="Municipio" />
+                <h:selectOneMenu disabled="#{ascensoresMglBean.updateCompania}" id="muni" value="#{ascensoresMglBean.geograficoMgl}"  requiredMessage="Ingrese municipio">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{ascensoresMglBean.listGeograficoMgl}" var="ciudad"
+                                   itemValue="#{ciudad.gpoId}"
+                                   itemLabel="#{ciudad.gpoNombre}"/> 
+                </h:selectOneMenu>
+
+                <h:outputText value="C&oacute;digo" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}"  id="codigo" value="#{ascensoresMglBean.ascensoresAud.codigoRr}" requiredMessage="El c&oacute;digo es obligatorio"/>
+                <h:outputText value="Centro Poblado" />
+                <h:selectOneMenu disabled="#{ascensoresMglBean.updateCompania}" id="centroP" value="#{ascensoresMglBean.ascensoresAud.detalle}" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <!--<f:selectItems value="#-{modificacionHHPPMBean.ciudadesList}" 
+                                   var="ciudad"  itemValue="#-{ciudad.codigo}" itemLabel="#-{ciudad.nombre}"/>-->
+                </h:selectOneMenu>
+                <h:outputText value="Horario" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="abrev" value="#{ascensoresMglBean.ascensoresAud.hoRestriccionId}" />
+                <h:outputText value="Barrio" />
+                <h:selectOneMenu disabled="#{ascensoresMglBean.updateCompania}" id="barrio" value="#{ascensoresMglBean.ascensoresAud.barrio}" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{ascensoresMglBean.brList}" 
+                                   var="barrio"  itemValue="#{barrio}" itemLabel="#{barrio}"/>
+                </h:selectOneMenu>
+                <h:outputText value="Nombre Contacto" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="contacto" value="#{ascensoresMglBean.ascensoresAud.nombreContacto}" />
+                <h:outputText value="Direcci&oacute;n" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}"  id="dir" value="#{ascensoresMglBean.ascensoresAud.direccionNoStandar}" requiredMessage="Ingrese dirección"/>
+
+                <h:outputText value="Cargo del Contacto" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="cargo" value="#{ascensoresMglBean.ascensoresAud.costo}" />
+                <h:outputText value="Tel&eacute;fono 1" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="tel1" value="#{ascensoresMglBean.ascensoresAud.telefonos}" />
+
+                <h:outputText value="E-mail" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="email" value="#{ascensoresMglBean.ascensoresAud.email}" />                    
+                <h:outputText value="P&aacute;gina WEB" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="pagWeb" value="#{ascensoresMglBean.ascensoresAud.paginaWeb}" />
+                <h:outputText value="Responsable Claro" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="responsable" value="#{ascensoresMglBean.ascensoresAud.usuarioCreacion}" />
+                <h:outputText value="Estado" />
+                <h:selectOneRadio disabled="#{ascensoresMglBean.updateCompania}" id="estado"  value="#{ascensoresMglBean.ascensoresAud.estado}" class="radioB" requiredMessage="Estado obligatorio">
+                    <f:selectItem itemLabel="Activo" itemValue="A"/>
+                    <f:selectItem itemLabel="Inactivo" itemValue="I"/>
+                    <!--                            <f:ajax execute="nodoEstado" render="nodoEstado" listener="#,{modificacionHHPPMBean.limpiarNodoEstado()}"/>-->
+                </h:selectOneRadio>
+
+            </h:panelGrid>
+            <h:panelGrid  id="log" class="formulario" columns="4">
+
+                <h:outputText value="Fecha Creaci&oacute;n" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="fechaAdminC" value="#{ascensoresMglBean.ascensoresAud.fechaCreacion}" />
+                <h:outputText value="Fecha Modificaci&oacute;n" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="fechaAdminM" value="#{ascensoresMglBean.ascensoresAud.fechaModificacion}" />
+                <h:outputText value="Usuario" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="userAdmin" value="#{ascensoresMglBean.ascensoresAud.usuarioCreacion}" />
+                <h:outputText value="Perfil" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="perfilAdmin" value="#{ascensoresMglBean.ascensoresAud.perfilUsuarioCreacion}" />
+                <h:outputText value="Detalle" />
+                <h:inputText readonly="#{ascensoresMglBean.updateCompania}" required="false" id="detalleAdmin" value="#{ascensoresMglBean.ascensoresAud.detalle}" />
+                <h:outputText value="Justificaci&oacute;n" />
+                <h:inputTextarea readonly="#{ascensoresMglBean.updateCompania}" requiredMessage="Tiene que justificar la modificaci&oacute;n"  id="justi" value="#{ascensoresMglBean.ascensoresAud.justificacion}" />
+
+            </h:panelGrid>
+
+            <div class="buttonArea">                        
+                <h:commandButton value="Aceptar" styleClass="btn" action="gestion-ascensores"/>
+
+            </div>
+        </h:panelGroup>     
+    </ui:define>
+</ui:composition>
+

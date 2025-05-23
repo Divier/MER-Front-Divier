@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                template="/view/MGL/template/solicitudCmCreateTemplate.xhtml">
+    
+    <script type="text/javascript" src="#{request.contextPath}/resources/js/validator.js"></script>
+    <ui:define name="content">
+
+        
+           <!-- ***********************************************************
+            **************************SECCION ENCABEZADO******************
+            **************************************************************-->
+           
+            <h:panelGroup id="groupInfoCuentaMatriz" style="width: 100%">
+            <h2 id="datosCMTitle">CUENTA MATRIZ</h2>
+            </h:panelGroup>
+            <h:panelGrid  styleClass="formularioSol" columns="8" >
+
+                <h:outputText class="txtLabelsMgl"  value="No. Cuenta RR:" />
+                <h:outputText class="columnReadFormNumero"  
+                              style="color: red;font-weight: bold;"
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.numeroCuenta}" />
+
+                <h:outputText class="txtLabelsMgl" value="Tipo:" />
+                <h:outputText class="columnReadForm"  
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.subEdificioGeneral.tipoEdificioObj.nombreBasica}" />
+
+                <h:outputText class="txtLabelsMgl" value="Nombre Edificio:" />
+                <h:outputText class="columnReadForm"  
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.nombreCuenta}" />
+
+                <h:outputText class="txtLabelsMgl" value="Estado:" />
+                <h:outputText class="columnReadForm"  
+                              style="color: red; font-weight: bold;" 
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.
+                                       subEdificioGeneral.estadoSubEdificioObj.nombreBasica}" />
+
+                <h:outputText class="txtLabelsMgl" value="Departamento:" />
+                <h:outputText class="columnReadForm"  
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.departamento.gpoNombre}" />
+
+                <h:outputText class="txtLabelsMgl" value="Municipio:" />
+                <h:outputText class="columnReadForm" 
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.municipio.gpoNombre}" />
+
+                <h:outputText class="txtLabelsMgl" value="Centro Poblado:" />
+                <h:outputText class="columnReadForm"  
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.centroPoblado.gpoNombre}" />
+
+                <h:outputText class="txtLabelsMgl" value="Barrio:" />
+                <h:outputText class="columnReadForm"
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.direccionPrincipal.barrio}" />
+
+                <h:outputText class="txtLabelsMgl" value="Dirección:" />
+                <h:outputText class="columnReadForm" 
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.
+                                       direccionPrincipal.direccionObj.dirFormatoIgac}" />
+
+                <h:outputText class="txtLabelsMgl" value="Dirección Antigua:" />
+                <h:outputText class="columnReadForm" 
+                              value=" " style="color: pink;font-weight: bold;" />
+
+                <h:outputText class="txtLabelsMgl" value="Teléfono Portería 1:" />
+                <h:outputText class="columnReadForm" 
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.subEdificioGeneral.telefonoPorteria}" />
+
+                <h:outputText class="txtLabelsMgl" value="Cantidad Torres:" />
+                <h:outputText id="txtB1"   class="columnReadForm" 
+                              value="#{encabezadoSolicitudModificacionCMBean.cantidadSubedificios}" />
+                
+                <h:outputText class="txtLabelsMgl"  value="No. Cuenta MGL:" />
+                <h:outputText class="columnReadFormNumero"  
+                              style="color: red;font-weight: bold;"
+                              value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.cuentaMatrizObj.cuentaMatrizId}" />
+                <!-- espinosadiea insercion de nuemro de cuenta de mgl 09/06/2018 -->
+                <h:outputText class="txtLabelsMgl" value="" />
+                <h:outputText id="txtB2"   class="columnReadForm" 
+                              value=""/>
+            </h:panelGrid>
+        
+        
+        <h:panelGroup id="groupInfoSolicitanteT" style="width: 100%">
+            <h2 id="datosCMTitle">DATOS SOLICITANTE</h2>
+        </h:panelGroup>
+
+        <h:panelGroup class="formulario3" style="width: 100%" >
+            <div class="wizard-form">
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel style="font-size: 16px;color: red;" value="*" />
+                        <h:outputLabel value="Tipo de solicitud" for="listtipoSolModCM" />
+                    </div>
+                    <h:selectOneMenu id="listtipoSolModCM" required="true"
+                                     value="#{eliminarCmBean.solicitud}"
+                                     accesskey=""
+                                     requiredMessage="Campo 'Tipo de solicitud' es requerido">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{eliminarCmBean.origenSolicitudList}" var="ltm"
+                                       itemValue="#{ltm.basicaId}"
+                                       itemLabel="#{ltm.nombreBasica}"/>
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:selectOneMenu>
+                </div>
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputText style="font-size: 16px;color: red;" value="" />
+                        <h:outputLabel value="Usuario" for="usuarioModCM"/>
+                    </div>
+                    <h:inputText id="usuarioModCM"
+                                 value="#{eliminarCmBean.usuarioVT}"
+                                 readonly="true"
+                                 disabled="true"
+                                 style="font-weight: bold;" />
+                </div>
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputText style="font-size: 16px;color: red;" value=" " />
+                        <h:outputLabel value="Correo Usuario" for="correoUsuarioModCM"/>
+                    </div>
+                    <h:inputText id="correoUsuarioModCM"
+                                 value="#{encabezadoSolicitudModificacionCMBean.usuarioLogin.email}"
+                                 readonly="true" style="font-weight: bold;"
+                                 disabled="#{eliminarCmBean.solicitudCmMgl.solicitudCmId != null}" />
+                </div>
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputText style="font-size: 16px;color: red;" value=" " />
+                        <h:outputLabel value="Copia a" for="copiaModCM"/>
+                    </div>
+                    <h:inputText id="copiaModCM"
+                                 value="#{eliminarCmBean.solicitudCmMgl.correoCopiaSolicitud}"
+                                 required="false" requiredMessage="Campo 'Copia a' es requerido"
+                                 validatorMessage="El campo copia a no tiene el formato requerido"
+                                 disabled="#{eliminarCmBean.solicitudCmMgl.solicitudCmId != null}">
+                        <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?" />
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:inputText>
+                </div>
+                </div>
+            <div class="wizard-form">
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                     
+                        <h:outputLabel id="tipoSolicitudContacto"
+                                       value="Área" />
+                    </div>
+                       <h:inputText id="areaId"
+                                 value="#{eliminarCmBean.solicitudCmMgl.areaSolictud}"
+                                 style="font-weight: bold;">          
+                           <f:ajax event="change" execute="@this" render="@this" />
+                       </h:inputText>
+                </div>
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputLabel style="font-size: 16px;color: red;" value="*" />
+                        <h:outputLabel value="Asesor" for="codAsesorModCM"/>
+                    </div>
+                    <h:inputText id="codAsesorModCM"
+                                 value="#{eliminarCmBean.solicitudCmMgl.asesor}"
+                                 maxlength="100"
+                                 required="true" requiredMessage="Campo 'Asesor' es requerido"
+                                 disabled="#{eliminarCmBean.solicitudCmMgl.solicitudCmId != null}">
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:inputText>
+                </div>
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputText style="font-size: 16px;color: red;" value="*" />
+                        <h:outputLabel value="Correo Asesor" for="correoAsesorModCM" />
+                    </div>
+                    <h:inputText id="correoAsesorModCM" 
+                                 value="#{eliminarCmBean.solicitudCmMgl.correoAsesor}"
+                                 required="true" requiredMessage="Campo 'Correo Asesor' es requerido"
+                                 disabled="#{eliminarCmBean.solicitudCmMgl.solicitudCmId != null}">
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:inputText>
+                </div>
+                <div class="wizard-form-column">
+                    <div class="wizard-form-label">
+                        <h:outputText style="font-size: 16px;color: red;" value="*" />
+                        <h:outputLabel value="Teléfono Asesor" for="telAsesorModCM"/>
+                    </div>
+                    <h:inputText id="telAsesorModCM"
+                                 value="#{eliminarCmBean.solicitudCmMgl.telefonoAsesor}"
+                                 maxlength="10"
+                                 required="true" requiredMessage="Campo 'Teléfono Asesor' es requerido"
+                                 validatorMessage="'Teléfono Asesor' Solo se acepta 7 o 10  dígitos."
+                                 disabled="#{eliminarCmBean.solicitudCmMgl.solicitudCmId != null}">
+                      
+                        <f:ajax event="change" execute="@this" render="@this" />
+                    </h:inputText>
+                </div>
+                <hr />
+            </div>
+
+            <div class="wizard-form">
+                <h:outputText style="font-size: 16px;color: red;" value="*" />
+                <h:outputLabel value="Observaciones (4000 Caracteres)" for="ObservacionesModCM" />
+                <h:inputTextarea id="ObservacionesModCM" style="width:99%; height: 50px;"
+                                 required="true" requiredMessage="Campo 'Observaciones' es requerido"
+                                 validatorMessage="'Observaciones' Número máximo de caracteres es 4000"
+                                 value="#{eliminarCmBean.solicitudCmMgl.justificacion}"
+                                 disabled="#{eliminarCmBean.solicitudCmMgl.solicitudCmId != null}">
+                    <f:validateLength maximum="4000" />
+                    <f:ajax event="change" execute="@this" render="@this" />
+                </h:inputTextarea>
+                <hr />
+            </div>
+            <hr />
+        </h:panelGroup>
+
+
+      
+       
+
+        <h:commandButton id="buttonCrearSolVt"                         
+                         value="Crear solicitud" styleClass="btn"
+                         action="#{eliminarCmBean.generarSolicitud()}"
+                         disabled="#{!eliminarCmBean.validarEliminarCM()}">
+          </h:commandButton>
+           <div>
+               <br></br>
+               <br></br>
+               <br></br>
+               <br></br>
+               
+           </div>
+    </ui:define>
+</ui:composition>

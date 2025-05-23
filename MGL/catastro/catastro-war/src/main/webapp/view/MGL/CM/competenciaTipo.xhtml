@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/main.xhtml">
+    <ui:define name="title"><span class="TituloSeccion">Competencias</span></ui:define>
+    <ui:define name="content">
+        <h2>COMPETENCIA TIPOS</h2>
+        <h:panelGrid id="panelCompetenciasTable" 
+                     columns="1" style="width: 100%;"
+                     rendered="#{!competenciaTipoBean.renderDetalle 
+                                 and !competenciaTipoBean.renderAuditoria}">
+            <div align="CENTER">
+                <h:dataTable id="CompetenciaMglTable" 
+                             value="#{competenciaTipoBean.competenciaTipoList}" 
+                             var="competencia" rows="#{competenciaTipoBean.filasPag}"                         
+                             styleClass="constructGTable" 
+                             rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                             style="width: 35%">
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Id" />
+                        </f:facet>
+                        <h:commandLink value="#{competencia.competenciaTipoId}" 
+                                       actionListener="#{competenciaTipoBean.verDetalleCompetencia(competencia)}" 
+                                       disabled="#{!competenciaTipoBean.validarIdRol()}"/>
+                    </h:column>
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="C&oacute;digo RR" />
+                        </f:facet>
+                        <h:outputText value="#{competencia.codigoRr}"/>
+                    </h:column>
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Proveedor" />
+                        </f:facet>
+                        <h:outputText value="#{competencia.proveedorCompetencia.nombreBasica}"/>
+                    </h:column>
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Servicio" />
+                        </f:facet>
+                        <h:outputText value="#{competencia.servicioCompetencia.nombreBasica}"/>
+                    </h:column>
+                    <f:facet name="footer">
+                        <h:panelGroup>
+                            <h:commandButton value="" action="#{competenciaTipoBean.pageFirst}"
+                                             class="botonTPagInicioCm botonBaselista"/>
+                            <h:commandButton value="" action="#{competenciaTipoBean.pagePrevious}"
+                                             class="botonTPagAnteriorCm botonBaselista"/>
+                            <h:commandButton value="#{competenciaTipoBean.pageActual}" styleClass="botonTPagInicio"    />
+                            <h:selectOneMenu id="listTabla" value="#{competenciaTipoBean.numPagina}" 
+                                             styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                <f:selectItems value="#{competenciaTipoBean.paginaList}" var="pag"
+                                               itemValue="#{pag}"
+                                               itemLabel="#{pag}"/>    
+                                <f:ajax render="@form"  event="change"  listener="#{competenciaTipoBean.irPagina()}"  execute="@this" />                                         
+                            </h:selectOneMenu>  
+                            <h:commandButton value="" action="#{competenciaTipoBean.pageNext}"
+                                             class="botonTPagSiguienteCm botonBaselista"/>
+                            <h:commandButton value="" action="#{competenciaTipoBean.pageLast}"
+                                             class="botonTPagFinCm botonBaselista"/>
+                        </h:panelGroup>
+                    </f:facet> 
+                </h:dataTable>
+            </div>
+            <h:commandButton value="Crear" styleClass="btn"
+                             action="#{competenciaTipoBean.irCrearCompetencia()}"
+                             disabled="#{!competenciaTipoBean.validarOpcionNuevo()}"/>/>
+        </h:panelGrid>
+        <div align="center">
+            <h:panelGroup id="panelGroupDetalle" 
+                          rendered="#{competenciaTipoBean.renderDetalle}">
+                <h:panelGrid id="panelDetalleCompetencia" style="width: 50% "
+                             rendered="#{competenciaTipoBean.renderDetalle}"  columns="6" >
+
+                    <h:outputText value="C&oacute;digo" id="CodigoLabel" />
+                    <h:inputText label="C&oacute;digo" id="CodigoInput" style="width: 95%" maxlength="4"
+                                 value="#{competenciaTipoBean.competenciaTipoSelected.codigoRr}"
+                                 readonly="#{competenciaTipoBean.competenciaTipoSelected.competenciaTipoId != null}" 
+                                 disabled="#{competenciaTipoBean.competenciaTipoSelected.competenciaTipoId != null}" /> 
+                    
+                    
+                    <h:outputText value="Proveedor" id="ProveedorLabel" />
+                    <h:selectOneMenu  id="proveedorCompetenciaList" 
+                                      styleClass="ListaConsulta" style="width: 95%"
+                                      value="#{competenciaTipoBean.proveedorCompetenciaTipo.basicaId}"
+                                      required="true" requiredMessage="El campo proveedor es requerido">
+                        <f:selectItem itemValue="" itemLabel="" /> 
+                        <f:selectItems value="#{competenciaTipoBean.proveedorCompetenciaList}" var="tp"
+                                       itemValue="#{tp.basicaId}"
+                                       itemLabel="#{tp.nombreBasica}"/>
+                    </h:selectOneMenu>   
+
+                    <h:outputText value="Servicio" id="ServicioLabel" />
+                    <h:selectOneMenu  id="ServicioCompetenciaList" 
+                                      styleClass="ListaConsulta" style="width: 95%"
+                                      value="#{competenciaTipoBean.servicioCompetenciaTipo.basicaId}"
+                                      required="true" requiredMessage="El campo servicio es requerido">
+                        <f:selectItem itemValue="" itemLabel="" /> 
+                        <f:selectItems value="#{competenciaTipoBean.servicioCompetenciaList}" var="tp"
+                                       itemValue="#{tp.basicaId}"
+                                       itemLabel="#{tp.nombreBasica}"/>
+                    </h:selectOneMenu>   
+
+                </h:panelGrid>
+                <h:panelGrid id="panelBotonesDetalle" columns="3">
+                    <h:commandButton action="#{competenciaTipoBean.crearCompetencia()}" 
+                                     rendered="#{competenciaTipoBean.competenciaTipoSelected.competenciaTipoId == null}"
+                                     value="Crear" styleClass="btn"/>
+                    <h:commandButton action="#{competenciaTipoBean.actualizarCompetencia()}" 
+                                     rendered="#{competenciaTipoBean.competenciaTipoSelected.competenciaTipoId != null}"
+                                     value="Actualizar" styleClass="btn"/>
+                    <h:commandButton action="#{competenciaTipoBean.eliminarCompetencia()}" 
+                                     rendered="#{competenciaTipoBean.competenciaTipoSelected.competenciaTipoId != null}"
+                                     value="Eliminar" styleClass="btn"/>
+                    <h:commandButton action="#{competenciaTipoBean.volver()}" 
+                                     immediate="true"
+                                     value="Volver" styleClass="btn"/>
+                </h:panelGrid>
+            </h:panelGroup>
+        </div>
+        <h:panelGrid id="panelAuditoriaC" 
+                     rendered="#{competenciaTipoBean.renderAuditoria}" 
+                     style="width:100%;">
+            <h1>Auditoria Competencia</h1>
+            <h:commandButton id="buttonVolverAudOt" value="Volver" 
+                             action="#{competenciaTipoBean.volver()}"
+                             styleClass="btn" />
+        </h:panelGrid>
+    </ui:define>
+
+</ui:composition>
+
+

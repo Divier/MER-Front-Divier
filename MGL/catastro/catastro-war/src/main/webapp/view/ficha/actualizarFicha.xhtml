@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:p="http://primefaces.org/ui"
+                template="/view/template/homeFichasTemplate.xhtml">
+
+
+
+    <ui:define name="title"><span class="TituloSeccion">Actualización Ficha Nodos</span></ui:define>
+    <ui:define name="contenido">
+        <h:form id="formDatos" enctype="multipart/form-data">
+            <h:panelGroup id ="panelFileUpload" rendered="#{actualizarFichaBean.detalleHHppModified == null}">
+                <h:outputLabel class="EtiquetaConsulta" value="Archivo:"/>
+                <p:fileUpload id="file"
+                                required="true"
+                                label="Seleccionar Archivo:"
+                                value="#{actualizarFichaBean.uploadedFile}"
+                                mode="simple" skinSimple="true"/>
+
+                <h:commandButton id="buttonUploadFile"  
+                                 action="#{actualizarFichaBean.uploadFile}" 
+                                 disabled="#{!actualizarFichaBean.validarOpcionCargarArchivo()}"
+                                 value="Cargar Archivo" styleClass="btn" style="color:#FFFFFF;">
+                </h:commandButton>
+                <br></br>
+            </h:panelGroup>
+            <h:panelGroup id ="panelHHPPActualizar" rendered="#{actualizarFichaBean.detalleHHppModified.size() > 0}">
+                <br></br>
+                <h:commandButton id="buttonActualizarInfo" 
+                                 rendered="#{actualizarFichaBean.detalleHHppModified.size() > 0}"
+                                 action="#{actualizarFichaBean.actualizarHHPP()}" 
+                                 value="Actualizar HHPP" styleClass="buttonLarge" style="color:#FFFFFF;">
+                </h:commandButton>
+                <h:commandButton id="buttonVolver" 
+                                 rendered="#{actualizarFichaBean.detalleHHppModified.size() > 0}"
+                                 action="#{actualizarFichaBean.volver()}" 
+                                 value="Volver" styleClass="buttonLarge" style="color:#FFFFFF;">
+                </h:commandButton>
+                <br></br>
+                <div style="height: 280px; max-width: 720px; overflow:scroll;">
+                    <h:dataTable id="edificiosVtXlsGeoTable" 
+                                 value="#{actualizarFichaBean.detalleHHppModified}" var="detalleHHPP" style="width: 500px;"
+                                 styleClass="solicitudesGTable"
+                                 headerClass="solicitudesGTableHeader"
+                                 rowClasses="solicitudesGTableOddRow,solicitudesGTableEvenRow"
+                                 rendered="#{actualizarFichaBean.detalleHHppModified.size() > 0}">
+
+                        <f:facet name="header">
+                            <h:outputText value="Resultado Geo" />
+                        </f:facet>
+
+                        <h:column  >   
+                            <f:facet name="header">
+                                <h:outputText value="CALLE RR" />
+                            </f:facet>
+                            <h:outputText  value="#{detalleHHPP.streetName}" /> 
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="UNIDAD RR" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.houseNumber}" />
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="APARTAMENTO RR" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.apartmentNumber}" /> 
+                        </h:column>
+
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="BARRIO GEO" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.fichaGeorreferenciaMgl.neighborhood}" />
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="ESTRATO" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.fichaGeorreferenciaMgl.levelEconomic}" />
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="DIRECCION" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.fichaGeorreferenciaMgl.address}" />
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="FUENTE" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.fichaGeorreferenciaMgl.source}" />
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="DIR ALTERNA" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.fichaGeorreferenciaMgl.alternateAddress}" />
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="LOCALIDAD" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.fichaGeorreferenciaMgl.locality}" />
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="MANZANA" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.fichaGeorreferenciaMgl.appletStandar}" />
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="CX" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.fichaGeorreferenciaMgl.cx}" />
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="CY" />
+                            </f:facet>
+                            <h:outputText value="#{detalleHHPP.fichaGeorreferenciaMgl.cy}" />
+                        </h:column>
+                    </h:dataTable>
+                </div>
+            </h:panelGroup>
+
+
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

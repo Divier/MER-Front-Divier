@@ -1,0 +1,251 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"             
+                template="/view/MGL/template/main.xhtml"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" 
+                xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="title"><span class="TituloSeccion">Detalle Veto</span></ui:define>        
+    <ui:define name="content">
+        <title>Detalle Politica Veto</title>
+
+        <table id="detalleTable" style="width: 100%">
+
+            <tr>
+                <td style="width:10%;" />
+                <td style="width:10%;" />
+                <td style="width:10%;" />
+                <td style="width:10%;" />
+                <td style="width:10%;" />
+                <td style="width:10%;" />
+                <td style="width:10%;" />
+
+            </tr>
+
+            <tr>
+                <td colspan="7">
+                    <span class="TituloSeccion">Detalle Veto</span>  </td> 
+            </tr>
+
+            <tr> <td><br/> </td></tr>
+            <tr>
+                <td>
+                    <h:outputText id ="politicaLabel" value="N°Politica: "></h:outputText> 
+                </td>
+                <td>
+                    <h:inputText id="politicaInput" disabled="true" value="#{vetoNodosDetalleBean.vetoSeleccionado.numeroPolitica}" > </h:inputText>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h:outputText id ="dateStart" value="Fecha Inicio: "></h:outputText>  
+                </td>
+                <td>
+                    <p:calendar id="fechaInicio" 
+                                value="#{vetoNodosDetalleBean.vetoSeleccionado.fechaInicio}" 
+                                readonly="true" 
+                                showOn="both">
+                    </p:calendar>            
+                </td>
+
+                <td>
+                    <h:outputText id ="dateEnd" value="Fecha Fin: "></h:outputText>  
+                </td>
+                <td>                    
+                    <p:calendar id="fechaFin" 
+                                value="#{vetoNodosDetalleBean.vetoSeleccionado.fechaFin}" 
+                                readonly="true" 
+                                showOn="both">
+                    </p:calendar>        
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <h:outputText id="emailLabel" value="Correo Electrónico:"> </h:outputText>
+                </td>
+                <td>
+                    <h:inputText id="email" disabled="true" value="#{vetoNodosDetalleBean.vetoSeleccionado.correo}"  />
+                </td>
+            </tr>
+            <tr>
+                <td> <h:outputText id="labelVenta" value="Venta: "></h:outputText> 
+                </td>
+                <td><h:selectBooleanCheckbox  value="#{vetoNodosDetalleBean.venta}" id="sale"  /> 
+                </td>
+            </tr>
+            <tr>
+                <td><h:outputText id="labelCreacion" value="Creacion Hhpp" ></h:outputText>
+                </td>
+                <td><h:selectBooleanCheckbox id="creacionHhpp" 
+                                             value="#{vetoNodosDetalleBean.creacion}"/> 
+                </td>
+            </tr>
+
+            <tr> <td><br/></td></tr>
+
+        </table>
+
+        <div style="width:100%; padding:3px;">
+
+            <div style="width:33%;  float:left;">
+
+                <h:panelGroup id="nodosTableWrap" >
+                    <span class="TituloSeccion">Listado de Nodos Vetados</span>       
+                    <h:panelGroup id="nodosTable" >
+                        <h:dataTable id="nodosList"  value="#{vetoNodosDetalleBean.nodoVetoPaginadaList}"                     
+                                     var="nodo" rows="15" 
+                                     styleClass="constructGTable" 
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                                     style="width: 90%">
+                            <h:column >   
+                                <f:facet name="header">  
+                                    <h:outputText value="Nodo" />                                 
+                                </f:facet>
+                                <h:outputText value="#{nodo.nodoMgl.nodCodigo}"/>                                        
+                            </h:column>
+
+                            <f:facet name="footer" >
+                                <h:panelGroup rendered="#{vetoNodosDetalleBean.vetoSeleccionado.vetoNodosList.size() > 0 }">
+                                    <h:commandButton title="Primera Página" value="#{vetoNodosDetalleBean.inicioPagina}" action="#{vetoNodosDetalleBean.pageFirstVetoNodo}"
+                                                     class="btn"/>
+                                    <h:commandButton title="Página Anterior" value="#{vetoNodosDetalleBean.anteriorPagina}" action="#{vetoNodosDetalleBean.pagePreviousVetoNodo}"
+                                                     class="btn"/>
+                                    <h:commandButton title="Número Páginas" value="#{vetoNodosDetalleBean.pageActualVetoNodo}" styleClass="botonTPagInicio"    />
+                                    <h:selectOneMenu id="listTabla" value="#{vetoNodosDetalleBean.numPaginaVetoNodo}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                        <f:selectItems value="#{vetoNodosDetalleBean.paginaListVetoNodo}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>    
+                                        <f:ajax render="@form"  event="change"  
+                                                listener="#{vetoNodosDetalleBean.irPaginaVetoNodo()}"  
+                                                execute="@this" />                                         
+                                    </h:selectOneMenu>  
+                                    <h:commandButton title="Página Siguiente" value="#{vetoNodosDetalleBean.siguientePagina}" action="#{vetoNodosDetalleBean.pageNextVetoNodo}"
+                                                     class="btn"/>
+                                    <h:commandButton title="Última Página" value="#{vetoNodosDetalleBean.finPagina}" action="#{vetoNodosDetalleBean.pageLastVetoNodo}"
+                                                     class="btn"/>
+                                </h:panelGroup>
+
+                            </f:facet>                          
+                        </h:dataTable>            
+                    </h:panelGroup>
+                </h:panelGroup>
+
+            </div>
+            <div style="width:33%; float:left;">
+
+                <h:panelGroup id="ciudadesTableWrap"  >
+                    <span class="TituloSeccion">Listado de Ciudades/CentroPoblados Vetados</span>    
+                    <h:panelGroup id="ciudadesTable" >
+                        <h:dataTable id="ciudadesList"  
+                                     value="#{vetoNodosDetalleBean.ciudadPaginadaList}"                     
+                                     var="ciudad" rows="15" 
+                                     styleClass="constructGTable" 
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                                     style="width: 90%">                      
+
+                            <h:column >   
+                                <f:facet name="header">  
+                                    <h:outputText value="Ciudad/Centro Poblado" />                                 
+                                </f:facet>
+                                <h:outputText value="#{ciudad.centroPobladoId.gpoNombre}"/>                                        
+                            </h:column>           
+
+                            <f:facet name="footer" >
+                                <h:panelGroup rendered="#{vetoNodosDetalleBean.vetoSeleccionado.vetoCiudadList.size() > 0}">
+                                    <h:commandButton title="Primera Página" value="#{vetoNodosDetalleBean.inicioPagina}" action="#{vetoNodosDetalleBean.pageFirstVetoCiudad}"
+                                                     class="btn"/>
+                                    <h:commandButton title="Página Anterior" value="#{vetoNodosDetalleBean.anteriorPagina}" action="#{vetoNodosDetalleBean.pagePreviousVetoCiudad}"
+                                                     class="btn"/>
+                                    <h:commandButton title="Número Páginas" value="#{vetoNodosDetalleBean.pageActualVetoCiudad}" styleClass="botonTPagInicio"    />
+                                    <h:selectOneMenu id="listTabla" value="#{vetoNodosDetalleBean.numPaginaVetoCiudad}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                        <f:selectItems value="#{vetoNodosDetalleBean.paginaListVetoCiudad}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>    
+                                        <f:ajax render="@form"  event="change"  
+                                                listener="#{vetoNodosDetalleBean.irPaginaVetoCiudad()}"  
+                                                execute="@this" />                                         
+                                    </h:selectOneMenu>  
+                                    <h:commandButton title="Página Siguiente" value="#{vetoNodosDetalleBean.siguientePagina}" action="#{vetoNodosDetalleBean.pageNextVetoCiudad}"
+                                                     class="btn"/>
+                                    <h:commandButton title="Última Página" value="#{vetoNodosDetalleBean.finPagina}" action="#{vetoNodosDetalleBean.pageLastVetoCiudad}"
+                                                     class="btn"/>
+                                </h:panelGroup>
+
+                            </f:facet>                            
+                        </h:dataTable>                   
+                    </h:panelGroup>
+                </h:panelGroup>
+            </div>
+
+            <div style="width:33%; float:left;">
+                <h:panelGroup id="canalesTableWrap" >
+                    <span class="TituloSeccion">Listado de Canales Vetados</span>    
+                    <h:panelGroup id="canalesTable" >
+                        <h:dataTable id="canalesList" value="#{vetoNodosDetalleBean.canalVetoPaginadaList}"                      
+                                     var="canal" rows="15" 
+                                     styleClass="constructGTable" 
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                                     style="width: 90%">       
+
+                            <h:column >   
+                                <f:facet name="header">  
+                                    <h:outputText value="Canal" />                                 
+                                </f:facet>
+                                <h:outputText value="#{canal.canalId.descripcion}"/>                                        
+                            </h:column>           
+
+                            <f:facet name="footer" >
+
+                                <h:panelGroup rendered="#{vetoNodosDetalleBean.vetoSeleccionado.vetoCanalList.size() > 0}">
+                                    <h:commandButton title="Primera Página" value="#{vetoNodosDetalleBean.inicioPagina}" action="#{vetoNodosDetalleBean.pageFirstVetoCanal}"
+                                                     class="btn"/>
+                                    <h:commandButton title="Página Anterior" value="#{vetoNodosDetalleBean.anteriorPagina}" action="#{vetoNodosDetalleBean.pagePreviousVetoCanal}"
+                                                     class="btn"/>
+                                    <h:commandButton title="Número Páginas" value="#{vetoNodosDetalleBean.pageActualVetoCanal}" styleClass="botonTPagInicio"    />
+                                    <h:selectOneMenu id="listTabla" value="#{vetoNodosDetalleBean.numPaginaVetoCanal}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                        <f:selectItems value="#{vetoNodosDetalleBean.paginaListVetoCanal}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>    
+                                        <f:ajax render="@form"  event="change"  
+                                                listener="#{vetoNodosDetalleBean.irPaginaVetoCanal()}"  
+                                                execute="@this" />                                         
+                                    </h:selectOneMenu>  
+                                    <h:commandButton title="Página Siguiente" value="#{vetoNodosDetalleBean.siguientePagina}" action="#{vetoNodosDetalleBean.pageNextVetoCanal}"
+                                                     class="btn"/>
+                                    <h:commandButton title="Última Página" value="#{vetoNodosDetalleBean.finPagina}" action="#{vetoNodosDetalleBean.pageLastVetoCanal}"
+                                                     class="btn"/>
+                                </h:panelGroup>
+
+                            </f:facet>                           
+                        </h:dataTable> 
+
+                    </h:panelGroup>
+                </h:panelGroup>
+
+            </div>
+
+        </div> 
+
+        <br/> <br/>
+        <table style="width:100%">
+            <tr>
+                <td style="text-align: center;">
+                    <h:commandButton id="saveChanges" styleClass="btn" 
+                                     value="Guardar Cambios" action="#{vetoNodosDetalleBean.guardarCambiosVeto()}"  />
+                    <h:commandButton id="backButton" styleClass="btn" action="#{vetoNodosDetalleBean.backVetoNodos()}"
+                                     value="Atrás" />   
+                </td>
+            </tr>  
+
+        </table>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:t="http://myfaces.apache.org/tomahawk"
+    template="/view/MGL/template/main.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Administrador UnidadesHHPPs</span></ui:define>
+    <ui:define name="message"><span class="error"> #{unidadesHHPPMglBean.message}</span></ui:define>
+    <ui:define name="content">
+
+
+
+        <h:form id="form1">
+
+            <h:panelGrid columns="1">              
+                <!--h:commandButton value="Nuevo" action="#\{unidadesHHPPMglBean.nuevoUnidadesHHPPsMgl()}" styleClass="buttonl" style="text-align: center; color:#FFFFFF; ">
+                </h:commandButton-->
+            </h:panelGrid>
+            <h:panelGrid columns="4"> 
+                <!--h:outputText value="Buscar por Acrónimo" id="geo_nombrelb"  style="align:right;  font-size: 12px"  /-->
+                <!--h:inputText  id="geoNombre" value="#\{unidadesHHPPMglBean.codigo}" style="align:right;  z-index: 1000;"  /-->
+                <!--h:commandButton value="Filtrar" action="#\{unidadesHHPPMglBean.buscarUnidadesHHPPsByCodigo()}" styleClass="buttonl" 
+                                 style="text-align: center; color:#FFFFFF;  z-index: 1000;   "/>
+                <h:commandButton value="Ver Todas" action="#\{unidadesHHPPMglBean.buscarUnidadesHHPPsTodos()}" styleClass="buttonl" 
+                                 style="text-align: center; color:#FFFFFF;  z-index: 1000;   "/-->
+            </h:panelGrid>
+            <div align="justify">
+                <h:panelGrid   > 
+                    <h:panelGrid    style="height: 430px;width: 200px;float:left;overflow-y: auto; " >
+                        <h:dataTable id="UnidadesHHPPsMglTable" 
+                                     binding="#{unidadesHHPPMglBean.dataTable}"  value="#{unidadesHHPPMglBean.unidadesHHPPMglList}" var="unidadesHHPPsMgl" rows="15"                         
+
+                                     headerClass="constructGTableHeader" rowClasses="constructGTableOddRowSelect , constructGTableEvenRowSelect" style="width: 100px;overflow: scroll;    margin:0px;padding:0px;
+
+                                     border:1px solid #999999;
+                                     border-width:1px 1px 1px 1px;
+                                     border-collapse: collapse ;
+                                     border-spacing: 0 ;">
+
+                            <!--h:column>
+                                <f:facet name="header">
+                                    <t:outputText value="Seleccionar"/>
+                                </f:facet>
+                                <h:selectBooleanCheckbox value="#/{UnidadesHHPPsMgl.seleccionado}" >
+                                    <f:ajax render="UnidadesHHPPsMglTable" listener="#/{unidadesHHPPMglBean.selectOneRow(UnidadesHHPPsMgl.UnidadesHHPPId)}"/>
+                                </h:selectBooleanCheckbox>
+                            </h:column-->
+
+                            <h:column>    
+                                <f:facet name="header" >
+                                    <h:outputText value="Sub-Edificios "  />
+                                </f:facet>
+                                <div align="left" style="#{unidadesHHPPsMgl.hhpId eq unidadesHHPPMglBean.unidadesHHPPMgl.hhpId ? 'background-color: #D52B1E;padding: 6px;width: 130px;':'padding: 5px;width: 130px;'}"  >
+                                    <h:commandLink value="#{unidadesHHPPsMgl.hhpCalle}" action="#{unidadesHHPPMglBean.goActualizar()}" >
+                                        <f:setPropertyActionListener target="#{unidadesHHPPMglBean.idSqlSelected}" value="#{UnidadesHHPPsMgl.UnidadesHHPPId}"  />                                    
+                                    </h:commandLink>
+                                </div>
+                            </h:column>
+
+                            <h:column  > 
+                                <f:facet name="header">
+                                    <h:outputText value="Estado" />
+                                </f:facet>
+                                <div align="left" style="#{unidadesHHPPsMgl.hhpId eq unidadesHHPPMglBean.unidadesHHPPMgl.hhpId ? 'background-color: #D52B1E;padding: 5px;':'padding: 5px;'}" >
+                                    <h:outputText value="#{UnidadesHHPPsMgl.HhpEstadoUnit}"  />      
+                                </div>                                  
+                            </h:column>
+
+                            <!--h:column>   <div align="left"   >
+                                    <f:facet name="header">
+                                        <h:outputText value="Página Web" />
+                                    </f:facet>
+                                    <h:outputText value="#/{UnidadesHHPPsMgl.tipoUnidadesHHPP}" />      </div>                                  
+                            </h:column>
+                            <h:column>   <div align="left"   >
+                                    <f:facet name="header">
+                                        <h:outputText value="Departamento" />
+                                    </f:facet>
+                                    <h:outputText value="#/{UnidadesHHPPsMgl.estadoUnidadesHHPP}" />      </div>                                  
+                            </h:column>
+                            <h:column>   <div align="left"   >
+                                    <f:facet name="header">
+                                        <h:outputText value="Municipio" />
+                                    </f:facet>
+                                    <h:outputText value="#/{UnidadesHHPPsMgl.companiaConstructora}" />      </div>                                  
+                            </h:column>
+                            <h:column>   <div align="left"   >
+                                    <f:facet name="header">
+                                        <h:outputText value="Centro poblado" />
+                                    </f:facet>
+                                    <h:outputText value="#/{UnidadesHHPPsMgl.tipoAcometida}" />      </div>                                  
+                            </h:column>
+        
+                            <h:column>   <div align="left"   >
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#/{UnidadesHHPPsMgl.abministracion}" />      </div>                                  
+                            </h:column>
+        
+                            <h:column>   <div align="left"   >
+                                    <f:facet name="header">
+                                        <h:outputText value="Dirección" />
+                                    </f:facet>
+                                    <h:outputText value="#/{UnidadesHHPPsMgl.nodoId}" />      </div>                                  
+                            </h:column-->
+
+                            <f:facet name="footer">
+                                <h:panelGroup>
+                                    <h:commandButton value="" action="#{unidadesHHPPMglBean.pageFirst}"
+                                                     disabled="#{unidadesHHPPMglBean.dataTable.first == 0}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonInicio.png);" />
+                                    <h:commandButton value="" action="#{unidadesHHPPMglBean.pagePrevious}"
+                                                     disabled="#{unidadesHHPPMglBean.dataTable.first == 0}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonAnterior.png);" />
+
+
+                                    <h:commandButton value="#{unidadesHHPPMglBean.pageActual}" styleClass="botonTPagInicio"    />
+
+                                    <h:selectOneMenu id="listTabla" value="#{unidadesHHPPMglBean.numPagina}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;"
+                                                     valueChangeListener="#{unidadesHHPPMglBean.irPagina}"    >
+
+
+                                        <f:selectItems value="#{unidadesHHPPMglBean.paginaList}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>    
+                                        <a4j:ajax event="change" render="form1" execute="@this" />                                         
+                                    </h:selectOneMenu>  
+
+
+
+
+
+                                    <h:commandButton value="" action="#{unidadesHHPPMglBean.pageNext}"
+                                                     disabled="#{unidadesHHPPMglBean.dataTable.first + unidadesHHPPMglBean.dataTable.rows
+                                                                 >= unidadesHHPPMglBean.dataTable.rowCount}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonSiguiente.png);" />
+                                    <h:commandButton value="" action="#{unidadesHHPPMglBean.pageLast}"
+                                                     disabled="#{unidadesHHPPMglBean.dataTable.first + unidadesHHPPMglBean.dataTable.rows
+                                                                 >= unidadesHHPPMglBean.dataTable.rowCount}" styleClass="botonTPagInicio"  style="background-image: url(../img/botonFin.png);" />
+                                </h:panelGroup>
+                            </f:facet>
+
+                        </h:dataTable>  
+
+
+                    </h:panelGrid>
+
+
+                
+
+                    <!--h:commandButton disabled="#/{unidadesHHPPMglBean.idUnidadesHHPP != null}" action="#/{unidadesHHPPMglBean.nuevoUnidadesHHPPMgl()}" value="Adicionar" styleClass="btn"/-->
+                </h:panelGrid>
+            </div>
+            <div class="buttonArea">
+                <h:commandButton value="Cancelar" action="UnidadesHHPPsMglListView" styleClass="btn" actionListener="#{unidadesHHPPMglBean.setAdicion(false)}"  ></h:commandButton>
+            </div>
+            <div id="espac" style="height: 30px;">        
+            </div>
+        </h:form>
+
+    </ui:define>
+
+
+</ui:composition>
+

@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich">
+ 
+<ui:composition template="/view/template/home.xhtml">
+<ui:define name="title">Estrato Cuenta Matriz</ui:define>
+<ui:define name="message"> #{estratoCuentaMatrizMBean.message}</ui:define>
+<ui:define name="content">
+    <f:view>
+        <script type="text/javascript">
+              function NewWindow(){
+                   var show=document.getElementById("formulario:showPopUp").value;
+                  if(show == 'false'){
+                        document.getElementById("formulario:confirmar").style.display='none';
+                        document.getElementById("formulario:showPopUp").style.display='none';
+                        return " ";
+                  }else{
+                      if (!confirm("¿Desea  modificar el estrato de la cuenta matriz? Por favor de click en Confirmar.")){
+                          history.go(-2);
+                          return " ";
+                      }else{
+                          document.getElementById("formulario:confirmar").style.display='block'; 
+                          document.getElementById("formulario:modificar").style.display='none'; 
+                          return " ";
+                      }
+                  }    
+               }
+         </script>
+        <h:form id="formulario">
+            <f:view>
+              <script>document.getElementById("formulario:showPopUp").style.display='none'; </script>
+              
+          </f:view>
+            <rich:panel>
+                <h:panelGrid>
+                    <h:panelGrid columns="1" styleClass="loginContent">
+                        <h:panelGrid id="panelPais">
+                            <a4j:outputPanel id="paisId">
+                                <h:outputLabel value="Pais:" styleClass="contenidoCml"/>  
+                                <h:selectOneMenu id="lstpaises" value="#{estratoCuentaMatrizMBean.dir_pais}" 
+                                                 styleClass="contenidoCm"
+                                                 valueChangeListener="#{estratoCuentaMatrizMBean.updateRegionales}">
+                                    <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.vacio}" />
+                                    <f:selectItems value="#{estratoCuentaMatrizMBean.listPaises}"/>
+                                    <a4j:ajax event="change" render="regionalId" execute="@this" />	
+                                </h:selectOneMenu>
+                            </a4j:outputPanel>
+                        </h:panelGrid>
+                        <h:panelGrid columns="1">
+                            <a4j:outputPanel id="regionalId">
+                                <h:outputLabel value="Regional:" styleClass="contenidoCml"/>
+                                <h:selectOneMenu id="lstdeptos" value="#{estratoCuentaMatrizMBean.dir_regional}" 
+                                                 styleClass="contenidoCm" valueChangeListener="#{estratoCuentaMatrizMBean.updateCiudades}">
+                                    <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.vacio}" />
+                                    <f:selectItems value="#{estratoCuentaMatrizMBean.listRegionales}"/>
+                                    <a4j:ajax event="change" render="ciudadId" execute="@this" />	
+                                </h:selectOneMenu>
+                            </a4j:outputPanel>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <a4j:outputPanel id="ciudadId">
+                                <h:outputLabel value="Ciudad:" styleClass="contenidoCml"/>
+                                <h:selectOneMenu styleClass="contenidoCm" id="lstciudades" value="#{estratoCuentaMatrizMBean.dir_ciudad}"  >
+                                    <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.vacio}"/>
+                                    <f:selectItems id="ssciudades" value="#{estratoCuentaMatrizMBean.listCiudades}"/>
+                                </h:selectOneMenu>
+                            </a4j:outputPanel>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Barrio: " styleClass="contenidoCml" />
+                            <h:inputText  value="#{estratoCuentaMatrizMBean.dir_barrio}" styleClass="contenidoCm"/>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Estrato:" styleClass="contenidoCml" id="nest" rendered="false"/>
+                            <h:selectOneMenu id="socio" value="#{estratoCuentaMatrizMBean.estrato}" styleClass="contenidoCm" rendered="false">
+                                <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.vacio}"/>
+                                <f:selectItems id="estr" value="#{estratoCuentaMatrizMBean.listEstrato}"/>
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Dirección:" styleClass="contenidoCml"  id="ddir" rendered="false"/>
+                            <h:inputText id="diren" value="#{estratoCuentaMatrizMBean.dird}" styleClass="contenidoCm" disabled="true" rendered="false"/>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:panelGrid>
+                <h:panelGrid  columns="2" styleClass="panelInfo" id="dirr" rendered="true">
+                    <h:outputLabel value="Dirección" styleClass="contenidoIzquierdo"/>
+                    <h:panelGrid id="direccion" styleClass="panelInfo" columns="2" style="text-align: center">
+                        <h:outputLabel value="Calle" styleClass="contenidoCentro"/>
+                        <h:outputLabel value="Placa" styleClass="contenidoCentro"/>
+                        <h:outputLabel value="Complemento" styleClass="contenidoCentro" rendered="false"/>
+                        <h:outputLabel value="Apartamento" styleClass="contenidoCentro" rendered="false"/>
+                        <h:panelGrid id="calle" styleClass="smallPanelInfo" columns="6">
+                            <h:selectOneMenu id="lstcalles" value="#{estratoCuentaMatrizMBean.son_tcalle}" styleClass="onemenupequeno">
+                                <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.seleccionar}"/>
+                                <f:selectItems id="calles" value="#{estratoCuentaMatrizMBean.listTCalles}"/>
+                            </h:selectOneMenu>
+                            <h:inputText  id="dirNoEstandarId" value="#{estratoCuentaMatrizMBean.son_calle}" styleClass="contenidoDerechoPequeno"/>
+                            <h:selectOneMenu id="lstletrasc" value="#{estratoCuentaMatrizMBean.son_letraCalle}" styleClass="onemenuextrapequeno">
+                                <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.seleccionar}"/>
+                                <f:selectItems id="letrasc" value="#{estratoCuentaMatrizMBean.listLetras}"/>
+                            </h:selectOneMenu>
+                            <h:selectOneMenu id="lstprefisc" value="#{estratoCuentaMatrizMBean.son_prefijoCalle}" styleClass="onemenuextrapequeno">
+                                <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.seleccionar}"/>
+                                <f:selectItems id="prefijosc" value="#{estratoCuentaMatrizMBean.listPrefijos}"/>
+                            </h:selectOneMenu>
+                            <h:selectOneMenu id="lstletrascl" value="#{estratoCuentaMatrizMBean.son_letraCalles}" styleClass="onemenuextrapequeno">
+                                <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.seleccionar}"/>
+                                <f:selectItems value="#{estratoCuentaMatrizMBean.listLetras}"/>
+                            </h:selectOneMenu>
+                            <h:selectOneMenu id="lstcardic" value="#{estratoCuentaMatrizMBean.son_cardinalCalle}" styleClass="onemenupequeno">
+                                <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.seleccionar}"/>
+                                <f:selectItems id="cardinalesc" value="#{estratoCuentaMatrizMBean.listCardinales}"/>
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid id="placa" styleClass="smallPanelInfo" columns="6">
+                            <h:inputText  value="#{estratoCuentaMatrizMBean.son_placa1}" styleClass="contenidoDerechoPequeno"/>
+                            <h:selectOneMenu id="lstletrasp" value="#{estratoCuentaMatrizMBean.son_letraPlaca}" styleClass="onemenuextrapequeno">
+                                <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.seleccionar}"/>
+                                <f:selectItems id="letrasp" value="#{estratoCuentaMatrizMBean.listLetras}"/>
+                            </h:selectOneMenu>
+                            <h:selectOneMenu id="lstprefisp" value="#{estratoCuentaMatrizMBean.son_prefijoPlaca}" styleClass="onemenuextrapequeno">
+                                <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.seleccionar}"/>
+                                <f:selectItems id="prefijosp" value="#{estratoCuentaMatrizMBean.listPrefijos}"/>
+                            </h:selectOneMenu>
+                            <h:selectOneMenu id="lstcardip" value="#{estratoCuentaMatrizMBean.son_cardinalPlaca}" styleClass="onemenupequeno">
+                                <f:selectItem itemValue="0" itemLabel="#{estratoCuentaMatrizMBean.seleccionar}"/>
+                                <f:selectItems id="cardinalesp" value="#{estratoCuentaMatrizMBean.listCardinales}"/>
+                            </h:selectOneMenu>
+                            <h:outputText value="-" styleClass="contenidoCentro"/>
+                            <h:inputText  value="#{estratoCuentaMatrizMBean.son_placa2}" styleClass="contenidoDerechoPequeno"/>
+                        </h:panelGrid>
+                        <h:inputText  value="#{estratoCuentaMatrizMBean.son_complemento}" styleClass="contenidoDerechoPequeno" rendered="false"/>
+                        <h:inputText  value="#{estratoCuentaMatrizMBean.son_apto}" styleClass="contenidoDerechoPequeno" rendered="false" />
+                    </h:panelGrid>
+                </h:panelGrid>
+                <h:panelGrid styleClass="panel-grid-botones" columns="1">
+                    <h:commandButton value="Consultar" id="consul" actionListener="#{estratoCuentaMatrizMBean.doValidar}" 
+                                     styleClass="buttonm" rendered="true"></h:commandButton>
+                     <h:commandButton  value="Confirmar"  id="confirmar" styleClass="buttonm"  actionListener="#{estratoCuentaMatrizMBean.modificarEst}" >
+                    </h:commandButton>
+                </h:panelGrid>
+                <h:panelGrid styleClass="panel-grid-botones" columns="1">
+                    <h:inputText id="showPopUp"  value="#{estratoCuentaMatrizMBean.showPopUp}" style="visibility:hidden"/>
+                    <h:commandButton  value="Modificar"  id="modificar" styleClass="buttonm" actionListener="#{estratoCuentaMatrizMBean.modificar}" rendered="false">
+                    </h:commandButton>
+                    <f:view>
+                        <script>NewWindow();</script>
+                    </f:view>
+                </h:panelGrid>
+                <h:panelGroup id="respuestaSencilla" rendered="true">
+                    <h:panelGrid id="rtaSencilla" styleClass="panelInfo" style="text-align: center" columns="2" rendered="false">
+                        <rich:dataTable id="qesult" var="catalog" value="#{estratoCuentaMatrizMBean.catalogs}" rowKeyVar="numeroRegistro" style="width: auto" rendered="true">
+                            <f:facet name="header">
+                                <rich:columnGroup>
+                                    <rich:column styleClass="titulotabla"><h:outputLabel value="Identificador" /></rich:column>
+                                    <rich:column styleClass="titulotabla"><h:outputLabel value="Direccion" /></rich:column>
+                                    <rich:column styleClass="titulotabla"><h:outputLabel value="Nivel Socieconomico" /></rich:column>
+                                    <rich:column styleClass="titulotabla"><h:outputLabel value="Actividad Economica" /></rich:column>
+                                    <rich:column styleClass="titulotabla"><h:outputLabel value="Estrato" /></rich:column>
+                                </rich:columnGroup>
+                            </f:facet>
+                            <rich:column>
+                                <h:outputText value="#{catalog.identificador}" />
+                            </rich:column>
+                            <rich:column>
+                                <h:outputText value="#{catalog.direccionm}" />
+                            </rich:column>
+                            <rich:column>
+                                  <h:outputText value="#{catalog.nivsocio}" />    
+                            </rich:column>  
+                                 <rich:column>
+                                  <h:outputText value="#{catalog.actividadec}" />    
+                            </rich:column>  
+                                 <rich:column>
+                                  <h:outputText value="#{catalog.estrato}" />    
+                            </rich:column>  
+                        </rich:dataTable>
+                    </h:panelGrid>
+                </h:panelGroup>
+            </rich:panel>
+        </h:form>
+    </f:view>
+ </ui:define>    
+</ui:composition>
+</ui:composition>

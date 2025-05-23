@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/view/MGL/template/tempTrackModCM.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes">
+
+    <ui:define name="message"><span class="error"> </span></ui:define>
+    <ui:define name="content">
+
+        <body>
+            <h:panelGroup id="groupModCm">
+                <h:panelGrid  class="formulario3"  columns="4">
+                    <h:commandButton  id="irEstadoSolicitudCM" styleClass="btn2"   value="Track" disabled="true" immediate="true" />
+                    <h:commandButton  id="irNotasSolicitudCM" styleClass="btn2"  value="Notas" action="#{encabezadoSolicitudModificacionCMBean.cambiarTab('NOTAS')}"  immediate="true" />
+                </h:panelGrid>
+
+                <div style="border: 1px solid #e5e7ea; padding: 1.5em;">
+
+                    <h:panelGrid  class="formulario2"  columns="1">
+
+                        <h:panelGrid class="formulario3"  columns="3" >
+
+
+                        </h:panelGrid>
+
+                        <h2>MODIFICACIÓN DATOS CM</h2> 
+                        <h:panelGrid class="formulario3"  columns="1">
+                            <h:dataTable id="tableSolModDatCm"   value=""
+                                         styleClass="constructGTable2"
+                                         headerClass="constructGTableHeader" 
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                                <h:column>    
+                                    <f:facet name="header" >
+                                        <h:outputText value="Tiempo Solicitud"  />
+                                    </f:facet>
+                                    <div align="center"  >
+                                        <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tempSolicitud}"  /> 
+                                    </div>
+                                </h:column>
+
+                                <h:column  > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Tiempo Espera" />
+                                    </f:facet>
+                                    <div align="center"  >
+                                        <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tempSolicitud}"  >
+                                            <f:convertDateTime pattern="HH:mm:ss"  />
+                                        </h:outputText>
+                                    </div>                                  
+                                </h:column>
+
+                                <h:column  > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Tiempo Gestión" />
+                                    </f:facet>
+                                    <div align="center"  >
+                                        <h:outputText value="#{encabezadoSolicitudModificacionCMBean.solicitudModCM.tempGestion}" />      
+                                    </div>                                  
+                                </h:column>
+
+                                <h:column  > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Tiempo Total" />
+                                    </f:facet>
+                                    <h:outputText value="0" style="float: left" >
+                                        <f:convertDateTime pattern="HH:mm:ss" />
+                                    </h:outputText>
+                                    <h:graphicImage value="/view/img/verde.gif"  
+                                                    rendered="#{solicitudSolicitudCMBean.verde}" 
+                                                    style="float: right"/>
+                                    <h:graphicImage value="/view/img/amarillo.gif"  
+                                                    rendered="#{solicitudSolicitudCMBean.amarillo}" 
+                                                    style="float: right"/>
+                                    <h:graphicImage value="/view/img/rojo.gif"  
+                                                    rendered="#{solicitudSolicitudCMBean.rojo}" 
+                                                    style="float: right"/>
+                                </h:column>
+
+                                <h:column  > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Tiempo SLA" />
+                                    </f:facet>
+                                    <div align="center"  >
+                                        <h:outputText   value="10 Min"  />      
+                                    </div>                                   
+                                </h:column>
+                            </h:dataTable> 
+                        </h:panelGrid>
+
+
+
+                        <h2>DETALLE GESTIÓN SOLICITUD</h2> 
+                        <h:panelGrid class="formulario3"  columns="4">
+                            <h:outputText value="Tipo Creación "/>
+                            <h:outputText   id="tipoRedSolEstCm" value="#{solicitudSolicitudCMBean.tipoCreacionSolCm}"   style="font-size: 18px;"/>
+                            <h:outputText value="Tiempo pendiente "/>
+                            <h:panelGroup >
+                                <h:outputText value="#{solicitudSolicitudCMBean.unDia}" style="font-size: 18px;"  />
+                                <h:outputText value=" días  "/>
+                                <h:outputText id="tiempoPendienteSolEstCm" value="#{solicitudSolicitudCMBean.tiempoPendiente}"  style="font-size: 18px;" >
+                                    <f:convertDateTime pattern="HH:mm:ss"  />
+                                </h:outputText>
+                            </h:panelGroup>
+                            <h:outputText  value="Fecha Inicio "/>
+                            <h:outputText id="fechaInicioSolEstCm" value="#{solicitudSolicitudCMBean.fechaInicioSol}"  style="font-size: 18px;" > 
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                            </h:outputText>
+                            <h:outputText  value="Tiempo Total SLA " />
+                            <h:outputText id="tiempoTotalSLASolEstCm" value="10 Min"  style="font-size: 18px;" />
+                            <h:outputText value="Fecha Final " id="gplb"/>
+                            <h:outputText  id="fechaFinalSolEstCm"   value="#{solicitudSolicitudCMBean.cmtSolicitudCmMgl.fechaCreacion}"  style="font-size: 18px;" >
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"   />
+                            </h:outputText>
+                            <h:outputText/>
+                            <h:outputText/>
+                            <h:outputText value="Tiempo Total de la Solicitud " id="gpo_idlb"/>
+                            <h:outputText  id="tiempoTotalSolicitudSolEstCm"  value="#{solicitudSolicitudCMBean.cmtSolicitudCmMgl.tempSolicitud}"   style="font-size: 18px;" />
+                            <h:outputText   value="Área " id="gpo_idb"/>
+                            <h:outputText  id="areaSolEstCm"  value="#{solicitudSolicitudCMBean.usuarioArea}"   style="font-size: 18px;" />
+                            <h:outputText value="Usuario Solicitante " id="gpo_idl"/>
+                            <h:outputText id="usuarioSolicitanteSolEstCm"   value="#{solicitudSolicitudCMBean.usuarioNombre}"   style="font-size: 18px;" />
+                            <h:outputText value="Correo " id="o_idlb"/>
+                            <h:outputText  id="correoSolEstCm"  value="#{solicitudSolicitudCMBean.usuarioCorreo}"  style="font-size: 18px;" />
+                            <h:outputText value="Fecha " id="gp_idlb"/>
+                            <h:outputText  id="fechaSolEstCm"   value="#{solicitudSolicitudCMBean.fecha}" style="font-size: 18px;" >
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm"   />
+                            </h:outputText>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                    <h:commandButton   styleClass="btn"   value="Clock" />
+
+                    <h:panelGrid  class="formulario2"  columns="1"  rendered="false" >
+                        <div style="height: 100px"></div>
+                    </h:panelGrid>
+
+                </div>
+            </h:panelGroup>
+        </body>
+    </ui:define>
+</ui:composition>

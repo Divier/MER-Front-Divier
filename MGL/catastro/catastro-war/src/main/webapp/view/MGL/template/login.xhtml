@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      lang="es">
+<head>
+    <title>LOGIN MER - Claro</title>
+</head>
+
+<ui:composition
+        template="/view/templateMGL/homeTemplateLogin.xhtml">
+
+    <ui:define name="content">
+        <f:event type="preRenderView"
+                 listener="#{facesContext.externalContext.response.setHeader('X-Frame-Options', 'DENY')}"/>
+
+        <fieldset class="clearfix form">
+            <legend/>
+            <div class="input-group" style="max-height: 25px">
+                <div class="input-group-addon" style="line-height: 0.25;">
+                    <i class="fa fa-user" style="margin-top: -4px;font-size: 10px;"> </i>
+                </div>
+
+                <h:inputText id="usuario"
+                             style="z-index:9; font-size: 16px; font-weight: bolder; color: grey;"
+                             value="#{loginMglBean.usuario}"
+                             class="form-control"
+                             pt:placeholder="usuario" required="true"
+                             requiredMessage="Usuario requerido"
+                             autocomplete="off"
+                />
+            </div>
+
+            <div class="espacio"> </div>
+
+            <div class="input-group" style="max-height: 25px">
+                <div class="input-group-addon" style="line-height: 0.25;">
+                    <i class="fa fa-lock" style="margin-top: -4px;font-size: 10px;"/>
+                </div>
+                <h:inputSecret style="z-index:9; font-size: 16px; font-weight: bolder; color: grey;" value="#{loginMglBean.passw}"
+                               class="form-control"  pt:placeholder="Contraseña" required="true" requiredMessage="Contraseña Requerida">
+                </h:inputSecret>
+            </div>
+
+            <div class="espacio"> </div>
+
+            <div style="text-align: center;">
+                <!-- FOOTER BUTTONS ACTIONS -->
+                <h:panelGroup class="form-bootons col-md-12 col-md-12"  layout="block" style="z-index:9">
+                    <div class="contenedor-boton btn btn-danger btn-sm" style="z-index:9">
+                        <h:commandButton value="Ingresar" style="z-index:9; background: #dc3545; color: white; border: none"
+                                         styleClass="btn btn-sm backTransparente paddingMarginNone"
+                                         action="#{loginMglBean.iniciarSesion()}">
+                            <i class="fa fa-home"/>
+                        </h:commandButton>
+                    </div>
+                </h:panelGroup>
+            </div>
+
+        </fieldset>
+    </ui:define>
+</ui:composition>
+</html>

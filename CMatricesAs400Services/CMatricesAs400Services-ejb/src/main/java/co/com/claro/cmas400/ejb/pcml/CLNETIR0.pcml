@@ -1,0 +1,17 @@
+<pcml version="4.0">                                                            
+   <!-- RPG module: CLNETIR0  -->                                               
+   <!-- created: 2019-04-16-09.24.22 -->
+   <!-- old source: JSEGURA/QDSCLARO(INSTNETS) -->
+   <!-- source: JSEGURA/QDSCLARO(CLNETIR0) -->                                  
+   <!-- 2400 -->                                                                
+   <program name="CLNETIR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CLNETIR0.PGM">                              
+      <data name="IDPRC" type="char" length="1" usage="inputoutput" />          
+      <data name="IDUSER" type="char" length="10" usage="inputoutput" />        
+      <data name="TRCODR" type="char" length="3" usage="inputoutput" />         
+      <data name="TRDESR" type="char" length="30" usage="inputoutput" />        
+      <data name="TRSTAT" type="char" length="1" usage="inputoutput" />         
+      <data name="IDENDM" type="char" length="7" usage="inputoutput" />         
+      <data name="ENDMSG" type="char" length="200" usage="inputoutput" />       
+   </program>                                                                   
+</pcml>
+

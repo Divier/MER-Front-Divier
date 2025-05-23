@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <h:outputStylesheet library="css" name="primeflex/primeflex.css"/>
+        <h:outputStylesheet library="css" name="claro/pageAdmon.css"/>
+        <h:outputScript library="js" name="claro/pageAdmon.js"/>
+
+        <h:form id="formAdminHomologa" prependId="false">
+            <p:growl id="messagePer" showDetail="true" sticky="true" >
+                <p:autoUpdate/>
+            </p:growl>
+
+
+            <p:panel id="lstHomologaciones" styleClass="ui-fluid" rendered="#{homologacionRazonesMglBean.mostrarListaHomolagaciones}">
+                <fieldset>
+                    <legend>HOMOLOGACIONES RAZONES</legend>
+                    <br/> 
+                    <p:dataTable var="homologa" 
+                                 value="#{homologacionRazonesMglBean.homologacionRazonesMglList}" 
+                                 id="homologaList"
+                                 widgetVar="homologaciones" 
+                                 reflow="true"
+                                 styleClass="tablaDatosCss"
+                                 style="margin-top: 20px;"
+                                 rows="#{homologacionRazonesMglBean.filasPag15}"
+                                 paginator="true"
+                                 paginatorPosition="bottom" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="Página {currentPage} de {totalPages}"
+                                 rowsPerPageTemplate="5,10,15"
+                                 sortBy="#{homologa.codRazonOfscMer}"
+                                 emptyMessage="No se encontraron homologaciones." 
+                                 selectionMode="single" selection="#{homologacionRazonesMglBean.homologacionRazonesMglSelected}" 
+                                 rowKey="#{homologa.homologacionRazonesId}">
+
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value=" ID "/>				
+                                <h:inputText  maxlength="50" id="homologacionRazonesId"
+                                              style="width: 220px; height:25px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{homologacionRazonesMglBean.filtroConsultaHomologacionesRazonesDto.idHomologacionSeleccionado}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{homologacionRazonesMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="homologaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>
+                            <h:commandLink id="homologaLink"  title="Ir detalle Homologación" 
+                                           action="#{homologacionRazonesMglBean.irHomologacionDetalle(homologa)}" 
+                                           disabled="#{!homologacionRazonesMglBean.validarIdRol()}">
+                                <h:outputText class="txtLabelsMgl" style="color: red" id="homologaId"  value="#{homologa.homologacionRazonesId}"/>     
+                            </h:commandLink> 
+                        </p:column>
+
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="CÓDIGO OFSC/MER"/>				
+                                <h:inputText  maxlength="50" id="codOFSCS"
+                                              style="width: 200px; height:25px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{homologacionRazonesMglBean.filtroConsultaHomologacionesRazonesDto.codOFSCSeleccionado}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{homologacionRazonesMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="homologaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>                            
+                            <h:outputText value="#{homologa.codRazonOfscMer}"/>                            
+                        </p:column>
+
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="DESCRIPCIÓN OFSC/MER"/>				
+                                <h:inputText  maxlength="50" id="descOFSCS"
+                                              style="width: 200px; height:25px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{homologacionRazonesMglBean.filtroConsultaHomologacionesRazonesDto.descOFSCSeleccionado}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{homologacionRazonesMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="homologaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>                            
+                            <h:outputText value="#{homologa.descripcionOfscMer}"/>                            
+                        </p:column>
+
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="CÓDIGO RESOLUCIÓN ONYX"/>				
+                                <h:inputText  maxlength="50" id="codONYX"
+                                              style="width: 200px; height:25px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{homologacionRazonesMglBean.filtroConsultaHomologacionesRazonesDto.codONYXSeleccionado}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{homologacionRazonesMglBean.filtroConsultaHomologacionesRazonesDto.setCodONYXSeleccionado(null)}" 
+                                            execute="@this"
+                                            render="homologaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>                            
+                            <h:outputText value="#{homologa.codResOnix}"/>                            
+                        </p:column>
+
+                        <p:column>                            
+                            <f:facet name="header">		
+                                <h:outputText value="DESCRIPCIÓN ONYX"/>				
+                                <h:inputText  maxlength="50" id="descONYX"
+                                              style="width: 200px; height:25px; border-radius:3px"
+                                              onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                              value="#{homologacionRazonesMglBean.filtroConsultaHomologacionesRazonesDto.descONYXSeleccionado}">                                              
+                                    <f:ajax event="change"
+                                            listener="#{homologacionRazonesMglBean.filtrarInfo()}" 
+                                            execute="@this"
+                                            render="homologaList"/>                       			  
+                                </h:inputText>			  
+                            </f:facet>                            
+                            <h:outputText value="#{homologa.descripcionOnyx}"/>                            
+                        </p:column>                       
+
+                        <p:column headerText="ELIMINAR" >
+                            <p:commandButton title="Eliminar Registro"
+                                             style="width:25px; margin-left: 35px;"
+                                             disabled="#{!homologacionRazonesMglBean.validarEliminarRol()}"
+                                             action="#{homologacionRazonesMglBean.eliminarHomologacionList(homologa)}"
+                                             id="adiccionarCoorItButton" 
+                                             icon="fa fa-fw fa-close" immediate="true"
+                                             update="homologaList"
+                                             onclick="return confirm('¿Esta seguro de eliminar el registro seleccionado ?');"/>
+                        </p:column>
+                    </p:dataTable>
+                </fieldset>
+
+                <p:panelGrid columns="1" style="margin-right: 100em;">
+                    <p:commandButton title="Crear Nuevo Registro" id="crearNewId" 
+                                     action="#{homologacionRazonesMglBean.irToCrearHomologacion()}"
+                                     styleClass="btn red-button" value="Nuevo"
+                                     update="@form"
+                                     disabled="#{!homologacionRazonesMglBean.validarNuevoRol()}"/>
+                </p:panelGrid>
+            </p:panel>    
+
+            <p:panel id="panelCrearModHomologa" rendered="#{homologacionRazonesMglBean.mostrarAdminHomologaciones}">
+                <fieldset>
+                    <legend>ADMINISTRACIÓN HOMOLOGACIONES</legend>
+                    <br/>
+                    <p:panelGrid columns="4">
+
+                        <p:outputLabel id="labelCodOfscMer" 
+                                       value="Código OFSC/MER:"/>
+                        <p:inputText  id="idinputCodOfscMer"  
+                                      value="#{homologacionRazonesMglBean.homologacionRazonesMgl.codRazonOfscMer}" 
+                                      style="min-width: 200px;">                             
+                        </p:inputText>
+
+                        <p:outputLabel id="labelDescOfscMer" 
+                                       value="Descripción OFSC/MER:"/>
+                        <p:inputText  id="idinputDescOfscMer"  
+                                      value="#{homologacionRazonesMglBean.homologacionRazonesMgl.descripcionOfscMer}" 
+                                      style="min-width: 200px;">                             
+                        </p:inputText>
+
+                        <p:outputLabel id="labelCodResOnyx" 
+                                       value="Código Resolución ONYX:"/>
+                        <p:inputText  id="idinputCodResOnyx"  
+                                      value="#{homologacionRazonesMglBean.homologacionRazonesMgl.codResOnix}" 
+                                      style="min-width: 200px;">                             
+                        </p:inputText>
+
+                        <p:outputLabel id="labelDescOnyx" 
+                                       value="Descripción ONYX:"/>
+                        <p:inputText  id="idinputDescOnyx"  
+                                      value="#{homologacionRazonesMglBean.homologacionRazonesMgl.descripcionOnyx}" 
+                                      style="min-width: 200px;">                             
+                        </p:inputText>
+                    </p:panelGrid>  
+
+                    <p:panelGrid columns="2">
+                        <p:commandButton title="Volver Atrás"  
+                                         icon="fa fa-fw fa-mail-reply" 
+                                         id="volverHomologaciones" styleClass="btn red-button" value="Volver"  
+                                         action="#{homologacionRazonesMglBean.volverPanelListHomologaciones()}"
+                                         update="formAdminHomologa"/>
+                        <p:commandButton title="Crear Homologación" rendered="#{homologacionRazonesMglBean.botonCrear}"
+                                         action="#{homologacionRazonesMglBean.crearHomologacion()}"
+                                         id="nuevoId" styleClass="btn red-button" value="Crear"
+                                         update="formAdminHomologa"/>
+                        <p:commandButton title="Modificar Homologación" rendered="#{homologacionRazonesMglBean.botonMod}"
+                                         action="#{homologacionRazonesMglBean.modificarHomologacion()}"
+                                         id="modId" styleClass="btn red-button" value="Modificar"
+                                         update="formAdminHomologa"/>
+                    </p:panelGrid>
+                </fieldset>                         
+            </p:panel>   
+
+        </h:form>   
+    </ui:composition>
+</html>

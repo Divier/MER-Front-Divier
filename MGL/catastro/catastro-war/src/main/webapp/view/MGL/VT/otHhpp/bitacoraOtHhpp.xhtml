@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:t="http://myfaces.apache.org/tomahawk"              
+                template="/view/MGL/template/otHhppTemplate.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"    
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" 
+                xmlns:p="http://primefaces.org/ui">
+    
+    <ui:define name="title"><span class="TituloSeccion">Editar Ot Hhpp</span></ui:define>        
+    <ui:define name="content">
+    <h:panelGroup id="hpData" >
+        <h2 style="text-align: center;">EDITOR DE OT</h2>
+        <h:panelGrid  class="formulario2" style="font-weight:bold; font-size: 12.5px;" columns="12" >
+            <h:panelGrid  columns="6" style="max-width: 80%">
+                <h:panelGroup>
+                    <h:outputText value="N° OT: " style="font-weight:normal; font-size: 12.4px;"/>
+                    <h:outputText class="columnReadFormNumero" style="color: red; font-weight:normal;" 
+                                  value="#{bitacoraOtHhppBean.otHhppSeleccionado.otHhppId == null ? '': bitacoraOtHhppBean.otHhppSeleccionado.otHhppId}" />
+                </h:panelGroup>
+                
+                <h:panelGroup>
+                    <h:outputText value="Fecha Creación OT: " style="font-weight:normal; font-size: 12.4px;"/>
+                    <h:outputText style="font-weight:normal; font-size: 12.4px;" value="#{bitacoraOtHhppBean.otHhppSeleccionado.fechaCreacionOt}" />
+                </h:panelGroup>
+                
+                <h:panelGroup>
+                    <h:outputText value="Departamento: " style="font-weight:normal; font-size: 12.4px;"/>
+                    <h:outputText  style="font-weight:normal; font-size: 12.4px; "  value="#{bitacoraOtHhppBean.departamentoGpo.gpoNombre}" />
+                </h:panelGroup>
+                
+                <h:panelGroup>
+                    <h:outputText value="Estado Interno: " style="font-weight:normal; font-size: 12.4px;"/>
+                    <h:outputText  style="font-weight:normal; font-size: 12.4px;" value="#{bitacoraOtHhppBean.otHhppSeleccionado.estadoInternoInicial.nombreBasica}" />
+                </h:panelGroup>
+                <h:panelGroup>
+                    <h:outputText value="Estado Externo: " style="font-weight:normal; font-size: 12.4px;"/>
+                    <h:outputText style="font-weight:normal; font-size: 12.4px;"  value="#{bitacoraOtHhppBean.otHhppSeleccionado.estadoGeneral.nombreBasica}" />
+                </h:panelGroup>
+            </h:panelGrid>
+        </h:panelGrid>
+    </h:panelGroup>
+    <br/>
+    <br/>
+    <h:panelGroup id="hData" >    
+        <h:panelGrid id="panelTabs" class="formulario3"  columns="7" style="margin-top: -20px">
+            <h:commandButton  id="irGeneral"  
+                              class="#{bitacoraOtHhppBean.selectedTab == 'GENERAL' ? 'btn2 btn2Active':'btn2'}" 
+                              value="General"                              
+                              disabled="#{!bitacoraOtHhppBean.selectedTab eq 'GENERAL'}" >            
+                <f:ajax event="click" execute="@this" listener="#{bitacoraOtHhppBean.cambiarTab('GENERAL')}"
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton> 
+            <h:commandButton  id="irAgendamiento" 
+                              class="#{bitacoraOtHhppBean.selectedTab == 'AGENDAMIENTO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Agendamiento"                               
+                              rendered="#{bitacoraOtHhppBean.otHhppSeleccionado.tipoOtHhppId.agendable eq 1 
+                                          and bitacoraOtHhppBean.otHhppSeleccionado.estadoGeneral.
+                                             identificadorInternoApp eq '@B_EGA(@TB_RAB)'}" >
+                <f:ajax event="click" execute="@this" listener="#{bitacoraOtHhppBean.cambiarTab('AGENDAMIENTO')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irNotas"
+                              class="#{bitacoraOtHhppBean.selectedTab == 'NOTAS' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Notas">
+                <f:ajax event="click" execute="@this" listener="#{bitacoraOtHhppBean.cambiarTab('NOTAS')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irOnyx" 
+                              class="#{bitacoraOtHhppBean.selectedTab == 'ONYX' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Onyx"                               
+                              rendered="#{bitacoraOtHhppBean.otHhppSeleccionado.tipoOtHhppId.requiereOnyx eq 'Y'}" >
+                <f:ajax event="click" execute="@this" listener="#{bitacoraOtHhppBean.cambiarTab('ONYX')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irHistorico" 
+                              class="#{bitacoraOtHhppBean.selectedTab == 'HISTORICO' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Histórico Agendas">
+                <f:ajax event="click" execute="@this" listener="#{bitacoraOtHhppBean.cambiarTab('HISTORICO')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+            <h:commandButton  id="irBitacora" 
+                              class="#{bitacoraOtHhppBean.selectedTab == 'BITACORA' ? 'btn2 btn2Active':'btn2'}" 
+                              value="Bitácora">
+                <f:ajax event="click" execute="@this" listener="#{bitacoraOtHhppBean.cambiarTab('BITACORA')}" 
+                        render="tabsWrap panelTabs"/>                      
+            </h:commandButton>
+        </h:panelGrid>
+    </h:panelGroup>
+        <h2 style="text-align: center;">BITÁCORA</h2>
+        <br/>
+    <h:panelGroup id="hData1" >    
+         <h:dataTable id="tablaAuditoria" value="#{bitacoraOtHhppBean.listaAuditorias}" var="a"
+                     transient="true"  
+                     styleClass="constructGTable2"
+                     headerClass="horarioTableHeader" 
+                     rowClasses="auditoriaTableEvenRow,auditoriaTableOddRow">
+            <h:column id="columnUnoAuditoria">
+                <f:facet name="header">Usuario Creación</f:facet>
+                <div id="divUnoAuditoria"  >
+                    <h:outputText value="#{a.usuarioCreacion}"/>
+                </div>
+            </h:column>    
+            <h:column id="columnDosAuditoria">
+                <f:facet name="header">Fecha Creación</f:facet>
+                <div id="divDosAuditoria"  >
+                    <h:outputText value="#{a.fechaCreacion}">
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd hh:mm:ss"/>
+                    </h:outputText>    
+                </div>
+            </h:column>    
+            <h:column id="columnTresAuditoria">
+                <f:facet name="header">Usuario Modificacion</f:facet>
+                <div id="divTresAuditoria"  >
+                    <h:outputText value="#{a.usuarioModificacion}"/>
+                </div>
+            </h:column>    
+            <h:column id="columnCuatroAuditoria">
+                <f:facet name="header">Fecha Modificacion</f:facet>
+                <div id="divCuatroAuditoria"  >
+                    <h:outputText value="#{a.fechaModificacion}">
+                        <f:convertDateTime type="date" pattern="yyyy-MM-dd hh:mm:ss"/>
+                    </h:outputText>    
+                </div>
+            </h:column>    
+            <h:column id="columnCincoAuditoria">
+                <f:facet name="header">Valores Anteriores</f:facet>
+                <div id="divCincoAuditoria"  >
+                    <h:outputText value="#{a.antes}" escape="false" />
+                </div>
+            </h:column>    
+            <h:column id="columnSeisAuditoria">
+                <f:facet name="header">Valores Nuevos</f:facet>
+                <div id="divSeisAuditoria"  >
+                    <h:outputText value="#{a.despues}" escape="false"/>
+                </div>
+            </h:column>  
+             <f:facet name="footer" >
+                 <div class="pagination2">
+                     <h:panelGroup rendered="#{bitacoraOtHhppBean.listaAuditorias.size() gt 0}">
+                            <div style="text-align: center;">
+                                <h:commandButton title="Primera Página" action="#{bitacoraOtHhppBean.pageFirst()}"
+                                                 class="botonTPagInicioCm botonBaselista"/>
+                                <h:commandButton title="Página Anterior" value="" action="#{bitacoraOtHhppBean.pagePrevious()}"
+                                                 class="botonTPagAnteriorCm botonBaselista"/>
+                                <h:commandButton title="Número Páginas" value="#{bitacoraOtHhppBean.getPageActual()}" styleClass="botonTPagInicio"/>
+                                <h:selectOneMenu id="listTabla" value="#{bitacoraOtHhppBean.numPagina}" 
+                                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{bitacoraOtHhppBean.paginaList}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>
+                                    <f:ajax render="@form" event="change"
+                                            listener="#{bitacoraOtHhppBean.irPagina()}"
+                                            execute="@this"/>
+                                </h:selectOneMenu>
+                                <h:commandButton title="Página Siguiente" value="" action="#{bitacoraOtHhppBean.pageNext}"
+                                                 class="botonTPagSiguienteCm botonBaselista"/>
+                                <h:commandButton title="Última Página" value="" action="#{bitacoraOtHhppBean.pageLast}"
+                                                 class="botonTPagFinCm botonBaselista"/>
+                            </div>
+                        </h:panelGroup>
+                     </div>
+                    </f:facet> 
+            </h:dataTable>
+    </h:panelGroup>  
+    <br/>
+    </ui:define>
+</ui:composition>

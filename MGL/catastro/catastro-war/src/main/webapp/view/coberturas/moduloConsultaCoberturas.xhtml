@@ -1,0 +1,1786 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		<h:outputStylesheet library="css" name="primeflex/primeflex.css"/>
+		<h:outputStylesheet library="css" name="claro/pageAdmon.css"/>
+		<h:outputStylesheet library="css" name="claro/master.css"/>
+		<h:outputStylesheet library="css" name="claro/material.css"/>
+		<h:outputStylesheet library="css" name="claro/claro.css"/>
+		<h:outputScript library="js" name="claro/pageAdmon.js"/>
+                
+		<script src="#{consultarCoberturasBean.rutaServlet == null ?
+                               '':consultarCoberturasBean.rutaServlet}" type="text/javascript"/>
+                
+		<h:outputScript library="primefaces"  name="gmap/gmap.js"/>
+		
+                <h:form id="formPer"
+		        prependId="false"
+		        enctype="multipart/form-data">
+			<p:growl id="messagePer"
+			         showDetail="true"
+			         sticky="true">
+				<p:autoUpdate/>
+			</p:growl>
+			<p:confirmDialog global="true"
+			                 showEffect="fade"
+			                 hideEffect="fade">
+				<p:commandButton value="Si"
+				                 type="button"
+				                 styleClass="ui-confirmdialog-yes"/>
+				<p:commandButton value="No"
+				                 type="button"
+				                 styleClass="ui-confirmdialog-no"/>
+			</p:confirmDialog>
+			<p:remoteCommand name="updateCenter"
+			                 process="@widgetVar('panelCoordenadas')"
+			                 update="@form"
+			                 action="#{consultarCoberturasBean.updateCenter}"/>
+                        
+			<h:panelGroup id="panelPer1"
+			         style="font-size: 18px !important;"
+			         styleClass="ui-fluid p-col-12 p-xl-12 p-md-12 p-sm-12">
+				<div class="font-bold font-size-20p text-shadow">Consultar Coberturas</div>
+				<div class="linea-roja"/>
+				<p:separator/>
+				<!--PANEL MENU PRINCIPAL-->
+				<p:panelGrid columns="6"
+				             columnClasses="p-col-4 p-xl-2, p-col-4 p-xl-2, p-col-4 p-xl-2, p-col-4 p-xl-2, p-col-4 p-xl-2, p-col-4 p-xl-1"
+				             contentStyleClass="p-align-baseline ui-fluid"
+				             layout="flex">
+					<p:outputPanel class="efecto-menu #{consultarCoberturasBean.opcionDireccionSelected ? 'btn-menu' : ''}">
+                                            <p:commandButton style="display: block;width: 200px;height: 85px; margin-top: -70px;  opacity: 0;"
+						                 id="btnIngDir"
+						                 process="@this"
+						                 ajax="true"
+						                 update="@form"
+						                 actionListener="#{consultarCoberturasBean.verPanelDireccion()}">
+							<div onclick="pulsarClickPorId('btnIngDir')">
+								<div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-cell--4-col-phone text-center">
+									<h:graphicImage style="margin-bottom: -60px; background-color: rgba(255, 0, 0, 0);"
+									                library="images"
+									                name="claro/IngresaDr.svg"
+									                class="image-menu"/>
+								</div>
+								<div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-cell--4-col-phone text-center">
+									<h:outputText style="display: block; margin-top: 50px;"
+									              styleClass="font-bold font-size-10p"
+									              value="DIRECCIÓN"/>
+								</div>
+							</div>
+						</p:commandButton>
+					</p:outputPanel>
+					<p:outputPanel class="efecto-menu #{consultarCoberturasBean.opcionPuntoUbicacionSelected ? 'btn-menu' : ''}">
+                                            <p:commandButton style="display: block;width: 200px;height: 85px; margin-top: -70px;  opacity: 0;"
+						                 id="btnPuntoUbi"
+						                 process="@this @widgetVar(panelCoordenadas)"
+						                 ajax="true"
+						                 update="@form"
+						                 actionListener="#{consultarCoberturasBean.verMapaIngresarPunto()}">
+							<div onclick="pulsarClickPorId('btnIngDir')">
+								<div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-cell--4-col-phone text-center">
+									<h:graphicImage style="margin-bottom: -60px; background-color: rgba(255, 0, 0, 0);"
+									                library="images"
+									                name="claro/puntoUbicacion.svg"
+									                class="image-menu"/>
+								</div>
+								<div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-cell--4-col-phone text-center">
+									<h:outputText style="display: block; margin-top: 50px;"
+									              styleClass="font-bold font-size-10p"
+									              value="PUNTO UBICACIÓN"/>
+								</div>
+							</div>
+						</p:commandButton>
+					</p:outputPanel>
+					<p:outputPanel class="efecto-menu #{consultarCoberturasBean.opcionGPSSelected ? 'btn-menu' : ''}">
+						<p:commandButton style="display: block;width: 200px;height: 85px; margin-top: -70px;  opacity: 0;"
+						                 id="btnGps"
+						                 process="@this"
+						                 update="@form"
+						                 actionListener="#{consultarCoberturasBean.consultarUbicacion()}">
+							<div onclick="pulsarClickPorId('btnIngDir')">
+								<div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-cell--4-col-phone text-center">
+									<h:graphicImage style="margin-bottom: -60px; background-color: rgba(255, 0, 0, 0);"
+									                library="images"
+									                name="claro/Gps.svg"
+									                class="image-menu"/>
+								</div>
+								<div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-cell--4-col-phone text-center">
+									<h:outputText style="display: block; margin-top: 50px;"
+									              styleClass="font-bold font-size-10p"
+									              value="GPS"/>
+								</div>
+							</div>
+						</p:commandButton>
+					</p:outputPanel>
+					<p:outputPanel class="efecto-menu #{consultarCoberturasBean.opcionCoordenadasSelected ? 'btn-menu' : ''}">
+						<p:commandButton style="display: block;width: 200px;height: 85px; margin-top: -70px;  opacity: 0;"
+						                 id="btnIngCoor"
+						                 process="@this"
+						                 update="@form"
+						                 actionListener="#{consultarCoberturasBean.ingresarCoordenadas()}">
+							<div onclick="pulsarClickPorId('btnIngDir')">
+								<div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-cell--4-col-phone text-center">
+									<h:graphicImage style="margin-bottom: -60px; background-color: rgba(255, 0, 0, 0);"
+									                library="images"
+									                name="claro/coordendas.svg"
+									                class="image-menu"/>
+								</div>
+								<div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-cell--4-col-phone text-center">
+									<h:outputText style="display: block; margin-top: 50px;"
+									              styleClass="font-bold font-size-10p"
+									              value="CORDENADAS"/>
+								</div>
+							</div>
+						</p:commandButton>
+					</p:outputPanel>
+					<p:outputPanel class="efecto-menu">
+						<p:commandButton style="display: block;width: 200px;height: 85px; margin-top: -70px;  opacity: 0;"
+						                 id="btnCerrarMap"
+						                 process="@this"
+						                 update="@form"
+						                 actionListener="#{consultarCoberturasBean.cerrarMapa()}">
+							<div onclick="pulsarClickPorId('btnIngDir')">
+								<div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-cell--4-col-phone text-center">
+									<h:graphicImage style="margin-bottom: -60px; background-color: rgba(255, 0, 0, 0);"
+									                library="images"
+									                name="claro/cerrar.svg"
+									                class="image-menu"/>
+								</div>
+								<div class="mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-cell--4-col-phone text-center">
+									<h:outputText style="display: block; margin-top: 50px;"
+									              styleClass="font-bold font-size-10p"
+									              value="CERRAR MAPA"/>
+								</div>
+							</div>
+						</p:commandButton>
+					</p:outputPanel>
+					<p:spacer/>
+				</p:panelGrid>
+				<!--FIN PANEL MENU PRINCIPAL-->
+				<p:spacer/>
+				<!-- PANEL BUSQUEDA DIRECCION GENERAL-->
+				<p:panel id="centroBusqueda"
+				         rendered="#{consultarCoberturasBean.showPanelBusquedaCentro}"
+				         styleClass="grid ui-fluid p-col-12 p-xl-12 p-md-12 p-sm-12">
+					<p:panelGrid columns="1"
+					             id="buscarCentro"
+					             class="formulario3"
+					             layout="flex"
+					             columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2"
+					             contentStyleClass="p-align-baseline ui-fluid">
+						<p:outputLabel for="departamentoCen"
+						               style="font-weight:bold; padding:5px;"
+						               value="Departamento:"/>
+						<p:selectOneMenu value="#{consultarCoberturasBean.departamento}"
+						                 id="departamentoCen">
+							<f:selectItem itemLabel="Seleccione Uno"
+							              itemValue=""/>
+							<f:selectItems value="#{consultarCoberturasBean.departamentoList}"
+							               var="departamento"
+							               itemLabel="#{departamento.descripcion}"
+							               itemValue="#{departamento.idParametro}"/>
+							<f:ajax event="change"
+							        execute="@this"
+							        listener="#{consultarCoberturasBean.obtenerCiudadesList()}"
+							        render="ciudadCen centroPobladoCen"/>
+						</p:selectOneMenu>
+						<p:outputLabel for="ciudadCen"
+						               style="font-weight:bold; padding:5px;"
+						               id="cityC"
+						               value="Ciudad:"/>
+						<p:selectOneMenu value="#{consultarCoberturasBean.ciudad}"
+						                 id="ciudadCen">
+							<f:selectItem itemLabel="Seleccione Uno"
+							              itemValue=""/>
+							<f:selectItems value="#{consultarCoberturasBean.ciudadesList}"
+							               var="ciudad"
+							               itemLabel="#{ciudad.descripcion}"
+							               itemValue="#{ciudad.idParametro}"/>
+							<f:ajax event="change"
+							        execute="@this"
+							        listener="#{consultarCoberturasBean.obtenerCentroPobladoList()}"
+							        render="centroPobladoCen "/>
+						</p:selectOneMenu>
+						<p:outputLabel for="centroPobladoCen"
+						               style="font-weight:bold; padding:5px;"
+						               value="Centro Poblado:"/>
+						<p:selectOneMenu id="centroPobladoCen"
+						                 value="#{consultarCoberturasBean.idCentroPoblado}">
+							<f:selectItem itemValue=""
+							              itemLabel="Seleccione Uno"/>
+							<f:selectItems value="#{consultarCoberturasBean.centroPobladoList}"
+							               var="centroPob"
+							               itemValue="#{centroPob.idParametro}"
+							               itemLabel="#{centroPob.descripcion}"/>
+							<f:ajax event="change"
+							        execute="centroPobladoCen"
+							        render="panelWrapper"
+							        listener="#{consultarCoberturasBean.obtenerCentroPobladoSeleccionado()}"/>
+						</p:selectOneMenu>
+					</p:panelGrid>
+				</p:panel>
+				<!-- FIN PANEL BUSQUEDA DIRECCION GENERAL-->
+				<!-- PANEL BUSQUEDA DIRECCION-->
+				<h:panelGroup id="contenidoBusqueda"
+				         rendered="#{consultarCoberturasBean.showPanelBusquedaDireccion}">
+					<p:panelGrid columns="6"
+					             id="primerPanelIngresarDireccion"
+					             class="formulario3"
+					             style="width:100%;"
+					             layout="flex"
+					             columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2"
+					             contentStyleClass="p-align-baseline ui-fluid">
+						<p:outputLabel for="tipoDireccionComboBox"
+						               style="font-weight:bold; padding:5px;"
+						               id="tipoDireccion"
+						               value="Tipo Dirección:"/>
+						<p:selectOneMenu id="tipoDireccionComboBox"
+						                 value="#{consultarCoberturasBean.tipoDireccion}">
+							<f:selectItem itemLabel="CALLE - CARRERA"
+							              itemValue="CK"/>
+							<f:selectItem itemLabel="BARRIO - MANZANA"
+							              itemValue="BM"/>
+							<f:selectItem itemLabel="INTRADUCIBLE"
+							              itemValue="IT"/>
+							<f:ajax event="change"
+							        execute="tipoDireccionComboBox"
+							        listener="#{consultarCoberturasBean.validarTipoDireccion()}"
+							        render="panelWrapper direccionStrLabel"/>
+						</p:selectOneMenu>
+						<p:outputLabel for="departamento"
+						               style="font-weight:bold; padding:5px;"
+						               value="Departamento:"/>
+						<p:selectOneMenu value="#{consultarCoberturasBean.departamento}"
+						                 id="departamento">
+							<f:selectItem itemLabel="Seleccione Uno"
+							              itemValue=""/>
+							<f:selectItems value="#{consultarCoberturasBean.departamentoList}"
+							               var="departamento"
+							               itemLabel="#{departamento.descripcion}"
+							               itemValue="#{departamento.idParametro}"/>
+							<f:ajax event="change"
+							        execute="departamento"
+							        listener="#{consultarCoberturasBean.obtenerCiudadesList()}"
+							        render="ciudad centroPoblado"/>
+						</p:selectOneMenu>
+						<p:outputLabel for="ciudad"
+						               style="font-weight:bold; padding:5px;"
+						               id="cityCen"
+						               value="Ciudad:"/>
+						<p:selectOneMenu value="#{consultarCoberturasBean.ciudad}"
+						                 id="ciudad">
+							<f:selectItem itemLabel="Seleccione Uno"
+							              itemValue=""/>
+							<f:selectItems value="#{consultarCoberturasBean.ciudadesList}"
+							               var="ciudad"
+							               itemLabel="#{ciudad.descripcion}"
+							               itemValue="#{ciudad.idParametro}"/>
+							<f:ajax event="change"
+							        execute="ciudad"
+							        listener="#{consultarCoberturasBean.obtenerCentroPobladoList()}"
+							        render="centroPoblado "/>
+						</p:selectOneMenu>
+						<p:outputLabel for="centroPoblado"
+						               style="font-weight:bold; padding:5px;"
+						               value="Centro Poblado:"/>
+						<p:selectOneMenu id="centroPoblado"
+						                 value="#{consultarCoberturasBean.idCentroPoblado}">
+							<f:selectItem itemValue=""
+							              itemLabel="Seleccione Uno"/>
+							<f:selectItems value="#{consultarCoberturasBean.centroPobladoList}"
+							               var="centroPob"
+							               itemValue="#{centroPob.idParametro}"
+							               itemLabel="#{centroPob.descripcion}"/>
+							<f:ajax event="change"
+							        execute="centroPoblado"
+							        render="panelWrapper"
+							        listener="#{consultarCoberturasBean.obtenerCentroPobladoSeleccionado()}"/>
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<hr size="5" class="w100" align="left"/>
+					<h:panelGroup id="panelWrapper" styleClass="p-grid ui-fluid p-col-12 p-md-12 p-lg-12">
+                                            <h:panelGroup id="ckPanel"
+                                                     styleClass="ui-fluid p-col-12 p-md-12 p-lg-12"
+                                                     rendered="#{consultarCoberturasBean.showCKPanel}">
+                                                <h:panelGroup id="pgInfoDir" styleClass="p-grid ui-fluid p-col-12 p-md-12 p-lg-12">
+                                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-4 p-lg-4">
+                                                        <p:outputLabel for="direccion" id="direccionLabel" value="Ingrese la Dirección:"/>
+                                                    </h:panelGroup>
+                                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-4 p-lg-4">
+                                                        <p:inputText value="#{consultarCoberturasBean.direccionCk}"
+                                                                     id="direccion" maxlength="49"/>
+                                                    </h:panelGroup>
+                                                    <h:panelGroup class="ui-fluid p-col-12 p-md-4 p-lg-4">
+                                                        <p:commandButton id="agregarDireccionCkButton"
+                                                                         value="Ingresar Dirección"
+                                                                         styleClass="btn red-button"
+                                                                         title="Construir Direccion"
+                                                                         action="#{consultarCoberturasBean.construirDireccionCk()}"
+                                                                         update="@form"/>
+                                                    </h:panelGroup>
+                                                </h:panelGroup>
+                                                <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-12 p-lg-12">
+                                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-3 p-lg-3">
+                                                        <p:outputLabel for="tipoComplementoComboBox"
+                                                                       style="font-weight:bold"
+                                                                       id="complementoLabel"
+                                                                       value="Complemento:"/>
+                                                    </h:panelGroup>
+                                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-3 p-lg-3">
+                                                        <p:selectOneMenu id="tipoComplementoComboBox"
+                                                                         value="#{consultarCoberturasBean.tipoNivelComplemento}">
+                                                                <f:selectItem itemLabel="Seleccione Uno"
+                                                                              itemValue=""/>
+                                                                <f:selectItems value="#{consultarCoberturasBean.complementoList}"
+                                                                               var="complemento"
+                                                                               itemValue="#{complemento.idParametro}"
+                                                                               itemLabel="#{complemento.descripcion}"/>
+                                                        </p:selectOneMenu>
+                                                    </h:panelGroup>
+                                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-3 p-lg-3">
+                                                        <p:inputText maxlength="50"
+                                                                     id="complementoParametro"
+                                                                     value="#{consultarCoberturasBean.complemento}"/>
+                                                    </h:panelGroup>
+                                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-3 p-lg-3">
+                                                        <p:commandButton title="Construir Direccion"
+                                                                         styleClass="btn red-button"
+                                                                         action="#{consultarCoberturasBean.construirDireccionComplemento()}"
+                                                                         id="agregarComplementoButton"
+                                                                         value="Ingresar Complemento"
+                                                                         update="pgInfoDir @widgetVar(panelDirLabel)"/>
+                                                    </h:panelGroup>
+                                                </h:panelGroup>
+                                                <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-12 p-lg-12">
+                                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-3 p-lg-3">
+                                                        <p:outputLabel for="tipoApartamentoComboBox"
+                                                                       style="font-weight:bold"
+                                                                       id="apartamentoLabel"
+                                                                       value="Apartamento:"/>
+                                                    </h:panelGroup>
+                                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-3 p-lg-3">
+                                                        <p:selectOneMenu id="tipoApartamentoComboBox"
+                                                                         value="#{consultarCoberturasBean.tipoNivelApartamento}">
+                                                                <f:selectItem itemLabel="Seleccione Uno"
+                                                                              itemValue=""/>
+                                                                <f:selectItems value="#{consultarCoberturasBean.aptoList}"
+                                                                               var="apartamento"
+                                                                               itemValue="#{apartamento.idParametro}"
+                                                                               itemLabel="#{apartamento.descripcion}"/>
+                                                        </p:selectOneMenu>
+                                                    </h:panelGroup>
+                                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-3 p-lg-3">
+                                                        <p:inputText maxlength="10"
+                                                                     id="apartamentoParametro"
+                                                                     value="#{consultarCoberturasBean.apartamento}"/>
+                                                    </h:panelGroup>
+                                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-3 p-lg-3">
+                                                        <p:commandButton title="Construir Dirección"
+                                                                         styleClass="btn red-button"
+                                                                         action="#{consultarCoberturasBean.construirDireccionApartamento()}"
+                                                                         id="agregarApartamentoButton"
+                                                                         value="Agregar tipo de vivienda"
+                                                                         update="pgInfoDir @widgetVar(panelDirLabel)"/>
+                                                    </h:panelGroup>
+                                                </h:panelGroup>
+                                                <!--Busqueda Detallada (CALLE)-->
+                                                <p:panel rendered="#{!consultarCoberturasBean.notGeoReferenciado}"
+                                                             id="pnNoRefences"
+                                                             styleClass="ui-fluid">
+                                                            <p:fieldset legend="Calle"
+                                                                        style="margin-bottom:20px"
+                                                                        styleClass="ui-fluid">
+                                                                    <p:panelGrid columns="6"
+                                                                                 layout="flex"
+                                                                                 columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2"
+                                                                                 contentStyleClass="p-align-baseline ui-fluid"
+                                                                                 style="padding:5px 5px;">
+                                                                            <p:outputLabel for="viaPrincipala"
+                                                                                           id="compDircc5a"
+                                                                                           style="font-weight: bold;margin: 5px 5px;"
+                                                                                           value="Vía Principal:"/>
+                                                                            <p:selectOneMenu id="viaPrincipala"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.tipoViaPrincipal}"
+                                                                                             style="width:120px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.ckList}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:selectOneMenu>
+                                                                            <p:outputLabel for="compDircc12a"
+                                                                                           id="compDircc6s"
+                                                                                           style="font-weight: bold;margin: 5px 5px;"
+                                                                                           value="Núm:"/>
+                                                                            <p:inputText id="compDircc12a"
+                                                                                         value="#{consultarCoberturasBean.drDireccion.numViaPrincipal}"
+                                                                                         style="width:105px;">
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:inputText>
+                                                                            <p:outputLabel for="letraUnoPrincipala"
+                                                                                           id="compDircc7a"
+                                                                                           style="font-weight: bold;margin: 5px 5px;"
+                                                                                           value="Letra:"/>
+                                                                            <p:selectOneMenu id="letraUnoPrincipala"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.ltViaPrincipal}"
+                                                                                             style="width:60px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.ckLetras}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:selectOneMenu>
+                                                                            <p:outputLabel for="letraDosPrincipala"
+                                                                                           id="compDircc8s"
+                                                                                           style="font-weight: bold;margin: 5px 5px;"
+                                                                                           value="Letra 2:"/>
+                                                                            <p:selectOneMenu id="letraDosPrincipala"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.nlPostViaP}"
+                                                                                             style="width:60px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.ckLetras}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:selectOneMenu>
+                                                                            <p:outputLabel for="bisPrincipala"
+                                                                                           id="compDircc9a"
+                                                                                           style="font-weight: bold;margin: 5px 5px;"
+                                                                                           value="Bis:"/>
+                                                                            <p:selectOneMenu id="bisPrincipala"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.bisViaPrincipal}"
+                                                                                             style="width:60px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.ckBis}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:selectOneMenu>
+                                                                            <p:outputLabel for="cuadrantePrincipala"
+                                                                                           id="compDircc10s"
+                                                                                           style="font-weight: bold;margin: 5px 5px;"
+                                                                                           value="Cardinales:"/>
+                                                                            <p:selectOneMenu id="cuadrantePrincipala"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.cuadViaPrincipal}"
+                                                                                             style="width:100px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.cardinalesList}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:selectOneMenu>
+                                                                    </p:panelGrid>
+                                                            </p:fieldset>
+                                                            <p:fieldset legend="Placa"
+                                                                        style="margin-bottom:20px"
+                                                                        styleClass="ui-fluid">
+                                                                    <div>
+                                                                            <p:outputLabel id="compDircc17a"
+                                                                                           value="#"
+                                                                                           style=" font-size: 25px; text-align: center;margin:5px 5px;"/>
+                                                                    </div>
+                                                                    <p:panelGrid id="calleCarrera_9a"
+                                                                                 columns="6"
+                                                                                 layout="flex"
+                                                                                 columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-3 p-xl-2"
+                                                                                 contentStyleClass="p-align-baseline ui-fluid"
+                                                                                 style="padding:10px 5px;">
+                                                                            <p:outputLabel for="viaGeneradoras"
+                                                                                           id="compDircc20a"
+                                                                                           style="font-weight:bold;margin:5px 5px;"
+                                                                                           value="Cruce"/>
+                                                                            <p:selectOneMenu id="viaGeneradoras"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.tipoViaGeneradora}"
+                                                                                             style="width:120px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.cruceslist}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:selectOneMenu>
+                                                                            <p:outputLabel for="compDircc261a"
+                                                                                           id="compDircc21s"
+                                                                                           style="font-weight:bold;margin:5px 5px;"
+                                                                                           value="Núm:"/>
+                                                                            <p:inputText id="compDircc261a"
+                                                                                         value="#{consultarCoberturasBean.drDireccion.numViaGeneradora}"
+                                                                                         style="width:105px;margin: 5px 5px;">
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:inputText>
+                                                                            <p:outputLabel for="letraUnoGeneradoras"
+                                                                                           id="compDircc22a"
+                                                                                           style="font-weight:bold;margin:5px 5px;"
+                                                                                           value="Letra:"/>
+                                                                            <p:selectOneMenu id="letraUnoGeneradoras"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.ltViaGeneradora}"
+                                                                                             style="width:60px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.ckLetras}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:selectOneMenu>
+                                                                            <p:outputLabel for="letraDosGeneradoraa"
+                                                                                           id="compDircc23d"
+                                                                                           style="font-weight:bold;margin:5px 5px;"
+                                                                                           value="Letra 2:"/>
+                                                                            <p:selectOneMenu id="letraDosGeneradoraa"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.nlPostViaG}"
+                                                                                             style="width:60px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.ckLetras}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:selectOneMenu>
+                                                                            <p:outputLabel for="letraTresGeneradoraa"
+                                                                                           id="compDircc24a"
+                                                                                           style="font-weight:bold;margin:5px 5px;"
+                                                                                           value="Letra 3:"/>
+                                                                            <p:selectOneMenu id="letraTresGeneradoraa"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.letra3G}"
+                                                                                             style="width:60px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.ckLetras}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn"/>
+                                                                            </p:selectOneMenu>
+                                                                            <p:outputLabel for="bisGeneradoras"
+                                                                                           id="compDircc25d"
+                                                                                           style="font-weight:bold;margin:5px 5px;"
+                                                                                           value="Bis:"/>
+                                                                            <p:selectOneMenu id="bisGeneradoras"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.bisViaGeneradora}"
+                                                                                             style="width:100px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.ckBis}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:selectOneMenu>
+                                                                            <p:outputLabel for="cuadranteGeneradoras"
+                                                                                           id="compDircc26a"
+                                                                                           style="font-weight:bold;margin:5px 5px;"
+                                                                                           value="Cardinales:"/>
+                                                                            <p:selectOneMenu id="cuadranteGeneradoras"
+                                                                                             value="#{consultarCoberturasBean.drDireccion.cuadViaGeneradora}"
+                                                                                             style="width:100px;margin: 5px 5px;">
+                                                                                    <f:selectItem itemValue=""
+                                                                                                  itemLabel=""/>
+                                                                                    <f:selectItems value="#{consultarCoberturasBean.cardinalesList}"
+                                                                                                   var="ppal"
+                                                                                                   itemLabel="#{ppal.descripcion}"
+                                                                                                   itemValue="#{ppal.descripcion}"/>
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel"/>
+                                                                            </p:selectOneMenu>
+                                                                            <p:outputLabel/>
+                                                                            <p:outputLabel id="compDircc3a4"
+                                                                                           value="#{' '}-#{' '}"
+                                                                                           style="font-size: 25px; font-weight:bold"/>
+                                                                            <p:outputLabel for="compDircc35a1"
+                                                                                           id="compDircc27a"
+                                                                                           value="No. Placa:"
+                                                                                           style="font-weight:bold;margin:5px 5px;"/>
+                                                                            <p:inputText id="compDircc35a1"
+                                                                                         value="#{consultarCoberturasBean.drDireccion.placaDireccion}"
+                                                                                         style="width:90px;margin:5px 5px;"
+                                                                                         label="No. Placa">
+                                                                                    <f:ajax event="change"
+                                                                                            listener="#{consultarCoberturasBean.buildDireccion()}"
+                                                                                            render="createDireccionn direccionStrLabel compDircc35a1"/>
+                                                                            </p:inputText>
+                                                                    </p:panelGrid>
+                                                                    <div>
+                                                                            <p:outputLabel value="#{consultarCoberturasBean.createDireccion}"
+                                                                                           style="font-weight:bold;color:red;"
+                                                                                           id="createDireccionn"/>
+                                                                    </div>
+                                                            </p:fieldset>
+                                                    </p:panel>
+                                            </h:panelGroup>
+                                            <p:panel id="bmPanel"
+                                                     styleClass="ui-fluid"
+                                                     rendered="#{consultarCoberturasBean.showBMPanel}">
+                                                    <p:panelGrid columns="4"
+                                                                 layout="flex">
+                                                            <p:outputLabel for="tipoDireccionBMComboBox"
+                                                                           id="addInfo"
+                                                                           value="Ingrese uno a uno los valores:"/>
+                                                            <p:selectOneMenu style="width: 100%"
+                                                                             id="tipoDireccionBMComboBox"
+                                                                             value="#{consultarCoberturasBean.tipoNivelBm}">
+                                                                    <f:selectItem itemLabel="Seleccione Uno"
+                                                                                  itemValue=""/>
+                                                                    <f:selectItems value="#{consultarCoberturasBean.bmList}"
+                                                                                   var="bm"
+                                                                                   itemValue="#{bm.idParametro}"
+                                                                                   itemLabel="#{bm.descripcion}"/>
+                                                            </p:selectOneMenu>
+                                                            <p:inputText value="#{consultarCoberturasBean.nivelValorBm}"
+                                                                         id="tipoDireccionBM"
+                                                                         style="width: 100%; margin-right: 10px;"
+                                                                         maxlength="250"/>
+                                                            <p:commandButton title="Construir Direccion"
+                                                                             styleClass="btn red-button"
+                                                                             value="Ingresar Valor"
+                                                                             action="#{consultarCoberturasBean.construirDireccionBm()}"
+                                                                             id="agregarInfoBMButton"
+                                                                             update="@form"/>
+                                                            <p:outputLabel for="tipoComplementoComboBoxBmComp"
+                                                                           style="font-weight:bold"
+                                                                           id="complementoLabelBmComp"
+                                                                           value="Complemento:"/>
+                                                            <p:selectOneMenu id="tipoComplementoComboBoxBmComp"
+                                                                             value="#{consultarCoberturasBean.tipoNivelComplemento}">
+                                                                    <f:selectItem itemLabel="Seleccione Uno"
+                                                                                  itemValue=""/>
+                                                                    <f:selectItems value="#{consultarCoberturasBean.complementoList}"
+                                                                                   var="complemento"
+                                                                                   itemValue="#{complemento.idParametro}"
+                                                                                   itemLabel="#{complemento.descripcion}"/>
+                                                            </p:selectOneMenu>
+                                                            <h:panelGroup class="ui-fluid">
+                                                                    <div class="ui-inputgroup">
+                                                                            <p:inputText maxlength="50"
+                                                                                         id="complementoParametroBmComp"
+                                                                                         value="#{consultarCoberturasBean.complemento}"/>
+                                                                    </div>
+                                                            </h:panelGroup>
+                                                            <h:panelGroup class="ui-fluid">
+                                                                    <p:commandButton title="Construir Direccion"
+                                                                                     styleClass="btn red-button"
+                                                                                     action="#{consultarCoberturasBean.construirDireccionComplemento()}"
+                                                                                     id="agregarComplementoButtonBmComp"
+                                                                                     value="Agregar Complemento"
+                                                                                     update="pgInfoDir @widgetVar(panelDirLabel)"/>
+                                                            </h:panelGroup>
+                                                            <p:outputLabel for="tipoApartamentoComboBoxBmComp"
+                                                                           style="font-weight:bold"
+                                                                           id="apartamentoLabelBmComp"
+                                                                           value="Apartamento:"/>
+                                                            <p:selectOneMenu id="tipoApartamentoComboBoxBmComp"
+                                                                             value="#{consultarCoberturasBean.tipoNivelApartamento}">
+                                                                    <f:selectItem itemLabel="Seleccione Uno"
+                                                                                  itemValue=""/>
+                                                                    <f:selectItems value="#{consultarCoberturasBean.aptoList}"
+                                                                                   var="apartamento"
+                                                                                   itemValue="#{apartamento.idParametro}"
+                                                                                   itemLabel="#{apartamento.descripcion}"/>
+                                                            </p:selectOneMenu>
+                                                            <h:panelGroup class="ui-fluid">
+                                                                    <div class="ui-inputgroup">
+                                                                            <p:inputText maxlength="10"
+                                                                                         id="apartamentoParametroBmComp"
+                                                                                         value="#{consultarCoberturasBean.apartamento}"/>
+                                                                    </div>
+                                                            </h:panelGroup>
+                                                            <p:commandButton title="Construir Dirección"
+                                                                             styleClass="btn red-button"
+                                                                             action="#{consultarCoberturasBean.construirDireccionApartamento()}"
+                                                                             id="agregarApartamentoButtonBmComp"
+                                                                             value="Agregar tipo de vivienda"
+                                                                             update="pgInfoDir @widgetVar(panelDirLabel)"/>
+                                                    </p:panelGrid>
+                                            </p:panel>
+                                            <p:panel id="itPanel"
+                                                     styleClass="ui-fluid"
+                                                     rendered="#{consultarCoberturasBean.showITPanel}">
+                                                    <p:panelGrid columns="4"
+                                                                 layout="flex"
+                                                                 columnClasses="p-col-12 p-md-6 p-xl-3, p-col-12 p-md-6 p-xl-3, p-col-12 p-md-6 p-xl-3, p-col-12 p-md-6 p-xl-3"
+                                                                 contentStyleClass="p-align-baseline ui-fluid">
+                                                            <p:outputLabel for="tipoDireccionITComboBox"
+                                                                           id="addInfoIt"
+                                                                           value="Ingrese uno a uno los valores:"/>
+                                                            <p:selectOneMenu style="width: 100%"
+                                                                             id="tipoDireccionITComboBox"
+                                                                             value="#{consultarCoberturasBean.tipoNivelIt}">
+                                                                    <f:selectItem itemLabel="Seleccione Uno"
+                                                                                  itemValue=""/>
+                                                                    <f:selectItems value="#{consultarCoberturasBean.itList}"
+                                                                                   var="intraducible"
+                                                                                   itemValue="#{intraducible.idParametro}"
+                                                                                   itemLabel="#{intraducible.descripcion}"/>
+                                                            </p:selectOneMenu>
+                                                            <p:inputText value="#{consultarCoberturasBean.nivelValorIt}"
+                                                                         id="tipoDireccionIt"
+                                                                         style="width: 100%;margin-right: 10px;"
+                                                                         maxlength="250"/>
+                                                            <p:commandButton title="Construir Direccion"
+                                                                             styleClass="btn red-button"
+                                                                             value="Ingresar Valor"
+                                                                             action="#{consultarCoberturasBean.construirDireccionIt()}"
+                                                                             id="agregarInfoItButton"
+                                                                             update="@form"/>
+                                                            <p:outputLabel for="tipoComplementoComboBoxItComp"
+                                                                           style="font-weight:bold"
+                                                                           id="complementoLabelItComp"
+                                                                           value="Complemento:"/>
+                                                            <p:selectOneMenu id="tipoComplementoComboBoxItComp"
+                                                                             value="#{consultarCoberturasBean.tipoNivelComplemento}">
+                                                                    <f:selectItem itemLabel="Seleccione Uno"
+                                                                                  itemValue=""/>
+                                                                    <f:selectItems value="#{consultarCoberturasBean.complementoList}"
+                                                                                   var="complemento"
+                                                                                   itemValue="#{complemento.idParametro}"
+                                                                                   itemLabel="#{complemento.descripcion}"/>
+                                                            </p:selectOneMenu>
+                                                            <h:panelGroup class="ui-fluid">
+                                                                    <div class="ui-inputgroup">
+                                                                            <p:inputText maxlength="50"
+                                                                                         id="complementoParametroItComp"
+                                                                                         value="#{consultarCoberturasBean.complemento}"/>
+                                                                    </div>
+                                                            </h:panelGroup>
+                                                            <h:panelGroup class="ui-fluid">
+                                                                    <p:commandButton title="Construir Direccion"
+                                                                                     styleClass="btn red-button"
+                                                                                     action="#{consultarCoberturasBean.construirDireccionComplemento()}"
+                                                                                     id="agregarComplementoButtonItComp"
+                                                                                     value="Agregar Complemento"
+                                                                                     update="pgInfoDir @widgetVar(panelDirLabel)"/>
+                                                            </h:panelGroup>
+                                                            <p:outputLabel for="tipoApartamentoComboBoxItComp"
+                                                                           style="font-weight:bold"
+                                                                           id="apartamentoLabelItComp"
+                                                                           value="Apartamento:"/>
+                                                            <p:selectOneMenu id="tipoApartamentoComboBoxItComp"
+                                                                             value="#{consultarCoberturasBean.tipoNivelApartamento}">
+                                                                    <f:selectItem itemLabel="Seleccione Uno"
+                                                                                  itemValue=""/>
+                                                                    <f:selectItems value="#{consultarCoberturasBean.aptoList}"
+                                                                                   var="apartamento"
+                                                                                   itemValue="#{apartamento.idParametro}"
+                                                                                   itemLabel="#{apartamento.descripcion}"/>
+                                                            </p:selectOneMenu>
+                                                            <h:panelGroup class="ui-fluid">
+                                                                    <div class="ui-inputgroup">
+                                                                            <p:inputText maxlength="10"
+                                                                                         id="apartamentoParametroItComp"
+                                                                                         value="#{consultarCoberturasBean.apartamento}"/>
+                                                                    </div>
+                                                            </h:panelGroup>
+                                                            <h:panelGroup class="ui-fluid">
+                                                                    <p:commandButton title="Construir Dirección"
+                                                                                     styleClass="btn red-button"
+                                                                                     action="#{consultarCoberturasBean.construirDireccionApartamento()}"
+                                                                                     id="agregarApartamentoButtonItComp"
+                                                                                     value="Agregar tipo de vivienda"
+                                                                                     update="pgInfoDir @widgetVar(panelDirLabel)"/>
+                                                            </h:panelGroup>
+                                                    </p:panelGrid>
+                                            </p:panel>
+					</h:panelGroup>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+					<p:panel id="barriosSugeridospanelWrapper"
+					         styleClass="ui-fluid">
+                                            <p:panel id="barriosSugeridosPanel"
+                                                     styleClass="ui-fluid"
+                                                     rendered="#{consultarCoberturasBean.showBarrio}">
+                                                    <hr size="5"
+                                                        width="100%"
+                                                        align="LEFT"/>
+                                                    <div style="border: 2px groove #f70808; margin: 9px;padding: 8px;"
+                                                         class="ui-fluid">
+                                                            <span class="TituloSeccion">
+                                                                    <h:outputText style="font-weight:bold; font-size: 14px;color: red;"
+                                                                                  id="barriospan"
+                                                                                  value="BARRIO SUGERIDO"/>
+                                                            </span>
+                                                            <br/>
+                                                            <p:panelGrid columns="4"
+                                                                         layout="flex"
+                                                                         columnClasses="p-col-12 p-md-6 p-xl-3, p-col-12 p-md-6 p-xl-3, p-col-12 p-md-6 p-xl-3, p-col-12 p-md-6 p-xl-3"
+                                                                         contentStyleClass="p-align-baseline ui-fluid">
+                                                                    <p:outputLabel for="barrioSugeridoComboBox"
+                                                                                   id="barrioSugeridoLabel"
+                                                                                   value="Seleccione Barrio Sugerido:"/>
+                                                                    <p:selectOneMenu style="width: 100%"
+                                                                                     id="barrioSugeridoComboBox"
+                                                                                     value="#{consultarCoberturasBean.barrioSugerido}"
+                                                                                     rendered="true">
+                                                                            <f:selectItem itemLabel="Seleccione Uno"
+                                                                                          itemValue=""/>
+                                                                            <f:selectItems value="#{consultarCoberturasBean.barrioSugeridoList}"
+                                                                                           var="barriomanzana"
+                                                                                           itemValue="#{barriomanzana.neighborhood}"
+                                                                                           itemLabel="#{barriomanzana.neighborhood}"/>
+                                                                            <f:ajax event="change"
+                                                                                    execute="barrioSugeridoComboBox"
+                                                                                    listener="#{consultarCoberturasBean.validarBarrioSugeridoSeleccionado()}"
+                                                                                    render="barriosSugeridospanelWrapper barrioStrsa"/>
+                                                                    </p:selectOneMenu>
+                                                                    <p:outputLabel for="barrioField"
+                                                                                   id="barrioText"
+                                                                                   rendered="#{consultarCoberturasBean.barrioSugeridoField}"
+                                                                                   value="Ingrese barrio:"/>
+                                                                    <div class="ui-inputgroup">
+                                                                            <p:inputText id="barrioField"
+                                                                                         rendered="#{consultarCoberturasBean.barrioSugeridoField}"
+                                                                                         value="#{consultarCoberturasBean.barrioSugeridoStr}"/>
+                                                                            <p:commandButton rendered="#{consultarCoberturasBean.barrioSugeridoField}"
+                                                                                             action="#{consultarCoberturasBean.agregarBarrioSugerido()}"
+                                                                                             id="agregarBarrioButton"
+                                                                                             value="Agregar Barrio"
+                                                                                             styleClass="btn red-button"
+                                                                                             process="@this"
+                                                                                             update="barrioStrsa"/>
+                                                                    </div>
+                                                            </p:panelGrid>
+                                                    </div>
+                                            </p:panel>
+					</p:panel>
+					<p:panel widgetVar="panelDirLabel"
+					         style="width: 100%; text-align: center;"
+					         styleClass="ui-fluid">
+						<p:outputLabel style="font-size: 20px;font-weight: bold;font-style: oblique;"
+						               id="direccionStrLabel"
+						               value="#{consultarCoberturasBean.direccionLabel}"/>
+						<p:outputLabel style="font-size: 20px;font-weight: bold;font-style: oblique;"
+						               id="barrioStrsa"
+						               value="#{consultarCoberturasBean.barrioSugeridoStr}"/>
+					</p:panel>
+					<h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-12 p-lg-12 text-center">
+                                            <h:panelGroup styleClass="ui-fluid p-col-12 p-md-6 p-lg-6">
+                                                <p:commandButton title="Buscar Dirección"
+                                                                 icon="fa fa-fw fa-search"
+                                                                 action="#{consultarCoberturasBean.buscarDireccion()}"
+                                                                 id="searchHhppButton"
+                                                                 styleClass="btn red-button"
+                                                                 value="Buscar"
+                                                                 update="@form"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-12 p-md-6 p-lg-6">
+                                                <p:commandButton title="Limpiar Búsqueda Dirección"
+                                                                 icon="fa fa-fw fa-eraser"
+                                                                 action="#{consultarCoberturasBean.limpiarBusqueda()}"
+                                                                 id="cleanButton"
+                                                                 styleClass="btn btn-dark"
+                                                                 value="Limpiar"
+                                                                 process="@this"
+                                                                 update="@form"
+                                                                 immediate="true"/>
+                                            </h:panelGroup>
+					</h:panelGroup>
+				</h:panelGroup>
+				<!--FIN BUSQUEDA DIRECCION   -->
+				<!--INICIO PANEL DIRECCIONES -->
+				<h:panelGroup id="panelDir"
+				         rendered="#{consultarCoberturasBean.showPanelDirecciones }"
+				         styleClass="p-grid ui-fluid p-col-12 p-xl-12 p-md-12 p-sm-12">
+                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-xl-12 p-md-12 p-sm-12">
+					<p:dataTable var="dir"
+					             rendered="#{(not empty consultarCoberturasBean.direccionDetalladaList) and (consultarCoberturasBean.direccionDetalladaList.size() > 0)}"
+					             value="#{consultarCoberturasBean.direccionDetalladaList}"
+					             id="dirList"
+					             reflow="#{consultarCoberturasBean.datatableResponsiveEnabled}"
+					             styleClass="tablaDatosCss w100"
+					             rows="#{consultarCoberturasBean.filasPag5}"
+					             paginator="true"
+					             paginatorPosition="bottom"
+					             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					             currentPageReportTemplate="Página {currentPage} de {totalPages}"
+					             rowsPerPageTemplate="5,10,15"
+					             sortBy="#{dir.direccionTexto}"
+					             emptyMessage="No se encontraron direcciones."
+					             filteredValue="#{consultarCoberturasBean.filteredDireccionDetalladaList}"
+					             selectionMode="single"
+					             selection="#{consultarCoberturasBean.direccionDetalladaMglDtoSel}"
+					             rowKey="#{dir.direccionDetalladaId}">
+						<p:ajax event="rowSelect"
+						        listener="#{consultarCoberturasBean.onSelectDireccion}"
+						        update="@form"/>
+						<p:column style="width: 5%; text-align: center;">
+							<p:commandLink update="@form"
+							               process="@this"
+							               title="Seleccionar"
+							               action="#{consultarCoberturasBean.consultarDireccionSeleccionada(dir)}">
+								<i class="fa fa-fw fa-check-square-o"/>
+							</p:commandLink>
+						</p:column>
+						<p:column headerText="Dirección Completa"
+						          sortBy="#{dir.direccionTexto}"
+						          filterBy="#{dir.direccionTexto}"
+						          filterMatchMode="contains"
+                                                          style="width: 80%;">
+							<h:outputText value="#{dir.direccionTexto}"/>
+						</p:column>
+						<p:column headerText="Identificador"
+						          sortBy="#{dir.direccionDetalladaId}"
+						          filterBy="#{dir.direccionDetalladaId}"
+						          filterMatchMode="contains"
+                                                          style="width: 10%;">
+							<h:outputText value="#{dir.direccionDetalladaId}"/>
+						</p:column>
+						<p:column headerText="Es Hhpp?"
+						          rendered="#{consultarCoberturasBean.obtenerInformacionAdicionalHHPP}"
+                                                          style="width: 5%;">
+							<div style="text-align: center;">
+								<h:graphicImage value="/view/img/home.gif"
+								                rendered="#{dir.hhppExistente eq true}"
+								                title="Sí"
+								                alt="Sí"/>
+							</div>
+						</p:column>
+					</p:dataTable>
+                                    </h:panelGroup>
+                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-xl-12 p-md-12 p-sm-12">
+                                            <p:commandButton title="Volver al Panel de Busqueda"
+                                                             icon="fa fa-fw fa-arrow-left"
+                                                             action="#{consultarCoberturasBean.volverPanelBusquedaDireccion()}"
+                                                             id="volverPanelBusquedaDireccion"
+                                                             styleClass="btn red-button"
+                                                             value="Volver"
+                                                             rendered="#{consultarCoberturasBean.showPanelDirecciones }"
+                                                             update="@form"/>
+                                        </h:panelGroup>
+                                </h:panelGroup>
+				<!--FIN PANEL DIRECCIONES -->
+				<!--INICIO PANEL MAPA -->
+				<p:panel id="contenidoMapa"
+				         widgetVar="contenidoMapa"
+				         styleClass="grid ui-fluid p-col-12 p-xl-12 p-md-12 p-sm-12"
+				         closable="true"
+				         toggleable="true"
+				         rendered="#{consultarCoberturasBean.mostrarMapa}">
+					<h:panelGroup class="ui-fluid">
+						<p:gmap center="#{consultarCoberturasBean.center}"
+						        zoom="15"
+						        type="hybrid"
+						        widgetVar="map"
+						        style="width:98%; height:400px"
+						        model="#{consultarCoberturasBean.model}"
+						        navigationControl="true"
+						        scrollWheel="true"
+						        draggable="true"
+						        disableDefaultUI="false"
+						        rendered="#{not empty consultarCoberturasBean.center}">
+							<p:ajax event="pointSelect"
+							        listener="#{consultarCoberturasBean.onPointSelect}"
+							        disabled="#{not consultarCoberturasBean.pointSelectEnabled}"
+							        update="@widgetVar(panelCoordenadas) contenidoMapa @widgetVar(panelDir)"/>
+						</p:gmap>
+					</h:panelGroup>
+					<h:panelGroup id="panelCob"
+					              style="border:0;"
+					              class="ui-fluid">
+						<p:dataTable var="cob"
+						             rendered="#{(not empty consultarCoberturasBean.listCover) and (consultarCoberturasBean.listCover.size()) > 0}"
+						             value="#{consultarCoberturasBean.listCover}"
+						             id="cobList"
+						             reflow="#{consultarCoberturasBean.datatableResponsiveEnabled}"
+						             styleClass="tablaDatosCss"
+						             style="margin-top: 20px;"
+						             rows="#{consultarCoberturasBean.filasPag5}"
+						             paginator="true"
+						             paginatorPosition="bottom"
+						             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						             currentPageReportTemplate="Página {currentPage} de {totalPages}"
+						             rowsPerPageTemplate="5,10,15"
+						             sortBy="#{cob.technology}"
+						             selectionMode="single"
+						             selection="#{consultarCoberturasBean.coberturaSeleccionada}"
+						             rowKey="#{cob.technology}">
+							<p:ajax event="rowSelect"
+							        listener="#{consultarCoberturasBean.onSelectCobertura}"
+							        update="contenidoMapa"/>
+							<p:column headerText="Tecnología"
+							          sortBy="#{cob.technology}">
+								<p:commandLink update="contenidoMapa"
+								               value="#{cob.technology}"
+								               title="#{cob.technology}"
+								               process="@this"
+								               action="#{consultarCoberturasBean.onSelectCobertura}">
+									<f:setPropertyActionListener value="#{cob}"
+									                             target="#{consultarCoberturasBean.coberturaSeleccionada}"/>
+								</p:commandLink>
+							</p:column>
+							<p:column headerText="Nodo"
+							          sortBy="#{cob.node}">
+								<h:outputText value="#{cob.node}"/>
+							</p:column>
+							<p:column headerText="Estado"
+							          sortBy="#{cob.stateName}">
+								<h:outputText value="#{cob.stateName}"/>
+							</p:column>
+							<p:column headerText="Es Hhpp?">
+								<div style="text-align: center;">
+									<h:graphicImage value="/view/img/home.gif"
+									                rendered="#{cob.hhppExistente eq true}"
+									                title="Sí"
+									                alt="Sí"/>
+								</div>
+								<div style="text-align: center;">
+									<p:commandLink title="Crear Solicitud de creación de Hhpp"
+									               rendered="#{cob.hhppExistente eq false and cob.zona3G4G5G eq false}"
+									               update="@form"
+									               actionListener="#{consultarCoberturasBean.mostrarCrearSolicitudHhpp(cob)}"
+									               onclick="start();"
+									               oncomplete="stop(); ">
+										<h:graphicImage value="/view/img/nuevoregistro.png"
+										                style="height: 20px; width: 20px;"/>
+									</p:commandLink>
+								</div>
+							</p:column>
+						</p:dataTable>
+					</h:panelGroup>
+					<p:commandButton title="Volver Panel Direcciones"
+					                 rendered="#{(not empty consultarCoberturasBean.listCover) and (consultarCoberturasBean.listCover.size()) > 0}"
+					                 icon="fa fa-fw fa-arrow-left"
+					                 action="#{consultarCoberturasBean.volverPanelDireccion()}"
+					                 id="volverPanelDireccion"
+					                 styleClass="btn red-button"
+					                 value="Volver"
+					                 update="@form"/>
+				</p:panel>
+				<!--FIN PANEL MAPA -->
+				<!--TEXTOS COORDENADAS-->
+                                <p:panel widgetVar="panelCoordenadas">
+                                <h:panelGroup id="panelCoordenadas"
+				         rendered="#{consultarCoberturasBean.showPanelCoordenadas}"
+				         styleClass="p-grid ui-fluid p-col-12 p-xl-12 p-md-12 p-sm-12">
+                                    <h:panelGroup id="pgCoordenadas"
+                                                 styleClass="p-grid ui-panelgrid-blank p-align-baseline ui-fluid p-col-12 p-xl-12 p-md-12"
+                                                 rendered="#{(not consultarCoberturasBean.opcionDireccionSelected) or (not empty consultarCoberturasBean.direccionDetalladaMglDtoSel)}">
+                                        <h:panelGroup styleClass="ui-fluid p-col-6 p-xl-3 p-md-3">
+                                            <p:outputLabel for="idLongitud"
+                                                           value="Longitud:"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="ui-fluid p-col-6 p-xl-3 p-md-3">
+                                            <p:inputText id="idLongitud"
+                                                         widgetVar="idLongitud"
+                                                         title="Longitud"
+                                                         value="#{consultarCoberturasBean.longitud}"
+                                                         style="border-radius: 5px;"
+                                                         maxlength="25"
+                                                         valueChangeListener="#{consultarCoberturasBean.onChangeLongitud}"
+                                                         readonly="#{not consultarCoberturasBean.coordinatesEnabled}">
+                                                    <p:ajax event="change"
+                                                            process="@this"
+                                                            update="@form"/>
+                                            </p:inputText>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="ui-fluid p-col-6 p-xl-3 p-md-3">
+                                            <p:outputLabel for="idLatitud"
+                                                           value="Latitud:"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="ui-fluid p-col-6 p-xl-3 p-md-3">
+                                            <p:inputText id="idLatitud"
+                                                         widgetVar="idLatitud"
+                                                         title="Latitud"
+                                                         value="#{consultarCoberturasBean.latitud}"
+                                                         style="border-radius: 5px;"
+                                                         maxlength="25"
+                                                         valueChangeListener="#{consultarCoberturasBean.onChangeLatitud}"
+                                                         readonly="#{not consultarCoberturasBean.coordinatesEnabled}">
+                                                    <p:ajax event="change"
+                                                            process="@this"
+                                                            update="@form"/>
+                                            </p:inputText>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="ui-fluid p-col-12 p-lg-12 p-md-12">
+                                                <p:commandButton id="btnBuscarProximidades"
+                                                                 icon="fa fa-fw fa-search"
+                                                                 rendered="#{(not consultarCoberturasBean.opcionDireccionSelected) and (empty consultarCoberturasBean.direccionDetalladaMglDtoSel)}"
+                                                                 styleClass="btn red-button"
+                                                                 process="@this panelCoordenadas"
+                                                                 value="Buscar"
+                                                                 title="Buscar en las Proximidades"
+                                                                 update="@form"
+                                                                 actionListener="#{consultarCoberturasBean.consultarDireccionesCercanasByCoordenadas()}"/>
+                                                <p:commandButton id="btnConsultar"
+                                                                 icon="fa fa-fw fa-search"
+                                                                 rendered="#{not empty consultarCoberturasBean.direccionDetalladaMglDtoSel}"
+                                                                 styleClass="btn btn-dark"
+                                                                 process="@this"
+                                                                 value="Consultar"
+                                                                 global="false"
+                                                                 ajax="false"
+                                                                 update="@form"
+                                                                 actionListener="#{consultarCoberturasBean.mostrarMapaByCoordenadas()}"
+                                                                 onclick="start();"
+                                                                 oncomplete="stop();"/>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+				</h:panelGroup>
+				<!--FIN TEXTOS COORDENADAS-->   
+                                </p:panel>
+			</h:panelGroup>
+                        <!-- INICIO CREACION HHPP -->
+			<p:panel id="solicitudHhpp"
+			         widgetVar="solicitudHhppp"
+			         styleClass="grid ui-fluid p-col-12 p-xl-12 p-md-12 p-sm-12"
+			         closable="true"
+			         toggleable="true"
+                                 style="text-align: left;"
+			         rendered="#{consultarCoberturasBean.mostrarSolicitudHhpp}">
+				<p:panel id="encabezadoBabierto"
+				         styleClass="ui-fluid p-col-12 p-md-12 p-xl-12 p-sm-12"
+				         closable="true"
+				         toggleable="true"
+				         rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+					<h2 class="font-bold w100">SOLICITUD CREACIÓN DE HHPP BARRIO ABIERTO</h2>
+				</p:panel>
+				<p:panel id="encabezadoHppCcmm"
+				         styleClass="ui-fluid p-col-12 p-md-12 p-xl-12 p-sm-12"
+				         closable="true"
+				         toggleable="true"
+				         rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+					<h2 style="margin-top: -22px; margin-left: -12px; font-weight:bold;">SOLICITUD CREACIÓN DE HHPP SOBRE CCMM</h2>
+				</p:panel>
+				<h:panelGroup id="modeloHhppMgl"
+				             styleClass="ui-fluid p-col-12 p-md-12 p-lg-12">
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText style="font-weight:bold"
+						              id="cuentaCcmm"
+						              value="N° Cuenta RR:"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText id="cuentaRRtxt"
+						              value="#{consultarCoberturasBean.cuentaMatrizSeleccionada.numeroCuenta}"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText style="font-weight:bold"
+						              id="cuentamer"
+						              value="N° Cuenta MER:"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText id="cuentamertxt"
+						              value="#{consultarCoberturasBean.cuentaMatrizSeleccionada.cuentaMatrizId}"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText id="nombreEdiLabel"
+						              style="font-weight:bold"
+						              value="Nombre Edificio:"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText id="nombreeditxt"
+						              value="#{consultarCoberturasBean.cuentaMatrizSeleccionada.nombreCuenta}"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText style="font-weight:bold"
+						              id="estadoEdiLabel"
+						              value="Estado:"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText id="estadotxtccmm"
+						              value="#{consultarCoberturasBean.cuentaMatrizSeleccionada.subEdificioGeneral.estadoSubEdificioObj.nombreBasica}"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText style="font-weight:bold"
+						              id="tipoEdiccmmlabel"
+						              value="Tipo Edificio:"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+						              id="tipoEdiccmmtxt"
+						              value="#{consultarCoberturasBean.cuentaMatrizSeleccionada.subEdificioGeneral.tipoEdificioObj.nombreBasica}"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:outputText style="font-weight:bold"
+						              id="subediLabel"
+						              value="*SubEdificio:"/>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:selectOneMenu disabled="#{consultarCoberturasBean.solicitudCreada}"
+						                 style="width: 140px;"
+						                 value="#{consultarCoberturasBean.subEdificioSeleccionado}"
+						                 id="subEdi">
+							<f:selectItem itemValue=""
+							              itemLabel="Seleccione Uno"/>
+							<f:selectItems value="#{consultarCoberturasBean.subEdificioList}"
+							               var="edificio"
+							               itemValue="#{edificio.subEdificioId}"
+							               itemLabel="#{edificio.nombreSubedificio}"/>
+						</h:selectOneMenu>
+					</h:panelGrid>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"/>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"/>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"/>
+					<h:panelGrid rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"/>
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-12 p-lg-12 text-center" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-4 p-md-6 p-lg-4">
+                                                    <h:outputText style="font-weight:bold"
+                                                                  id="direccionLabelSeleccionada"
+                                                                  value="Dirección:"/>
+                                            </h:panelGroup>
+                                            <p:panel widgetVar="panelDirHhppLabel" style="display: inline-block; font-size: 15px;font-weight: bold;font-style: oblique;" >
+                                                    <h:outputText id="direccionTxt"
+                                                                  value="#{consultarCoberturasBean.direccionSeleccionada}"/>
+                                            </p:panel>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-4 p-lg-4">
+                                                    <h:outputText style="font-weight:bold"
+                                                                  id="tipoTecnologiaLabel"
+                                                                  value="Tecnología:"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:outputText id="tipoTecnologiaDisable"
+                                                                  value="#{consultarCoberturasBean.tecnologiaSeleccionada}"/>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-4 p-lg-4">
+                                                    <h:outputText id="areaCanalLabel"
+                                                                  style="font-weight:bold"
+                                                                  rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  value="*Área/Canal:"/>
+                                                    <h:outputText id="tipoSolCcmm"
+                                                                  style="font-weight:bold"
+                                                                  rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  value="*Tipo Solicitud:"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:selectOneMenu style="width: 140px;"
+                                                                     disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                     value="#{consultarCoberturasBean.areaCanal}"
+                                                                     rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                     id="areaCanal">
+                                                            <f:selectItem itemLabel="Seleccione Uno"
+                                                                          itemValue=""/>
+                                                            <f:selectItems value="#{consultarCoberturasBean.areaCanalList}"
+                                                                           var="area"
+                                                                           itemValue="#{area.idParametro}"
+                                                                           itemLabel="#{area.descripcion}"/>
+                                                            <f:ajax event="change"
+                                                                    execute="@this"
+                                                                    render="solicitudHhpp"
+                                                                    listener="#{consultarCoberturasBean.validarSoporteRequeridoArea()}"/>
+                                                    </h:selectOneMenu>
+                                                    <h:selectOneMenu style="width: 140px;"
+                                                                     disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                     rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                     value="#{consultarCoberturasBean.origenSolicitud}"
+                                                                     id="tipoSolicitudSelCcmm">
+                                                            <f:selectItem itemLabel="Seleccione Uno"
+                                                                          itemValue=""/>
+                                                            <f:selectItems value="#{consultarCoberturasBean.origenSolicitudList}"
+                                                                           var="origen"
+                                                                           itemValue="#{origen.basicaId}"
+                                                                           itemLabel="#{origen.nombreBasica}"/>
+                                                    </h:selectOneMenu>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-4 p-lg-4">
+                                                    <h:outputText style="font-weight:bold"
+                                                                  rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  id="tipoViviendaLabel"
+                                                                  value="*Tipo de Vivienda:"/>
+                                                    <h:outputText style="font-weight:bold"
+                                                                  rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  id="asesorLabel"
+                                                                  value="*Asesor:"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:selectOneMenu rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                     disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                     style="width: 140px;"
+                                                                     value="#{consultarCoberturasBean.tipoVivienda}"
+                                                                     id="tipoVivienda">
+                                                            <f:selectItem itemValue=""
+                                                                          itemLabel="Seleccione Uno"/>
+                                                            <f:selectItems value="#{consultarCoberturasBean.tipoViviendaList}"
+                                                                           var="tipoVivienda"
+                                                                           itemValue="#{tipoVivienda.thhID}"
+                                                                           itemLabel="#{tipoVivienda.thhID.concat(' - ').concat(tipoVivienda.thhValor)}"/>
+                                                    </h:selectOneMenu>
+                                                    <h:inputText rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                 disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                 value="#{consultarCoberturasBean.asesorCcmm}"
+                                                                 maxlength="50"
+                                                                 id="asesorTxt"/>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-4 p-lg-4">
+                                                    <h:outputText id="nombreContactoLabel"
+                                                                  rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  style="font-weight:bold"
+                                                                  value="*Contacto"/>
+                                                    <h:outputText id="correoAsesorLabel"
+                                                                  rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  style="font-weight:bold"
+                                                                  value="*Correo Asesor:"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:inputText disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                 rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                 value="#{consultarCoberturasBean.nombreContacto}"
+                                                                 maxlength="50"
+                                                                 id="nombreContacto"/>
+                                                    <h:inputText disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                 rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                 value="#{consultarCoberturasBean.correoAsesor}"
+                                                                 maxlength="50"
+                                                                 id="correoAsesortxt"/>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+					<h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-4 p-lg-4">
+                                                    <h:outputText rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  id="telefonoContactoLabel"
+                                                                  style="font-weight:bold"
+                                                                  value="*Teléfono Contacto:"/>
+                                                    <h:outputText rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  id="telefonoAsesorLabel"
+                                                                  style="font-weight:bold"
+                                                                  value="*Teléfono Asesor:"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:inputText maxlength="10"
+                                                                 value="#{consultarCoberturasBean.telefonoContacto}"
+                                                                 disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                 id="telefonoContacto"/>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+					<h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-4 p-lg-4">
+                                                    <h:outputText id="nombreSolicitanteLabel"
+                                                                  rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  style="font-weight:bold"
+                                                                  value="Solicitante:"/>
+                                                    <h:outputText id="nombreAsesorLabel"
+                                                                  rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  style="font-weight:bold"
+                                                                  value="Usuario:"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:inputText disabled="true"
+                                                                 value="#{consultarCoberturasBean.nombreSolicitante}"
+                                                                 id="nombreSolicitante"/>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-4 p-lg-4">
+                                                    <h:outputText id="telefonoSolicitante"
+                                                                  rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  style="font-weight:bold"
+                                                                  value="*Teléfono Solicitante:"/>
+                                                    <h:outputText id="copiaAcorreo"
+                                                                  rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  style="font-weight:bold"
+                                                                  value="Correo copia a:"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:inputText disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                 rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                 maxlength="10"
+                                                                 value="#{consultarCoberturasBean.telefonoSolicitante}"
+                                                                 id="telefonoSolicitanteInput"/>
+                                                    <h:inputText disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                 rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                 value="#{consultarCoberturasBean.correoCopiaA}"
+                                                                 id="copiaCorreoInput"/>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-4 p-lg-4">
+                                                    <h:outputText rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  id="correoSolicitanteLabel"
+                                                                  style="font-weight:bold"
+                                                                  value="Correo Solicitante:"/>
+                                                    <h:outputText rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  id="correoUsuarioLabel"
+                                                                  style="font-weight:bold"
+                                                                  value="Correo Usuario:"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:inputText disabled="true"
+                                                                 value="#{consultarCoberturasBean.correoSolicitante}"
+                                                                 id="correoSolicitante"/>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+				
+                                        <!-- Complemento para creacion de Hhpp de barrio abierto-->
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-4 p-lg-4">
+                                                    <h:outputText style="font-weight:bold"
+                                                                  rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  id="complHhppLabel"
+                                                                  value="Complemento:"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:selectOneMenu rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                     disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                     style="width: 140px;"
+                                                                     value="#{consultarCoberturasBean.tipoNivelComplemento}"
+                                                                     id="tipoComplHhhppComboBox">
+                                                            <f:selectItem itemLabel="Seleccione Uno"
+                                                                              itemValue=""/>
+                                                            <f:selectItems value="#{consultarCoberturasBean.complementoList}"
+                                                                               var="complemento"
+                                                                               itemValue="#{complemento.idParametro}"
+                                                                               itemLabel="#{complemento.descripcion}"/>
+                                                    </h:selectOneMenu>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:inputText rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                 id="complHhppParametro"
+                                                                 value="#{consultarCoberturasBean.complemento}"
+                                                                 maxlength="50"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    
+                                                    <p:commandButton title="Construir Direccion"
+                                                                         styleClass="btn red-button"
+                                                                         rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                         action="#{consultarCoberturasBean.construirDirComplVisor()}"
+                                                                         id="agregarComplHhppButton"
+                                                                         value="Ingresar Complemento"
+                                                                         update="@widgetVar(panelDirHhppLabel)"/>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        
+                                        
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-4 p-lg-4">
+                                                    <h:outputText style="font-weight:bold"
+                                                                  rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                  id="aptoHhppLabel"
+                                                                  value="Apartamento:"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:selectOneMenu rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                     disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                                     style="width: 140px;"
+                                                                     id="tipoAptoHhppComboBox"
+                                                                     value="#{consultarCoberturasBean.tipoNivelApartamento}">
+                                                            <f:selectItem itemLabel="Seleccione Uno"
+                                                                              itemValue=""/>
+                                                                <f:selectItems value="#{consultarCoberturasBean.aptoListVisor}"
+                                                                               var="apartamento"
+                                                                               itemValue="#{apartamento.idParametro}"
+                                                                               itemLabel="#{apartamento.descripcion}"/>
+                                                    </h:selectOneMenu>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6" style="display: inline-block">
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    <h:inputText rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                 id="aptoHhppParametro"
+                                                                 value="#{consultarCoberturasBean.apartamento}"
+                                                                 maxlength="10"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup styleClass="ui-fluid p-col-6 p-md-8 p-lg-8">
+                                                    
+                                                    <p:commandButton title="Construir Dirección"
+                                                                         styleClass="btn red-button"
+                                                                         rendered="#{!consultarCoberturasBean.mostrarSolicitudHhppCcmm}"
+                                                                         action="#{consultarCoberturasBean.construirDirAptoVisor()}"
+                                                                         id="agregarAptoHhppButton"
+                                                                         value="Agregar tipo de vivienda"
+                                                                         update="@widgetVar(panelDirHhppLabel)"/>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                        <!-- Complemento para creacion de Hhpp de barrio abierto-->
+                                
+                                
+                                
+                                </h:panelGroup>
+                                <h:panelGroup id="observacioensPanelgr" styleClass="p-grid ui-fluid p-col-12 p-md-6 p-lg-6 formulario3" style="display: inline-block">
+                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-12 p-lg-12">
+                                            <h:outputText id="observacionesLabel"
+                                                          class="font-bold w100"
+                                                          value="*Observaciones:"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup styleClass="ui-fluid p-col-12 p-md-12 p-lg-12">
+                                            <h:inputTextarea disabled="#{consultarCoberturasBean.solicitudCreada}"
+                                                             value="#{consultarCoberturasBean.observacionesSolicitud}"
+                                                             rows="5"
+                                                             class="w100"
+                                                             id="observacionesTextAreaSol"/>
+                                    </h:panelGroup>
+				</h:panelGroup>
+				<h:panelGrid columns="2"
+				             id="soportePanelg"
+				             class="formulario3 w100">
+					<h:panelGroup id="panelSoporteSolHhpp"
+					              rendered="#{consultarCoberturasBean.soporteRequerido}">
+						<h:panelGroup id="panelArchivo">
+							<p:fileUpload id="idArchivoSol"
+							              accept="UTF-8"
+							              label="Examinar"
+							              value="#{consultarCoberturasBean.upFile}"
+							              mode="simple"
+							              skinSimple="true"/>
+						</h:panelGroup>
+					</h:panelGroup>
+				</h:panelGrid>
+				<h:panelGrid columns="1"
+				             id="listadoSubEdi"
+				             class="formulario3"
+				             style="width:30%;">
+					<h:panelGroup id="panelSubEdificioCcmm"
+					              rendered="#{consultarCoberturasBean.mostrarSolicitudHhppCcmm}">
+						<h:panelGroup id="panelSubEdificioList"/>
+					</h:panelGroup>
+				</h:panelGrid>
+				<h:panelGrid columns="3"
+				             id="botonesLimpiar"
+				             class="formulario3 text-center">
+					<h:panelGroup>
+						<p:commandButton disabled="#{consultarCoberturasBean.solicitudCreada}"
+						                 process="@form"
+						                 styleClass="btn red-button"
+						                 ajax="false"
+						                 update="@form"
+						                 actionListener="#{consultarCoberturasBean.crearSolicitudHhpp()}"
+						                 onclick="start();"
+						                 oncomplete="stop();"
+						                 title="Crear Solicitud de Hhpp"
+						                 id="crearSolHhppButton"
+						                 value="Crear Solicitud"/>
+					</h:panelGroup>
+					<h:panelGroup>
+						<p:commandButton styleClass="btn btn-dark"
+						                 process="@this"
+						                 global="false"
+						                 ajax="false"
+						                 onclick="start();"
+						                 oncomplete="stop();"
+						                 update="@form"
+						                 actionListener="#{consultarCoberturasBean.limpiarSolicitudHhpp()}"
+						                 title="Limpiar"
+						                 id="cleanButtonSolHhpp"
+						                 value="Limpiar"/>
+					</h:panelGroup>
+					<h:panelGroup>
+                                            <p:commandButton styleClass="btn btn-dark"
+                                                             process="@this"
+                                                             global="false"
+                                                             ajax="false"
+                                                             update="@form"
+                                                             actionListener="#{consultarCoberturasBean.cerrarPanelSolicitudHhpp()}"
+                                                             onclick="start();"
+                                                             oncomplete="stop();"
+                                                             title="Cerrar Panel de creación de solicitud de hhpp"
+                                                             id="closeButtonSolHhpp"
+                                                             value="Volver"/>
+					</h:panelGroup>
+				</h:panelGrid>
+			</p:panel>
+			<p:dialog widgetVar="dlg1"
+			          modal="true"
+			          closable="false"
+                                  responsive="true"
+			          styleClass="mdl-dialog modalNotification dialogWarn-fix overlayDialog"
+			          style="background-color: white !important; margin-left: auto; margin-right: auto; left: 15%; right: 15%;">
+                            <h:panelGroup class="mdl-dialog__title row no-padding p-col-12 p-md-12 p-lg-12">
+                                <h:panelGroup id="idTituloModalException"
+                                              layout="block"
+                                              styleClass="p-grid ui-fluid p-col-12 p-md-12 p-lg-12 text-center">
+                                    <h:panelGroup layout="block" styleClass="p-grid ui-fluid p-col-12 p-md-12 p-lg-12">
+                                        <h:panelGroup styleClass="ui-fluid p-col-8 p-md-10 p-lg-10">
+                                            <h5 id="staticModalLabel"
+                                                class="no-margin font-bold font-size-20p text-shadow title-modal">!Error de Validación!</h5>
+                                            <hr class="linea-roja-modal no-top-margins"
+                                                style="margin-left: 2%; padding-right: 40%;"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup style="float: right;" styleClass="ui-fluid p-col-4 p-md-2 p-lg-2">
+                                            <a href="#"
+                                               onclick="PF('dlg1').hide(); $('#form').trigger('reset');"
+                                               title="Cerrar"
+                                               style="opacity: 1;"
+                                               class="font-size-small close">Cerrar</a>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" styleClass="p-grid ui-fluid p-col-12 p-md-12 p-lg-12 text-center">
+                                    <h:panelGroup class="ui-fluid p-col-4 p-md-2 p-lg-2 text-center">
+                                        <h:graphicImage style="background-color: rgba(255, 0, 0, 0);"
+                                                        library="images"
+                                                        name="claro/advertencia.svg"
+                                                        class="image-menu"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup class="ui-fluid p-col-8 p-md-10 p-lg-10 text-center">
+                                        <h:outputText class="outputTextModalDetail" value="Se ha generado un error de validación"/>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <hr size="5" class="w100" align="left"/>
+                                <h:panelGroup layout="block" styleClass="p-grid ui-fluid p-col-12 p-md-12 p-lg-12 text-center">        
+                                    <h:panelGroup class="ui-fluid p-col-4 p-md-2 p-lg-2 text-center">
+                                        <h:outputLabel class="labelModalDetail"
+                                                       value="Detalle:"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup class="ui-fluid p-col-8 p-md-10 p-lg-10 text-center">
+                                        <h:outputText class="outputTextModalDetail"
+                                                      value="#{consultarCoberturasBean.msnError}"/>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                            </h:panelGroup>
+			</p:dialog>
+			<p:dialog widgetVar="dlg1Exitoso"
+			          modal="true"
+			          height="250"
+			          width="40%"
+			          closable="false"
+			          styleClass="dialogWarn-fix overlayDialog"
+			          style="background-color: white !important;">
+				<div class="mdl-dialog__title row no-padding col-12">
+					<h:panelGroup id="idTituloModalExitoso"
+					              layout="block"
+					              class="col-10">
+						<h:panelGroup layout="block">
+							<h5 id="staticModalLabelExitoso"
+							    style="margin-top: -10px; margin-left: 2%;"
+							    class="no-margin font-bold font-size-20p text-shadow title-modal">¡Proceso realizado exitosamente!</h5>
+						</h:panelGroup>
+						<hr class="linea-roja-modal no-top-margins"
+						    style="margin-left: 2%; padding-right: 40%;"/>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+					              class="col-2"
+					              style="margin-top: -1%">
+						<a href="#"
+						   onclick="PF('dlg1Exitoso').hide();$('#form').trigger('reset');"
+						   title="Cerrar"
+						   class="font-size-small close">Cerrar</a>
+					</h:panelGroup>
+					<h:panelGroup layout="block">
+						<div class="no-margin mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--8-col-phone text-center">
+							<h:graphicImage style="margin-bottom: -60px; background-color: rgba(255, 0, 0, 0);"
+							                library="images"
+							                name="claro/advertencia.svg"
+							                class="image-menu"/>
+						</div>
+						<div style="margin-bottom: -10%; font-size: 14px; margin-left: 10%;"
+						     class="col-10 col-md-11 col-lg-11 center-ver">
+							<p class="no-margin">
+								<h:outputText value="Proceso realizado de manera satisfactoria"/>
+							</p>
+						</div>
+						<div style="margin-top: 20%;">
+							<h:outputLabel class="col-4 col-md-2 col-lg-2 labelModalDetail"
+							               value="Detalle:"/>
+							<h:outputText class="col-8 col-md-10 col-lg-10 outputTextModalDetail"
+							              value="#{consultarCoberturasBean.msnError}"/>
+						</div>
+					</h:panelGroup>
+				</div>
+			</p:dialog>
+		</h:form>
+           <script type="text/javascript">
+            function findMe() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                            function (position) {
+                                //Get Latitude From Geolocation API      
+                                latitude = position.coords.latitude;
+                                //Get Longitude From Geolocation API      
+                                longitude = position.coords.longitude;
+
+                                if (document.getElementById("idLongitud") !== null) {
+                                    document.getElementById("idLongitud").value = longitude;
+                                }
+
+                                if (document.getElementById("idLatitud") !== null) {
+                                    document.getElementById("idLatitud").value = latitude;
+                                }
+
+                                console.log(latitude + '' + longitude);
+                            }
+                    );
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                }
+            }
+          </script>      
+	  <script type="text/javascript">
+            function findMeAndUpdateCenter() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                            function (position) {
+                                //Get Latitude From Geolocation API      
+                                latitude = position.coords.latitude;
+                                //Get Longitude From Geolocation API      
+                                longitude = position.coords.longitude;
+                                // Establecer el centro:
+                                center = latitude + ", " + longitude;
+
+                                if (document.getElementById("idLongitud") !== null) {
+                                    document.getElementById("idLongitud").value = longitude;
+                                }
+
+                                if (document.getElementById("idLatitud") !== null) {
+                                    document.getElementById("idLatitud").value = latitude;
+                                }
+
+                                <!-- Llamado a remoteCommand. -->
+                                updateCenter();
+
+                                console.log(center);
+                            }
+                    );
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                }
+            }
+        </script>
+	</ui:composition>
+</html>

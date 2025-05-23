@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:panelGroup id="afectacionesCcmmComponente">
+        <div rendered="#{casosCcmmBean.mostrarPopupAfec}" >
+            <fieldset id="validacion" rendered="#{casosCcmmBean.mostrarPopupAfec}">
+                <legend>Afectaciones Cuenta Matriz</legend>
+
+                <div class="tableContent" >
+                    <h1>Afectaciones Cuenta Matriz</h1>   
+                    <h:dataTable   id="afectacioneId"                             
+                                   value="#{casosCcmmBean.affectedCcmm}" 
+                                   var="affecteds"                         
+                                   styleClass="constructGTable" 
+                                   rowClasses="constructGTableEvenRow,
+                                   constructGTableOddRow">
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Id Afected" /><BR/>
+                                </f:facet>
+                                <h:outputText   value="#{affecteds.id}"/>   
+                            </div>                                  
+                        </h:column>
+
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Ubicación" /><BR/>
+                                </f:facet>
+                                <h:outputText   value="#{affecteds.location}"   />   
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre" /><BR/>
+                                </f:facet>
+                                <h:outputText  value="#{affecteds.name}"  /> 
+                            </div>                                  
+                        </h:column>
+                        <f:facet name="footer" >
+                            <h:panelGroup>
+                                <div style="text-align: center;">
+                                    <h:commandButton title="Primera Página" value=""
+                                                     class="botonTPagInicioCm botonBaselista">
+                                        <f:ajax   render="afectacioneId" execute="@this" 
+                                                  event="click" listener="#{casosCcmmBean.pageFirstAfec()}"/>
+                                    </h:commandButton>
+                                    <h:commandButton title="Página Anterior" value=""
+                                                     class="botonTPagAnteriorCm botonBaselista">
+                                        <f:ajax   render="afectacioneId" execute="@this" 
+                                                  event="click" listener="#{casosCcmmBean.pagePreviousAfec()}"/>
+                                    </h:commandButton>
+                                    <h:commandButton title="Número Páginas" value="#{casosCcmmBean.pageActualAfec}" styleClass="botonTPagInicio"/>
+                                    <h:selectOneMenu id="listTablaAfec" value="#{casosCcmmBean.numPaginaAfec}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                        <f:selectItems value="#{casosCcmmBean.paginaListAfec}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>
+                                        <f:ajax render="afectacioneId" event="change"
+                                                listener="#{casosCcmmBean.irPaginaAfec()}"
+                                                execute="@this" />
+                                    </h:selectOneMenu>
+                                    <h:commandButton  title="Página Siguiente" value=""
+                                                      class="botonTPagSiguienteCm botonBaselista">
+                                        <f:ajax   render="afectacioneId" execute="@this" 
+                                                  event="click" listener="#{casosCcmmBean.pageNextAfec()}"/>
+                                    </h:commandButton>
+                                    <h:commandButton title="Ultima Página" value=""
+                                                     class="botonTPagFinCm botonBaselista">
+                                        <f:ajax   render="afectacioneId" execute="@this" 
+                                                  event="click" listener="#{casosCcmmBean.pageLastAfec()}"/>
+                                    </h:commandButton>
+                                </div>
+                            </h:panelGroup>
+                        </f:facet> 
+                    </h:dataTable>  
+                </div> 
+                <h:commandLink id="volverAtrasId2" 
+                               value="Volver" 
+                               action="#{casosCcmmBean.cerrarPopupAfec()}" />
+            </fieldset>
+        </div>
+    </h:panelGroup>        
+</ui:composition>

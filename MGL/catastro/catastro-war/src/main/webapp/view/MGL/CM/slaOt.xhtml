@@ -1,0 +1,383 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/main.xhtml"
+    >
+
+    <ui:define name="title"><span class="TituloSeccion">Sla Tipo Trabajo</span></ui:define>
+    <ui:define name="message"><span class="error"> #{tipoOrdenMglBean.message}</span></ui:define>
+    <ui:define name="content">
+
+        <h:panelGroup >
+            <br></br>
+
+            <br></br>
+            <h:panelGroup id="panelSubTipoOrdenId"  rendered="#{tipoOrdenMglBean.validarCreacion() and tipoOrdenMglBean.mostrarPanelCrearModSubTipoWork}">
+                <fieldset>
+                    <legend>SLA Tipo de Orden</legend>
+                    <div id="slaTipoOt">
+                        <table id="subTipoId" style="width: 100%">
+                            <tr>
+                                <td><h:outputText value="Código" style="font-weight:bold"/></td>
+                                <td><h:outputText value="#{tipoOrdenMglBean.cmtTipoOtMgl.idTipoOt}"  style="font-weight:bold"/></td>
+                            </tr>
+
+                            <tr>
+                                <td>  <h:outputText value="#{tipoOrdenMglBean.estiloObligatorio}Tipo de Trabajo:"  id="slaSubOtLabel" escape="false"  /> 
+                                </td>
+
+                                <td>  <h:selectOneMenu  value="#{tipoOrdenMglBean.cmtTipoOtMgl.basicaIdTipoOt.basicaId}" 
+                                                        style="width: 75%;" required="true" requiredMessage="El campo Tipo de Trabajo es obligatorio">
+                                        <f:selectItem itemValue="" itemLabel="" />
+                                        <f:selectItems value="#{tipoOrdenMglBean.listTablaBasicaTipoOt}" var="sub" 
+                                                       itemLabel="#{sub.nombreBasica}" itemValue="#{sub.basicaId}" />   
+                                    </h:selectOneMenu> 
+                                </td>
+
+                                <td>  <h:outputText value="#{tipoOrdenMglBean.estiloObligatorio}Flujo OT:" id="slaOtLabel" escape="false"  /> </td>
+                                <td>  <h:selectOneMenu  value="#{tipoOrdenMglBean.cmtTipoOtMgl.tipoFlujoOt.basicaId}" 
+                                                        style="width: 75%;" required="true" requiredMessage="El campo Flujo OT es obligatorio" >
+                                        <f:selectItem itemValue="" itemLabel="" />
+                                        <f:selectItems value="#{tipoOrdenMglBean.listTablaBasicaFlujoOt}" var="listOt" 
+                                                       itemLabel="#{listOt.nombreBasica}" itemValue="#{listOt.basicaId}" />   
+                                    </h:selectOneMenu>
+                                </td>
+
+                                <td>  <h:outputText value="#{tipoOrdenMglBean.estiloObligatorio}Maneja inventario:" id="slaOtLabelInventario" escape="false"  /> </td>
+                                <td>  <h:selectOneMenu  required="true"  value="#{tipoOrdenMglBean.cmtTipoOtMgl.flagInv}" 
+                                                        style="width: 75%;" requiredMessage="El campo Maneja inventario es obligatorio" >
+                                        <f:selectItem itemValue="0" itemLabel="No" />
+                                        <f:selectItem itemValue="1" itemLabel="Sí" />
+                                    </h:selectOneMenu>
+                                </td>
+                            </tr>
+
+                            <tr> 
+                                <td>    <h:outputText  escape="false" value="#{tipoOrdenMglBean.estiloObligatorio}Nombre Sub-Tipo:" /></td>
+                                <td>    <h:inputText  id="idNombre" value="#{tipoOrdenMglBean.cmtTipoOtMgl.descTipoOt}"  
+                                                      style="width: 75%;" required="true"  requiredMessage="El campo Nombre Sub-Tipo es obligatorio">
+                                    </h:inputText></td>
+
+                                <td>  <h:outputText id="slaOtInputEst" escape="false" value="#{tipoOrdenMglBean.estiloObligatorio}Estado:"  /></td>
+                                <td>  <h:selectOneMenu id="idEstadoOt" value="#{tipoOrdenMglBean.cmtTipoOtMgl.estadoRegistro}"  
+                                                       style="width: 75%;">
+                                        <f:selectItem itemValue="1" itemLabel="Activo" />
+                                        <f:selectItem itemValue="0" itemLabel="Inactivo" />
+                                    </h:selectOneMenu>  </td>
+                                
+                                <td>  <h:outputText id="slaOtDesText" escape="false" value="#{tipoOrdenMglBean.estiloObligatorio}Agendable?"  /></td>
+                                <td>   <h:selectOneMenu class="columnReadForm" value="#{tipoOrdenMglBean.cmtTipoOtMgl.otAgendable}" id = "chkAprobacion"
+                                                        style="width: 75%;">
+                                        <f:selectItem  itemValue="N" itemLabel="No Agendable"/>                                    
+                                        <f:selectItem  itemValue="Y" itemLabel="Agendable"/>                                    
+                                    </h:selectOneMenu>  
+                                </td>
+
+                            </tr> 
+
+                            <tr>
+                                <td>  <h:outputText  escape="false"  value="#{tipoOrdenMglBean.estiloObligatorio}SLA (Tiempo en minutos):" /></td>
+                                <td>    <h:inputText  id="slainSla" required="true"  value="#{tipoOrdenMglBean.cmtTipoOtMgl.ans}" 
+                                                      style="width: 75%" requiredMessage="El campo SLA es obligatorio"
+                                                      converterMessage="El Campo SLA es numúrico"
+                                                      validatorMessage="El Campo SLA debe tener de 1 a 3 dígitos">
+                                        <f:validateLength minimum="1" maximum="3"/>                       
+                                        <f:convertNumber integerOnly="true" type="number" pattern="#0" />   
+                                    </h:inputText>
+                                </td>
+
+                                <td> <h:outputText escape="false" value="#{tipoOrdenMglBean.estiloObligatorio}SLA Aviso (Tiempo en minutos):" 
+                                                   styleClass="formColumn1" style="width: 100%;"/></td>
+                                <td>  <h:inputText  id="slaCodigo"  required="true"  value="#{tipoOrdenMglBean.cmtTipoOtMgl.ansAviso}" 
+                                                    style="width: 75%" requiredMessage="El campo SLA Aviso es obligatorio"
+                                                    converterMessage="El Campo SLA Aviso es numúrico"
+                                                    validatorMessage="El Campo SLA Aviso debe tener de 1 a 3 dígitos">
+                                        <f:validateLength minimum="1" maximum="3"/>                       
+                                        <f:convertNumber integerOnly="true" type="number" pattern="#0" />   
+                                    </h:inputText>
+                                </td>
+
+                                <td>  <h:outputText value="OT Acometida a Generar:" id="otAcoGen" escape="false"  /> </td>
+                                <td>  <h:selectOneMenu  value="#{tipoOrdenMglBean.tipoOtSelected}" 
+                                                        style="width: 75%;" >
+                                        <f:selectItem itemValue="0" itemLabel="" />
+                                        <f:selectItems value="#{tipoOrdenMglBean.listTipoOtAcometidasMgl}" var="tipoOt" 
+                                                       itemLabel="#{tipoOt.descTipoOt}" itemValue="#{tipoOt.idTipoOt}" />   
+                                    </h:selectOneMenu>
+                                </td>
+                            </tr> 
+
+                            <tr> 
+                                <td>  <h:outputText id="lbl" escape="false" value="Es de tipo VT:" /></td>
+                                <td> <h:selectBooleanCheckbox  value="#{tipoOrdenMglBean.esDeTipoVT}" 
+                                                               id = "chkAprobacion2" >
+                                    </h:selectBooleanCheckbox>
+                                </td>
+
+                                <td>
+                                    <h:outputText value="Requiere Onyx"/>
+                                </td>
+                                <td>
+                                    <h:selectBooleanCheckbox value="#{tipoOrdenMglBean.requiereOnyx}"/>
+                                </td>
+                                 <td>
+                                    <h:outputText value="Actualiza Infotecnica"/>
+                                </td>
+                                <td>
+                                    <h:selectBooleanCheckbox value="#{tipoOrdenMglBean.actualizaInfoTecnica}"/>
+                                </td>                    
+                            </tr>
+
+                        </table>
+                    </div>
+                </fieldset>
+
+                <br></br>
+
+                <h:panelGrid columns="4" id="slaotBtn" styleClass="panelInfo">
+                    <h:panelGroup id="botonesAcciones">
+                        <h:commandButton value="Guardar" styleClass="btn"
+                                         action="#{tipoOrdenMglBean.crearSlaMgl()}"
+                                         rendered="#{tipoOrdenMglBean.validarCreacion() and tipoOrdenMglBean.cargar}" />
+                        <h:commandButton value="Actualizar"
+                                         rendered="#{tipoOrdenMglBean.btnActivo}"
+                                         action="#{tipoOrdenMglBean.actualizaSlaOtMgl()}"
+                                         styleClass="btn" />
+                        <h:commandButton value="Limpiar" 
+                                         styleClass="btn" >
+                         <f:ajax render="formPrincipal:panelSubTipoOrdenId"
+                            listener="#{tipoOrdenMglBean.limpiarCampos()}"
+                            immediate="true"/>
+                        </h:commandButton>
+                            
+                        <h:commandButton value="Volver" immediate="true"
+                                         action="#{tipoOrdenMglBean.volverListSubTiposWork()}"
+                                         styleClass="btn" />
+                    </h:panelGroup>
+
+                </h:panelGrid> 
+            </h:panelGroup>
+
+            <br></br>
+            <h:panelGroup rendered="#{tipoOrdenMglBean.mostrarPanelListSubTiposWork}">
+                <h2>Sub Tipos De Trabajos</h2>
+                <div class="tableContent">
+                    <h:dataTable id="tablaSlaOt"                              
+                                 value="#{tipoOrdenMglBean.listTableCmtTipoOtMgl}" 
+                                 var="slaOtTable" rows="8"                         
+                                 styleClass="constructGTable"
+                                 headerClass="constructGTableHeader" 
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        <h:column>    
+                            <div align="left" >
+                                <f:facet name="header">
+                                    <h:outputText value="Código " /><BR/>
+                                    <h:inputText  maxlength="50" id="codigoId" 
+                                                  style="width: 50px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{tipoOrdenMglBean.filtroConsultaSubTipoDto.codigoSeleccionado}">
+                                        <f:ajax listener="#{tipoOrdenMglBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaOt"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:commandLink id="tipoOt" 
+                                               value="#{slaOtTable.idTipoOt}" 
+                                               action="#{tipoOrdenMglBean.goActualizar(slaOtTable)}"
+                                               disabled="#{!tipoOrdenMglBean.validarOpcionLikCod()}"> 
+                                </h:commandLink>
+                            </div>                                    
+                        </h:column>
+
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="SubTipo de Trabajo" /><BR/>
+                                    <h:inputText  maxlength="50" id="subTipoNomId" 
+                                                  style="width: 200px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{tipoOrdenMglBean.filtroConsultaSubTipoDto.descrSeleccionada}">
+                                        <f:ajax listener="#{tipoOrdenMglBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaOt"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{slaOtTable.descTipoOt}" />     
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Agendable" /><br/>
+                                    <h:inputText  maxlength="50" id="agendaId" 
+                                                  style="width: 80px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{tipoOrdenMglBean.filtroConsultaSubTipoDto.ageSeleccionada}">
+                                        <f:ajax listener="#{tipoOrdenMglBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaOt"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{slaOtTable.otAgendable}" />     
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left"   >
+                                <f:facet name="header">
+                                    <h:outputText value="Maneja inventario" />
+                                    <h:inputText  maxlength="50" id="invId" 
+                                                  style="width: 80px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{tipoOrdenMglBean.filtroConsultaSubTipoDto.invSeleccionada}">
+                                        <f:ajax listener="#{tipoOrdenMglBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaOt"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{slaOtTable.flagInv == 1 ? 'Y' :'N' }" />     
+                            </div>                                  
+                        </h:column>
+
+                        <h:column>   
+                            <div align="left">
+                                <f:facet name="header">
+                                    <h:outputText value="SLA" /><BR/>
+                                    <h:inputText  maxlength="50" id="slaId" 
+                                                  style="width: 80px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{tipoOrdenMglBean.filtroConsultaSubTipoDto.slaSeleccionada}">
+                                        <f:ajax listener="#{tipoOrdenMglBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaOt"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{slaOtTable.ans}" />      
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left">
+                                <f:facet name="header">
+                                    <h:outputText value="SLA Aviso" /><BR/>
+                                    <h:inputText  maxlength="50" id="slaAvisoId" 
+                                                  style="width: 80px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{tipoOrdenMglBean.filtroConsultaSubTipoDto.slaAvisoSeleccionada}">
+                                        <f:ajax listener="#{tipoOrdenMglBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaOt"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{slaOtTable.ansAviso}" />      
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left">
+                                <f:facet name="header">
+                                    <h:outputText value="Estado" /><BR/>
+                                     <h:selectOneMenu id="estadoId"  style="width: 100px"
+                                                     value="#{tipoOrdenMglBean.filtroConsultaSubTipoDto.estadoSeleccionado}">
+                                        <f:selectItem itemLabel="Todos" itemValue=""/>
+                                        <f:selectItem itemLabel="Activado" itemValue="Activado"/>
+                                        <f:selectItem itemLabel="Desactivado" itemValue="Desactivado"/>   
+                                        <f:ajax listener="#{tipoOrdenMglBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaOt"/>
+                                    </h:selectOneMenu> 
+                                </f:facet>
+                                <h:outputText value="#{slaOtTable.estadoRegistro  eq '1'?'Activado':'Desactivado'}" />      
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left">
+                                <f:facet name="header">
+                                    <h:outputText value="Es de Tipo VT" /><BR/>
+                                    <h:inputText  maxlength="50" id="tipoVtId" 
+                                                  style="width: 80px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{tipoOrdenMglBean.filtroConsultaSubTipoDto.esVtSeleccionado}">
+                                        <f:ajax listener="#{tipoOrdenMglBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaOt"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{slaOtTable.esTipoVT}" />      
+                            </div>                                  
+                        </h:column>
+                        <h:column>   
+                            <div align="left">
+                                <f:facet name="header">
+                                    <h:outputText value="OT Acometida A Generar" /><BR/>
+                                    <h:inputText  maxlength="50" id="acomGenId" 
+                                                  style="width: 140px" onkeypress="if (event.keyCode == 13) { onchange(); return false; }"
+                                                  value="#{tipoOrdenMglBean.filtroConsultaSubTipoDto.acoGenSeleccionado}">
+                                        <f:ajax listener="#{tipoOrdenMglBean.filtrarInfo()}"
+                                                event="change" 
+                                                execute="@this" 
+                                                render="tablaSlaOt"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{tipoOrdenMglBean.traerNombreSubTipo(slaOtTable.otAcoAGenerar)}" />      
+                            </div>                                  
+                        </h:column>
+                        <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Acción" />
+                            </f:facet>
+                            <h:commandLink id="Eliminar" immediate="true" title="Eliminar"
+                                           styleClass="btnIconEliminar" action="#{tipoOrdenMglBean.eliminarSlaOtMgl(slaOtTable)}"                                      
+                                           disabled="#{!tipoOrdenMglBean.validarOpcionEliminar()}"
+                                           onclick="return confirm('¿Est&oacute; seguro de eliminar el registro seleccionado ${tablasEstadoxFlujosMgl.estadoInternoObj.nombreBasica} ?');">
+                            </h:commandLink>
+                        </h:column>
+
+
+                        <f:facet name="footer" >
+                            <h:panelGroup rendered="#{tipoOrdenMglBean.pintarPaginado}">
+                                <h:commandButton value=""
+                                                 class="botonTPagInicioCm botonBaselista">
+                                    <f:ajax render="tablaSlaOt"  event="click"  
+                                            listener="#{tipoOrdenMglBean.pageFirst}"  execute="@this" /> 
+                                </h:commandButton>
+                                <h:commandButton value=""
+                                                 class="botonTPagAnteriorCm botonBaselista">
+                                    <f:ajax render="tablaSlaOt"  event="click"  
+                                            listener="#{tipoOrdenMglBean.pagePrevious}"  execute="@this" /> 
+                                </h:commandButton>
+                                <h:commandButton value="#{tipoOrdenMglBean.pageActual}" styleClass="botonTPagInicio"    />
+                                <h:selectOneMenu id="listTabla" value="#{tipoOrdenMglBean.numPagina}" 
+                                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{tipoOrdenMglBean.paginaList}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>    
+                                    <f:ajax render="tablaSlaOt"  event="change"  listener="#{tipoOrdenMglBean.irPagina()}"  execute="@this" />                                         
+                                </h:selectOneMenu>  
+                                <h:commandButton value=""
+                                                 class="botonTPagSiguienteCm botonBaselista">
+                                    <f:ajax render="tablaSlaOt"  event="click"  
+                                            listener="#{tipoOrdenMglBean.pageNext}"  execute="@this" /> 
+                                </h:commandButton>
+                                <h:commandButton value=""
+                                                 class="botonTPagFinCm botonBaselista">
+                                    <f:ajax render="tablaSlaOt"  event="click"  
+                                            listener="#{tipoOrdenMglBean.pageLast}"  execute="@this" /> 
+                                </h:commandButton>
+                            </h:panelGroup>
+                        </f:facet>  
+                    </h:dataTable>  
+                </div>
+                <h:commandButton value="Nuevo"
+                                 action="#{tipoOrdenMglBean.nuevoSubTipo()}"
+                                 styleClass="btn" 
+                                 disabled="#{!tipoOrdenMglBean.validarOpcionNuevo()}"/>
+            </h:panelGroup>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

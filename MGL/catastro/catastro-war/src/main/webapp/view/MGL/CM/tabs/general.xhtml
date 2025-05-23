@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/generalTemplate.xhtml"
+    xmlns:p="http://primefaces.org/ui">
+    <ui:define name="content">
+        <h:panelGroup >
+            <h2 id="myhMmData"> [#{infoGeneralBean.selectedCmtSubEdificioMgl.nombreSubedificio}]</h2>
+
+          <!--  <h:messages id="messages"  globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/> -->
+            <table align="center" border="1" cellpadding="0" cellspacing="0" width="100%"
+                   style="border-color: #c0c0c0;">
+                <tr>
+                    <td>
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Contactos:" /> </td>
+                                <td> <h:outputText class="columnReadForm"   value="#{infoGeneralBean.selectedCmtSubEdificioMgl.administrador}" /></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Código Postal:"/></td>
+                                <td> <h:outputText class="columnReadForm" value="#{infoGeneralBean.selectedCmtSubEdificioMgl.nodoObj.comId.codigoPostal}"/></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Teléfonos:"/></td>
+                                <td> <h:outputText class="columnReadForm"  value="#{infoGeneralBean.selectedCmtSubEdificioMgl.telefonoPorteria}" /></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="  "/></td>
+                                <td> <h:outputText class="columnReadForm"  value="#{infoGeneralBean.selectedCmtSubEdificioMgl.telefonoPorteria2}" /></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Origen:"/> </td>
+                                <td> <h:outputText class="columnReadForm" value="#{infoGeneralBean.selectedCmtSubEdificioMgl.origenDatosObj.nombreBasica}" /></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Constructora:"  /></td>
+                                <td> <h:outputText class="columnReadForm" value="#{infoGeneralBean.selectedCmtSubEdificioMgl.companiaConstructoraObj.nombreCompania}" /></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Compañía de Ascensores:" /></td>
+                                <td> <h:outputText class="columnReadForm" value="#{infoGeneralBean.selectedCmtSubEdificioMgl.companiaAscensorObj.nombreCompania}"/></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            </tr> 
+                            <tr>
+                                <td></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Compañía de Administración:"  /></td>
+                                <td> <h:outputText class="columnReadForm"  value="#{infoGeneralBean.selectedCmtSubEdificioMgl.companiaAdministracionObj.nombreCompania}" /></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Dirección Antigua:" /></td>
+                                <td> <h:outputText class="columnReadForm"  value="#{infoGeneralBean.selectedCmtSubEdificioMgl.direccionAntigua}"/></td>
+                                <td> <h:commandLink action="/view/MGL/CM/tabs/direccionAlterna.xhtml" 
+                                                    rendered="#{infoGeneralBean.isGeneral(infoGeneralBean.selectedCmtSubEdificioMgl)}"
+                                                    value="Dirección Alterna" immediate="true"/></td>
+                                <td>
+                                    <h:inputTextarea  id="dirAlt"  disabled="true"
+                                                      rendered="#{infoGeneralBean.isGeneral(infoGeneralBean.selectedCmtSubEdificioMgl)}"
+                                                      value="#{infoGeneralBean.listDireccionesSeparadas}" rows="3" 
+                                                      style="width: 95%">
+                                    </h:inputTextarea> 
+                                </td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Pisos:"/></td>
+                                <td> <h:outputText class="columnReadForm" value="#{infoGeneralBean.selectedCmtSubEdificioMgl.estadoSubEdificioObj.basicaId eq '50' ? 
+                                                                                    infoGeneralBean.numPisosTotal  : infoGeneralBean.selectedCmtSubEdificioMgl.pisos}"/></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Black-List:" id="subLbBlackList" /></td>
+                                <td colspan="3">
+                                    <h:inputTextarea  id="notaBL"  disabled="true" 
+                                                      value="#{infoGeneralBean.listBlackListSeparadas}"
+                                                      rows="4" 
+													  style="width: 95%">
+                                    </h:inputTextarea> 
+                                </td>
+                            </tr> 
+							<tr>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <!--  <td>     <h:outputText class="txtLabelsMgl" value="Estratos:" id="subLbEstratos" /></td> -->
+                                <td style="display: inline-flex">
+                                    <ui:repeat var="estratos"    value="#{infoGeneralBean.listaEstratoxTorreDto}" >  
+                                        <h:panelGrid columns="1" style="font-weight: bold; display: inline;">
+                                            <h:outputText class="columnReadForm" title="Estrato #{estratos.estratoHhpp eq -1?'No Georeferenciado':(estratos.estratoHhpp eq 0?'No Residencial':estratos.estratoHhpp)}"
+                                                          value="Estrato  #{estratos.estratoHhpp eq -1?'NG':(estratos.estratoHhpp eq 0?'NR':estratos.estratoHhpp)}"/>
+                                            <h:outputText class="columnReadForm" value="#{estratos.numeroHhpp}  HHPP"/>      
+                                        </h:panelGrid>
+                                    </ui:repeat>
+                                </td>
+                            </tr>
+
+                            <tr></tr>
+                        </table>
+                    </td>
+                    <td align="center" >
+                        <img  id="idImagen" src="#{infoGeneralBean.obtenerUrlUcmImagenCCMM()}" width="300px" height="200px"/>
+                        <table >
+                            <tr>
+                                <td>
+                                    <h:outputText class="txtLabelsMgl" value="CX" id="subLbCoordenadas" />
+                                    <h:outputText class="columnReadForm" value="#{infoGeneralBean.selectedCmtSubEdificioMgl.cmtCuentaMatrizMglObj.direccionPrincipal.direccionObj.ubicacion.ubiLongitud}"  />
+                                </td>
+                                <td>
+                                    <h:outputText class="txtLabelsMgl" value="CY" id="subLbCoordenadasY" />
+                                    <h:outputText class="columnReadForm" value="#{infoGeneralBean.selectedCmtSubEdificioMgl.cmtCuentaMatrizMglObj.direccionPrincipal.direccionObj.ubicacion.ubiLatitud}"  />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:panelGroup id="idControlCargarArchivo" rendered="#{infoGeneralBean.activacionUCM}"> 
+                                        <p:fileUpload  id="idArchivo"   
+                                                       label="Seleccionar Foto:"  
+                                                       value="#{infoGeneralBean.uploadedFile}" 
+                                                       mode="simple" skinSimple="true"/>
+
+                                        <h:commandButton value="Guardar Foto" id="btnEditarCostos"
+                                                         styleClass="btn"
+                                                         action="#{infoGeneralBean.cargarArchivoAUCM()}">
+
+                                        </h:commandButton>
+                                    </h:panelGroup>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    
+                </tr>
+            </table>
+
+        </h:panelGroup>
+
+
+    </ui:define>
+</ui:composition>

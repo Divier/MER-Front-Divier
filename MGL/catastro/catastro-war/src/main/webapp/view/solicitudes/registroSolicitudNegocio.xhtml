@@ -1,0 +1,352 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+    <ui:composition template="/view/template/home.xhtml">
+        <ui:define name="title">Registro Solicitud Creación de HHPP (Uno a Uno) Visitas tecnicas Ciclos comerciales</ui:define>
+        <ui:define name="message"> #{solicitudNegocioMBean.message}</ui:define>
+        <ui:define name="content">
+
+            <f:view>
+                <script type="text/javascript">
+                function NewWindow(){
+         
+                    document.getElementById("formulario:guardar").style.display='block'; 
+                    document.getElementById("formulario:confirmar").style.display='none'; 
+                    document.getElementById("formulario:cancelar").style.display='block'; 
+                    document.getElementById("formulario:validadoOk").style.display='none'; 
+                    document.getElementById("formulario:spDirNoExiste").style.display='none'; 
+                    document.getElementById("formulario:showPopUpOk").style.display='none'; 
+                    document.getElementById("formulario:spDirAlterna").style.display='none';
+                    document.getElementById("formulario:msj").style.display='none'; 
+                    document.getElementById("formulario:contador").style.display='none'; 
+            
+                    var showOk=document.getElementById("formulario:validadoOk").value;
+                    var showDne=document.getElementById("formulario:spDirNoExiste").value;
+                    var showDal=document.getElementById("formulario:spDirAlterna").value;
+                    var mesj=document.getElementById("formulario:msj").value;
+                    var conta=document.getElementById("formulario:contador").value;
+                    var mensaje="";
+                    if((showOk == 'false') ){
+                        if((showDne == 'false') ){
+                            if((showDal == 'false')){
+                                document.getElementById("formulario:confirmar").style.display='none';
+                                return " ";
+                            }
+                        }
+                    }
+                    if(showOk =='true'){
+                        if (showDne=='false'){
+                            if (showDal=='false'){
+                                mensaje="Esta seguro de crear la solicitud?";
+                            }
+                        }
+                    }
+                    if(showDne =='true'){
+                        if (showOk=='false'){
+                            if (showDal=='false'){
+                                mensaje="Esta Solicitud será guardada con una dirección Pendiente de Validación.¿Esta seguro de crear la solicitud?";
+                            }
+                        }
+                    }
+                    if(showDal=='true'){
+                        if (showOk=='false'){
+                            if (showDne=='false'){
+                                mensaje="La direccion tiene una dirección Alterna mas nueva, desea crear la solicitud con esta dirección?";
+                            }
+                        }
+                    }
+                    if(mensaje!=""){
+                        if (!confirm(mensaje+" Por favor de click en Confirmar.")){
+                            //aqui entra cuando es NO
+                            document.getElementById("formulario:guardar").style.display='block'; 
+                            document.getElementById("formulario:confirmar").style.display='none';
+                            showOk = 'false';
+                            showDal = 'false';
+                            showOk = 'false';
+                            showDne = 'false'; 
+                            mensaje = "";
+                    
+                            if(mesj!=""){
+                                history.go(-conta);
+                                return " ";
+                            }else{
+                                history.go(-conta);
+                                return " ";
+                            }
+                        }else{
+                            document.getElementById("formulario:guardar").style.display='none'; 
+                            document.getElementById("formulario:confirmar").style.display='block';
+                            return " ";
+                        }
+                    }
+                }
+                </script>
+                <h:form id="formulario">
+                    <f:view>
+                        <script>document.getElementById("formulario:showPopUpOk").style.display='none'; </script>
+                    </f:view>
+                    <h:panelGroup id="principal">
+                        <h:panelGroup id="main">
+                            <h:panelGrid id="contenedor" columns="2">
+                                <h:outputText value="Tipo de Solicitud" styleClass="contenidoLf"/>
+                                <h:selectOneMenu id="lstsols" value="#{solicitudNegocioMBean.son_tipoSolicitud}" styleClass="onemenu"
+                                                 disabled="#{solicitudNegocioMBean.disableTS}">
+                                    <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}" />
+                                    <f:selectItems value="#{solicitudNegocioMBean.lstTSolicitud}"/>
+                                </h:selectOneMenu>
+                                <h:outputText value="Tipo de Dirección" styleClass="contenidoLf"/>
+                                <h:selectOneMenu id="lsttdir" value="#{solicitudNegocioMBean.son_tDireccion}" styleClass="onemenu"
+                                                 disabled="#{solicitudNegocioMBean.disableTS}">
+                                    <f:selectItems value="#{solicitudNegocioMBean.lstTDirecciones}"/>
+                                </h:selectOneMenu>
+                                <center>
+                                    <h:commandButton value="Aceptar" id="aceptar" actionListener="#{solicitudNegocioMBean.doHabilitar}" styleClass="buttonm" rendered="#{solicitudNegocioMBean.disableAceptar}"></h:commandButton>
+                                </center>
+                            </h:panelGrid>
+                            <h:panelGrid id="dirNoStan" columns="2" rendered="#{solicitudNegocioMBean.showDirHpUniNoStand}">
+                                <h:outputLabel id="dirlab" value="Dirección" styleClass="contenidoLf" rendered="#{solicitudNegocioMBean.showNoStandar}"/>
+                                <h:inputText id="dirNoStand" title="Dirección" value="#{solicitudNegocioMBean.son_dirNoEstandarizable}"
+                                             styleClass="contenidodfB" rendered="#{solicitudNegocioMBean.showNoStandar}"/>
+                            </h:panelGrid>
+
+                            <h:panelGrid id="ctandir" columns="1" rendered="#{solicitudNegocioMBean.showDirHpUni}">
+                                <h:panelGrid id="calle" columns="6" styleClass="contenidodfDir" style="border:2px !important">
+                                    <f:facet name="header">
+                                        <h:outputText value="CALLE" styleClass="contenidoCentrotituloD" />
+                                    </f:facet>
+                                    <h:outputLabel value="Tipo Calle" styleClass="contenidoCentro"/>
+                                    <h:outputLabel value="No. Calle o Cra" styleClass="contenidoCentro"/>
+                                    <h:outputLabel value="1er Letra calle" styleClass="contenidoCentro"/>
+                                    <h:outputLabel value="Prefijo calle" styleClass="contenidoCentro" />
+                                    <h:outputLabel value="2da letra Calle" styleClass="contenidoCentro" />
+                                    <h:outputLabel value="Cardinal" styleClass="contenidoCentro" />
+                                    <h:selectOneMenu id="lstcalles" value="#{solicitudNegocioMBean.son_tcalle}" styleClass="onemenupequeno2">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="calles" value="#{solicitudNegocioMBean.listTCalles}"/>
+                                    </h:selectOneMenu>
+                                    <h:inputText  value="#{solicitudNegocioMBean.son_calle}"  title="Número de la Calle ó Carrera" styleClass="contenidodlsmall"/>
+                                    <h:selectOneMenu id="lstletrasc" value="#{solicitudNegocioMBean.son_letraCalle}" styleClass="onemenuextrapequeno" label="Primera Letra Calle">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="letrasc" value="#{solicitudNegocioMBean.listLetras}"/>
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu id="lstprefisc" value="#{solicitudNegocioMBean.son_prefijoCalle}" styleClass="onemenuextrapequeno" label="Prefijo Calle">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="prefijosc" value="#{solicitudNegocioMBean.listPrefijos}"/>
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu id="lstletrasc2" value="#{solicitudNegocioMBean.son_letraCalle2}" styleClass="onemenuextrapequeno" label="Segunda Letra Calle">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="letrasc2" value="#{solicitudNegocioMBean.listLetras}"/>
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu id="lstcardic" value="#{solicitudNegocioMBean.son_cardinalCalle}" styleClass="onemenupequeno" label="Cardinalidad de Calle">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="cardinalesc" value="#{solicitudNegocioMBean.listCardinales}"/>
+                                    </h:selectOneMenu>
+                                </h:panelGrid>
+
+                                <h:panelGrid id="placa" columns="7" styleClass="contenidodfDir" style="border:2px !important">
+                                    <f:facet name="header">
+                                        <h:outputText value="PLACA" styleClass="contenidoCentrotituloD" />
+                                    </f:facet>
+                                    <h:outputLabel value="1er No Placa" styleClass="contenidoCentro"/>
+                                    <h:outputLabel value="1er Letra Placa" styleClass="contenidoCentro"/>
+                                    <h:outputLabel value="Prefijo Placa" styleClass="contenidoCentro"/>
+                                    <h:outputLabel value="2da Letra Placa" styleClass="contenidoCentro"/>
+                                    <h:outputLabel value="   " styleClass="contenidoCentro"/>
+                                    <h:outputLabel value="2do No Placa" styleClass="contenidoCentro"/>
+                                    <h:outputLabel value="Cardinal" styleClass="contenidoCentro"/>
+                                    <h:inputText  value="#{solicitudNegocioMBean.son_placa1}" title="Primer número de la placa" styleClass="contenidodlsmall"/>
+                                    <h:selectOneMenu id="lstletrasp" value="#{solicitudNegocioMBean.son_letraPlaca}" styleClass="onemenuextrapequeno" label="Letra de placa">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="letrasp" value="#{solicitudNegocioMBean.listLetras}"/>
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu id="lstprefisp" value="#{solicitudNegocioMBean.son_prefijoPlaca}" styleClass="onemenuextrapequeno" label="Prefijo Placa">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="prefijosp" value="#{solicitudNegocioMBean.listPrefijos}"/>
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu id="lstletrasp2" value="#{solicitudNegocioMBean.son_letraPlaca2}" styleClass="onemenuextrapequeno" label="Segunda Letra de la Placa">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="letrasp2" value="#{solicitudNegocioMBean.listLetras}"/>
+                                    </h:selectOneMenu>
+                                    <h:outputText value="-" styleClass="contenidoCentro"/>
+                                    <h:inputText  value="#{solicitudNegocioMBean.son_placa2}" styleClass="contenidodlsmall" title="Segundo número de la placa"/>
+                                    <h:selectOneMenu id="lstcardip" value="#{solicitudNegocioMBean.son_cardinalPlaca}" styleClass="onemenupequeno" label="Ubicación Cardinal de la Placa">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="cardinalesp" value="#{solicitudNegocioMBean.listCardinales}"/>
+                                    </h:selectOneMenu>
+                                </h:panelGrid>
+                                <h:panelGrid id="complementos" columns="2" styleClass="contenidodfDir" style="border:2px !important">
+                                    <h:outputLabel value="Apartamento" styleClass="contenidoCentro"/>
+                                    <h:outputLabel value="Complemento" styleClass="contenidoCentro"/>
+                                    <h:inputText id="aptoin" value="#{solicitudNegocioMBean.son_apto}" styleClass="contenidodf" title="Número de apartamento. p.e:201" /> 
+                                    <h:inputText id="complein" value="#{solicitudNegocioMBean.son_complemento}" styleClass="contenidodf" title="Torre/Interior/Edificio p.e:Torre 10" />
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+                            <h:panelGrid id="dircasasNoStandPanel" columns="2" rendered="#{solicitudNegocioMBean.showDirCasasNoStand}">
+                                <h:outputLabel id="dircasaslab" value="Dirección" styleClass="contenidoLf" rendered="#{solicitudNegocioMBean.showNoStandar}"/>
+                                <h:inputText id="dircasasNoStand" title="Dirección" value="#{solicitudNegocioMBean.son_dirNoEstandarizable}"  styleClass="contenidodfB" rendered="#{solicitudNegocioMBean.showNoStandar}"/>
+                            </h:panelGrid>
+
+                            <h:panelGrid id="dircasas" columns="2" rendered="#{solicitudNegocioMBean.showDirCasas}">
+                                <h:outputLabel value="Calle" styleClass="contenidoLf"/>
+                                <h:panelGrid id="calleCasas" columns="6" styleClass="contenidodfDir" style="border:2px !important">
+                                    <h:selectOneMenu id="lstcallesCasas" value="#{solicitudNegocioMBean.son_tcalle}" styleClass="onemenupequeno">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="callesCasas" value="#{solicitudNegocioMBean.listTCalles}"/>
+                                    </h:selectOneMenu>
+                                    <h:inputText  value="#{solicitudNegocioMBean.son_calle}" title="Número de la Calle ó Carrera" styleClass="contenidodlsmall" />
+                                    <h:selectOneMenu id="lstletrascCasas" value="#{solicitudNegocioMBean.son_letraCalle}" styleClass="onemenuextrapequeno">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="letrascCasas" value="#{solicitudNegocioMBean.listLetras}"/>
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu id="lstprefiscCasas" value="#{solicitudNegocioMBean.son_prefijoCalle}" styleClass="onemenuextrapequeno">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="prefijoscCasas" value="#{solicitudNegocioMBean.listPrefijos}"/>
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu id="lstletrasc2Casas" value="#{solicitudNegocioMBean.son_letraCalle2}" styleClass="onemenuextrapequeno">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="letrasc2Casas" value="#{solicitudNegocioMBean.listLetras}"/>
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu id="lstcardicCasas" value="#{solicitudNegocioMBean.son_cardinalCalle}" styleClass="onemenupequeno">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="cardinalescCasas" value="#{solicitudNegocioMBean.listCardinales}"/>
+                                    </h:selectOneMenu>
+                                </h:panelGrid>
+                                <h:outputLabel value="Placa" styleClass="contenidoLf"/>
+                                <h:panelGrid id="placaCasas" columns="7" styleClass="contenidodfDir" style="border:2px !important">
+                                    <h:inputText  title="Primer número de la placa"  value="#{solicitudNegocioMBean.son_placa1}" styleClass="contenidodlsmall" />
+                                    <h:selectOneMenu id="lstletraspCasas" value="#{solicitudNegocioMBean.son_letraPlaca}" styleClass="onemenuextrapequeno">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="letraspCasas" value="#{solicitudNegocioMBean.listLetras}"/>
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu id="lstprefispCasas" value="#{solicitudNegocioMBean.son_prefijoPlaca}" styleClass="onemenuextrapequeno">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="prefijospCasas" value="#{solicitudNegocioMBean.listPrefijos}"/>
+                                    </h:selectOneMenu>
+                                    <h:selectOneMenu id="lstletrasp2Casas" value="#{solicitudNegocioMBean.son_letraPlaca2}" styleClass="onemenuextrapequeno">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="letrasp2Casas" value="#{solicitudNegocioMBean.listLetras}"/>
+                                    </h:selectOneMenu>
+                                    <h:outputText value="-" styleClass="contenidoCentro"/>
+                                    <h:inputText  title="Segundo número de la placa"  value="#{solicitudNegocioMBean.son_placa2}" styleClass="contenidodlsmall"/>
+                                    <h:selectOneMenu id="lstcardipCasas" value="#{solicitudNegocioMBean.son_cardinalPlaca}" styleClass="onemenupequeno">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="cardinalespCasas" value="#{solicitudNegocioMBean.listCardinales}"/>
+                                    </h:selectOneMenu>
+                                </h:panelGrid>
+                                <h:outputLabel value="Apartamento" styleClass="contenidoLf"/>
+                                <h:selectOneMenu id="lstaptos" value="#{solicitudNegocioMBean.son_apto}" styleClass="onemenupequeno">
+                                    <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                    <f:selectItems id="aptosCasas" value="#{solicitudNegocioMBean.listAptos}"/>
+                                </h:selectOneMenu>
+                            </h:panelGrid>
+                            <h:panelGrid id="detail" columns="4" rendered="#{solicitudNegocioMBean.showDetail}">
+                                <h:outputLabel value="Pais:" styleClass="contenidoLf"/>
+                                <a4j:outputPanel id="paisId" >
+                                    <h:selectOneMenu id="lstpaises" value="#{solicitudNegocioMBean.son_pais}" styleClass="contenidodf" valueChangeListener="#{solicitudNegocioMBean.updateRegionales}">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}" />
+                                        <f:selectItems value="#{solicitudNegocioMBean.listPaises}"/>
+                                        <a4j:ajax event="change" render="regionalId" execute="@this" />
+                                    </h:selectOneMenu>
+                                </a4j:outputPanel>
+
+                                <h:outputLabel value="Departamento:" styleClass="contenidoLf"/>
+                                <a4j:outputPanel id="regionalId">
+                                    <h:selectOneMenu id="lstdeptos" value="#{solicitudNegocioMBean.son_regional}" 
+                                                     styleClass="contenidodf" valueChangeListener="#{solicitudNegocioMBean.updateCiudades}">
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}" />
+                                        <f:selectItems value="#{solicitudNegocioMBean.listRegionales}"/>
+                                        <a4j:ajax event="change" render="ciudadId" execute="@this" />
+                                    </h:selectOneMenu>
+                                </a4j:outputPanel>
+
+                                <h:outputLabel value="Ciudad:" styleClass="contenidoLf"/>
+                                <a4j:outputPanel id="ciudadId">
+                                    <h:selectOneMenu id="lstciudades" value="#{solicitudNegocioMBean.son_ciudad}" styleClass="contenidodf" >
+                                        <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}"/>
+                                        <f:selectItems id="ssciudades" value="#{solicitudNegocioMBean.listCiudades}"/>
+                                    </h:selectOneMenu>
+                                </a4j:outputPanel>
+
+                                <h:outputLabel value="Barrio" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{solicitudNegocioMBean.son_barrio}" required="true" styleClass="contenidodf"/>
+
+                                <h:outputLabel value="Código Nodo" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{solicitudNegocioMBean.codigo_nodo}" styleClass="contenidodf" />
+
+                                <h:outputLabel value="Tipo Unidad" styleClass="contenidoLf"/>
+                                <h:selectOneMenu id="lstvivienda" value="#{solicitudNegocioMBean.son_tipo_hhpp}" styleClass="onemenu"
+                                                 immediate="true">
+                                    <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}" />
+                                    <f:selectItems id="sstvivi" value="#{solicitudNegocioMBean.listThhpp}"/>
+                                </h:selectOneMenu>
+                                <h:outputLabel value="Area Solicitante" styleClass="contenidoLf"/>
+                                <h:selectOneMenu id="lstareas" value="#{solicitudNegocioMBean.son_area}" styleClass="onemenu"
+                                                 immediate="true">
+                                    <f:selectItem itemValue="0" itemLabel="#{solicitudNegocioMBean.seleccionar}" />
+                                    <f:selectItems id="ssareas" value="#{solicitudNegocioMBean.listAreas}"/>
+                                </h:selectOneMenu>
+
+                                <h:outputLabel value="Motivo" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{solicitudNegocioMBean.son_motivo}" styleClass="contenidodf" />
+
+                                <h:outputLabel value="Codigo Solicitante" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{solicitudNegocioMBean.cod_solicitante}" styleClass="contenidodf" 
+                                              disabled="#{solicitudNegocioMBean.activarSolicitante}"/>
+
+                                <h:outputLabel value="Nombre Solicitante" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{solicitudNegocioMBean.nom_solicitante}" styleClass="contenidodf" 
+                                              disabled="#{solicitudNegocioMBean.activarSolicitante}"/>
+
+                                <h:outputLabel value="Correo Solicitante" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{solicitudNegocioMBean.email_solicitante}" styleClass="contenidodf"
+                                              disabled="#{solicitudNegocioMBean.activarSolicitante}"/>
+
+
+                                <h:outputLabel value="Celular Solicitante" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{solicitudNegocioMBean.cel_solicitante}" styleClass="contenidodf" />
+
+
+                                <h:outputLabel value="Nombre Contacto" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{solicitudNegocioMBean.son_contacto}" styleClass="contenidodf" /> 
+
+
+                                <h:outputLabel value="Telefono Contacto" styleClass="contenidoLf"/>
+                                <h:inputText  value="#{solicitudNegocioMBean.son_tel_contacto}" styleClass="contenidodf" />
+                            </h:panelGrid>
+                            <h:panelGrid id="observaciones" columns="2" rendered="#{solicitudNegocioMBean.showDetail}">
+                                <h:outputLabel value="Observaciones" styleClass="contenidoLf"/>
+                                <h:inputTextarea value="#{solicitudNegocioMBean.observaciones}" styleClass="textarea"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <h:panelGrid  id="boton" styleClass="panel-grid-botones" columns="3" rendered="#{solicitudNegocioMBean.renderedBotones}">
+                            <h:commandButton id="guardar" value="Guardar" actionListener="#{solicitudNegocioMBean.onActionValidar}" styleClass="buttonm">
+                            </h:commandButton>
+                            <h:commandButton id="confirmar" value="Confirmar" actionListener="#{solicitudNegocioMBean.onActionCreate}" styleClass="buttonm"
+                                             rendered="#{solicitudNegocioMBean.showPopUpOk}">
+                            </h:commandButton>
+                            <h:commandButton id="cancelar" value="Cancelar" actionListener="#{solicitudNegocioMBean.onActionCancel}" styleClass="buttonm">
+                            </h:commandButton>
+                        </h:panelGrid>
+                        <h:panelGrid id="panelPopup" rendered="#{solicitudNegocioMBean.showPopUpOk}">
+                            <h:inputText id="spDirNoExiste" value="#{solicitudNegocioMBean.spDirNoExiste}"/>
+                            <h:inputText id="spDirAlterna" value="#{solicitudNegocioMBean.spDirAlter}"/>
+                            <h:inputText id="validadoOk" value="#{solicitudNegocioMBean.validadoOk}"/>
+                            <h:inputText id="showPopUpOk" value="#{solicitudNegocioMBean.showPopUpOk}"/>
+                            <h:inputText id="msj" value="#{solicitudNegocioMBean.message}"/>
+                            <h:inputText id="contador" value="#{solicitudNegocioMBean.contador}"/>
+                            <f:view>
+                                <script>NewWindow();</script>
+                            </f:view>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </h:form>
+            </f:view>
+        </ui:define> 
+    </ui:composition>
+</ui:composition>

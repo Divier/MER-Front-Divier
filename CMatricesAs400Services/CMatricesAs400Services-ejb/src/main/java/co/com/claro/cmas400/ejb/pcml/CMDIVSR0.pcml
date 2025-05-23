@@ -1,0 +1,12 @@
+<pcml version="4.0">                                                            
+   <!-- RPG program: CMDIVSR0  -->                                              
+   <!-- created: 2016-03-03-11.39.01 -->                                        
+   <!-- source: TVCSRC/CMRPGLESRC(CMDIVSR0) -->                                 
+   <!-- 21 -->                                                                  
+   <program name="CMDIVSR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMDIVSR0.PGM">       
+      <data name="PCML" type="char" length="2" usage="inputoutput" />           
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />        
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />      
+      <data name="TABLARTA" type="char" length="68" count="1000" usage="inputoutput" />      
+   </program>                                                                   
+</pcml>                                                                     

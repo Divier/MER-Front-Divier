@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:p="http://primefaces.org/ui"
+                template="/view/MGL/template/cm.xhtml"> 
+
+    <ui:define name="content">
+        <h2 id="myhMmData">Seguridad </h2>
+        <h:panelGroup id="formAdmin" rendered="#{seguridadCuentaMatrizBean.tieneRolSeguridad}">
+            <h:panelGroup layout="block" style="display: flex; flex-wrap: wrap;">
+                <h:panelGrid id="tipo_4" class="formulario" columns="4">
+                    <h:outputText value="Tipo de Seguridad: Tiene o no Cerradura Electrónica *:" style="align-self: flex-start;" />
+                    <h:selectBooleanCheckbox value="#{seguridadCuentaMatrizBean.validaCerraduraElectronica}" id="idCerradura">
+                        <f:ajax listener="#{seguridadCuentaMatrizBean.getCerraduraElectronica}" execute="@form" render="@form"/>
+                    </h:selectBooleanCheckbox>
+
+                    <h:outputText value="Tipo de Cerradura Electrónica *:" style="visibility: #{seguridadCuentaMatrizBean.validaCerraduraElectronica ? 'visible' : 'hidden'};"  />
+                    <h:selectOneMenu value="#{seguridadCuentaMatrizBean.ctmGestionSegCM.tipoCerradElect}" id="tipoId"  style="visibility: #{seguridadCuentaMatrizBean.validaCerraduraElectronica ? 'visible' : 'hidden'};" >
+                        <f:selectItem itemValue="#{null}" itemLabel="Seleccionar..." />
+                        <f:selectItems value="#{seguridadCuentaMatrizBean.tipoCerraduraElectronica}" var="tipo" itemValue="#{tipo.basicaId}" itemLabel="#{tipo.codigoBasica}" />
+                    </h:selectOneMenu>
+
+                    <h:outputText value="Serial Cerradura *:" style="visibility: #{seguridadCuentaMatrizBean.validaCerraduraElectronica ? 'visible' : 'hidden'};"  />
+                    <h:inputText id="email_admin" value="#{seguridadCuentaMatrizBean.ctmGestionSegCM.serial}" style="visibility: #{seguridadCuentaMatrizBean.validaCerraduraElectronica ? 'visible' : 'hidden'};"  />
+
+                    <h:outputText value="Fabricante Cerradura *:" style="visibility: #{seguridadCuentaMatrizBean.validaCerraduraElectronica ? 'visible' : 'hidden'};" />
+                    <h:inputText id="doc_admin" value="#{seguridadCuentaMatrizBean.ctmGestionSegCM.fabricante}" style="visibility: #{seguridadCuentaMatrizBean.validaCerraduraElectronica ? 'visible' : 'hidden'};"  />
+
+                    <h:outputText value="Nombre Owner Sitio *:" />
+                    <h:inputText id="email_admin2" value="#{seguridadCuentaMatrizBean.ctmGestionSegCM.propSitioNombre}" />
+
+                    <h:outputText value="Celular Owner Sitio *:" />
+                    <h:inputText id="doc_admin1" value="#{seguridadCuentaMatrizBean.ctmGestionSegCM.propSitioCelular}" />
+                    
+                    <h:outputText value="Nombre Jefe de Zona *:" />
+                    <h:inputText id="nombreJefeZona" value="#{seguridadCuentaMatrizBean.ctmGestionSegCM.nombreJefeZona}" />
+
+                    <h:outputText value="Celular Jefe de Zona *:" />
+                    <h:inputText id="celularJefeZona" value="#{seguridadCuentaMatrizBean.ctmGestionSegCM.celularJefeZona}" />
+                </h:panelGrid>
+
+                <div style="margin-top: 20px; margin-left: auto; margin-right: auto;">
+                    <h:commandButton value="Guardar" action="#{seguridadCuentaMatrizBean.guardar}" class="btn" style="width: 70px;" />
+                </div>
+            </h:panelGroup>
+        </h:panelGroup>
+
+        <h:panelGroup >
+
+            <h2></h2>
+            <h:dataTable id="tablasBasicasMglTable12" style="width: 100%"
+                         value="#{seguridadCuentaMatrizBean.ctmGestionSegCMAuditoriaList}"
+                         var="seguridad" rows="8" 
+                         class="tablefeel">
+                <h:column>
+                    <div align="left">
+                        <f:facet name="header">
+                            <h:outputText value="Tipo Operación" />
+                            <br/>
+                        </f:facet>
+                        <h:outputText value="#{seguridad.tipoOperacion}" />
+                    </div>
+                </h:column>
+                <h:column>
+                    <div align="left">
+                        <f:facet name="header">
+                            <h:outputText value="Cuenta Matriz" />
+                            <br/>
+                        </f:facet>
+                        <h:outputText value="#{seguridad.cuentaMatrizId}" />
+                    </div>
+                </h:column>
+                <h:column>
+                    <div align="left">
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Operación" />
+                            <br/>
+                            <h:inputText  maxlength="50" id="fechaOperacionId" 
+                                          style="width: 100px" onkeypress="if (event.keyCode == 13) {
+                                                      onchange();
+                                                      return false;
+                                                  }"
+                                          value="#{seguridadCuentaMatrizBean.filtroFechaOperacion}">
+                                <f:ajax listener="#{seguridadCuentaMatrizBean.filtroCampos()}"
+                                        event="change" 
+                                        execute="@this" 
+                                        render="tablasBasicasMglTable12"/>
+                            </h:inputText>
+                            <script>
+                                document.getElementById('formCMGeneral:tablasBasicasMglTable12:fechaOperacionId')
+                                        .setAttribute('placeholder', 'Filtrar');
+                            </script>
+                        </f:facet>
+                        <h:outputText value="#{seguridad.fechaOperacion}">
+                            <f:convertDateTime type="date" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </h:outputText> 
+                    </div>
+                </h:column>
+                <h:column>
+                    <div align="left">
+                        <f:facet name="header">
+                            <h:outputText value="Usuario" />
+                            <br/>
+                            <h:inputText  maxlength="50" id="usuarioId1" 
+                                          style="width: 200px" onkeypress="if (event.keyCode == 13) {
+                                                      onchange();
+                                                      return false;
+                                                  }"
+                                          value="#{seguridadCuentaMatrizBean.filtroUsuario}">
+                                <f:ajax listener="#{seguridadCuentaMatrizBean.filtroCampos()}"
+                                        event="change" 
+                                        execute="@this" 
+                                        render="tablasBasicasMglTable12"/>
+                            </h:inputText>
+                            <script>
+                                document.getElementById('formCMGeneral:tablasBasicasMglTable12:usuarioId1')
+                                        .setAttribute('placeholder', 'Filtrar');
+                            </script>
+                        </f:facet>
+                        <h:outputText value="#{seguridad.usuario}" />
+                    </div>
+                </h:column>  
+                <h:column>
+                    <div align="left">
+                        <f:facet name="header">
+                            <h:outputText value="Nombre Campo" />
+                            <br/>
+                            <h:inputText  maxlength="50" id="nombreCampoid" 
+                                          style="width: 200px" onkeypress="if (event.keyCode == 13) {
+                                                      onchange(); return false;
+                                                  }"
+                                          value="#{seguridadCuentaMatrizBean.filtroNombreColumna}">
+                                <f:ajax listener="#{seguridadCuentaMatrizBean.filtroCampos()}"
+                                        event="change" 
+                                        execute="@this" 
+                                        render="tablasBasicasMglTable12"/>
+                            </h:inputText>
+                            <script>
+                                document.getElementById('formCMGeneral:tablasBasicasMglTable12:nombreCampoid')
+                                        .setAttribute('placeholder', 'Filtrar');
+                            </script>
+                        </f:facet>
+                        <h:outputText value="#{seguridad.nombreColumna}" />
+                    </div>
+                </h:column> 
+                <h:column>
+                    <div align="left">
+                        <f:facet name="header">
+                            <h:outputText value="Valor Antiguo" />
+                            <br/>
+                        </f:facet>
+                        <h:outputText value="#{seguridad.valorAntiguo}" />
+                    </div>
+                </h:column>	
+                <h:column>
+                    <div align="left">
+                        <f:facet name="header">
+                            <h:outputText value="Valor Nuevo" />
+                            <br/>
+                        </f:facet>
+                        <h:outputText value="#{seguridad.valorNuevo}" />
+                    </div>
+                </h:column>					
+            </h:dataTable>
+            <rich:dataScroller for="tablasBasicasMglTable12" maxPages="5" fastStep="3"/>
+            <div style="height:100px">
+            </div>
+        </h:panelGroup>
+        <br />
+    </ui:define>
+</ui:composition>

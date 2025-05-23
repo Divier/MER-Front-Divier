@@ -1,0 +1,246 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:t="http://myfaces.apache.org/tomahawk" 
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="/view/MGL/template/VT/moduloHhppTemplate.xhtml"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" 
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <ui:define name="title"><span class="TituloSeccion">TIPO OT HHPP LISTADO</span></ui:define>        
+    <ui:define name="content">
+        <h2 style="margin-top: -15px; 
+            margin-left: -12px;text-align: center;">GESTIÓN DE OT</h2>
+
+        <h:panelGroup id="gestion_ot_hhpp">
+            <h:dataTable id="otHhppList" 
+                         value="#{otHhppBean.otHhppList}" 
+                         var="otHhpp" rows="10" 
+                         styleClass="constructGTable" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                         style="width: 100%">
+                <f:facet name="headerButtoon">                                       
+                    Listado de Ot Hhpp
+                </f:facet>
+
+                <h:column>    
+                    <f:facet name="header">
+                        <h:outputText value="Alerta" />
+                    </f:facet>
+                    <h:graphicImage value="/view/img/verde.gif"
+                                    rendered="#{otHhpp.colorAlerta eq 'green'}" 
+                                    style="float: right" />
+                    <h:graphicImage value="/view/img/amarillo.gif"  
+                                    rendered="#{otHhpp.colorAlerta eq 'yellow'}" 
+                                    style="float: right" />
+                    <h:graphicImage value="/view/img/rojo.gif"  
+                                    rendered="#{otHhpp.colorAlerta eq 'red'}" 
+                                    style="float: right" />
+                </h:column>
+                <h:column >   
+                    <f:facet name="header">  
+                        <h:outputText value="Número Ot" /><BR/>       
+                        <h:inputText maxlength="8" id="codigoConsulta" style="width: 35px" 
+                                     value="#{otHhppBean.filtroConsultaOtDireccionesDto.id}" 
+                                     binding="#{codigoConsulta}"
+                                     >
+                            <f:ajax listener="#{otHhppBean.filtrar}"
+                                    event="change" execute="@this otHhppList" render="otHhppList"
+                                    />
+                        </h:inputText>
+                    </f:facet>
+                    <h:commandLink  value="#{otHhpp.otHhppId}"
+                                    disabled="#{(otHhpp.disponibilidadGestion != null and
+                                           otHhpp.disponibilidadGestion != otHhppBean.usuarioVT) or !otHhppBean.validarOpcionVerOT()}">
+                        <f:ajax event="click" execute="@this" 
+                                listener="#{otHhppBean.irEditarOtHhpp(otHhpp)}" />  
+                    </h:commandLink> 
+
+                    <h:outputText value=" - Gestionando..."
+                                  rendered="#{(otHhpp.disponibilidadGestion != null and
+                                           otHhpp.disponibilidadGestion != otHhppBean.usuarioVT)}"/>
+                </h:column>
+
+                <h:column >   
+                    <f:facet name="header">  
+                        <h:outputText value="Nombre Tipo Ot" /> <BR/>
+
+                        <h:selectOneMenu style="width:145px" id="tipoOtComboBox" 
+                                         value="#{otHhppBean.tipoDeOtSeleccionadaParaFiltro}" >
+                            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                            <f:selectItems value="#{otHhppBean.tipoOtList}"  
+                                           var="tipoOt" itemLabel="#{tipoOt.nombreTipoOt}" 
+                                           itemValue="#{tipoOt.tipoOtId}"/>  
+                            <f:ajax event="change" execute="tipoOtComboBox otHhppList" 
+                                    listener="#{otHhppBean.filtrar()}"  render="otHhppList" />
+                        </h:selectOneMenu> 
+
+                    </f:facet>
+                    <h:outputText value="#{otHhpp.tipoOtHhppId.nombreTipoOt}"/>  
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Nombre Contacto" />      <BR/>  
+                        <h:inputText id="contactoConsulta" style="width: 100px" 
+                                     value="#{otHhppBean.filtroConsultaOtDireccionesDto.nombreContacto}" 
+                                     binding="#{contactoConsulta}">
+                            <f:ajax listener="#{otHhppBean.filtrar}" event="change" execute="@this otHhppList" render="otHhppList"
+                                    />  
+                        </h:inputText>
+                    </f:facet>
+                    <h:outputText value="#{otHhpp.nombreContacto}"/>    
+                </h:column>                                 
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Telefono Contacto" />   <BR/>
+                        <h:inputText id="telefonoConsulta" style="width: 80px" 
+                                     value="#{otHhppBean.filtroConsultaOtDireccionesDto.telefonoContacto}" 
+                                     binding="#{telefonoConsulta}">
+                            <f:ajax listener="#{otHhppBean.filtrar}" event="change" execute="@this otHhppList" render="otHhppList"
+                                    />
+                        </h:inputText>
+                    </f:facet>
+                    <h:outputText value="#{otHhpp.telefonoContacto}"/>    
+                </h:column>       
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Correo Contacto" /><BR/>      
+                        <h:inputText id="correoConsulta" style="width: 100px" 
+                                     value="#{otHhppBean.filtroConsultaOtDireccionesDto.correoContacto}" 
+                                     binding="#{correoConsulta}">
+                            <f:ajax listener="#{otHhppBean.filtrar}" event="change" execute="@this otHhppList" render="otHhppList"
+                                    />
+                        </h:inputText>
+                    </f:facet>
+                    <h:outputText value="#{otHhpp.correoContacto}"/>    
+                </h:column>          
+                
+                    <h:column>   
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Creación"/>   <br/>   
+                            <p:calendar id="button" value="#{otHhppBean.fechaFiltro}" style="white-space: nowrap;"
+                                        styleClass="estiloCalendar"
+                                        showOn="both">
+                                <f:ajax event="dateSelect" listener="#{otHhppBean.filtrar}"  
+                                        execute="@this otHhppList" render="otHhppList"/>
+                            </p:calendar>
+                        </f:facet>
+                        <h:outputText value="#{otHhpp.fechaCreacionOt}"/>    
+                    </h:column>
+   
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Estado General" />     <BR/>   
+
+                        <h:selectOneMenu style="width:100px" id="estadoGeneral" 
+                                         value="#{otHhppBean.estadoGeneralSeleccionadaParaFiltro}" >
+                            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                            <f:selectItems value="#{otHhppBean.estadoList}"  
+                                           var="estado" itemLabel="#{estado.nombreBasica}" 
+                                           itemValue="#{estado.basicaId}"/>  
+                            <f:ajax event="change" execute="estadoGeneral otHhppList" listener="#{otHhppBean.filtrar()}" render="otHhppList" />
+                        </h:selectOneMenu> 
+                    </f:facet>
+                    <h:outputText value="#{otHhpp.estadoGeneral.nombreBasica}"/>    
+                </h:column>  
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Regional" />     <BR/>   
+
+                        <h:selectOneMenu style="width:100px" id="regionalRr" 
+                                         value="#{otHhppBean.regionalSeleccionadaParaFiltro}" >
+                            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                            <f:selectItem itemLabel="SIN REGIONAL" itemValue="0" />
+                            <f:selectItems value="#{otHhppBean.regionalesList}"  
+                                           var="regional" itemLabel="[#{regional.codigoRr}]#{regional.nombreRegional}" 
+                                           itemValue="#{regional.regionalRrId}"/>  
+                            <f:ajax event="change" execute="regionalRr otHhppList" 
+                                    listener="#{otHhppBean.filtrar()}" render="otHhppList" />
+                        </h:selectOneMenu> 
+                    </f:facet>
+                    <h:outputText value="#{otHhppBean.traerRegional(otHhpp.regionalRr)}"/>    
+                </h:column>
+                 <h:column>    
+                <f:facet name="header">
+                    <h:outputText value="SLA" />
+                    <h:inputText  maxlength="50" id="slaId" 
+                                  style="width: 28px" 
+                                  value="#{otHhppBean.filtroConsultaOtDireccionesDto.sla}">
+                        <f:ajax listener="#{otHhppBean.filtrar()}" event="change" 
+                                execute="@this otHhppList" render="otHhppList"/>
+                    </h:inputText>
+                </f:facet>
+                     <h:outputText value="#{otHhpp.tipoOtHhppId.ans}"/>
+            </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Bloqueada" />
+                    </f:facet>
+                    <h:commandLink value="Desbloquear"
+                                   action="#{otHhppBean.desbloquearOrden(otHhpp)}"
+                                   rendered="#{otHhpp.disponibilidadGestion != null and
+                                           otHhppBean.validarGestionDesbloqueo()}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Usuario Bloqueo" />
+                    </f:facet>
+                    <h:outputText value="Sin bloqueo"
+                                  rendered="#{otHhpp.disponibilidadGestion == null}"/>
+                    <h:outputText value="#{otHhpp.disponibilidadGestion}"
+                                  rendered="#{otHhpp.disponibilidadGestion != null}"/>
+
+                </h:column>
+
+                <f:facet name="footer" >
+                    <h:panelGroup >
+                        <h:commandButton title="Primera Página" value="#{otHhppBean.inicioPagina}" action="#{otHhppBean.pageFirst}"
+                                         class="btn"/>
+                        <h:commandButton title="Página Anterior" value="#{otHhppBean.anteriorPagina}" action="#{otHhppBean.pagePrevious}"
+                                         class="btn"/>
+                        <h:commandButton title="Número Páginas" value="#{otHhppBean.pageActual}" styleClass="botonTPagInicio"    />
+                        <h:selectOneMenu id="listTabla" value="#{otHhppBean.numPagina}" 
+                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                            <f:selectItems value="#{otHhppBean.paginaList}" var="pag"
+                                           itemValue="#{pag}"
+                                           itemLabel="#{pag}"/>    
+                            <f:ajax render="otHhppList"  event="change"  
+                                    listener="#{otHhppBean.irPagina()}"  
+                                    execute="@this" />                                         
+                        </h:selectOneMenu>  
+                        <h:commandButton title="Página Siguiente" value="#{otHhppBean.siguientePagina}" action="#{otHhppBean.pageNext}"
+                                         class="btn"/>
+                        <h:commandButton title="Última Página" value="#{otHhppBean.finPagina}" action="#{otHhppBean.pageLast}"
+                                         class="btn"/>
+                    </h:panelGroup>
+                </f:facet>  
+
+            </h:dataTable>
+
+        </h:panelGroup>
+        <h:panelGroup>
+            <div style="text-align: center;" id="crearOTDiva">
+                <h:commandButton id="crearOtButton" styleClass="btn" value="Crear Ot" 
+                                 disabled="#{!otHhppBean.validarOpcionCrearOT()}"
+                                 action="#{otHhppBean.irCrearOtHhpp()}" > </h:commandButton>
+                                 
+                                 <h:commandButton  value="Exportar" id="buttonExportXlsCitys"
+                                      styleClass="btn unblockClaro" immediate="true"
+                                      disabled="#{!otHhppBean.validarOpcionExportar()}"
+                                      action="#{otHhppBean.exportExcel()}"/>
+            </div>            
+        </h:panelGroup>
+
+
+    </ui:define>
+</ui:composition>

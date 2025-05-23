@@ -1,0 +1,13 @@
+<pcml version="4.0">
+   <!-- RPG program: CMUBCAR0  -->
+   <!-- created: 2014-09-18-17.10.17 -->
+   <!-- source: CMWEBF0/QRPGLESRC(CMUBCAR0) -->
+   <!-- 49 -->
+   <program name="CMUBCAR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMUBCAR0.PGM">
+      <data name="ENTRA" type="char" length="3" usage="inputoutput" />
+      <data name="PCML" type="char" length="2" usage="inputoutput" />
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />
+      <data name="TABLARTA" type="char" length="41" count="500" usage="inputoutput" />
+   </program>
+</pcml>

@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>        
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        </f:facet>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/dropdown.css" rel="stylesheet" type="text/css" />
+        <h:outputScript library="primefaces" name="jquery/jquery.js" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/scriptv2.js"/>
+        
+        
+        <script language="javascript" type="text/javascript">   
+           timeoutID = setTimeout(function() {
+                if (${masivoModificacionBean.enproceso}) {
+                    document.getElementById("idFormMasivo").submit();
+                }
+            }, ${masivoModificacionBean.refresh});
+             function stop() {
+                window.clearTimeout(timeoutID);
+            }
+        </script> 
+    </h:head>
+    <h:body>
+
+        <h:form id="idFormMasivo" enctype="multipart/form-data">
+            <!--Inicio Mensajes -->
+            <h:panelGroup id="messages">
+                <h:panelGroup  id="rendMessages" rendered="#{not empty facesContext.messageList}" >
+                    <div id="light" class="white_contentError" style="display : block;">
+                        <a href = "javascript:void(0)" 
+                           onclick = "document.getElementById('light').style.display = 'none';
+                document.getElementById('fade').style.display = 'none'"
+                           style="margin-left: 97%">
+                            <img src="${facesContext.externalContext.requestContextPath}/view/MGL/images/error.png" height="14px"  width="14px"/>
+                        </a>
+                        <BR/><BR/>
+                        <div id="marcoAuditoria" style="overflow: auto;max-height: 200px" > 
+                            <h:messages id="messagesPo" globalOnly="false" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+                        </div>
+                        <a href = "javascript:void(0)" 
+                           id="cerrarMensajeErrorBtn" 
+                           class="btn" style="position: relative; top: 1em;"
+                           onclick = "document.getElementById('light').style.display = 'none';
+                document.getElementById('fade').style.display = 'none'">
+                            Cerrar               
+                        </a>
+                    </div>
+                    <div id="fade" class="black_overlayError" style="display : block;"></div>
+                </h:panelGroup>
+            </h:panelGroup>
+            <!--Fin Mensajes -->
+            <!--Inicio includes -->
+            <div id="header">
+                <ui:include src="../../CM/name.xhtml" />
+            </div>
+            <div id="cssmenu">
+                <ui:include src="../../template/menu/menu-cm.xhtml" />
+            </div>
+            <div id="head-right">
+                <ui:include src="../../CM/version.xhtml" />
+            </div>
+            <div id="content">
+                <div id="subcontent">
+                    <section class="tabs">
+                        <div id="contenido">
+                            <ui:insert name="content">
+                            </ui:insert>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!--Fin includes --> 
+            <h:panelGrid id="idPngRe" columns="1" style="width: 100%">
+                <h2 class="cargueMasivoModificacion">SELECCIONE EL ARCHIVO</h2> 
+            </h:panelGrid>
+
+            <h:panelGrid  id="idPng" columns="1" style="width: 100px; margin: 0 auto;">
+                <p:fileUpload  id="idArchivo"  label="Examinar"
+                                    value="#{masivoModificacionBean.upFile}" 
+                                    disabled="#{masivoModificacionBean.enproceso}" 
+                                    mode="simple" skinSimple="true"/>
+                <h:commandButton value="Subir Archivo" styleClass="btn"
+                                 action="#{masivoModificacionBean.cargarArchivo()}"
+                                 disabled="#{masivoModificacionBean.enproceso || !masivoModificacionBean.validarOpcionSubirArchivo()}" />
+            </h:panelGrid>
+
+
+            <h:panelGrid  id="idPngResult" columns="1" style="width: 500px; margin: 0 auto;">
+                <h:outputText value="Nombre del Archivo : #{masivoModificacionBean.nombre}" />
+            </h:panelGrid>
+
+            <h:panelGrid  id="idPngUser" columns="1" style="width: 500px; margin: 0 auto;">
+                <h:outputText value="Usuario que actualmente est&aacute; utilizando el proceso: #{masivoModificacionBean.usuarioProceso}"  rendered="#{masivoModificacionBean.enproceso}"/>
+            </h:panelGrid>
+
+            <h:panelGrid  id="idPngCount" columns="1" style="width: 500px; margin: 0 auto;">
+                <h:outputText value="Procesando : #{masivoModificacionBean.cantidadRegistros}  de #{masivoModificacionBean.totalRegistros}" rendered="#{masivoModificacionBean.enproceso}" />
+            </h:panelGrid>
+
+            <h:panelGrid  id="idPngMensaje" columns="1" style="width: 500px; margin: 0 auto;">
+                <h:outputText value="Proceso ejecutado de forma correcta"  rendered="#{masivoModificacionBean.finish}"/>
+            </h:panelGrid>
+
+            <h:panelGrid id="idBotonera"  columns="4" style="width: 100%">
+                <h:commandButton id="idIz" styleClass="btn unblockClaro" value="Exportar xls"  action="#{masivoModificacionBean.generarReporteFinal(1)}" rendered="#{masivoModificacionBean.finish}" immediate="true" disabled="#{masivoModificacionBean.cantidadRegistros>2000}" title="#{masivoModificacionBean.xlsMaxReg}" onclick="stop();" />
+                <h:commandButton id="idCent" styleClass="btn unblockClaro" value="Exportar csv"  action="#{masivoModificacionBean.generarReporteFinal(2)}" rendered="#{masivoModificacionBean.finish}" immediate="true" disabled="#{masivoModificacionBean.cantidadRegistros>40000}" title="#{masivoModificacionBean.csvMaxReg}" onclick="stop();" />
+                <h:commandButton id="idDe" styleClass="btn unblockClaro" value="Exportar txt" action="#{masivoModificacionBean.generarReporteFinal(3)}" rendered="#{masivoModificacionBean.finish}" immediate="true" disabled="#{masivoModificacionBean.cantidadRegistros>40000}" title="#{masivoModificacionBean.txtMaxReg}" onclick="stop();" />
+                <h:commandButton value="Volver" styleClass="btn unblockClaro"  onclick="stop();" 
+                                rendered="#{masivoModificacionBean.finish}" immediate="true"
+                                                     action="#{masivoModificacionBean.volverList()}"/>
+            </h:panelGrid>
+        </h:form>
+        <div id="footer">
+             <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+        </div>
+    </h:body>
+</html>
+

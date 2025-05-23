@@ -1,0 +1,364 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <h:outputStylesheet library="css" name="primeflex/primeflex.css"/>
+        <h:outputStylesheet library="css" name="claro/pageAdmon.css"/>
+        <h:outputScript library="js" name="claro/pageAdmon.js"/>
+
+        <h:form id="formAdminSLA" prependId="false">
+            <p:growl id="messagePer" showDetail="true" sticky="true" >
+                <p:autoUpdate/>
+            </p:growl>
+
+            <p:panel id="lstSlaEjecucion" styleClass="ui-fluid" rendered="#{slaEjecucionMglBean.mostrarListaSlaEjecucion}">
+                <fieldset>
+                    <legend>SLA EJECUCIÓN</legend>
+                    <br/> 
+                    <p:dataTable var="slaEje" 
+                                 value="#{slaEjecucionMglBean.lstSlaEjecucionMgl}" 
+                                 id="slaEjeList"
+                                 widgetVar="slaEj" 
+                                 reflow="true"
+                                 styleClass="tablaDatosCss"
+                                 style="margin-top: 20px;"
+                                 rows="#{slaEjecucionMglBean.filasPag15}"
+                                 paginator="true"
+                                 paginatorPosition="bottom" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="Página {currentPage} de {totalPages}"
+                                 rowsPerPageTemplate="5,10,15"
+                                 sortBy="#{slaEje.basicaIdTecnologia.nombreBasica}"
+                                 emptyMessage="No se encontraron Sla de ejecución." 
+                                 selectionMode="single" selection="#{slaEjecucionMglBean.slaEjecucionMglSelected}" rowKey="#{slaEje.slaEjecucionId}">
+
+
+                        <p:column headerText="ID SLA EJECUCIÓN" 
+                                  sortBy="#{slaEje.slaEjecucionId}"
+                                  filterBy="#{slaEje.slaEjecucionId}"
+                                  filterMatchMode="contains">
+
+                            <h:commandLink id="arrendaLink"  title="Ir detalle Sla Ejecución" rendered="#{slaEjecucionMglBean.validarDetalle()}"
+                                           action="#{slaEjecucionMglBean.irSlaEjecucionDetalle(slaEje)}" 
+                                           disabled="#{!slaEjecucionMglBean.validarIdEjecucionRol()}">
+                                <h:outputText class="txtLabelsMgl" style="color: red; margin-left: 100px;" id="arrendaId"  value="#{slaEje.slaEjecucionId}"/>     
+                            </h:commandLink> 
+                        </p:column>
+
+                        <p:column headerText="NOMBRE TECNOLOGÍA" 
+                                  sortBy="#{slaEje.basicaIdTecnologia.nombreBasica}"
+                                  filterBy="#{slaEje.basicaIdTecnologia.nombreBasica}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{slaEje.basicaIdTecnologia.nombreBasica}"/>  
+                        </p:column>
+
+                        <p:column headerText="TIPO EJECUCIÓN" 
+                                  sortBy="#{slaEje.tipoEjecucion}"
+                                  filterBy="#{slaEje.tipoEjecucion}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{slaEje.tipoEjecucion}" style="margin-left: 100px;"/>   
+                        </p:column> 
+
+                        <p:column headerText="LOG" 
+                                  filterMatchMode="contains">
+                            <h:commandLink id="arrendaLinkLog"  title="Ir al log del registro" 
+                                           rendered="#{slaEjecucionMglBean.validarLOG()}" style="margin-left: 100px;"
+                                           action="#{slaEjecucionMglBean.mostrarAuditoria(slaEje)}" >
+                                <h:outputText class="txtLabelsMgl" style="color: red" id="arrendaIdLog"  value="Log"/>     
+                            </h:commandLink> 
+                        </p:column>
+
+                        <p:column headerText="ELIMINAR" >
+                            <p:commandButton icon="fa fa-fw fa-close" style="width:25px; margin-left: 100px;" type="button" onclick="PF('dlg1').show();" />
+                            <p:dialog header="Confirmar" widgetVar="dlg1" minHeight="40">
+                                <p:outputLabel value="¿Esta seguro de eliminar este SLA ejecución aunque contenga información de detalle ?" />
+                                <br />
+                                <p:commandButton title="Si, Deseo eliminar"
+                                                 disabled="#{!slaEjecucionMglBean.validarEliminarRol()}"
+                                                 action="#{slaEjecucionMglBean.eliminarSlaEjecucionList(slaEje)}"
+                                                 id="eliminarSlaEjeButton" 
+                                                 immediate="true"
+                                                 update="slaEjeList"  />
+                                <p:commandButton title="Cancelar" onclick="PF('dlg1').hide();" style="margin-left: 20px;"  />
+                            </p:dialog>
+
+                        </p:column>
+                    </p:dataTable>
+                </fieldset>
+
+                <p:panelGrid columns="1" style="margin-right: 100em;">
+                    <p:commandButton title="Crear Nuevo Registro" id="crearNewId" rendered="#{slaEjecucionMglBean.validarNuevo()}"
+                                     action="#{slaEjecucionMglBean.irToCrearSlaEjecucion()}"
+                                     styleClass="btn red-button" value="Nuevo"
+                                     update="@form"
+                                     disabled="#{!slaEjecucionMglBean.validarNuevoRol()}"/>
+                </p:panelGrid>
+            </p:panel>    
+
+            <p:panel id="panelCrearModSlaEjecucion" rendered="#{slaEjecucionMglBean.mostrarAdminSlaEjecucion}">
+                <fieldset>
+                    <legend>ADMINISTRACIÓN SLA EJECUCIÓN</legend>
+                    <br/>
+                    <p:panelGrid columns="2">
+                        <p:outputLabel style="font-weight:bold; padding:5px;" value="Tecnología:" /> 
+                        <p:selectOneMenu value="#{slaEjecucionMglBean.idTecno}"                                           
+                                         id="tecnologiaId" effect="fade" 
+                                         filter="true" filterMatchMode="startsWith"  
+                                         style="min-width: 200px" disabled="#{slaEjecucionMglBean.habilitaTecno}">                            
+                            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                            <f:selectItems value="#{slaEjecucionMglBean.tecnologiaList}" 
+                                           var="tecnologia" itemLabel="#{tecnologia.nombreBasica}" 
+                                           itemValue="#{tecnologia.basicaId}"/> 
+                        </p:selectOneMenu>
+
+
+                        <p:outputLabel style="font-weight:bold; padding:5px;"  id="tipoEjeLbl" value="Tipo Ejecucion:"/>               
+                        <p:selectOneMenu value="#{slaEjecucionMglBean.slaEjecucionMgl.tipoEjecucion}"                                           
+                                         id="tipoEje" style="min-width: 200px" disabled="#{slaEjecucionMglBean.habilitaTipo}">                            
+                            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                            <f:selectItem itemLabel="UNIDAD" itemValue="UNIDAD"/>
+                            <f:selectItem itemLabel="CCMM" itemValue="CCMM"/>
+                        </p:selectOneMenu>
+
+                        <p:commandButton title="Crear Sla Ejecución" 
+                                         rendered="#{(slaEjecucionMglBean.botonCrearSlaEje and
+                                                     slaEjecucionMglBean.validarCrearSlaEjecucion())}"
+                                         action="#{slaEjecucionMglBean.crearSlaEjecucion()}"
+                                         id="nuevoId" styleClass="btn red-button" value="Crear"
+                                         update="@form"/>
+                    </p:panelGrid> 
+
+
+
+                    <p:panel id="lstDetSlaEjecucion" styleClass="ui-fluid" rendered="#{slaEjecucionMglBean.mostrarListaSlaEjecucionDetalle}">
+                        <fieldset>
+                            <legend>SLA EJECUCIÓN DETALLE</legend>
+                            <br/> 
+                            <p:panelGrid columns="4">
+                                <p:outputLabel style="font-weight:bold; padding:5px;" 
+                                               value="Secuencia Operacion"  /> 
+                                <p:inputText  id="idinputSeq"  
+                                              value="#{slaEjecucionMglBean.sequenciaOpe}" 
+                                              style="min-width: 200px;">                             
+                                </p:inputText>
+
+                                <p:outputLabel style="font-weight:bold; padding:5px;" 
+                                               value="Sub Tipo OT CCMM" rendered="#{slaEjecucionMglBean.controlLabelCcmmComboDetalle}" /> 
+                                <p:selectOneMenu value="#{slaEjecucionMglBean.idSubTipoCcmm}" rendered="#{slaEjecucionMglBean.controlCcmmComboDetalle}"                                          
+                                                 id="subTipoOtCcmmId" effect="fade" 
+                                                 filter="true" filterMatchMode="startsWith"  
+                                                 style="min-width: 200px">                            
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                    <f:selectItems value="#{slaEjecucionMglBean.listSubTipoOtCcmm}" 
+                                                   var="subTipoCcmm" itemLabel="#{subTipoCcmm.descTipoOt}" 
+                                                   itemValue="#{subTipoCcmm.idTipoOt}"/> 
+                                </p:selectOneMenu>
+
+                                <p:outputLabel style="font-weight:bold; padding:5px;" 
+                                               value="Sub Tipo OT UNIDAD" rendered="#{slaEjecucionMglBean.controlLabelHhppComboDetalle}" /> 
+                                <p:selectOneMenu value="#{slaEjecucionMglBean.idSubTipoHhpp}"                                           
+                                                 id="subTipoOtHhppId" 
+                                                 rendered="#{slaEjecucionMglBean.controlHhppComboDetalle}"
+                                                 effect="fade" filter="true" filterMatchMode="startsWith"  
+                                                 style="min-width: 200px">                            
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                    <f:selectItems value="#{slaEjecucionMglBean.listSubTipoOtUnidad}" 
+                                                   var="subTipoHhpp" itemLabel="#{subTipoHhpp.nombreTipoOt}" 
+                                                   itemValue="#{subTipoHhpp.tipoOtId}"/> 
+                                </p:selectOneMenu> 
+
+                                <p:outputLabel id="labelSla" 
+                                               value="SLA en Días:"/>
+                                <p:inputText  id="idinputSla"  
+                                              value="#{slaEjecucionMglBean.sla}" 
+                                              style="min-width: 200px;">                             
+                                </p:inputText>
+
+                                <p:outputLabel style="font-weight:bold; padding:5px;" 
+                                               value="Estado CCMM"/> 
+                                <p:selectOneMenu value="#{slaEjecucionMglBean.idEstCcmm}" disabled="#{slaEjecucionMglBean.controlHhppComboDetalle}"                                          
+                                                 id="estadoCCmmId" effect="fade" 
+                                                 filter="true" filterMatchMode="startsWith"  
+                                                 style="min-width: 200px">                            
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                    <f:selectItems value="#{slaEjecucionMglBean.listEstadosCCMM}" 
+                                                   var="estCcmm" itemLabel="#{estCcmm.nombreBasica}" 
+                                                   itemValue="#{estCcmm.basicaId}"/> 
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="1">
+                                <p:commandButton title="Crear Nuevo Detalle Sla Registro"
+                                                 id="crearNewDetId" rendered="#{slaEjecucionMglBean.validarCrearDetSla()}"
+                                                 action="#{slaEjecucionMglBean.crearDetalleSlaEjecucion()}"
+                                                 styleClass="btn red-button" value="Crear Detalle"
+                                                 update="@form"/>   
+                            </p:panelGrid>
+
+                            <p:dataTable var="detSla" 
+                                         value="#{slaEjecucionMglBean.lstDetalleSlaEjecucionMgl}" 
+                                         id="detSlaEjeList"
+                                         reflow="true"
+                                         styleClass="tablaDatosCss"
+                                         style="margin-top: 20px;"
+                                         rows="#{slaEjecucionMglBean.filasPag15}"
+                                         paginator="true"
+                                         paginatorPosition="bottom" 
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="Página {currentPage} de {totalPages}"
+                                         rowsPerPageTemplate="5,10,15"
+                                         sortBy="#{detSla.seqProceso}"
+                                         emptyMessage="No se encontraron detalles del Sla de ejecucion." >
+
+
+                                <p:column headerText="SECUENCIA OPERACION" 
+                                          sortBy="#{detSla.seqProceso}"
+                                          filterBy="#{detSla.seqProceso}"
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{detSla.seqProceso}" style="margin-left: 140px;"/>     
+                                </p:column>
+
+                                <p:column headerText="SUB TIPO ORDEN" rendered="#{slaEjecucionMglBean.controlCcmmComboDetalle}"
+                                          sortBy="#{detSla.subTipoOtCCMM.descTipoOt}"
+                                          filterBy="#{detSla.subTipoOtCCMM.descTipoOt}"
+                                          filterMatchMode="contains">
+                                    <div align="left">
+                                        <h:outputText value="#{detSla.subTipoOtCCMM.descTipoOt}"/>  
+                                    </div> 
+                                </p:column>
+
+                                <p:column headerText="SUB TIPO ORDEN" rendered="#{slaEjecucionMglBean.controlHhppComboDetalle}"
+                                          sortBy="#{detSla.subTipoOtUnidad.nombreTipoOt}"
+                                          filterBy="#{detSla.subTipoOtUnidad.nombreTipoOt}"
+                                          filterMatchMode="contains">
+                                    <div align="left">
+                                        <h:outputText value="#{detSla.subTipoOtUnidad.nombreTipoOt}"/>
+                                    </div> 
+                                </p:column>
+
+                                <p:column headerText="SLA EN DÍAS" 
+                                          sortBy="#{detSla.sla}"
+                                          filterBy="#{detSla.sla}"
+                                          filterMatchMode="contains">
+                                    <div align="left">
+                                        <h:outputText value="#{detSla.sla} Días" style="margin-left: 140px;"/>   
+                                    </div> 
+                                </p:column> 
+
+                                <p:column headerText="ESTADO CCMM" 
+                                          sortBy="#{detSla.estadoCcmm.nombreBasica}"
+                                          filterBy="#{detSla.estadoCcmm.nombreBasica}"
+                                          filterMatchMode="contains">
+                                    <div align="left">
+                                        <h:outputText value="#{detSla.estadoCcmm.nombreBasica}"/>  
+                                    </div> 
+                                </p:column>
+
+                                <p:column headerText="ELIMINAR" >
+                                    <p:commandButton title="Eliminar Registro"
+                                                     style="width:25px; margin-left: 140px;"
+                                                     action="#{slaEjecucionMglBean.eliminardetalleSlaEjeList(detSla)}"
+                                                     disabled="#{!slaEjecucionMglBean.validarEliminarRol()}"
+                                                     id="eliminarDetSlaButton" 
+                                                     icon="fa fa-fw fa-close" immediate="true"
+                                                     update="detSlaEjeList" 
+                                                     onclick="return confirm('¿Esta seguro de eliminar el registro seleccionado ?');"/>
+                                </p:column>
+                            </p:dataTable>
+                        </fieldset>
+                    </p:panel>    
+
+                    <p:panelGrid columns="1">
+                        <p:commandButton title="Volver Atrás"  
+                                         icon="fa fa-fw fa-mail-reply" 
+                                         id="volverSlaEjecucion" styleClass="btn red-button" value="Volver"  
+                                         action="#{slaEjecucionMglBean.volverPaneListSlaEjecucion()}"
+                                         update="@form"/>
+                    </p:panelGrid>
+                </fieldset>                         
+            </p:panel>
+
+            <p:panel rendered="#{slaEjecucionMglBean.renderAuditoria}">
+                <span class="TituloSeccion">Auditoria de SLA de ejecucion
+                    [#{slaEjecucionMglBean.slaEjecucionMglSelected.basicaIdTecnologia}],
+                    Registro [#{slaEjecucionMglBean.slaEjecucionMglSelected.slaEjecucionId}]</span>       
+                <fieldset>
+                    <legend>AUDITORIA</legend>
+                    <br/> 
+                    <p:dataTable var="aud" 
+                                 value="#{slaEjecucionMglBean.informacionAuditoria}" 
+                                 id="audList"
+                                 reflow="true"
+                                 styleClass="tablaDatosCss"
+                                 style="margin-top: 20px;"
+                                 rows="#{slaEjecucionMglBean.filasPag15}"
+                                 paginator="true"
+                                 paginatorPosition="bottom" 
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="Página {currentPage} de {totalPages}"
+                                 rowsPerPageTemplate="5,10,15"
+                                 sortBy="#{aud.usuarioCreacion}"
+                                 emptyMessage="No se encontró auditoria." >
+
+                        <p:column headerText="Usuario Creación" 
+                                  sortBy="#{aud.usuarioCreacion}"
+                                  filterBy="#{aud.usuarioCreacion}"
+                                  filterMatchMode="contains">
+
+                            <h:outputText value="#{aud.usuarioCreacion}"/>  
+                        </p:column>
+
+                        <p:column headerText="Fecha Creación" 
+                                  sortBy="#{aud.fechaCreacion}"
+                                  filterBy="#{aud.fechaCreacion}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{aud.fechaCreacion}">
+                                <f:convertDateTime type="date" pattern="yyyy-MM-dd hh:mm:ss"/>
+                            </h:outputText>    
+                        </p:column>
+
+                        <p:column headerText="Usuario Modificacion" 
+                                  sortBy="#{aud.usuarioModificacion}"
+                                  filterBy="#{aud.usuarioModificacion}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{aud.usuarioModificacion}"/> 
+                        </p:column> 
+
+                        <p:column headerText="Fecha Modificación" 
+                                  sortBy="#{aud.fechaModificacion}"
+                                  filterBy="#{aud.fechaModificacion}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{aud.fechaModificacion}">
+                                <f:convertDateTime type="date" pattern="yyyy-MM-dd hh:mm:ss"/>
+                            </h:outputText>     
+                        </p:column>
+
+                        <p:column headerText="Valores Anteriores" 
+                                  sortBy="#{aud.antes}"
+                                  filterBy="#{aud.antes}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{aud.antes}" escape="false" />
+                        </p:column>
+
+                        <p:column headerText="Valores Nuevos" 
+                                  sortBy="#{aud.despues}"
+                                  filterBy="#{aud.despues}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{aud.despues}" escape="false"/>
+                        </p:column>
+                    </p:dataTable>
+                </fieldset> 
+                <p:commandButton title="Volver Atrás"  
+                                 icon="fa fa-fw fa-mail-reply" 
+                                 id="volverArrendatarios2" styleClass="btn red-button" value="Volver"  
+                                 action="#{slaEjecucionMglBean.ocultarAuditoria()}"
+                                 update="@form"/>
+            </p:panel>     
+        </h:form>   
+    </ui:composition>
+</html>

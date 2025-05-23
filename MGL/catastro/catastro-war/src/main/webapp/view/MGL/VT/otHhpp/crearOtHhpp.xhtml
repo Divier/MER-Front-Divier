@@ -1,0 +1,732 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:t="http://myfaces.apache.org/tomahawk"              
+                template="/view/MGL/template/VT/moduloHhppTemplate.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"    
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" 
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title"><span class="TituloSeccion">Crear Ot Dirección</span></ui:define>        
+    <ui:define name="content">
+        <script>
+            $("#cerrarMensajeErrorBtn").on("click", function () {
+                if (#{crearOtHhppBean.otCreada} == true) {
+                    var contextPath = window.location.href.substring(0, window.location.href.indexOf("/", 10));
+                    window.location.href = contextPath + "${facesContext.externalContext.requestContextPath}/view/MGL/VT/otHhpp/editarOtHhpp.jsf"
+                }
+            });
+        </script>
+        <h:panelGroup id="panelConstruirDireccion" rendered="#{!crearOtHhppBean.busquedaHhppManual}" >
+            <h:panelGrid columns="8" id="modeloHhppMgl" class="formulario3"  style="width:100%;"  > 
+                <f:facet name="header">
+                    <h2 style="margin-left: -12px">CONSTRUIR DIRECCIÓN</h2>
+                </f:facet>
+                <h:panelGrid>
+                    <h:outputText style="font-weight:bold"  id="tipoDireccion" value="Tipo Dirección*:" />  
+                    <br/>
+                    <h:outputText style="font-weight:bold"  id="cityC" value="*Ciudad:"></h:outputText>  
+                </h:panelGrid>
+
+                <h:panelGrid>
+                    <h:selectOneMenu disabled="#{crearOtHhppBean.otCreada}" 
+                                     style="width: 140px;"  id="tipoDireccionComboBox" 
+                                     value="#{crearOtHhppBean.tipoDireccion}">                            
+                        <f:selectItem itemLabel="CALLE - CARRERA" itemValue="CK"/>
+                        <f:selectItem itemLabel="BARRIO - MANZANA" itemValue="BM"/>
+                        <f:selectItem itemLabel="INTRADUCIBLE" itemValue="IT"/>
+                        <f:ajax  event="change" execute="tipoDireccionComboBox" 
+                                 listener="#{crearOtHhppBean.validarTipoDireccion()}" 
+                                 render="panelWrapper direccionStrLabel" />
+                    </h:selectOneMenu>   
+
+                    <br/>
+
+                    <h:selectOneMenu disabled="#{crearOtHhppBean.otCreada}" style="width: 140px;" value="#{crearOtHhppBean.ciudad}"                                           
+                                     id="ciudad" >                            
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                        <f:selectItems value="#{crearOtHhppBean.ciudadesList}" 
+                                       var="ciudad" itemLabel="#{ciudad.gpoNombre}" 
+                                       itemValue="#{ciudad.gpoId}"/> 
+                        <f:ajax event="change" execute="@form" 
+                                listener="#{crearOtHhppBean.obtenerCentroPobladoList()}"
+                                render="centroPoblado "/> 
+                    </h:selectOneMenu>   
+
+
+
+                </h:panelGrid>
+
+                <h:panelGrid>    
+                    <h:outputText style="font-weight:bold"  id="depart" value="Departamento:"></h:outputText>
+                    <br/>
+                    <h:outputText style="font-weight:bold" value="*Centro Poblado:" /> 
+                </h:panelGrid>
+
+                <h:panelGrid>
+                    <h:selectOneMenu disabled="#{crearOtHhppBean.otCreada}" 
+                                     style="width: 140px;" value="#{crearOtHhppBean.departamento}"                                           
+                                     id="departamento" >                            
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                        <f:selectItems value="#{crearOtHhppBean.departamentoList}" 
+                                       var="departamento" itemLabel="#{departamento.gpoNombre}" 
+                                       itemValue="#{departamento.gpoId}"/> 
+                        <f:ajax  event="change" execute="@form" 
+                                 listener="#{crearOtHhppBean.obtenerCiudadesList()}"
+                                 render="ciudad centroPoblado"/> 
+                    </h:selectOneMenu>
+
+                    <br/>
+
+                    <h:selectOneMenu disabled="#{crearOtHhppBean.otCreada}" id="centroPoblado" style="width: 140px;"           
+                                     value="#{crearOtHhppBean.idCentroPoblado}" >
+                        <f:selectItem itemValue="" itemLabel="Seleccione Uno"/>
+                        <f:selectItems value="#{crearOtHhppBean.centroPobladoList}" 
+                                       var="centroPob"
+                                       itemValue="#{centroPob.gpoId}"
+                                       itemLabel="#{centroPob.gpoNombre}">
+                        </f:selectItems>   
+                        <f:ajax  event="change" execute="centroPoblado" 
+                                 listener="#{crearOtHhppBean.obtenerCentroPobladoSeleccionado()}"/> 
+                    </h:selectOneMenu> 
+                </h:panelGrid>
+            </h:panelGrid>
+
+            <br/><br/>
+            <hr size="5" width="100%" align="LEFT"/>
+            <div style="padding:15px"> 
+                <h:panelGroup id="panelWrapper" >
+
+                    <h:panelGroup id="ckPanel" rendered="#{crearOtHhppBean.showCKPanel}" >
+
+                        <h:panelGrid columns="6" >
+                            <h:panelGroup  > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="dir" value="*"/>
+                                <h:outputText id="direccionLabel" value="Ingrese la dirección:" /> </h:panelGroup>
+                            <h:panelGroup > <h:inputText disabled="#{crearOtHhppBean.otCreada}" value="#{crearOtHhppBean.direccionCk}"
+                                                         id="direccion" style="width: 490px; margin-right: 10px;"
+                                                         maxlength="49" /> 
+                            </h:panelGroup>
+                            <h:panelGroup ><h:commandButton value="Guardar" styleClass="btn" disabled="#{crearOtHhppBean.otCreada}"
+                                                            title="Construir Direccion"  
+                                                            action="#{crearOtHhppBean.construirDireccionCk()}" 
+                                                            id="agregarDireccionCkButton" /></h:panelGroup>
+                            <h:panelGroup ></h:panelGroup>
+                            <h:panelGroup ></h:panelGroup>                   
+                        </h:panelGrid>
+
+                        <!--STAR-->
+                        <h:panelGroup rendered="#{!crearOtHhppBean.notGeoReferenciado}" id="pnNoRefences">
+                            <table style="padding:5px 5px;" cellspacing="2" cellpadding="2">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; vertical-align: middle;height: 20px;">
+                                        <h:outputText id="compDircc4a" value="Calle" style=" text-decoration: underline;font-weight: bold; text-align: center; vertical-align: middle;" ></h:outputText>
+                                    </td>
+                                </tr>    
+
+                                <tr>
+                                    <td style="width:130px;margin: 5px 5px;">
+                                        <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegViaa" value="*"/><h:outputText id="compDircc5a" style="font-weight: bold;margin: 5px 5px;" value="Vía principal:"/>
+                                    </td>
+                                    <td style="width:120px;margin: 5px 5px;">
+                                        <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegNums" value="*"/><h:outputText id="compDircc6s" style="font-weight: bold;margin: 5px 5px;" value="Núm:" />
+                                    </td>
+                                    <td style="width:70px;margin: 5px 5px;">
+                                        <h:outputText id="compDircc7a" style="font-weight: bold;margin: 5px 5px;" value="Letra:"/>
+                                    </td>
+                                    <td style="width:70px;margin: 5px 5px;">
+                                        <h:outputText id="compDircc8s" style="font-weight: bold;margin: 5px 5px;" value="Letra 2:"/>
+                                    </td>
+                                    <td style="width:70px;margin: 5px 5px;">
+                                        <h:outputText id="compDircc9a" style="font-weight: bold;margin: 5px 5px;" value="Bis:"/>
+                                    </td>
+                                    <td style="width:120px;margin: 5px 5px;">
+                                        <h:outputText  id="compDircc10s" style="font-weight: bold;margin: 5px 5px;" value="Cardinales:"/>
+                                    </td>
+                                </tr>                                             
+
+                                <tr>
+                                    <td style="width:130px;margin: 5px 5px;">
+                                        <h:selectOneMenu id="viaPrincipala"  value="#{crearOtHhppBean.drDireccion.tipoViaPrincipal}" style="width:120px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems   value="#{crearOtHhppBean.obtenerListadoTipoSolicitudList('CALLES_DIR')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                    </td>
+
+                                    <td style="width:120px;margin: 5px 5px;">                                                                           
+                                        <h:inputText  id="compDircc12a"  value="#{crearOtHhppBean.drDireccion.numViaPrincipal}" style="width:105px;" >                              
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:inputText>  
+                                    </td>
+
+                                    <td style="width:70px;margin: 5px 5px;"> 
+                                        <h:selectOneMenu id="letraUnoPrincipala"  value="#{crearOtHhppBean.drDireccion.ltViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems  value="#{crearOtHhppBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>      
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                    </td>
+
+                                    <td style="width:70px;margin: 5px 5px;"> 
+                                        <h:selectOneMenu id="letraDosPrincipala"  value="#{crearOtHhppBean.drDireccion.nlPostViaP}" style="width:60px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems  value="#{crearOtHhppBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>                                    
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                    </td>
+
+                                    <td style="width:70px;margin: 5px 5px;"> 
+                                        <h:selectOneMenu id="bisPrincipala"   value="#{crearOtHhppBean.drDireccion.bisViaPrincipal}" style="width:60px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems    value="#{crearOtHhppBean.optionBisDir('DIR_ALFANUMERICO')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>                                   
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                    </td>
+
+                                    <td style="width:120px;margin: 5px 5px;"> 
+                                        <h:selectOneMenu id="cuadrantePrincipala"  value="#{crearOtHhppBean.drDireccion.cuadViaPrincipal}" style="width:100px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems    value="#{crearOtHhppBean.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}" var="ppal" itemLabel="#{ppal.descripcion}" itemValue="#{ppal.descripcion}"/>
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6">
+                                        <h:outputText  id="compDircc17a" value="#"  style=" font-size: 25px; text-align: center;margin:5px 5px;"></h:outputText>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table id="calleCarrera_9a" style="padding:5px 5px;" cellpadding="2" cellspacing="2">
+                                <tr>
+                                    <td style="text-align:center;" colspan="9">
+                                        <h:outputText id="compDircc18s" value="Placa" style="text-decoration:underline;font-weight:bold;text-align:center;vertical-align: middle;" ></h:outputText>
+                                    </td>
+                                </tr> 
+                                <tr>
+                                    <td style="width:130px;margin:5px 5px;">                
+                                        <h:outputText  id="compDircc20a" style="font-weight:bold;margin:5px 5px;" value="Cruce"/>
+                                    </td>
+                                    <td style="width:120px;margin:5px 5px;">                     
+                                        <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegNumGena" value="*"/>
+                                        <h:outputText  id="compDircc21s" style="font-weight:bold;margin:5px 5px;" value="Núm:"/>
+                                    </td>
+                                    <td style="width:70px;margin:5px 5px;">
+                                        <h:outputText  id="compDircc22a" style="font-weight:bold;margin:5px 5px;" value="Letra:"/>
+                                    </td>
+                                    <td style="width:70px;margin:5px 5px;">
+                                        <h:outputText  id="compDircc23d" style="font-weight:bold;margin:5px 5px;" value="Letra 2:"/>
+                                    </td>
+                                    <td style="width:70px;margin:5px 5px;">
+                                        <h:outputText  id="compDircc24a" style="font-weight:bold;margin:5px 5px;" value="Letra 3:"/>
+                                    </td>
+                                    <td style="width:120px;margin:5px 5px;">
+                                        <h:outputText  id="compDircc25d" style="font-weight:bold;margin:5px 5px;" value="Bis:"/>
+                                    </td>
+                                    <td style="width:120px;margin:5px 5px;">
+                                        <h:outputText  id="compDircc26a" style="font-weight:bold;margin:5px 5px;" value="Cardinales:"/>
+                                    </td>
+                                    <td>
+                                        <h:outputText></h:outputText>
+                                    </td>
+                                    <td style="width:120px;margin:5px 5px;">
+                                        <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="tipoRegPlaa" value="*"/>
+                                        <h:outputText  id="compDircc27a" value="No. Placa:" style="font-weight:bold;margin:5px 5px;"/>
+                                    </td>                  
+                                </tr>
+                                <tr>
+                                    <td style="width:130px;margin: 5px 5px;">
+                                        <h:selectOneMenu id="viaGeneradoras" value="#{crearOtHhppBean.drDireccion.tipoViaGeneradora}" style="width:120px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems value="#{crearOtHhppBean.obtenerListadoTipoSolicitudList('CALLES_DIR_GEN')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu> 
+                                    </td>
+                                    <td style="width:120px;margin: 5px 5px;">
+                                        <h:inputText id="compDircc261a" value="#{crearOtHhppBean.drDireccion.numViaGeneradora}" style="width:105px;margin: 5px 5px;" >
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:inputText>
+                                    </td>
+                                    <td style="width:70px;margin: 5px 5px;">
+                                        <h:selectOneMenu  id="letraUnoGeneradoras" value="#{crearOtHhppBean.drDireccion.ltViaGeneradora}" style="width:60px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems value="#{crearOtHhppBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                    </td> 
+                                    <td style="width:70px;margin: 5px 5px;">
+                                        <h:selectOneMenu id="letraDosGeneradoraa" value="#{crearOtHhppBean.drDireccion.nlPostViaG}" style="width:60px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems value="#{crearOtHhppBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>                                        
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                    </td>
+                                    <td style="width:70px;margin: 5px 5px;">
+                                        <h:selectOneMenu id="letraTresGeneradoraa" value="#{crearOtHhppBean.drDireccion.letra3G}" style="width:60px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems value="#{crearOtHhppBean.obtenerListadoTipoSolicitudList('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn"/>
+                                        </h:selectOneMenu>
+                                    </td> 
+                                    <td style="width:120px;margin: 5px 5px;">
+                                        <h:selectOneMenu id="bisGeneradoras" value="#{crearOtHhppBean.drDireccion.bisViaGeneradora}" style="width:100px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems value="#{crearOtHhppBean.optionBisDir('DIR_ALFANUMERICO')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                    </td>                                   
+                                    <td style="width:120px;margin: 5px 5px;">
+                                        <h:selectOneMenu id="cuadranteGeneradoras" value="#{crearOtHhppBean.drDireccion.cuadViaGeneradora}" style="width:100px;margin: 5px 5px;">
+                                            <f:selectItem itemValue="" itemLabel=""/>
+                                            <f:selectItems value="#{crearOtHhppBean.obtenerListadoTipoSolicitudList('DIR_CUADRANTE')}" var="gen" itemLabel="#{gen.descripcion}" itemValue="#{gen.descripcion}"/>
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel"/>
+                                        </h:selectOneMenu>
+                                    </td>
+                                    <td>
+                                        <h:outputText  id="compDircc3a4" value="#{' '}-#{' '}" style="font-size: 25px; font-weight:bold"></h:outputText>
+                                    </td> 
+                                    <td style="width:120px;margin: 5px 5px;">
+                                        <h:inputText id="compDircc35a1"  value="#{crearOtHhppBean.drDireccion.placaDireccion}" style="width:90px;margin:5px 5px;">   
+                                            <f:ajax event="change" listener="#{crearOtHhppBean.buildDireccion()}" render="createDireccionn direccionStrLabel compDircc35a1"/>
+                                        </h:inputText>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;" colspan="9">
+                                        <h:outputText value="#{crearOtHhppBean.createDireccion}" style="font-weight:bold;color:red;" id="createDireccionn"/>
+                                    </td>
+                                </tr>                        
+                            </table>                               
+                        </h:panelGroup>
+                    </h:panelGroup>
+                    <h:panelGroup id="bmPanel" rendered="#{crearOtHhppBean.showBMPanel}">
+
+                        <h:panelGrid columns="6" >
+                            <h:panelGroup > 
+                                <h:outputText id="addInfo" value="*Ingrese uno a uno los valores:" /> </h:panelGroup>
+                            <h:panelGroup >
+                                <h:selectOneMenu disabled="#{crearOtHhppBean.otCreada}"                                     
+                                                 style="width: 100%" id="tipoDireccionBMComboBox" 
+                                                 value="#{crearOtHhppBean.tipoNivelBm}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{crearOtHhppBean.bmList}" 
+                                                   var="barriomanzana"  itemValue="#{barriomanzana.idParametro}" 
+                                                   itemLabel="#{barriomanzana.descripcion}"/>
+                                </h:selectOneMenu></h:panelGroup>
+                            <h:panelGroup ><h:inputText disabled="#{crearOtHhppBean.otCreada}" value="#{crearOtHhppBean.nivelValorBm}" 
+                                                        id="tipoDireccionBM" style="width: 100%; margin-right: 10px;" maxlength="250"  />
+                            </h:panelGroup>              
+                            <h:panelGroup ><h:commandButton                                      
+                                    title="Construir Direccion" disabled="#{crearOtHhppBean.otCreada}" value="Guardar" styleClass="btn"
+                                    action="#{crearOtHhppBean.construirDireccionBm()}" 
+                                    id="agregarInfoBMButton" /></h:panelGroup>
+                            <h:panelGroup ></h:panelGroup>
+                            <h:panelGroup ></h:panelGroup>
+                        </h:panelGrid>
+                    </h:panelGroup>
+
+                    <h:panelGroup id="itPanel" rendered="#{crearOtHhppBean.showITPanel}">
+
+                        <h:panelGrid columns="6" >
+                            <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="it" value="*"/> <h:outputText id="addInfoIt" value="Ingrese uno a uno los valores:" /> </h:panelGroup>
+                            <h:panelGroup ><h:selectOneMenu disabled="#{crearOtHhppBean.otCreada}" style="width: 100%"  id="tipoDireccionITComboBox"  value="#{crearOtHhppBean.tipoNivelIt}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{crearOtHhppBean.itList}" 
+                                                   var="intraducible"  itemValue="#{intraducible.idParametro}" itemLabel="#{intraducible.descripcion}"/>
+
+                                </h:selectOneMenu></h:panelGroup>
+                            <h:panelGroup ><h:inputText value="#{crearOtHhppBean.nivelValorIt}" disabled="#{crearOtHhppBean.otCreada}" id="tipoDireccionIt" style="width: 100%;margin-right: 10px;" maxlength="250"  /></h:panelGroup>              
+                            <h:panelGroup ><h:commandButton disabled="#{crearOtHhppBean.otCreada}" title="Construir Direccion" styleClass="btn" value="Guardar" action="#{crearOtHhppBean.construirDireccionIt()}" id="agregarInfoItButton"  /></h:panelGroup>
+                            <h:panelGroup ></h:panelGroup>
+                            <h:panelGroup ></h:panelGroup>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </h:panelGroup>
+
+                <h:panelGrid columns="8"   style="width:100%;"  > 
+
+                    <h:outputText style="font-weight:bold" id="complementoLabel" value="Complemento:" />   
+
+                    <h:selectOneMenu disabled="#{crearOtHhppBean.otCreada}" style="width: 90%"  id="tipoComplementoComboBox" 
+                                     value="#{crearOtHhppBean.tipoNivelComplemento}"> 
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                        <f:selectItems value="#{crearOtHhppBean.complementoList}" 
+                                       var="complemento"  itemValue="#{complemento.idParametro}" 
+                                       itemLabel="#{complemento.descripcion}"/>
+                    </h:selectOneMenu>   
+
+                    <h:inputText disabled="#{crearOtHhppBean.otCreada}" maxlength="50" style="margin-right: 10px;width: 90%" id="complementoParametro" 
+                                 value="#{crearOtHhppBean.complemento}" />  
+
+                    <h:commandButton disabled="#{crearOtHhppBean.otCreada}" title="Construir Dirección"
+                                     action="#{crearOtHhppBean.construirDireccionComplemento()}"
+                                     id="agregarComplementoButton" styleClass="btn" value="Guardar"> 
+
+                    </h:commandButton> 
+                    <h:outputText style="font-weight:bold" id="apartamentoLabel" value="Apartamento:" />
+
+                    <h:selectOneMenu disabled="#{crearOtHhppBean.otCreada}" style="width: 90%"  id="tipoApartamentoComboBox" 
+                                     value="#{crearOtHhppBean.tipoNivelApartamento}">
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                        <f:selectItems value="#{crearOtHhppBean.aptoList}" 
+                                       var="apartamento"  itemValue="#{apartamento.idParametro}"
+                                       itemLabel="#{apartamento.descripcion}"/>
+                    </h:selectOneMenu>  
+
+
+
+                    <h:inputText disabled="#{crearOtHhppBean.otCreada}" maxlength="10" style="margin-right: 10px;width: 90%" id="apartamentoParametro" 
+                                 value="#{crearOtHhppBean.apartamento}" />             
+
+
+                    <h:commandButton disabled="#{crearOtHhppBean.otCreada}" title="Construir Dirección"  
+                                     action="#{crearOtHhppBean.construirDireccionApartamento()}"
+                                     id="agregarApartamentoButton" styleClass="btn" value="Guardar"/>
+
+                </h:panelGrid>
+            </div>
+            <h:panelGroup id="barriosSugeridospanelWrapper" >
+                <h:panelGroup id="barriosSugeridosPanel" rendered="#{crearOtHhppBean.barrioSugeridoPanel}" >
+                    <hr size="5" width="100%" align="LEFT"/>
+                    <div style="border: 2px groove #f70808; margin: 9px;padding: 8px;">
+
+                        <span class="TituloSeccion"> <h:outputText style="font-weight:bold; font-size: 14px;color: red;"  id="barriospan" value="BARRIO SUGERIDO"/></span>
+                        <br/>
+                        <h:panelGrid columns="6" >
+
+                            <h:panelGroup > <h:outputText style="font-weight:bold; font-size: 16px;color: red;"  id="barrioSug" value="*"/> <h:outputText id="barrioSugeridoLabel"
+                                                                                                                                                          value="Seleccione barrio sugerido:" /> </h:panelGroup>
+                            <h:panelGroup > 
+                                <h:selectOneMenu style="width: 100%"  id="barrioSugeridoComboBox" 
+                                                 value="#{crearOtHhppBean.barrioSugerido}">
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue=""/>
+                                    <f:selectItems value="#{crearOtHhppBean.barrioSugeridoList}" var="barriomanzana"  itemValue="#{barriomanzana.neighborhood}" itemLabel="#{barriomanzana.neighborhood}" />
+                                    <f:ajax event="change" execute="barrioSugeridoComboBox"
+                                            listener="#{crearOtHhppBean.validarBarrioSugeridoSeleccionado()}"
+                                            render="barriosSugeridospanelWrapper barrioStr"/>
+                                </h:selectOneMenu>
+                            </h:panelGroup>
+                            <h:panelGroup > 
+                                <h:outputText id="barrioText" rendered="#{crearOtHhppBean.barrioSugeridoField}"
+                                              value="Ingrese barrio:" /></h:panelGroup>
+                            <h:panelGroup >
+                                <h:inputText id="barrioField" rendered="#{crearOtHhppBean.barrioSugeridoField}"  value="#{crearOtHhppBean.barrioSugeridoStr}"/></h:panelGroup>
+                            <h:panelGroup >
+                                <h:commandButton rendered="#{crearOtHhppBean.barrioSugeridoField}"
+                                                 action="#{crearOtHhppBean.agregarBarrioSugerido}"
+                                                 id="agregarBarrioButton" value="Agregar Barrio" 
+                                                 styleClass="btn" > 
+                                    <f:ajax event="change" execute="@this" render="barrioStr"/>
+                                </h:commandButton></h:panelGroup>
+                            <h:panelGroup ></h:panelGroup>
+
+                        </h:panelGrid>
+                    </div>
+                </h:panelGroup>
+
+            </h:panelGroup>
+            <div style="width: 100%; text-align: center;" >
+
+                <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;" 
+                              id="direccionStrLabel" value="#{crearOtHhppBean.direccionLabel}" />  
+                <h:outputText escape="false" id="espaciobarrio" value="#{crearOtHhppBean.espacio}" />  
+                <h:outputText style="font-size: 20px;font-weight: bold;font-style: oblique;" id="barrioStr" 
+                              value="#{crearOtHhppBean.barrioSugeridoStr}" />  
+
+
+            </div>
+
+            <div style="width: 100%; text-align: center;" >
+                <h:commandButton title="Crear"  disabled="#{crearOtHhppBean.otCreada}"
+                                 action="#{crearOtHhppBean.crearDireccionOtDirecciones()}" rendered="#{crearOtHhppBean.botonCrearDireccion}"
+                                 id="crearDireccion" styleClass="btn" value="Crear Direccion"/>
+
+                <h:commandButton title="Buscar Direccion"  disabled="#{crearOtHhppBean.otCreada}"
+                                 action="#{crearOtHhppBean.buscarHhpp()}"
+                                 id="searchHhppButton" styleClass="btn" value="Buscar"/>
+
+                <h:commandButton title="Limpiar búsqueda Direcciones"  disabled="#{crearOtHhppBean.otCreada}"
+                                 action="#{crearOtHhppBean.limpiarBusqueda()}"
+                                 id="cleanButton" styleClass="btn" value="Limpiar"/>
+                <h:commandButton title="Retornar al listado de Ot"  
+
+                                 action="#{crearOtHhppBean.irListadoOtHhpp()}"
+                                 id="goBackOtButtn" styleClass="btn" value="Atrás"/>
+            </div>  
+            <h:dataTable id="hhppList" 
+                         value="#{crearOtHhppBean.direccionesDetalladasList}" 
+                         var="direccion"
+                         rows="15"
+                         rendered="#{crearOtHhppBean.crearDireccion}"
+                         styleClass="constructGTable" 
+                         rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                         style="width: 100%">
+                <f:facet name="headerButtoon">                                       
+
+                </f:facet>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Dirección" />                                                                     
+                    </f:facet>   
+                    <h:commandLink id="selectCheck" style="color: red"
+                                   value="#{direccion.direccion.dirFormatoIgac}" title="Seleccionar Direccion" 
+                                   actionListener="#{crearOtHhppBean.seleccionarDireccion(direccion)}"/>
+
+                </h:column>                                 
+
+                <h:column >   
+                    <f:facet name="header">
+                        <h:outputText value="Apartamento" />
+                    </f:facet>
+                    <h:outputText value="#{direccion.cpTipoNivel5} #{direccion.cpValorNivel5} - #{direccion.cpValorNivel6}"/>                                        
+                </h:column>
+
+                <h:column >   
+                    <f:facet name="header">
+                        <h:outputText value="Barrio" />
+                    </f:facet>
+                    <h:outputText value="#{direccion.barrio}"/>                                        
+                </h:column>
+
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Ciudad" />
+                    </f:facet>
+                    <h:outputText value="#{direccion.direccion.ubicacion.gpoIdObj.gpoNombre}"/>                                        
+                </h:column>
+                <h:column>   
+                    <f:facet name="header">
+                        <h:outputText value="Centro Poblado" />
+                    </f:facet>
+                    <h:outputText value="#{direccion.direccion.ubicacion.gpoIdObj.gpoNombre}"/>                                        
+                </h:column>
+
+                <f:facet name="footer" >
+                    <h:panelGroup >
+                        <h:commandButton title="Primera Página" value="#{crearOtHhppBean.inicioPagina}" action="#{crearOtHhppBean.pageFirst}"
+                                         class="btn"/>
+                        <h:commandButton title="Página Anterior" value="#{crearOtHhppBean.anteriorPagina}" action="#{crearOtHhppBean.pagePrevious}"
+                                         class="btn"/>
+                        <h:commandButton title="Número Páginas" value="#{crearOtHhppBean.pageActual}" styleClass="botonTPagInicio"    />
+                        <h:selectOneMenu id="listTabla" value="#{crearOtHhppBean.numPagina}" 
+                                         styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                            <f:selectItems value="#{crearOtHhppBean.paginaList}" var="pag"
+                                           itemValue="#{pag}"
+                                           itemLabel="#{pag}"/>    
+                            <f:ajax render="@form"  event="change"  
+                                    listener="#{crearOtHhppBean.irPagina()}"  
+                                    execute="@this" />                                         
+                        </h:selectOneMenu>  
+                        <h:commandButton title="Página Siguiente" value="#{crearOtHhppBean.siguientePagina}" action="#{crearOtHhppBean.pageNext}"
+                                         class="btn"/>
+                        <h:commandButton title="Última Página" value="#{crearOtHhppBean.finPagina}" action="#{crearOtHhppBean.pageLast}"
+                                         class="btn"/>
+                    </h:panelGroup>
+                </f:facet>                           
+            </h:dataTable> 
+            <div style="width: 100%; text-align: center;">
+                <h:outputText rendered="#{crearOtHhppBean.crearDireccion}" style="font-weight: bold;text-align: center; font-size: 15px"  id="mensaje" value="Si la dirección buscada no se encuentra en el listado anterior, por favor cree la direccion  en el boton crear."/>  
+            </div>
+
+            <br/><br/>
+
+
+        </h:panelGroup>
+
+        <h:panelGroup id="panelConstruirDireccionNoManual" rendered="#{crearOtHhppBean.busquedaHhppManual}" >
+            <h2 style="margin-left: -12px">DIRECCIÓN</h2>                 
+            <div>
+                <h:outputText style="font-size: 16px;font-weight: bold;" id="direccionDetalladaCargada" 
+                              value="#{crearOtHhppBean.otHhppCreada.direccionDetalladaId.direccionTexto}"/> 
+            </div>
+        </h:panelGroup>
+        <hr size="5" width="100%" align="LEFT"/>
+
+        <h:panelGroup style="width: 100%" class="formulario3"  id="tabsWrap" rendered="#{crearOtHhppBean.mostrarPanelCrearOT}"> 
+            <h2 style="margin-top: -15px; 
+                margin-left: -12px;text-align: center;">CREAR OT</h2>
+            <br/>
+            <h:panelGroup style="width: 100%"  id="generalTab" rendered="#{crearOtHhppBean.generalTab}">
+
+                <h:panelGrid columns="6" id="contenidoGeneral" class="formulario3" style="width:100%;" > 
+
+                    <h:outputText style="font-weight: bold;"  id="tipoOt" value="*Tipo Ot Dirección"/>   
+                    <h:selectOneMenu disabled="#{crearOtHhppBean.otCreada}"
+                                     style="width: 145px" id="tipoOtComboBox" value="#{crearOtHhppBean.tipoOtHhppId}" >
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                        <f:selectItems value="#{crearOtHhppBean.tipoOtHhppList}" 
+                                       var="tipoOtHhpp" itemLabel="#{tipoOtHhpp.nombreTipoOt}" 
+                                       itemValue="#{tipoOtHhpp.tipoOtId}"/>
+                        <f:ajax event="change" execute="tipoOtComboBox"
+                                listener="#{crearOtHhppBean.obtenerEstadosTipoOtHhpp()}"
+                                render="form33646:tabsWrap"  />
+                    </h:selectOneMenu> 
+
+                    <h:outputText  style="font-weight: bold;" id="contactoLabel" value="*Contacto:" /> 
+                    <h:inputText   disabled="#{crearOtHhppBean.otCreada}"
+                                   id="contactoTxt" value="#{crearOtHhppBean.nombreContacto}"  
+                                   validatorMessage="El campo de Contacto debe contener solo LETRAS.">                                
+                        <f:validateRegex pattern="[a-zA-Z\s]*"/> 
+                    </h:inputText>
+
+                    <h:outputText  style="font-weight: bold;" id="telefono" value="*Teléfono Contacto:" /> 
+                    <h:inputText  disabled="#{crearOtHhppBean.otCreada}"
+                                  id="telfonoContacto" maxlength="10" value="#{crearOtHhppBean.telefonoContacto}"                                  
+                                  validatorMessage="El teléfono Contacto debe tener 7 o 10 digitos"
+                                  converterMessage="El teléfono Contacto debe ser númerico.">                            
+                        <f:validateLength minimum="7" maximum="10"/> 
+                        <f:convertNumber integerOnly="true" type="number" pattern="#0" /> 
+                    </h:inputText> 
+
+                    <h:outputText  style="font-weight: bold;" id="correo" value="*Correo Contacto:" /> 
+                    <h:inputText disabled="#{crearOtHhppBean.otCreada}"  
+                                 id="email" maxlength="50" value="#{crearOtHhppBean.correoContacto}"  />                          
+
+
+                    <h:outputText style="font-weight: bold;" id="fechaCreacion" value="*Fecha Creacion Ot:"/>   
+                    <h:outputText  id="fechaCrear" value="#{crearOtHhppBean.fechaCreacionOt}" /> 
+
+                    <h:outputText style="font-weight: bold;" id="estadoGeneral" value="*Estado General:" /> 
+                    <h:selectOneMenu disabled="false"
+                                     style="width:145px" id="estadoInicial" 
+                                     value="#{crearOtHhppBean.estadoInicial}" >
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                        <f:selectItems value="#{crearOtHhppBean.estadoGeneralList}"  
+                                       var="estadoGeneral" itemLabel="#{estadoGeneral.nombreBasica}" 
+                                       itemValue="#{estadoGeneral.basicaId}"/>    
+                        <f:ajax event="change" execute="estadoInicial"
+                                listener="#{crearOtHhppBean.obtenerEstadoInicialInternoList()}"
+                                render="estadoInicialInterno" />
+                    </h:selectOneMenu> 
+
+                    <h:outputText style="font-weight: bold;"  id="razonInicial" value="*Razón inicial:"/>   
+                    <h:selectOneMenu disabled="false"
+                                     style="width:145px" id="estadoInicialInterno" 
+                                     value="#{crearOtHhppBean.estadoInicialInterno}" >
+                        <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                        <f:selectItems value="#{crearOtHhppBean.estadoInicialInternoList}" 
+                                       var="inicialInterno" itemLabel="#{inicialInterno.nombreBasica}" 
+                                       itemValue="#{inicialInterno.basicaId}"/> 
+                    </h:selectOneMenu>  
+
+                    <h:outputText style="font-weight: bold;"  id="SegmentoOtLabel" value="*Segmento:"/>
+                     <h:selectOneMenu id="SegmentoOtList"  
+                                     value="#{crearOtHhppBean.segmentoIdBasica}"
+                                     style="width: 100%"
+                                     styleClass="ListaConsulta"
+                                     required="true" 
+                                     requiredMessage="Es necesario el segmento para la creaci&oacute;n de la orden de trabajo" >
+                        <f:selectItem itemValue="0" itemLabel="Seleccione Uno." />
+                        <f:selectItems value="#{crearOtHhppBean.tipoSegmentoOtList}" 
+                                       var="lds"
+                                       itemValue="#{lds.basicaId}"
+                                       itemLabel="#{lds.nombreBasica}" />
+                    </h:selectOneMenu>
+                    <h:outputText value=""/>  
+                    <h:outputText value=""/> 
+                    <h:outputText value=""/> 
+                    <h:outputText value=""/> 
+
+                </h:panelGrid>
+
+                <div style="width: 100%; text-align: left;" >
+
+                    <h:panelGrid columns="1">
+                        <h:dataTable id="subTable"
+                                     var="tec" 
+                                     rendered="#{crearOtHhppBean.mostrarTablaTecnologias}"
+                                     value="#{crearOtHhppBean.tecnologiaBasicaList}"     
+                                     styleClass="constructGTable2"
+                                     headerClass="constructGTableHeader" 
+                                     rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                            <h:column>
+                                <f:facet name="header" >
+                                    <h:outputText value="Tecnología"  />
+                                </f:facet>
+                                <h:outputText  value="#{tec.nombreBasica}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nodo Cobertura"/>
+                                </f:facet>
+                                <h:outputText value="#{crearOtHhppBean.establecerNodoCoberturaSugerido(tec)}"/> 
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nodo Cercano"/>
+                                </f:facet>
+                                <h:selectOneMenu id="idNodoCer" value="#{tec.nodoCercano}" >  
+                                    <f:selectItem itemLabel="Seleccione Uno" itemValue="" />
+                                    <f:selectItems value="#{crearOtHhppBean.obtenerNodosCercanosList(tec)}" 
+                                                   var="nodo"
+                                                   itemValue="#{nodo.nodId}"
+                                                   itemLabel="Nodo: #{nodo.nodCodigo} : #{nodo.direccionStr}"/>                             
+                                    <f:ajax event="change" 
+                                            execute="@this" 
+                                            listener="#{crearOtHhppBean.seleccionaNodoCercano(tec)}" 
+                                            render="subTable:idNodoGestion"/>
+                                </h:selectOneMenu>
+                            </h:column> 
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nodo Gestión"/>
+                                </f:facet>
+                                <h:inputText id="idNodoGestion" value="#{tec.nodoGestion}"/>                     
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Enviar a RR"/>
+                                </f:facet>
+                                <div style="text-align: center;">
+                                    <h:selectBooleanCheckbox  value="#{tec.sincronizaRr}" id="sincroRr"/>  
+                                </div>
+                            </h:column>
+                        </h:dataTable>  
+
+                        <h:outputText rendered="#{!crearOtHhppBean.mostrarTablaTecnologias and 
+                                                  (!(crearOtHhppBean.tipoOtHhppSeleccionado eq null) 
+                                                  and crearOtHhppBean.tipoOtHhppSeleccionado.manejaVisitaDomiciliaria eq '0')}" 
+                                      style="font-weight: bold;"  
+                                      id="TecnologiaDeTrabajoId" value="*Tecnologia De trabajo:"/>   
+                        <h:selectOneMenu  id="SelTecnologiaDeTrabajo" style="width: 140px;"           
+                                          value="#{crearOtHhppBean.tecnologiaHabTrabajo.hhpId}" 
+                                          rendered="#{!crearOtHhppBean.mostrarTablaTecnologias and 
+                                                      (!(crearOtHhppBean.tipoOtHhppSeleccionado eq null) 
+                                                      and crearOtHhppBean.tipoOtHhppSeleccionado.manejaVisitaDomiciliaria eq '0')}">
+                            <f:selectItem itemValue="0" itemLabel="Seleccione Uno"/>
+                            <f:selectItems value="#{crearOtHhppBean.tecnologiaHabilitadaList}" 
+                                           var="tecTrabaObj"
+                                           itemValue="#{tecTrabaObj.hhpId}"
+                                           itemLabel="#{tecTrabaObj.nodId.nodTipo.codigoBasica}:#{tecTrabaObj.nodId.nodCodigo}">
+                            </f:selectItems>   
+                        </h:selectOneMenu>  
+                    </h:panelGrid>
+
+                </div>
+                <hr size="5" width="100%" align="LEFT"/>
+
+                <div style="width: 100%; text-align: center;" >
+                    <h:commandButton title="Crear Ot Dirección"   disabled="#{crearOtHhppBean.otCreada}"
+                                     action="#{crearOtHhppBean.crearOtHhpp()}"
+                                     id="crearOtHhppButton" styleClass="btn" value="Crear Ot Dirección"/>
+
+                    <h:commandButton title="Limpiar ot"  
+                                     action="#{crearOtHhppBean.limpiarFormulario()}"
+                                     id="cleanOtButton" styleClass="btn" value="Limpiar"/>
+
+                    <h:commandButton title="Retornar al listado de Ot"  
+                                     action="#{crearOtHhppBean.irListadoOtHhpp()}"
+                                     id="goBackOtButton" styleClass="btn" value="Atrás"/>
+                </div>     
+                <hr size="5" width="100%" align="LEFT"/>
+            </h:panelGroup>            
+        </h:panelGroup>
+    </ui:define>    
+</ui:composition>

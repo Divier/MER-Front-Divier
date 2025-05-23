@@ -1,0 +1,1918 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/template/homeFichasTemplate.xhtml"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">
+        <span class="TituloSeccion">Generación Ficha Nodos</span>
+    </ui:define>    
+    <ui:define name="contenido">
+        <style>
+            .ui-fileupload-simple .ui-button {
+                overflow: hidden;
+                background: #D52B1E;
+                margin-left: 510px;
+                margin-top: -0.5px;
+                height: 23px;
+                color: white;
+                border-radius: 5px;
+                padding-top: 7px;
+            }
+
+            .ui-fileupload-filename {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 70%;
+                height: 30px;
+                border: solid 1px lightgray;
+                border-radius: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+        <h:form id="formCargue" enctype="multipart/form-data">
+            <h:panelGroup>
+                <div style="overflow:scroll auto;height: auto;max-height: 400px; ">
+                    <h:dataTable id="prefichaValidarTable"  binding="#{cargueFichasBean.dataTable}"
+                                 value="#{cargueFichasBean.registrosCargue}" var="preFicha"
+                                 styleClass="constructGTable"
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        <f:facet name="header">
+                            <h:outputText value="PreFichas a Validar" />
+                        </f:facet>                       
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Archivo Cargado" />
+                            </f:facet>
+                            <h:outputText value="#{preFicha.arc}" />  
+                        </h:column>                        
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Fecha" />
+                            </f:facet>
+                            <h:outputText value="#{preFicha.fechaReg}" />
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado" />
+                            </f:facet>
+                            <p:commandLink value="#{preFicha.estado}" 
+                                           ajax="false" 
+                                           action="#{cargueFichasBean.consultaInformacionInicial()}" 
+                                           styleClass="unblockClaro"  
+                                           update="prefichaValidarTable">
+                            </p:commandLink>
+                        </h:column>  
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Descargar Archivo" />
+                            </f:facet>
+                            <h:commandLink value="Descargar" id="btnPreficha"
+                                           actionListener="#{cargueFichasBean.descargarArchivo(preFicha.linMasivoId, preFicha.arcOut)}" 
+                                           class="buttonl"
+                                           target="_blank"
+                                           style="color:#FFFFFF;"
+                                           immediate="true"
+                                           rendered="#{preFicha.estado.toString() eq 'PROCESADO CON ERRORES'}"
+                                           >                                 
+                            </h:commandLink>
+                        </h:column>                                                     
+                    </h:dataTable>
+                </div>
+            </h:panelGroup>        
+            <br></br>
+            <br></br>                          
+            <p:fieldset legend="Cargue Masivo Fichas" id="fieldCargueMasivo" style="margin-bottom:20px;background-color: white;color: black">
+                <h:outputText style="font-weight: bold" value="Nombre del Archivo:"/>
+                <p:fileUpload id="file" accept="UTF-8" value="#{cargueFichasBean.uploadedFile}" label="Seleccionar" mode="simple" skinSimple="true" required="true"/>
+                <h:commandButton                    
+                    id="buttonProcesar"
+                    action="#{cargueFichasBean.uploadFile}"
+                    value="Procesar"
+                    styleClass="btn"
+                    style="color:#FFFFFF; font-weight:700; height:32px">                    
+                </h:commandButton>
+                <br></br>
+                <br></br>
+            </p:fieldset>                                 
+        </h:form>
+        <br></br>
+        <br></br>
+
+        <!-- CREAR PREFICHA--> 
+        <h:form id="formDatosDT" enctype="multipart/form-data">
+            <h:panelGroup>
+                <div style="overflow:scroll auto;height: auto;max-height: 400px; ">
+                    <h:dataTable id="prefichaValidarTable"  binding="#{cargueFichasBean.dataTableCrearPreficha}"
+                                 value="#{cargueFichasBean.preFichaToCreateList}" var="preFicha" 
+                                 styleClass="constructGTable"
+                                 headerClass="solicitudesGTableHeader" rows="10"
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        <f:facet name="header">
+                            <h:outputText value="PreFichas disponibles para creación" />
+                        </f:facet>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Archivo Cargado" />
+                            </f:facet>
+                            <h:outputText value="#{preFicha.nombreArchivo}" />  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Usuario Generación" />
+                            </f:facet>
+                            <h:outputText value="#{preFicha.prfUsuarioGenera}" />  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Fecha Generación" />
+                            </f:facet>
+                            <h:outputText value="#{preFicha.prfFechaGenera}" >
+                                <f:convertDateTime type="date" pattern="MMM dd, yyyy hh:mm"/>
+                            </h:outputText>
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Estado" />
+                            </f:facet>
+                            <h:outputText value="#{preFicha.fase}" />  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Cargar" />
+                            </f:facet>
+                            <!-- Boton Georreferencia Crear PreFicha-->
+                            <h:commandButton value="Gestionar Ficha"
+                                             action="#{cargueFichasBean.gestionarFichas}"
+                                             disabled="#{!cargueFichasBean.validarOpcionCargarPreficha()}"
+                                             styleClass="btn" style="color:#FFFFFF;" 
+                                             rendered="#{preFicha.georreferenciada  != '1'}">
+                                <f:setPropertyActionListener target="#{cargueFichasBean.idPrefichaSelected}" value="#{preFicha.id}" />
+                            </h:commandButton>
+                            <!-- Boton Cargar info Crear Ficha-->
+                            <h:commandButton value="Cargar info"
+                                             disabled="#{!cargueFichasBean.validarOpcionCargarInfo()}"
+                                             action="#{cargueFichasBean.cargarDetalleFicha(preFicha, false)}"
+                                             styleClass="btn" style="color:#FFFFFF;"
+                                             rendered="#{preFicha.georreferenciada  eq '1'}">
+                            </h:commandButton>
+                            
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:selectBooleanCheckbox id="selEliminarTodo"  title="Eliminar" label="Eliminar" value="#{cargueFichasBean.eliminarTodoSelected}"
+                                                         disabled="#{not cargueFichasBean.registrosFiltrados or not cargueFichasBean.filtroAplicado}"> 
+                                    <p:ajax  event="change"  update="formDatosDT pMessagesExterno" listener="#{cargueFichasBean.marcarTodo()}"/>                                    
+                                </h:selectBooleanCheckbox>
+                                <h:outputText value="Eliminar" />
+                            </f:facet>
+                            <h:selectBooleanCheckbox  id="selEliminar"
+                                                      value="#{preFicha.selected}" disabled="#{cargueFichasBean.todasLasPreFichasMarcadas or not cargueFichasBean.rangoFechasValido or not cargueFichasBean.filtroAplicado}">
+                                <p:ajax  event="change" update="formDatosDT" listener="#{cargueFichasBean.evaluarSiHayFichasMarcadas()}"/>
+                            </h:selectBooleanCheckbox>
+                        </h:column>
+                        <f:facet name="footer" >
+                            <h:panelGroup>
+                                <div style="text-align: center;">
+                                    <h:commandButton title="Primera Página" value="" id="paginaUno"
+                                                     class="botonTPagInicioCm botonBaselista"
+                                                     disabled="#{not cargueFichasBean.filtroAplicado}">
+                                        <p:ajax update="formDatosDT"
+                                                listener="#{cargueFichasBean.pageFirst}"/>
+                                    </h:commandButton>
+                                    <h:commandButton title="Página Anterior" value="" id="paginaAnterior"
+                                                     class="botonTPagAnteriorCm botonBaselista"
+                                                     disabled="#{not cargueFichasBean.filtroAplicado}">
+                                        <p:ajax update="formDatosDT"
+                                                listener="#{cargueFichasBean.pagePrevious}"/>
+                                    </h:commandButton>
+                                    <h:commandButton title="Número Páginas" value="#{cargueFichasBean.pageActual}" immediate="true" id="numeroPaginas"
+                                                     styleClass="botonTPagInicio"
+                                                     disabled="#{not cargueFichasBean.filtroAplicado}"/>
+                                    <h:selectOneMenu id="listTabla" value="#{cargueFichasBean.numPagina}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;"
+                                                     disabled="#{not cargueFichasBean.filtroAplicado}">
+                                        <f:selectItems value="#{cargueFichasBean.paginaList}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>
+                                        <p:ajax update="formDatosDT" event="change"
+                                                listener="#{cargueFichasBean.irPagina()}"/>
+                                    </h:selectOneMenu>
+                                    <h:commandButton title="Página Siguiente" value="" id="paginaSiguiente"
+                                                     class="botonTPagSiguienteCm botonBaselista"
+                                                     disabled="#{not cargueFichasBean.filtroAplicado}">
+                                        <p:ajax update="formDatosDT"
+                                                listener="#{cargueFichasBean.pageNext}"/>
+                                    </h:commandButton> 
+                                    <h:commandButton title="Última Página" value="" id="pagianUltima"
+                                                     class="botonTPagFinCm botonBaselista"
+                                                     disabled="#{not cargueFichasBean.filtroAplicado}">
+                                        <p:ajax update="formDatosDT"
+                                                listener="#{cargueFichasBean.pageLast}"/>
+                                    </h:commandButton>
+                                    <h:outputText value="Fecha Inicial"  />                                  
+                                    <h:inputText label="Fecha Inicial" id="fechaInicial" style="width: 9%" disabled="#{cargueFichasBean.hayFichasSeleccionadas}" 
+                                                 a:type="date" a:min="1900-01-01" a:max="9999-12-31" value="#{cargueFichasBean.fechaInicial}" >
+                                        <f:convertDateTime type="date" pattern="yyyy-MM-dd"/>
+                                        <p:ajax event="valueChange" listener="#{cargueFichasBean.fechaAlterada()}" delay="1500"
+                                                update="formDatosDT"/>
+                                    </h:inputText>
+                                    <h:outputText value="Fecha Final" />
+                                    <h:inputText label="Fecha Final" id="fechaFinal"  style="width: 9%" disabled="#{cargueFichasBean.hayFichasSeleccionadas}" 
+                                                 a:type="date" a:min="1900-01-01" a:max="9999-12-31" value="#{cargueFichasBean.fechaFinal}" >
+                                        <f:convertDateTime type="date" pattern="yyyy-MM-dd"/> 
+                                        <p:ajax event="valueChange"  listener="#{cargueFichasBean.fechaAlterada()}" delay="1500"
+                                                update="formDatosDT"/>
+                                    </h:inputText>
+                                    <h:commandButton id="btnFiltrar"
+
+                                                     value="Filtrar" styleClass="btn"
+                                                     disabled="#{cargueFichasBean.hayFichasSeleccionadas or not cargueFichasBean.rangoFechasValido or cargueFichasBean.filtroAplicado}">
+                                        <p:ajax update="formDatosDT pMessagesExterno"
+                                                listener="#{cargueFichasBean.filtrarLista}"/>
+                                    </h:commandButton>
+                                    <h:commandButton id="btnEliminar" title="Eliminar" value="Eliminar"
+                                                     styleClass="btn" style="color:#FFFFFF;" rendered="#{cargueFichasBean.hayFichasSeleccionadas}" onclick="return confirm('¿Está seguro que desea eliminar el(los) registro(s) seleccionado(s)?');"
+                                                     disabled="#{!cargueFichasBean.validarOpcionEliminarPreficha()}">
+                                        <p:ajax update="formDatosDT  pMessagesExterno"
+                                                listener="#{cargueFichasBean.getSelectedFichasPorEliminar}" />                                       
+                                    </h:commandButton>
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>      
+                    </h:dataTable>
+                </div>
+            </h:panelGroup>
+        </h:form>
+
+        <!-- PANEL CREAR FICHA/RR/HHPP -->
+        <h:form id="formDatos">    
+
+            <h:panelGroup id="panelCreateHHHPPinRR" >
+                <hr size="5" width="100%" align="LEFT"/>
+
+                <h:commandLink value="Descargar Informe" target="_blank"
+                               style="color:#FFFFFF;"  class="buttonLarge"  rendered="#{cargueFichasBean.observacionesFichas != null and cargueFichasBean.observacionesFichas.size() >0 and cargueFichasBean.creoCCMMHPP}"
+                               actionListener="#{cargueFichasBean.generarExcelResultadoCargue()}"  immediate="true"/>
+                <h:commandLink value="Exportar" target="_blank"
+                               style="color:#FFFFFF;"  class="buttonLarge"  rendered="#{cargueFichasBean.observacionesFichas != null and cargueFichasBean.observacionesFichas.size() >0 and cargueFichasBean.creoCCMMHPP}"
+                               actionListener="#{cargueFichasBean.desacargarExportProcesoFichas()}"  immediate="true"/>
+
+                <div style="height: auto;max-height: 300px;overflow: scroll auto;margin-top: 2%;">
+                    <h:dataTable value="#{cargueFichasBean.observacionesFichas}" 
+                                 var="entry"
+                                 id="hhppCreadosTable" 
+                                 style="width: 100%;"
+                                 styleClass="constructGTable"                                     
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        <h:column id="colDirFicha">   
+                            <f:facet name="header">
+                                <h:outputText value="Dirección" />
+                            </f:facet>
+                            <h:outputText value="#{entry.direccion}" />  
+                        </h:column>
+                        <h:column>   
+                            <f:facet name="header">
+                                <h:outputText value="Observaciones" />
+                            </f:facet>
+                            <h:outputText value="#{entry.observaciones}" />  
+                        </h:column>
+                    </h:dataTable>
+                </div>
+
+            </h:panelGroup>                
+
+            <h:panelGroup id="panelButtoonCreateHHHPPinRR" rendered="#{cargueFichasBean.isInfoForCreate}">
+                <hr size="5" width="100%" align="LEFT"/>
+                <h:commandButton value="Crear CCMM HHPP" 
+                                 action="#{cargueFichasBean.crearCCMMHHPP}" 
+                                 styleClass="buttonLarge" style="color:#FFFFFF;">
+                </h:commandButton>
+            </h:panelGroup>
+            <h:panelGroup id="panelHHPPProcesados" rendered="#{cargueFichasBean.isInfoProcesada}">
+                <hr size="5" width="100%" align="LEFT"/>
+                <h:commandButton value="Guardar"
+                                 id="GuardarProceso"
+                                 rendered="#{(!cargueFichasBean.isInfoForCreate) and (!cargueFichasBean.creoCCMMHPP)}"
+                                 action="#{cargueFichasBean.crearHHPPRR}" 
+                                 styleClass="buttonLarge" style="color:#FFFFFF;">
+                    <p:ajax event="change" update="GuardarProceso" />                    
+                </h:commandButton>
+                <br></br>
+
+                <t:panelTabbedPane id="panelResultadoHHPP" selectedIndex="0" style="height: 300px; width: 100%; overflow:scroll;" 
+                                   title="Direcciones No Procesadas" rendered="#{cargueFichasBean.fichaProcessXlsList.size() > 0}">
+
+                    <t:panelTab label="EDIFICIOS VT">
+                        <div style="height: 280px;width: 100%; overflow:scroll;">
+                            <h:dataTable id="edificiosVTList" 
+                                         value="#{cargueFichasBean.edificios}" var="fichaXls"
+                                         styleClass="constructGTable"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         rendered="#{cargueFichasBean.edificios.size() > 0}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="HHPP procesados a partir de la Preficha" />
+                                </f:facet>
+
+                                <h:column  >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Conjunto" />
+                                    </f:facet>
+                                    <h:outputText  value="#{fichaXls.nombreConj}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.distribucion}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Alternas Obtenidas" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{fichaXls.direccionCCMMStrList}" var="direccionFichaCCMMXls" style="min-width: 250px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{fichaXls.direccionCCMMStrList.size() >0}">
+                                        <h:column >
+                                            <h:outputText value="#{direccionFichaCCMMXls}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Obtenidas" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{fichaXls.direccionStrList}" var="direccionFichaXls" style="min-width: 250px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{fichaXls.direccionStrList.size() >0}">
+                                        <h:column >
+                                            <h:outputText value="#{direccionFichaXls}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="HHPP Obtenidos / Tipo de Vivienda" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{fichaXls.hhppDetalleList}" var="hhpp" style="width: 345px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{fichaXls.hhppDetalleList.size() >0}">
+                                        <h:column>
+                                            <h:outputText value="#{hhpp.direccionRR}" />
+                                        </h:column>
+                                        <h:column>
+                                            <h:selectOneMenu id="lstTipoVivienda"
+                                                             value="#{hhpp.tipoVivienda}"
+                                                             styleClass="ListaConsulta"  style=" width: 170px">
+                                                <f:selectItems value="#{cargueFichasBean.listaTipoHhpp}" var="tipoVivienda"
+                                                               itemValue="#{tipoVivienda.thhID}"
+                                                               itemLabel="#{tipoVivienda.thhID.concat(' - ').concat(tipoVivienda.thhValor)}"/>
+                                            </h:selectOneMenu>
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Clasificación" />
+                                    </f:facet>
+                                    <h:dataTable  
+                                        value="#{fichaXls.listClasificacion}" var="clasifiacion" style="width: 175px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{fichaXls.listClasificacion.size() >0}">
+                                        <h:column>
+                                            <h:outputText value="#{clasifiacion}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+
+                    </t:panelTab>
+
+
+                    <t:panelTab label="CASAS RED EXTERNA">
+                        <div style="height: 280px;width: 100%; overflow:scroll;">
+                            <h:dataTable id="casasRedExternaList" 
+                                         value="#{cargueFichasBean.casas}" var="fichaXls"
+                                         styleClass="constructGTable"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         rendered="#{cargueFichasBean.casas.size() > 0}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="HHPP procesados a partir de la Preficha" />
+                                </f:facet>
+
+                                <h:column  >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Conjunto" />
+                                    </f:facet>
+                                    <h:outputText  value="#{fichaXls.nombreConj}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.distribucion}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Obtenidas" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{fichaXls.direccionStrList}" var="direccionFichaXls" style="min-width: 250px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{fichaXls.direccionStrList.size() >0}">
+                                        <h:column >
+                                            <h:outputText value="#{direccionFichaXls}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="HHPP Obtenidos / Tipo de Vivienda" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{fichaXls.hhppDetalleList}" var="hhpp" style="width: 345px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{fichaXls.hhppDetalleList.size() >0}">
+                                        <h:column>
+                                            <h:outputText value="#{hhpp.direccionRR}" />
+                                        </h:column>
+                                        <h:column>
+                                            <h:selectOneMenu id="lstTipoVivienda"
+                                                             value="#{hhpp.tipoVivienda}"
+                                                             styleClass="ListaConsulta"  style=" width: 170px">
+                                                <f:selectItems value="#{cargueFichasBean.listaTipoHhpp}" var="tipoVivienda"
+                                                               itemValue="#{tipoVivienda.thhID}"
+                                                               itemLabel="#{tipoVivienda.thhID.concat(' - ').concat(tipoVivienda.thhValor)}"/>
+                                            </h:selectOneMenu>
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Clasificación" />
+                                    </f:facet>
+                                    <h:dataTable  
+                                        value="#{fichaXls.listClasificacion}" var="clasifiacion" style="width: 175px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{fichaXls.listClasificacion.size() >0}">
+                                        <h:column>
+                                            <h:outputText value="#{clasifiacion}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+
+                    </t:panelTab>
+
+                    <t:panelTab label="CONJUNTO CASAS VT">
+                        <div style="height: 280px;width: 100%; overflow:scroll;">
+                            <h:dataTable id="conjuntoCasasList" 
+                                         value="#{cargueFichasBean.conjuntoCasas}" var="fichaXls" 
+                                         styleClass="constructGTable"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                         rendered="#{cargueFichasBean.conjuntoCasas.size() > 0}">
+
+                                <f:facet name="header">
+                                    <h:outputText value="HHPP procesados a partir de la Preficha" />
+                                </f:facet>
+
+                                <h:column  >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Conjunto" />
+                                    </f:facet>
+                                    <h:outputText  value="#{fichaXls.nombreConj}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.distribucion}" />
+                                </h:column>
+                                <h:column >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Obtenidas" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{fichaXls.direccionStrList}" var="direccionFichaXls" style="min-width: 250px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{fichaXls.direccionStrList.size() >0}">
+                                        <h:column >
+                                            <h:outputText value="#{direccionFichaXls}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="HHPP Obtenidos / Tipo de Vivienda" />
+                                    </f:facet>
+                                    <h:dataTable 
+                                        value="#{fichaXls.hhppDetalleList}" var="hhpp" style="width: 345px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{fichaXls.hhppDetalleList.size() >0}">
+                                        <h:column>
+                                            <h:outputText value="#{hhpp.direccionRR}" />
+                                        </h:column>
+                                        <h:column>
+                                            <h:selectOneMenu id="lstTipoVivienda"
+                                                             value="#{hhpp.tipoVivienda}"
+                                                             styleClass="ListaConsulta"  style=" width: 170px">
+                                                <f:selectItems value="#{cargueFichasBean.listaTipoHhpp}" var="tipoVivienda"
+                                                               itemValue="#{tipoVivienda.thhID}"
+                                                               itemLabel="#{tipoVivienda.thhID.concat(' - ').concat(tipoVivienda.thhValor)}"/>
+                                            </h:selectOneMenu>
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                                <h:column> 
+                                    <f:facet name="header">
+                                        <h:outputText value="Clasificación" />
+                                    </f:facet>
+                                    <h:dataTable  
+                                        value="#{fichaXls.listClasificacion}" var="clasifiacion" style="width: 175px;"
+                                        styleClass="constructGTable"                                     
+                                        rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                        rendered="#{fichaXls.listClasificacion.size() >0}">
+                                        <h:column>
+                                            <h:outputText value="#{clasifiacion}" />
+                                        </h:column>
+                                    </h:dataTable>
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+
+                    </t:panelTab>
+                </t:panelTabbedPane>
+
+            </h:panelGroup>
+            <h:panelGroup rendered="#{cargueFichasBean.fichaXlsMglList.size() > 0}">
+                <hr size="5" width="100%" align="LEFT"/>
+                <h:commandButton value="Crear Ficha"
+                                 id="CrearFichaBtn"
+                                 action="#{cargueFichasBean.procesarPreficha()}" 
+                                 disabled="#{cargueFichasBean.isInfoProcesada == 'true' }"
+                                 rendered = "#{cargueFichasBean.fichaXlsMglListNoProcesados.size() == 0 and cargueFichasBean.fichaXlsListActCasa.size() == 0 }"
+                                 styleClass="buttonLarge" style="color:#FFFFFF;">
+                </h:commandButton>
+                <h:commandButton value="Validar Ficha" 
+                                 action="validarFicha" 
+                                 styleClass="buttonLarge" style="color:#FFFFFF;"
+                                 rendered = "false">
+                </h:commandButton>                
+
+                <h:panelGrid columns="4" rendered = "#{cargueFichasBean.fichaXlsMglListNoProcesados.size() == 0}">    
+
+                    <h:outputLabel class="EtiquetaConsulta" value="Marca CCMM 1:"/> 
+                    <h:selectOneMenu id="listMarcasCM1" value="#{cargueFichasBean.blackListCM1}" 
+                                     styleClass="ListaConsulta"
+                                     required="true">
+                        <f:selectItem itemValue="0" itemLabel="" />
+                        <f:selectItems value="#{cargueFichasBean.listMarcasCM}" var="mCM1"
+                                       itemValue="#{mCM1.basicaId}"
+                                       itemLabel="#{mCM1.codigoBasica} - #{mCM1.descripcion}"/>   
+                        <f:ajax event="change" execute="listMarcasCM1" 
+                                />
+                    </h:selectOneMenu> 
+                    <h:outputLabel class="EtiquetaConsulta" value="Marca CCMM 2:"/> 
+                    <h:selectOneMenu id="listMarcasCM2" value="#{cargueFichasBean.blackListCM2}" 
+                                     styleClass="ListaConsulta"
+                                     required="true">
+                        <f:selectItem itemValue="0" itemLabel="" />
+                        <f:selectItems value="#{cargueFichasBean.listMarcasCM}" var="mCM2"
+                                       itemValue="#{mCM2.basicaId}"
+                                       itemLabel="#{mCM2.codigoBasica} - #{mCM2.descripcion}"/>   
+                        <f:ajax event="change" execute="listMarcasCM2" 
+                                />
+                    </h:selectOneMenu>
+
+                    <h:outputLabel class="EtiquetaConsulta" value="Marca HHPP 1:"/> 
+                    <h:selectOneMenu id="listMarcasHhpp1" value="#{cargueFichasBean.blackListHhpp1}" 
+                                     styleClass="ListaConsulta"
+                                     required="true">
+                        <f:selectItem itemValue="0" itemLabel="" />
+                        <f:selectItems value="#{cargueFichasBean.listMarcas}" var="mHhpp1"
+                                       itemValue="#{mHhpp1.marCodigo}"
+                                       itemLabel="#{mHhpp1.marCodigo} - #{mHhpp1.marNombre}"/>   
+                        <f:ajax event="change" execute="listMarcasHhpp1" 
+                                />
+                    </h:selectOneMenu> 
+                    <h:outputLabel class="EtiquetaConsulta" value="Marca HHPP 2:"/> 
+                    <h:selectOneMenu id="listMarcasHhpp2" value="#{cargueFichasBean.blackListHhpp2}" 
+                                     styleClass="ListaConsulta"
+                                     required="true">
+                        <f:selectItem itemValue="0" itemLabel="" />
+                        <f:selectItems value="#{cargueFichasBean.listMarcas}" var="mHhpp2"
+                                       itemValue="#{mHhpp2.marCodigo}"
+                                       itemLabel="#{mHhpp2.marCodigo} - #{mHhpp2.marNombre}"/>   
+                        <f:ajax event="change" execute="listMarcasHhpp2" 
+                                />
+                    </h:selectOneMenu>
+
+                    <h:outputLabel class="EtiquetaConsulta" value="Notas"/> 
+                </h:panelGrid>
+                <h:inputTextarea id="comentariosNota"  rendered = "#{cargueFichasBean.fichaXlsMglListNoProcesados.size() == 0}" value="#{cargueFichasBean.nota}" style="margin-left: 5px; width: 100%;" requiredMessage="La nota es obligatoria"/><br/><br/>
+
+
+                <h:panelGrid columns="3" style="float: left;" rendered="#{cargueFichasBean.fichaXlsMglList.size() > 0 and cargueFichasBean.fichaXlsMglListNoProcesados.size()==0 and !cargueFichasBean.isInfoProcesada}">
+                    <h:outputLabel value="Cambio Estrato Masivo:" />
+                    <h:selectOneMenu value="#{cargueFichasBean.cambioEstratoMasivo}" style="width: 100px;">
+                        <f:selectItem itemValue="" itemLabel="--Seleccione--"/>
+                        <f:selectItems value="#{cargueFichasBean.listadoEstratos}" var="estrato" itemValue="#{estrato.codigoBasica}" itemLabel="#{estrato.descripcion}"/>
+                        <f:ajax event="change"/>
+                    </h:selectOneMenu>
+                    <h:commandButton value="Aplicar Estrato" action="#{cargueFichasBean.aplicarCambioEstratoMasivo()}" styleClass="buttonLarge" style="color:#FFFFFF;">
+                        <p:ajax  update="formDatos"/>
+                    </h:commandButton>
+                </h:panelGrid>
+
+                <t:panelTabbedPane id="principalPanel" selectedIndex="0" style="height: 300px; width: 100%; overflow:scroll;" 
+                                   title="Ficha A Generar" rendered="#{cargueFichasBean.fichaXlsMglList.size() > 0}">
+
+                    <t:panelTab label="EDIFICIOS VT">
+                        <div style="height: 280px; max-width:1290px; overflow:scroll;">
+                            <h:dataTable id="edificiosVtXlsTable" 
+                                         value="#{cargueFichasBean.edificiosVtXls}" var="fichaXls"
+                                         styleClass="constructGTable"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                                <f:facet name="header">
+                                    <h:outputText value="#{cargueFichasBean.labelHeaderTableLists}" />
+                                </f:facet>
+
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Conjunto" />
+                                    </f:facet>
+                                    <h:outputText  value="#{fichaXls.nombreConj}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaEdificios.aptos}" style="width: 50px;" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}" update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaEdificios.locales}" style="width: 50px;" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;">
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}" update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                        <h:inputText  value="#{cargueFichasBean.filtrosPrefichaEdificios.oficinas}"  style="width: 50px;" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;">
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}" update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                        <h:inputText  value="#{cargueFichasBean.filtrosPrefichaEdificios.distribucion}" style="width: 100px;" >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}" update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio Geo" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.neighborhood}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estrato" />
+                                        <h:inputText  value="#{cargueFichasBean.filtrosPrefichaEdificios.estrato}" style="width: 50px;" >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}"  update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.levelEconomic}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dirección" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.address}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Clasificación" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.clasificacion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Fuente" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.source}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Alterna" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.alternateAddress}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Localidad" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.locality}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Manzana" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.appletStandar}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CX" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cx}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CY" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cy}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Resultado" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.resultadoGeorref}" />
+                                </h:column>
+                                <h:column rendered="#{cargueFichasBean.fichaXlsMglListNoProcesados.size()==0}" >
+                                    <f:facet name="header"><h:outputText value="Asignar Estrato" /></f:facet>
+                                    <!--CAMBIO ESTRATO 1 A 1--> 
+                                    <h:selectOneMenu value="#{fichaXls.fichaGeorreferenciaMgl.cambioEstrato}" style="width: 100px;" disabled="#{cargueFichasBean.isInfoProcesada}">
+                                        <f:selectItem itemValue="" itemLabel="--Seleccione--"/>
+                                        <f:selectItems value="#{cargueFichasBean.listadoEstratos}" var="estrato" itemValue="#{estrato.codigoBasica}" itemLabel="#{estrato.descripcion}"/>
+                                        <p:ajax event="change" listener="#{cargueFichasBean.aplicarCambioEstratoIndividual(fichaXls)}" update="formDatos"/>
+                                    </h:selectOneMenu>
+                                </h:column>
+                                <h:column >
+                                    <f:facet name="header">
+                                        <h:outputText value="Error Estandarización" />
+                                    </f:facet>  
+                                    <h:commandButton id="mostrarComponenteButtonEdificio" rendered="#{fichaXls.geoDrDireccionNotNull}"
+                                                     action="#{cargueFichasBean.irPopUpDireccionFicha(fichaXls)}"
+                                                     title="Validar direcci&oacute;n" 
+                                                     style="width: 13px; "
+                                                     image="/view/MGL/images/error.png">
+                                    </h:commandButton>
+                                    <h:commandButton id="mostrarComponenteButtonEdificio2" rendered="#{fichaXls.geoDrDireccionNull}"
+                                                     action="DireccionCorrecta"
+                                                     title="Direcci&oacute;n validada" 
+                                                     style="width: 13px; "
+                                                     image="/view/MGL/images/success.png">
+                                    </h:commandButton>                 
+
+                                </h:column> 
+
+                            </h:dataTable>
+                        </div>
+
+                    </t:panelTab>
+
+                    <t:panelTab label="CASAS RED EXTERNA">
+                        <div style="height: 280px; max-width:none; overflow:scroll;">
+                            <h:dataTable id="edificiosVtXlsTable" 
+                                         value="#{cargueFichasBean.casasRedExternaXls}" var="fichaXls" 
+                                         styleClass="constructGTable"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                                <f:facet name="header">
+                                    <h:outputText value="#{cargueFichasBean.labelHeaderTableLists}" />
+                                </f:facet>
+
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaCasas.aptos}" style="width: 50px;" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;">
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}"  update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaCasas.locales}" style="width: 50px;" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}"  update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaCasas.oficinas}" style="width: 50px;" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}"  update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaCasas.distribucion}" style="width: 100px;" >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}" update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio Geo" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.neighborhood}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estrato" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaCasas.estrato}" style="width: 50px;" >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}"  update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.levelEconomic}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dirección" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.address}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Fuente" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.source}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Alterna" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.alternateAddress}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Localidad" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.locality}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Manzana" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.appletStandar}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CX" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cx}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CY" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cy}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Resultado" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.resultadoGeorref}" />
+                                </h:column>
+                                <h:column rendered="#{cargueFichasBean.fichaXlsMglListNoProcesados.size()==0}" >
+                                    <f:facet name="header"><h:outputText value="Asignar Estrato" /></f:facet>
+                                    <!--CAMBIO ESTRATO 1 A 1--> 
+                                    <h:selectOneMenu value="#{fichaXls.fichaGeorreferenciaMgl.cambioEstrato}" style="width: 100px;" disabled="#{cargueFichasBean.isInfoProcesada}">
+                                        <f:selectItem itemValue="" itemLabel="--Seleccione--"/>
+                                        <f:selectItems value="#{cargueFichasBean.listadoEstratos}" var="estrato" itemValue="#{estrato.codigoBasica}" itemLabel="#{estrato.descripcion}"/>
+                                        <p:ajax event="change" listener="#{cargueFichasBean.aplicarCambioEstratoIndividual(fichaXls)}" update="formDatos"/>
+                                    </h:selectOneMenu>
+                                </h:column>  
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Error Estandarización" />
+                                    </f:facet>  
+                                    <h:commandButton id="mostrarComponenteButtonSolCrea" rendered="#{fichaXls.geoDrDireccionNotNull}"
+                                                     action="#{cargueFichasBean.irPopUpDireccionFicha(fichaXls)}"
+                                                     title="Validar direcci&oacute;n" 
+                                                     style="width: 13px; "
+                                                     image="/view/MGL/images/error.png">
+                                    </h:commandButton>
+                                    <h:commandButton id="mostrarComponenteButtonSolCrea2"  rendered="#{fichaXls.geoDrDireccionNull and cargueFichasBean.dirOk}"
+                                                     action="DireccionCorrecta"
+                                                     title="Direcci&oacute;n validada" 
+                                                     style="width: 13px; "
+                                                     image="/view/MGL/images/success.png">
+                                    </h:commandButton>
+
+                                </h:column> 
+                            </h:dataTable>
+                        </div>
+                    </t:panelTab>
+
+                    <t:panelTab label="CONJUNTO CASAS VT">
+                        <div style="height: 280px; max-width:1290px; overflow:scroll;">
+                            <h:dataTable id="edificiosVtXlsTable" 
+                                         value="#{cargueFichasBean.conjCasasVtXls}" var="fichaXls"
+                                         styleClass="constructGTable"                                     
+                                         rowClasses="constructGTableEvenRow, constructGTableOddRow">
+
+                                <f:facet name="header">
+                                    <h:outputText value="#{cargueFichasBean.labelHeaderTableLists}" />
+                                </f:facet>
+
+                                <h:column  >   
+                                    <f:facet name="header">
+                                        <h:outputText value="Nombre Conjunto" />
+                                    </f:facet>
+                                    <h:outputText  value="#{fichaXls.nombreConj}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Vía Principal" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.viaPrincipal}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Placa" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.placa}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Total HHPP" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.totalHHPP}" /> 
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Aptos" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaConjuntoCasas.aptos}" style="width: 50px;" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}"  update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.aptos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Locales" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaConjuntoCasas.locales}" style="width: 50px;" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}"  update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.locales}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Oficinas" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaConjuntoCasas.oficinas}" style="width: 50px;" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}"  update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.oficinas}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Pisos" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.pisos}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.barrio}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Distribución" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaConjuntoCasas.distribucion}" style="width: 100px;"  >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}" update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.distribucion}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Barrio Geo" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.neighborhood}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Estrato" />
+                                        <h:inputText value="#{cargueFichasBean.filtrosPrefichaConjuntoCasas.estrato}" style="width: 50px;"  >
+                                            <p:ajax event="change" listener="#{cargueFichasBean.cargarListadosPrefichas()}" update="formDatos"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.levelEconomic}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dirección" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.address}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Fuente" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.source}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Dir Alterna" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.alternateAddress}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Localidad" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.locality}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Manzana" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.appletStandar}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CX" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cx}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="CY" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cy}" />
+                                </h:column>
+                                <h:column>   
+                                    <f:facet name="header">
+                                        <h:outputText value="Resultado" />
+                                    </f:facet>
+                                    <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.resultadoGeorref}" />
+                                </h:column>
+                                <h:column rendered="#{cargueFichasBean.fichaXlsMglListNoProcesados.size()==0}" >
+                                    <f:facet name="header"><h:outputText value="Asignar Estrato" /></f:facet>
+                                    <!--CAMBIO ESTRATO 1 A 1--> 
+                                    <h:selectOneMenu value="#{fichaXls.fichaGeorreferenciaMgl.cambioEstrato}" style="width: 100px;" disabled="#{cargueFichasBean.isInfoProcesada}">
+                                        <f:selectItem itemValue="" itemLabel="--Seleccione--"/>
+                                        <f:selectItems value="#{cargueFichasBean.listadoEstratos}" var="estrato" itemValue="#{estrato.codigoBasica}" itemLabel="#{estrato.descripcion}"/>
+                                        <p:ajax event="change" listener="#{cargueFichasBean.aplicarCambioEstratoIndividual(fichaXls)}"  update="formDatos"/>
+                                    </h:selectOneMenu>
+                                </h:column>
+                                <h:column >
+                                    <f:facet name="header">
+                                        <h:outputText value="Error Estandarización" />
+                                    </f:facet>  
+                                    <h:commandButton id="mostrarComponenteButtonConjunto" rendered="#{fichaXls.geoDrDireccionNotNull}"
+                                                     action="#{cargueFichasBean.irPopUpDireccionFicha(fichaXls)}"
+                                                     title="Validar direcci&oacute;n" 
+                                                     style="width: 13px; "
+                                                     image="/view/MGL/images/error.png">
+                                    </h:commandButton>
+                                    <h:commandButton id="mostrarComponenteButtonConjunto2" rendered="#{fichaXls.geoDrDireccionNull and cargueFichasBean.dirOk}"
+                                                     action="DireccionCorrecta"
+                                                     title="Direcci&oacute;n validada" 
+                                                     style="width: 13px; "
+                                                     image="/view/MGL/images/success.png">
+                                    </h:commandButton>
+
+                                </h:column> 
+                            </h:dataTable>
+                        </div>
+
+                    </t:panelTab>
+                </t:panelTabbedPane>
+
+                <div style= "background-repeat:no-repeat; background-position-y: bottom;height:30px; 
+                     width:100%; text-align: center; font-size: 13px;padding-top: 8px;"> 
+                    <h:outputText style=" color: black; margin-top: -15px; 
+                                  margin-left: -12px;text-align: center;font-weight: bold;" 
+                                  rendered="#{cargueFichasBean.fichaXlsMglListNoProcesados.size() > 0 and cargueFichasBean.fichaXlsListActCasa.size() == 0}" value="DIRECCIONES SIN PROCESAR" />
+                </div>
+                <!--ACTUALIZA CASA-->                
+                <h:panelGroup rendered="#{cargueFichasBean.fichaXlsListActCasa.size() > 0}">
+                    <p:outputLabel value="Actualizar HHPP CASA"/>
+                    <br></br>
+                    <h:commandButton value="Actualizar HHPP Existentes" 
+                                 action="#{cargueFichasBean.actualizarHhpp()}" 
+                                 styleClass="btn" style="color:#FFFFFF;" >                                 
+                    </h:commandButton>
+                    <div style="height: 280px; width: 100%; overflow:scroll;">
+                        <h:dataTable id="actualizaCasaTable"
+                            value="#{cargueFichasBean.fichaXlsListActCasa}" var="ficha" 
+                            styleClass="constructGTable"                                     
+                            rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                            rendered="#{cargueFichasBean.fichaXlsListActCasa.size() > 0}">
+
+                            <f:facet name="header">
+                                <h:outputText value="#{cargueFichasBean.labelHeaderTableLists}" />
+                            </f:facet>
+
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Via Principal" />
+                                </f:facet>
+                                <h:inputText value="#{ficha.viaPrincipal}" onblur="this.value = this.value.toUpperCase()">
+                                    <f:ajax event="change"  />
+                                </h:inputText>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Placa" />
+                                </f:facet>
+                                <h:inputText value="#{ficha.placa}" onblur="this.value = this.value.toUpperCase()" disabled="#{cargueFichasBean.validaPlacaCCMM(ficha)}" >
+                                    <f:ajax event="change"  />
+                                </h:inputText>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Total HHPP" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.totalHHPP}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Aptos" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.aptos}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Locales" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.locales}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Oficinas" />
+                                </f:facet>
+                                <h:outputText value="#{fichaXls.oficinas}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Pisos" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.pisos}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Barrio" />
+                                </f:facet>
+                                <h:inputText value="#{ficha.barrio}" onblur="this.value = this.value.toUpperCase()">
+                                    <f:ajax event="change"  />
+                                </h:inputText>
+                            </h:column>
+                            <h:column>                                
+                                <f:facet name="header">
+                                    <h:outputText value="Nuevo Apto" />
+                                </f:facet>
+                                <!-- SelectOneMenu en cada fila -->
+                                <p:selectOneMenu value="#{ficha.nuevoApto}" styleClass="ListaConsulta" style=" width: 160px">
+                                    <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                    <f:selectItems
+                                        value="#{cargueFichasBean.aptoList}"
+                                        var="apartamento"
+                                        itemValue="#{apartamento.idParametro}"
+                                        itemLabel="#{apartamento.descripcion}"/>
+                                    
+                                </p:selectOneMenu>                                
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Distribución" />
+                                </f:facet>
+                                <h:inputText value="#{ficha.nuevaDist}" onblur="this.value = this.value.toUpperCase()">
+                                    <f:ajax event="change"  />
+                                </h:inputText>
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Barrio Geo" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.fichaGeorreferenciaMgl.neighborhood}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Estrato" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.fichaGeorreferenciaMgl.levelEconomic}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Dirección" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.fichaGeorreferenciaMgl.address}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Fuente" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.fichaGeorreferenciaMgl.source}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Dir ALterna" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.fichaGeorreferenciaMgl.alternateAddress}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Localidad" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.fichaGeorreferenciaMgl.locality}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="Manzana" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.fichaGeorreferenciaMgl.appletStandar}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="CX" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.fichaGeorreferenciaMgl.cx}" />
+                            </h:column>
+                            <h:column>   
+                                <f:facet name="header">
+                                    <h:outputText value="CY" />
+                                </f:facet>
+                                <h:outputText value="#{ficha.fichaGeorreferenciaMgl.cy}" />
+                            </h:column>
+                        </h:dataTable>
+                    </div>                    
+                </h:panelGroup>
+                <!--ACTUALIZA CASA-->
+                <div style="height: 500px;">
+                    <center>
+                        <h:commandButton value="Actualizar No Procesados" action="#{cargueFichasBean.modificarPrefichasNoProcesadas}" styleClass="buttonLarge" style="color:#FFFFFF;width:12%;background-size:cover" rendered="#{cargueFichasBean.fichaXlsMglListNoProcesados.size() > 0 and cargueFichasBean.fichaXlsListActCasa.size() == 0}"/>
+                    </center> 
+                    <t:panelTabbedPane id="panelCorreccion" selectedIndex="0" style="height: 300px; width: 100%; overflow:scroll;margin-top: 1%" 
+                                       title="Direcciones No Procesadas" rendered="#{cargueFichasBean.fichaXlsMglListNoProcesados.size() > 0 and cargueFichasBean.fichaXlsListActCasa.size() == 0}">
+
+                        <t:panelTab label="EDIFICIOS VT">
+                            <div style="height: 280px; max-width: 1290px; overflow:scroll;">
+                                <h:dataTable id="edificiosVtXlsTableNoProcesados" 
+                                             value="#{cargueFichasBean.edificiosVtXlsNoProcesados}" var="fichaXls" 
+                                             styleClass="constructGTable"                                     
+                                             rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                             rendered="#{cargueFichasBean.edificiosVtXlsNoProcesados.size() >0}">
+
+                                    <f:facet name="header">
+                                        <h:outputText value="#{cargueFichasBean.labelHeaderTableLists}" />
+                                    </f:facet>
+
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre Conjunto" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.nombreConj}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Vía Principal" />
+                                        </f:facet>
+                                        <h:inputText value="#{fichaXls.viaPrincipal}" onblur="this.value = this.value.toUpperCase()">
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Placa" />
+                                        </f:facet>
+                                        <h:inputText value="#{fichaXls.placa}" onblur="this.value = this.value.toUpperCase()" disabled="#{cargueFichasBean.validaPlacaCCMM(fichaXls)}" >
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Total HHPP" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.totalHHPP}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Aptos" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.aptos}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Locales" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.locales}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Oficinas" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.oficinas}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Pisos" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.pisos}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Barrio" />
+                                        </f:facet>
+
+                                        <h:inputText value="#{fichaXls.barrio}" onblur="this.value = this.value.toUpperCase()">
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Distribución" />
+                                        </f:facet>
+                                        <h:inputText value="#{fichaXls.distribucion}" rendered="#{fichaXls.clasificacion == 'CASASREDEXTERNA' and (fichaXls.totalHHPP.intValue()>4 or fichaXls.pisos.intValue()>4)}" onblur="this.value = this.value.toUpperCase()">
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Barrio Geo" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.neighborhood}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Estrato" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.levelEconomic}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Dirección" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.address}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Fuente" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.source}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Dir ALterna" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.alternateAddress}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Localidad" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.locality}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Manzana" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.appletStandar}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="CX" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cx}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="CY" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cy}" />
+                                    </h:column>
+                                </h:dataTable>
+                            </div>
+
+                        </t:panelTab>
+
+                        <t:panelTab label="CASAS RED EXTERNA">
+                            <div style="height: 280px; max-width: 1290px; overflow:scroll;">
+                                <h:dataTable id="edificiosVtXlsTableNoProcesados" 
+                                             value="#{cargueFichasBean.casasRedExternaXlsNoProcesados}" var="fichaXls"
+                                             styleClass="constructGTable"                                     
+                                             rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                             rendered="#{cargueFichasBean.casasRedExternaXlsNoProcesados.size() >0}">
+
+                                    <f:facet name="header">
+                                        <h:outputText value="#{cargueFichasBean.labelHeaderTableLists}" />
+                                    </f:facet>
+
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Vía Principal" />
+                                        </f:facet>
+                                        <h:inputText value="#{fichaXls.viaPrincipal}" >
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Placa" />
+                                        </f:facet>
+                                        <h:inputText value="#{fichaXls.placa}" >
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Total HHPP" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.totalHHPP}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Aptos" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.aptos}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Locales" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.locales}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Oficinas" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.oficinas}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Pisos" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.pisos}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Barrio" />
+                                        </f:facet>
+                                        <h:inputText value="#{fichaXls.barrio}" >
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Distribución" />
+                                        </f:facet>
+                                        <h:inputText value="#{fichaXls.distribucion}" onblur="this.value = this.value.toUpperCase()" rendered="#{fichaXls.clasificacion == 'CASASREDEXTERNA' and (fichaXls.totalHHPP.intValue() > 4)}">
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Barrio Geo" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.neighborhood}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Estrato" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.levelEconomic}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Dirección" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.address}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Fuente" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.source}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Dir Alterna" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.alternateAddress}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Localidad" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.locality}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Manzana" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.appletStandar}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="CX" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cx}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="CY" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cy}" />
+                                    </h:column>
+                                </h:dataTable>
+                            </div>
+
+                        </t:panelTab>
+
+                        <t:panelTab label="CONJUNTO CASAS VT">
+                            <div style="height: 280px; max-width: 1290px; overflow:scroll;">
+                                <h:dataTable id="edificiosVtXlsTableNoProcesados" 
+                                             value="#{cargueFichasBean.conjCasasVtXlsNoProcesados}" var="fichaXls"
+                                             styleClass="constructGTable"                                     
+                                             rowClasses="constructGTableEvenRow, constructGTableOddRow"
+                                             rendered="#{cargueFichasBean.conjCasasVtXlsNoProcesados.size() >0}">
+
+                                    <f:facet name="header">
+                                        <h:outputText value="#{cargueFichasBean.labelHeaderTableLists}" />
+                                    </f:facet>
+
+                                    <h:column  >   
+                                        <f:facet name="header">
+                                            <h:outputText value="Nombre Conjunto" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.nombreConj}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Vía Principal" />
+                                        </f:facet>
+                                        <h:inputText value="#{fichaXls.viaPrincipal}" >
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Placa" />
+                                        </f:facet>
+                                        <h:inputText value="#{fichaXls.placa}" >
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Total HHPP" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.totalHHPP}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Aptos" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.aptos}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Locales" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.locales}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Oficinas" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.oficinas}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Pisos" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.pisos}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Barrio" />
+                                        </f:facet>
+                                        <h:inputText value="#{fichaXls.barrio}"  >
+                                            <f:ajax event="change"  />
+                                        </h:inputText>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Distribución" />
+                                        </f:facet>
+                                        <c:if test="#{fichaXls.clasificacion == 'CASASREDEXTERNA'}">
+                                            <h:inputText value="#{fichaXls.distribucion}" onblur="this.value = this.value.toUpperCase()">
+                                                <f:ajax event="change"  />
+                                            </h:inputText>
+                                        </c:if>
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Barrio Geo" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.neighborhood}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Estrato" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.levelEconomic}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Dirección" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.address}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Fuente" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.source}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Dir Alterna" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.alternateAddress}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Localidad" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.locality}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="Manzana" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.appletStandar}" />   
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="CX" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cx}" />
+                                    </h:column>
+                                    <h:column>   
+                                        <f:facet name="header">
+                                            <h:outputText value="CY" />
+                                        </f:facet>
+                                        <h:outputText value="#{fichaXls.fichaGeorreferenciaMgl.cy}" />
+                                    </h:column>   
+                                </h:dataTable>
+                            </div>
+                        </t:panelTab>
+                    </t:panelTabbedPane>
+                </div>
+            </h:panelGroup>
+        </h:form>
+    </ui:define>       
+</ui:composition>

@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"  
+                xmlns:t="http://myfaces.apache.org/tomahawk"              
+                template="/view/MGL/template/VT/moduloHhppTemplate.xhtml"
+                xmlns:componentes="http://xmlns.jcp.org/jsf/composite/componentes" >
+    <ui:define name="title"><span class="TituloSeccion">TIPO OT HHPP LISTADO</span></ui:define>        
+    <ui:define name="content">
+        <h2 style="margin-top: -15px; 
+            margin-left: -12px;text-align: center;">GESTIÓN TIPO DE OT</h2>
+        <div style="text-align: center;" id="crearOTDiv">
+            <h:commandButton id="crearOtButton" styleClass="btn" value="Crear Tipo Ot" disabled="#{!tipoOtHhppBean.validarOpcionCrearOT()}" action="#{tipoOtHhppBean.irCrearTipoOtHhpp()}"> </h:commandButton>
+        </div>
+        <h:dataTable id="tipoOtHhppList" 
+                     value="#{tipoOtHhppBean.tipoOtHhppList}" 
+                     var="otHhpp" rows="15" 
+                     styleClass="constructGTable" 
+                     rowClasses="constructGTableEvenRow, constructGTableOddRow "  
+                     style="width: 100%">
+            <f:facet name="headerButtoon">                                       
+                Listado tipo de Ot
+            </f:facet>
+            <h:column >   
+                <f:facet name="header">  
+                    <h:outputText value="Id" />                                 
+                </f:facet>
+
+                <h:commandLink disabled="#{!tipoOtHhppBean.validarOpcionlinkID()}" >
+                    <h:outputText value="#{otHhpp.tipoOtId}"/>  
+                    <f:ajax event="click" execute="@this" 
+                            listener="#{tipoOtHhppBean.irEditarTipoOtHhpp(otHhpp)}" />  
+                </h:commandLink> 
+
+            </h:column>
+
+            <h:column >   
+                <f:facet name="header">  
+                    <h:outputText value="Nombre Tipo Ot" />                                 
+                </f:facet>
+                <h:outputText value="#{otHhpp.nombreTipoOt}"/>  
+            </h:column>
+     
+                 
+
+            <h:column>   
+                <f:facet name="header">
+                    <h:outputText value="ANS" />                                                                     
+                </f:facet>
+                <h:outputText value="#{otHhpp.ans} (min)"/>    
+            </h:column>  
+
+            <h:column>   
+                <f:facet name="header">
+                    <h:outputText value="ANS AVISO" />                                                                     
+                </f:facet>
+                <h:outputText value="#{otHhpp.ansAviso} (min)"/>    
+            </h:column> 
+            
+            <f:facet name="footer" >
+                <h:panelGroup >
+                    <h:commandButton title="Primera Página" value="#{tipoOtHhppBean.inicioPagina}" action="#{tipoOtHhppBean.pageFirst}"
+                                     class="btn"/>
+                    <h:commandButton title="Página Anterior" value="#{tipoOtHhppBean.anteriorPagina}" action="#{tipoOtHhppBean.pagePrevious}"
+                                     class="btn"/>
+                    <h:commandButton title="Número Páginas" value="#{tipoOtHhppBean.pageActual}" styleClass="botonTPagInicio"    />
+                    <h:selectOneMenu id="listTabla" value="#{tipoOtHhppBean.numPagina}" 
+                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                        <f:selectItems value="#{tipoOtHhppBean.paginaList}" var="pag"
+                                       itemValue="#{pag}"
+                                       itemLabel="#{pag}"/>    
+                        <f:ajax render="@form"  event="change"  
+                                listener="#{tipoOtHhppBean.irPagina()}"  
+                                execute="@this" />                                         
+                    </h:selectOneMenu>  
+                    <h:commandButton title="Página Siguiente" value="#{tipoOtHhppBean.siguientePagina}" action="#{tipoOtHhppBean.pageNext}"
+                                     class="btn"/>
+                    <h:commandButton title="Última Página" value="#{tipoOtHhppBean.finPagina}" action="#{tipoOtHhppBean.pageLast}"
+                                     class="btn"/>
+                </h:panelGroup>
+            </f:facet>                          
+        </h:dataTable>    
+
+
+
+    </ui:define>
+
+
+</ui:composition>

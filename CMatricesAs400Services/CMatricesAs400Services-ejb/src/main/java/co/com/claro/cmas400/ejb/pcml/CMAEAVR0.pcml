@@ -1,0 +1,18 @@
+<pcml version="4.0">                                                            
+   <!-- RPG program: CMAEAVR0  -->                                              
+   <!-- created: 2016-03-02-11.24.28 -->                                        
+   <!-- source: TVCSRC/CMRPGLESRC(CMAEAVR0) -->                                 
+   <!-- 74 -->                                                                  
+   <program name="CMAEAVR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMAEAVR0.PGM">       
+      <data name="PCML" type="char" length="2" usage="inputoutput" />           
+      <data name="CTAMAT" type="char" length="9" usage="inputoutput" />         
+      <data name="SUBEDIFC" type="char" length="4" usage="inputoutput" />       
+      <data name="FUNCION" type="char" length="2" usage="inputoutput" />        
+      <data name="PCONFI" type="char" length="1" usage="inputoutput" />         
+      <data name="PUSERID" type="char" length="10" usage="inputoutput" />       
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />        
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />      
+      <data name="TABLARTA" type="char" length="707" count="100" usage="inputoutput" />      
+      <data name="MENSAJE" type="char" length="63" usage="inputoutput" />       
+   </program>                                                                   
+</pcml>       

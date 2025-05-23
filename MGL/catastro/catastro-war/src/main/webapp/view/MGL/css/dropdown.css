@@ -1,0 +1,433 @@
+/* Dropdown Button */
+.dropbtn {
+    background-color: #C7CBC8;
+    color: black;
+    padding: 2px 16px;
+    font-size: 10px;
+    border: none;
+    cursor: pointer;
+    height: 12px;
+    width: 80px;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 140px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 3;
+    overflow: scroll;
+     height: 100px;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a{
+    color: black;
+    padding: 4px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #B0B2B0 !important}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #C7CBC8 !important;
+} 
+.post-container {
+    margin: 20px 20px 0 0;  
+    border: 5px solid #333;
+    overflow: auto
+}
+.post-thumb {
+    float: right
+}
+.post-thumb img {
+    display: block
+}
+.post-content {
+    margin-left: 210px
+}
+
+.butt {
+    background-color: #B41212; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 3px 3px;
+    cursor: pointer;
+
+}
+
+.butt1:hover {
+    background-color: #E06363 !important
+}
+
+
+
+.button {
+    background-color: #B41212; /* red */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+
+
+.button2:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+
+}
+.fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table td {
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+/*styles  botones pestaña General ot */
+.tabDet .button {
+    background-color: #E6E6E6; /* Green */
+    border: #cccccc;
+    color: black;
+    padding: 8px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    cursor: pointer;
+    float: left;
+    margin: 10px 8px
+}
+.tabDet .button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+}
+.tabDet .button:hover {
+    background-color: #BDBDBD;
+}
+.tabDet .current::after{
+    background: #fff;
+    z-index: 2;
+}
+
+
+
+/*styles botones  pestaña Agenda ot */
+
+
+.btnDetOt .button {
+    background-color: #B40404; /* Green */
+    border: #cccccc;
+    color: white;
+    padding: 10px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    cursor: pointer;
+    float: left;
+    margin: 10px 5px
+}
+.btnDetOt .button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+}
+.btnDetOt .button:hover {
+    background-color: #FA5858;
+}
+/*styles paginacion  pestaña Agenda ot */
+.pagination {
+    display: inline-block;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+}
+
+.pagination a.active {
+    background-color: #C72C09;
+    color: black;
+    border: 1px solid #4CAF50;
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+
+
+
+/*styles boton adjuntar Agenda */
+.btnAdj .input {
+    background-color: #E6E6E6; /* Green */
+    border: #cccccc;
+    color: black;
+    padding: 8px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    cursor: pointer;
+    float: left;
+    margin: 10px 8px
+}
+.btnAdj .input:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+}
+.btnAdj .input:hover {
+    background-color: #BDBDBD;
+}
+.btnAdj .current::after{
+    background: #fff;
+    z-index: 2;
+}
+.btnAdj input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+.btnAdj {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+
+}
+/*styles lista de documentos pestañas Agenda */
+.docs a {
+    background: #DBD9D9;
+
+}
+
+
+
+.docs ul li {
+
+    margin: 2px;
+}
+/*styles tbn adjuntar pestaña agenda */
+input[type="file"] {
+    display: inline-block;
+}
+.custom-file-upload {
+    background-color: #E6E6E6; /* Green */
+    border: #cccccc;
+    color: black;
+    padding: 8px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    cursor: pointer;
+    float: left;
+    margin: 10px 8px
+}
+
+.custom-file-upload:hover {
+    background-color: #BDBDBD;
+}
+/*styles area documentos y btn adjuntar */
+.floating-box {
+    display: inline-block;
+
+    margin: 3px;
+
+}
+.floating-box_tec {
+    display: inline-block;
+    width: 100px;
+    margin: 2px;
+
+}
+
+.after-box {
+    border: 3px solid red; 
+}
+
+.notasDetOt {
+    border: 1px solid;
+    padding: 20px; 
+    width: 300px;
+    resize: both;
+    overflow: auto;
+}
+/*styles Tabla contactos ot*/
+.tablefeel table {
+    border-collapse: collapse;
+    width: 100%;
+    border-width: 0;
+}
+
+.tablefeel th, td {
+    text-overflow: ellipsis;
+    padding: 8px;
+}
+
+.tablefeel tr:nth-child(even){background-color: #f2f2f2}
+
+.tablefeel th {
+    background-color: #C1170B;
+    color: #FFF;
+    border: 1px solid#FFF;
+    font-size: 8pt;
+    padding: 5px;
+}
+/*styles Tabla contactos ot*/
+.forms  tr td input[type=text],select{
+
+
+    border-radius: 4px;
+
+
+}
+.header th {
+    background-color: #D8D8D8;
+    color: black;
+    padding: 10px;
+}
+
+/* Dropdown Button */
+.checkBtn {
+    background-color: #C7CBC8;
+    color: black;
+    padding: 2px 16px;
+    font-size: 10px;
+    border: none;
+    cursor: pointer;
+    height: 12px;
+    width: 80px;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.check {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.check-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 140px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.check-content input[check]{
+    color: black;
+    padding: 4px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.check-content input[check]:hover {background-color: #B0B2B0 !important}
+
+/* Show the dropdown menu on hover */
+.check:hover .check-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.check:hover .check {
+    background-color: #C7CBC8 !important;
+} 
+
+td .cell {
+    display: block;
+}
+
+.cell.pintar {
+    background-color: #7FFF00;
+}
+
+img .imageTorre {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Botones de Paginacion*/
+
+
+.pagination2 {
+    display: inline-block;
+}
+
+.pagination2 input[type="submit"] {
+    color: black;
+    font-size: 12px;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.pagination2 input[type="submit"].active {
+    background-color: #FF0000;
+    color: white;
+}
+
+.pagination2 input[type="submit"]:hover:not(.active) {background-color: #ddd;}
+
+/* Select de Paginacion*/
+.pagination2 select {
+    float:left;
+    width: 40px;
+    height: 30px;
+    border-color: #EBE9E9;
+
+}
+
+

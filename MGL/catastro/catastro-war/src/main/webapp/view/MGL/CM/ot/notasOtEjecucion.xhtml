@@ -1,0 +1,303 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="/view/MGL/template/otEjecucionTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Notas OT Ejecución</span></ui:define>
+    <ui:define name="content">
+
+        <h:panelGroup id="panelInfoNota" style="margin: 0 auto; width: 100%;">
+
+            <h:panelGroup id="notasListId"  rendered="#{OtMglBean.mostrarListaNotas}">
+
+                    <h:dataTable id="HitorialNotasTable" style="width:100%;margin:0 auto;"
+                                 rendered="#{OtMglBean.notaOtMglList != null and
+                                             OtMglBean.notaOtMglList.size() >0}"
+                                 value="#{OtMglBean.notaOtMglList}" var="ntOt"                  
+                                 styleClass="constructGTable" 
+                                 rowClasses="constructGTableEvenRow, constructGTableOddRow">
+                        <f:facet name="header">
+                            <h:outputText value="Historial Notas" />
+                        </f:facet>
+                        <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Tipo Nota"/>
+                            </f:facet>                              
+                            <h:outputText value="#{ntOt.tipoNotaObj.nombreBasica}"/>
+                        </h:column>
+
+                        <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Nota"/>
+                            </f:facet>                              
+                            <h:outputText value="#{ntOt.nota}"/>      
+                        </h:column>
+                        <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Usuario" />
+                            </f:facet>
+                            <h:outputText value="#{ntOt.usuarioCreacion}"/>
+                        </h:column>
+
+                        <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Fecha Creación" />
+                            </f:facet>
+                            <h:outputText value="#{ntOt.fechaCreacion}">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </h:column>
+                        <h:column>    
+                            <f:facet name="header">
+                                <h:outputText value="Comentarios" />
+                            </f:facet>         
+                            <h:commandLink value="Ver" action="#{OtMglBean.verComentariosList(ntOt)}"/>                                     
+                        </h:column>
+                        <f:facet name="footer" >
+                            <h:panelGroup>
+                                <div style="text-align: center;">
+                                    <h:commandButton title="Primera Página" value=""
+                                                     class="botonTPagInicioCm botonBaselista">
+                                        <f:ajax   render="HitorialNotasTable" execute="@this" 
+                                                  event="click" listener="#{OtMglBean.pageFirstNot()}"/>
+                                    </h:commandButton>
+                                    <h:commandButton title="Página Anterior" value=""
+                                                     class="botonTPagAnteriorCm botonBaselista">
+                                        <f:ajax   render="HitorialNotasTable" execute="@this" 
+                                                  event="click" listener="#{OtMglBean.pagePreviousNot()}"/>
+                                    </h:commandButton>
+                                    <h:commandButton title="Número Páginas" value="#{OtMglBean.pageActualNot}" styleClass="botonTPagInicio"/>
+                                    <h:selectOneMenu id="listTablaNot" value="#{OtMglBean.numPaginaNot}" 
+                                                     styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                        <f:selectItems value="#{OtMglBean.paginaListNot}" var="pag"
+                                                       itemValue="#{pag}"
+                                                       itemLabel="#{pag}"/>
+                                        <f:ajax render="HitorialNotasTable" event="change"
+                                                listener="#{OtMglBean.irPaginaNot()}"
+                                                execute="@this" />
+                                    </h:selectOneMenu>
+                                    <h:commandButton  title="Página Siguiente" value=""
+                                                      class="botonTPagSiguienteCm botonBaselista">
+                                        <f:ajax   render="HitorialNotasTable" execute="@this" 
+                                                  event="click" listener="#{OtMglBean.pageNextNot()}"/>
+                                    </h:commandButton>
+                                    <h:commandButton title="Última Página" value=""
+                                                     class="botonTPagFinCm botonBaselista">
+                                        <f:ajax   render="HitorialNotasTable" execute="@this" 
+                                                  event="click" listener="#{OtMglBean.pageLastNot()}"/>
+                                    </h:commandButton>
+                                </div>
+                            </h:panelGroup>
+                        </f:facet>   
+                    </h:dataTable>
+                    <h:commandButton value="Nueva" id="nuevaNotaOtButton"
+                                     styleClass="btn" action="#{OtMglBean.nuevaNotaOt()}"/>
+            </h:panelGroup>
+
+
+            <h:panelGroup id="panelComentariosNotasList" rendered="#{OtMglBean.mostrarPanelListComentarios}">
+
+                <h:panelGrid columns="9">
+                    <h:outputText value="Tipo de Nota:" id="tipoNotaOtLabelId"/>
+                    <h:outputText  id="tipoNotaOtInput" 
+                                   value="#{OtMglBean.notaOtMgl.tipoNotaObj.nombreBasica}"  style="width: 100%;color: blue;"/>
+
+                    <Br></Br>
+
+                    <h:outputText value="Nota:" id="notaOtLabelId"/>
+                    <h:outputText  id="NotaOtInputtxt" 
+                                   value="#{OtMglBean.notaOtMgl.nota}"  style="width: 100%;color: blue;"/>
+
+                    <Br></Br>
+
+                    <h:outputText value="Descripción:" id="descNotaOtLabelId"/>
+                    <h:outputText  id="descNotaOtInput" 
+                                   value="#{OtMglBean.notaOtMgl.descripcion}"  style="width: 100%;color: blue;"/> 
+
+                    <Br></Br>
+                    <Br></Br>
+
+                </h:panelGrid>
+
+                <h:dataTable  id="comentariosTableId" style="width:100%;margin:0 auto;"
+                              rendered="#{OtMglBean.lstCmtNotaOtComentarioMgls != null 
+                                          and OtMglBean.lstCmtNotaOtComentarioMgls.size() >0}"
+                              value="#{OtMglBean.lstCmtNotaOtComentarioMgls}" var="cmNtOt"
+                              styleClass="constructGTable" rowClasses="constructGTableEvenRow,
+                              constructGTableOddRow">
+
+                    <f:facet name="header">
+                        <h:outputText value="Lista Comentarios" />
+                    </f:facet>
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Id Comentario" />
+                        </f:facet>
+                        <h:outputText value="#{cmNtOt.notaOtComentarioId}"/>
+                    </h:column>
+
+                    <h:column>    
+                        <f:facet name="header">
+                            <h:outputText value="Fecha Creación" />
+                        </f:facet>
+                        <h:outputText value="#{cmNtOt.fechaCreacion}">
+                            <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Comentario" />
+                        </f:facet>
+                        <h:outputText value="#{cmNtOt.comentario}"/>
+                    </h:column>   
+                    <f:facet name="footer" >
+                        <h:panelGroup>
+                            <div style="text-align: center;">
+                                <h:commandButton title="Primera Página" value=""
+                                                 class="botonTPagInicioCm botonBaselista">
+                                    <f:ajax   render="comentariosTableId" execute="@this" 
+                                              event="click" listener="#{OtMglBean.pageFirstCap()}"/>
+                                </h:commandButton>
+                                <h:commandButton title="Página Anterior" value=""
+                                                 class="botonTPagAnteriorCm botonBaselista">
+                                    <f:ajax   render="comentariosTableId" execute="@this" 
+                                              event="click" listener="#{OtMglBean.pagePreviousCap()}"/>
+                                </h:commandButton>
+                                <h:commandButton title="Número Páginas" value="#{OtMglBean.pageActualCap}" styleClass="botonTPagInicio"/>
+                                <h:selectOneMenu id="listTabla" value="#{OtMglBean.numPaginaCap}" 
+                                                 styleClass="ListaConsulta" style="width: 40px; height:19px;">
+                                    <f:selectItems value="#{OtMglBean.paginaListcap}" var="pag"
+                                                   itemValue="#{pag}"
+                                                   itemLabel="#{pag}"/>
+                                    <f:ajax render="comentariosTableId" event="change"
+                                            listener="#{OtMglBean.irPaginaCap()}"
+                                            execute="@this" />
+                                </h:selectOneMenu>
+                                <h:commandButton  title="Página Siguiente" value=""
+                                                  class="botonTPagSiguienteCm botonBaselista">
+                                    <f:ajax   render="comentariosTableId" execute="@this" 
+                                              event="click" listener="#{OtMglBean.pageNextCap()}"/>
+                                </h:commandButton>
+                                <h:commandButton title="Última Página" value=""
+                                                 class="botonTPagFinCm botonBaselista">
+                                    <f:ajax   render="comentariosTableId" execute="@this" 
+                                              event="click" listener="#{OtMglBean.pageLastCap()}"/>
+                                </h:commandButton>
+                            </div>
+                        </h:panelGroup>
+                    </f:facet>   
+                </h:dataTable>
+
+                <h:commandButton value="Nuevo" id="nuevoComentarioOtButton"
+                                 styleClass="btn"
+                                 action="#{OtMglBean.mostarComentarioOtEjecucion()}" 
+                                 rendered="#{OtMglBean.validarAdicionComentario()}"/>  
+
+                <h:commandButton value="Volver" id="volverListNotas"
+                                 styleClass="btn"
+                                 action="#{OtMglBean.volverListNotas()}"/>  
+            </h:panelGroup>
+
+
+            <h:panelGroup id="panelCrearComentarioNotasId"  rendered="#{OtMglBean.mostrarPanelCrearComentarios}">
+                <h:panelGrid columns="9">
+                    <h:outputText value="Tipo de Nota:" id="tipoNotaOtLabelId2"/>
+                    <h:outputText  id="tipoNotaOtInput2" 
+                                   value="#{OtMglBean.notaOtMgl.tipoNotaObj.nombreBasica}"  style="width: 100%;color: blue;"/>
+
+                    <Br></Br>
+
+                    <h:outputText value="Nota:" id="notaOtLabelId2"/>
+                    <h:outputText  id="NotaOtInputtxt2" 
+                                   value="#{OtMglBean.notaOtMgl.nota}"  style="width: 100%;color: blue;" />
+
+                    <Br></Br>
+
+                    <h:outputText value="Descripción:" id="descNotaOtLabelId2"/>
+                    <h:outputText  id="descNotaOtInput2" 
+                                   value="#{OtMglBean.notaOtMgl.descripcion}"  style="width: 100%;color: blue;"/> 
+
+                    <Br></Br>
+                    <Br></Br>    
+                </h:panelGrid>
+
+                <h:outputText value="Comentario" id="ComentarioNotaOtLabel"/>
+                <hr size="5" width="100%" align="LEFT"/>
+                <h:inputTextarea label="Comentario" id="ComentarioNotaOtInput" 
+                                 style="width: 100%; resize: none; overflow-y: scroll;" rows="5" 
+                                 value="#{OtMglBean.notaOtComentarioStr}" required="true"  
+                                 requiredMessage="Campo comentario es obligatorio">
+                    <f:validateLength maximum="4000" />
+                </h:inputTextarea>
+
+                <h:commandButton value="Guardar Comentario" id="CrearComentarioNotaOtButton"
+                                 rendered="#{OtMglBean.validarAdicionComentario() and
+                                             OtMglBean.notaOtMgl.notaOtId != null and
+                                             OtMglBean.ordenTrabajo.idOt != null }"
+                                 styleClass="btn" action="#{OtMglBean.guardarComentarioNotaOt()}">
+                </h:commandButton>
+
+                <h:commandButton value="Volver" id="volverListComentarios"
+                                 styleClass="btn" immediate="true"
+                                 action="#{OtMglBean.volverListComentarios()}"/>  
+
+            </h:panelGroup>
+
+            <h:panelGroup id="mostrarPanelListNotasEjeOt" rendered="#{OtMglBean.mostrarPanelCrearNotas}">
+                <h2 id="notaDescTitle">Descripcion de la Nota</h2>
+                <h:panelGrid id="panelNotaInfo" columns="4" style="width: 100%;"
+                             rendered="#{OtMglBean.validarCreacionNota()}">
+
+                    <h:outputText value="Descripción" id="DescripcionNotaOtLabel"/>
+                    <h:inputText label="Descripción" id="DescripcionNotaOtInput"
+                                 maxlength="200"
+                                 value="#{OtMglBean.notaOtMgl.descripcion}"
+                                 required="true" requiredMessage="Descripción: Valor es necesario"
+                                 readonly="#{OtMglBean.notaOtMgl.notaOtId != null}" />
+
+                    <h:outputText value="Tipo Nota" id="TipoNotaOtLabel"/>
+                    <h:selectOneMenu id="TipoMotaOtList"  value="#{OtMglBean.tipoNotaOtSelected.basicaId}"
+                                     styleClass="ListaConsulta"
+                                     required="true" requiredMessage="Tipo Nota: Valor es necesario"
+                                     disabled="#{OtMglBean.notaOtMgl.notaOtId != null}">
+                        <f:selectItem itemValue="" itemLabel="" />
+                        <f:selectItems value="#{OtMglBean.tipoNotaOtList}" var="ld"
+                                       itemValue="#{ld.basicaId}"
+                                       itemLabel="#{ld.nombreBasica}"/>                 
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:panelGrid id="panelDescNotaInfo" columns="1" style="width: 100%;"
+                             rendered="#{OtMglBean.validarCreacionNota()}">
+                    <h:outputText value="Nota" id="NotaOtLabel"/>
+                    <hr size="5" width="100%" align="LEFT"/>
+                    <h:inputTextarea label="Nota" id="NotaOtInput" 
+                                     style="width: 100%; resize: none; overflow-y: scroll;" rows="10" 
+                                     value="#{OtMglBean.notaOtMgl.nota}"
+                                     readonly="#{OtMglBean.notaOtMgl.notaOtId != null}" 
+                                     required="true" requiredMessage="Nota: Valor es necesario"
+                                     validatorMessage="Número máximo de caracteres es 4000">
+                        <f:validateLength maximum="4000" />
+                    </h:inputTextarea>
+                </h:panelGrid>
+
+                <h:panelGrid id="panelBotonesNotaInfo" columns="2" style="width: 100%; margin: 0 auto;">
+                    <h:commandButton value="Guardar Nota" id="CrearNotaOtButton" 
+                                     rendered="#{OtMglBean.lstSubEdiVT.size() > 0 and OtMglBean.mostrarBotonGuardarNota}"
+                                     styleClass="btn" action="#{OtMglBean.guardarNotaOt()}"/>
+                    <h:commandButton value="Volver" id="volverList" immediate="true"
+                                     styleClass="btn" action="#{OtMglBean.volverListNotaOt()}"/>
+                    <h:commandButton value="Limpiar Campos" id="LimpiarCamposOtButton"
+                                     rendered="true" styleClass="btn" immediate="true">
+                        <f:ajax render="@form" execute="@this"
+                                event="click" listener="#{OtMglBean.limpiarCamposNotaOt()}"/>
+                    </h:commandButton>
+                </h:panelGrid>                
+            </h:panelGroup>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

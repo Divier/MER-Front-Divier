@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    template="/view/MGL/template/otTemplate.xhtml">
+
+    <ui:define name="title"><span class="TituloSeccion">Agenda</span></ui:define>
+    <ui:define name="message"><span class="error"> #{infoTecnicaBean.message}</span></ui:define>
+    <ui:define name="content">
+        <h2 id="myhMmData">Agenda</h2>
+
+        <h:panelGroup >
+            <h:panelGroup>
+                <fieldset>
+                    <legend>Informacion </legend>
+                    <div id="agendaOt">
+                        <table style="width: 100%">
+                            <tr><td></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Cupo Tomado"/></td>
+                                <td> <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.subEdificioGeneral.tipoEdificioObj.nombreBasica}"/></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Estado de Visita"/></td>
+                                <td> <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.nombreCuenta}" /></td>
+                                <td> <h:outputText class="txtLabelsMgl"  value="Franja"/></td>
+                                <td> <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.nombreCuenta}" /></td>
+                                <td> <h:outputText class="txtLabelsMgl"  value="Programada por"/></td>
+                                <td> <h:outputText class="columnReadFormNumero" style="color: red;font-weight: bold;" value="#{cuentaMatrizBean.cuentaMatriz.numeroCuenta}" /></td>
+                            </tr> 
+                            <tr></tr>
+                            <tr><td></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Id Agenda"/></td>
+                                <td> <h:outputText class="columnReadForm" value="#{cuentaMatrizBean.cuentaMatriz.direccionPrincipal.direccionObj.dirFormatoIgac}" /></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="Fecha Ult. Programación"/></td>
+                                <td> <h:outputText class="columnReadForm" value="#{cuentaMatrizBean.cuentaMatriz.direccionPrincipal.barrio}" /></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="No de Reprogramaciones"/></td>
+                                <td> <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.departamento.gpoNombre}" /></td>
+                                <td> <h:outputText class="txtLabelsMgl" value="No de Cancelaciones"/></td>
+                                <td> <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.centroPoblado.gpoNombre}" /></td>
+                            </tr> 
+                            <tr></tr>
+                            <tr><td></td>
+                                <td>  <h:outputText class="txtLabelsMgl" value="Aliado"/></td>
+                                <td>  <h:outputText class="columnReadForm" style="font-weight: bold;"  value="#{cuentaMatrizBean.cuentaMatriz.division}" /></td>
+
+                            </tr> 
+                            <tr></tr>
+                            <tr><td></td>
+                                <td>  <h:outputText class="txtLabelsMgl" value="Técnico" id="cober"/></td>
+                                <td>  <h:outputText class="columnReadForm"  value="#{cuentaMatrizBean.cuentaMatriz.municipio.gpoNombre}" /></td>
+                                <td> 
+                                    <h:commandButton   image="../../images/icon_plus_red.png" action="#{subEdificiosMglBean.getSelectedTorre(subEdificiosMgl.subEdificioId)}"> 
+
+                                    </h:commandButton ></td>
+                            </tr> 
+                        </table>
+                    </div>
+                </fieldset>
+            </h:panelGroup>
+            <h:panelGroup>
+                <div class="pagination">
+                    <ui:repeat var="coberturas" value="#{cuentaMatrizBean.cuentaMatriz.coberturasList}" varStatus="myVarStatus"> > 
+                        <h:commandLink  action="#{subEdificiosMglBean.getSelectedTorre(subEdificiosMgl.subEdificioId)}" > 
+                            #{myVarStatus.index + 1}  </h:commandLink>
+                    </ui:repeat>
+                </div>
+
+            </h:panelGroup>
+            <br></br>
+            <br></br>
+            <h:panelGroup>
+                <h:panelGrid columns="4"  width="50%">
+                    <fieldset>
+                        <legend>Documentos </legend>
+                        <table  style="width: 100%">
+                            <tr>
+                                <td>
+                                    <div class="docs">
+                                            <ui:repeat var="coberturas" value="#{cuentaMatrizBean.cuentaMatriz.coberturasList}" > > 
+                                                <h:commandLink  action="#{subEdificiosMglBean.getSelectedTorre(subEdificiosMgl.subEdificioId)}" > 
+                                                    #{coberturas}  </h:commandLink>
+                                            </ui:repeat>
+                                    </div>
+                                </td>
+                                <td>
+                                    <label class="custom-file-upload">
+                                        <input type="file"/>
+                                        <i class="fa fa-cloud-upload"></i> Adjuntar
+                                    </label>
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </fieldset>
+                </h:panelGrid>
+
+            </h:panelGroup>
+
+
+
+            <h:panelGrid columns="4"  width="50%">
+                <div class="tabDet">
+                    <h:commandButton value="Agendar" 
+                                     id="tabDetOTGeneral" immediate="true"
+                                     styleClass="tabDet button"
+                                     action="#{listOrdenTrabajoCm.verDetalleGeneral}"/>
+                    <h:commandButton value="Anular" 
+                                     id="btnSave" immediate="true"
+                                     styleClass="tabDet button"
+                                     action="#{listOrdenTrabajoCm.verDetalleBackLog}"/>
+                    <h:commandButton value="ReAgendar" 
+                                     id="txtDocs" immediate="true"
+                                     styleClass="tabDet button"
+                                     action="#{listOrdenTrabajoCm.verDetalleBackLog}"/> 
+                </div>
+               
+            </h:panelGrid>
+
+        </h:panelGroup>
+
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                template="/view/MGL/template/main.xhtml">
+    <ui:define name="message"><span class="error"> #{geograficoPoliticoMglBean.message}</span></ui:define>
+    <ui:define name="content">
+        <script language="javascript" type="text/javascript">
+            /* validar que sea numero*/
+            function inputIsNumber(event) {
+                var inp = String.fromCharCode(event.keyCode);
+                return (/[0-9]/.test(inp));
+            }
+        </script>
+        <h2>Administrador Ciudades y Departametos</h2>        
+
+            <h:panelGrid columns="4" id="geoMgl" class="EtiquetaConsulta"  width="100%" >
+
+                <h:outputText value="*Tipo:" id="geo_tipolb"  style="align:right"  />                
+                <h:selectOneMenu required="true" id="geoTipo" value="#{geograficoPoliticoMglBean.geoPolitico.gpoTipo}" disabled="#{geograficoPoliticoMglBean.deshabilitar}"
+                                 styleClass="ListaConsulta">
+                     <f:selectItem itemValue="" itemLabel="Seleccione Uno" />
+                    <f:selectItem itemValue="DEPARTAMENTO" itemLabel="DEPARTAMENTO" />
+                    <f:selectItem itemValue="CIUDAD" itemLabel="CIUDAD" />
+                    <f:selectItem itemValue="CENTRO POBLADO" itemLabel="CENTRO POBLADO" />
+                    <f:ajax event="change" render="@form" listener="#{geograficoPoliticoMglBean.mostrarTipo}"/>
+                </h:selectOneMenu> 
+
+                <h:outputText value="*Departamento:" id="geoGpo_idlb"  style="align:right"  rendered="#{geograficoPoliticoMglBean.mostrarDepartamento}" />
+
+                <h:selectOneMenu required="true"  
+                                 disabled="#{(geograficoPoliticoMglBean.geoPolitico.gpoTipo eq 'CIUDAD' 
+                                             and geograficoPoliticoMglBean.geoPolitico.gpoId != null) 
+                                             or (geograficoPoliticoMglBean.geoPolitico.gpoTipo eq 'CENTRO POBLADO'  
+                                             and  geograficoPoliticoMglBean.geoPolitico.gpoId != null)}" 
+                                 rendered="#{geograficoPoliticoMglBean.mostrarDepartamento}"
+                                 id="geoGpo_idselect" value="#{geograficoPoliticoMglBean.idDepartamento}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{geograficoPoliticoMglBean.dptoList}" var="dpto"
+                                   itemValue="#{dpto.gpoId}"
+                                   itemLabel="#{dpto.gpoNombre}"/>   
+                    <f:ajax event="change" render="@all" listener="#{geograficoPoliticoMglBean.consultarCiudades}"/>
+                </h:selectOneMenu>
+
+                <h:outputText value="*Ciudad:" id="ciudad_lb"  style="align:right" rendered="#{geograficoPoliticoMglBean.mostrarCiudad}" />
+                <h:selectOneMenu required="true" 
+                                 disabled="#{(geograficoPoliticoMglBean.geoPolitico.gpoTipo eq 'DEPARTAMENTO' 
+                                             and geograficoPoliticoMglBean.geoPolitico.gpoId != null) 
+                                             or (geograficoPoliticoMglBean.geoPolitico.gpoTipo eq 'CENTRO POBLADO' 
+                                             and geograficoPoliticoMglBean.geoPolitico.gpoId != null)}"
+                                 rendered="#{geograficoPoliticoMglBean.mostrarCiudad}"
+                                 id="ciudad_select" value="#{geograficoPoliticoMglBean.idCiudad}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{geograficoPoliticoMglBean.ciudadList}" var="ciudad"
+                                   itemValue="#{ciudad.gpoId}"
+                                   itemLabel="#{ciudad.gpoNombre}"/>                
+                </h:selectOneMenu> 
+
+                <h:outputText value="*Pais:" id="pais_lb"  style="align:right" rendered="#{geograficoPoliticoMglBean.mostrarPais}" />
+                <h:selectOneMenu required="true" disabled="#{geograficoPoliticoMglBean.geoPolitico.gpoTipo 
+                                                             eq 'DEPARTAMENTO' and 
+                                                             geograficoPoliticoMglBean.geoPolitico.gpoId != null}" 
+                                 rendered="#{geograficoPoliticoMglBean.mostrarPais}"
+                                 id="pais_select" value="#{geograficoPoliticoMglBean.idPais}" 
+                                 styleClass="ListaConsulta">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{geograficoPoliticoMglBean.paisList}" var="pais"
+                                   itemValue="#{pais.gpoId}"
+                                   itemLabel="#{pais.gpoNombre}"/>                          
+                </h:selectOneMenu> 
+
+                <h:outputText value="*Nombre:" id="geo_nombrelb"  style="align:right" rendered="#{geograficoPoliticoMglBean.mostrarNombre}" />
+                <h:inputText  id="geoNombre" value="#{geograficoPoliticoMglBean.geoPolitico.gpoNombre}" rendered="#{geograficoPoliticoMglBean.mostrarNombre}"/>
+
+                <h:outputText value="Código:" id="geo_codigolb"  style="align:right" rendered="true" />
+                <h:inputText  id="geoCodigo" value="#{geograficoPoliticoMglBean.geoPolitico.gpoCodigo}" maxlength="8" rendered="true"/>
+
+                <h:outputText value="*Multiorigen:" id="geo_multiorigenlb"  style="align:right" rendered="#{geograficoPoliticoMglBean.mostrarMultiorigen}" />
+                <h:selectOneMenu  id="geoMultiorigen" value="#{geograficoPoliticoMglBean.geoPolitico.gpoMultiorigen}" rendered="#{geograficoPoliticoMglBean.mostrarMultiorigen}">
+                    <f:selectItem itemValue="1" itemLabel="SI" />
+                    <f:selectItem itemValue="0" itemLabel="NO" />
+                </h:selectOneMenu>
+
+                <h:outputText value="Código Tipo Dirección:" id="geo_codTipoDirlb"  style="align:right" rendered="#{geograficoPoliticoMglBean.mostrarCodTipoDir}" />
+                <h:selectOneMenu required="true" id="geoCodTipoDir" value="#{geograficoPoliticoMglBean.geoPolitico.gpoCodTipoDireccion}"
+                                 styleClass="ListaLetraNumero" rendered="#{geograficoPoliticoMglBean.mostrarCodTipoDir}">
+                    <f:selectItem itemValue="M" itemLabel="M" />
+                    <f:selectItem itemValue="B" itemLabel="B" />
+                    <f:selectItem itemValue="C" itemLabel="C" />
+                    <f:selectItem itemValue="A" itemLabel="A" />
+                    <f:selectItem itemValue="N" itemLabel="N" />
+                </h:selectOneMenu> 
+
+                <h:outputText value="*Código Dane:" id="geo_danelb"  style="align:right"  rendered="true"/>
+                <h:inputText  id="geoDane" value="#{geograficoPoliticoMglBean.geoPolitico.geoCodigoDane}" maxlength="8" rendered="true"/>
+
+                <h:outputText value="Código Zip:" id="geo_ziplb"  style="align:right"  rendered="#{geograficoPoliticoMglBean.mostrarCodigoZip}"/>
+                <h:inputText  id="geoZip" type="number" value="#{geograficoPoliticoMglBean.geoPolitico.gpoDepartamentoCodigoZip}"
+                              maxlength="3" rendered="#{geograficoPoliticoMglBean.mostrarCodigoZip}"
+                              onkeypress="return inputIsNumber(event)"/>
+
+                <h:outputText value="Corregimiento" id="geo_corregimiento" style="align:right"  rendered="true"/>
+                <h:selectOneRadio value="#{geograficoPoliticoMglBean.geoPolitico.corregimiento}">
+                    <f:selectItem itemValue="Y" itemLabel="Si" ></f:selectItem>
+                    <f:selectItem itemValue="N" itemLabel="No" ></f:selectItem>
+                </h:selectOneRadio>
+                
+                <div  style="width: 150px" ><h:inputHidden  id="nodHid" value="hid" ></h:inputHidden> </div><div  style="width: 150px" ></div>
+
+            </h:panelGrid>
+            <br></br><br></br>
+            <h:panelGrid columns="4" id="nodoMgl2" styleClass="panelInfo">
+
+                <h:commandButton value="Actualizar" action="#{geograficoPoliticoMglBean.actualizarGeoMgl()}"  styleClass="buttonl" rendered="#{geograficoPoliticoMglBean.mostrarActualizar and!(geograficoPoliticoMglBean.geoPolitico.gpoId  eq null)}"  style="text-align: center; color:#FFFFFF;"/>
+                <h:commandButton value="Guardar" action="#{geograficoPoliticoMglBean.crearGeoMgl()}" styleClass="buttonl" rendered="#{ (geograficoPoliticoMglBean.geoPolitico.gpoId  eq null)}" style="text-align: center; color:#FFFFFF;"/>
+                <h:commandButton value="Eliminar" action="#{geograficoPoliticoMglBean.eliminarGeoMgl()}" styleClass="buttonl" rendered="#{geograficoPoliticoMglBean.mostrarActualizar and!(geograficoPoliticoMglBean.geoPolitico.gpoId  eq null)}"  style="text-align: center; color:#FFFFFF;" onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"/>
+                <h:commandButton value="Volver" action="geografico-politico" styleClass="buttonl" style="text-align: center; color:#FFFFFF;" immediate="true"/>
+
+            </h:panelGrid>
+    </ui:define>
+</ui:composition>

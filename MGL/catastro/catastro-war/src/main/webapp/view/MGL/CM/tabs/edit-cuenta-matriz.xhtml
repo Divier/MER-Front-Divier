@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <body>
+        <h:form >
+            <ui:composition template="/view/MGL/template/cm.xhtml">
+                <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+                <ui:define name="content">
+                    <h:panelGroup id="formAdmin" rendered="#{!cuentaMatrizBean.crearCm}">
+                        <h:messages id="messges"  globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage" fatalClass="successMessage"/>
+                        <h2>Modificar Informaci&oacute;n Cuenta Matriz</h2>
+                        #{cuentaMatrizBean.fillData()}
+                        <h:commandButton value="Log" styleClass="btn" immediate="true" action="log-cuenta-matriz"/>
+                        <h:panelGrid  class="formulario" columns="4" >
+                            <h:outputText value="Nombre CM"/>
+                            <h:inputText maxlength="40" disabled="false" value="#{cuentaMatrizBean.cuentaMatriz.nombreCuenta}" />
+                            <h:outputText value="Tipo CM #{cuentaMatrizBean.consultarTipoCm('TIPO CM')}"/>
+                            <h:selectOneMenu id="tipoCm" value="#{cuentaMatrizBean.cuentaMatriz.tipo}">
+                                <f:selectItems value="#{cuentaMatrizBean.tipoBasicaCm}" var="tipoCm"
+                                               itemValue="#{tipoCm.basicaId}"
+                                               itemLabel="#{tipoCm.nombreBasica}"/>
+                            </h:selectOneMenu>
+                            <h:outputText value="Tel&eacute;fono"/>
+                            <h:inputText maxlength="20" disabled="false" value="#{cuentaMatrizBean.cuentaMatriz.telefonoPorteria}" />
+                            <h:outputText value="Unidades Planeadas"/>
+                            <h:inputText maxlength="10" disabled="false" value="#{cuentaMatrizBean.cuentaMatriz.unidadesEstimadas}" />
+                            <h:outputText value="Tipo proyecto #{cuentaMatrizBean.consultarTipos('TIPO PROYECTO')}"/>
+                            <h:selectOneMenu id="tipo" value="#{cuentaMatrizBean.cuentaMatriz.tipoProyecto}">
+                                <f:selectItems value="#{cuentaMatrizBean.tiposCmBasica}" var="tipo"
+                                               itemValue="#{tipo.basicaId}"
+                                               itemLabel="#{tipo.nombreBasica}"/>
+                            </h:selectOneMenu>
+                            <h:outputText value="Origen de datos #{cuentaMatrizBean.consultarOrigenes('ORIGEN DE DATOS CM')}"/>
+                            <h:selectOneMenu id="Origen" value="#{cuentaMatrizBean.cuentaMatriz.origenDatos}">
+                                <f:selectItems value="#{cuentaMatrizBean.origenCmBasica}" var="origen"
+                                               itemValue="#{origen.basicaId}"
+                                               itemLabel="#{origen.nombreBasica}"/>
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                        <div class="buttonArea">
+                            <h:commandButton value="Aceptar" actionListener="#{cuentaMatrizBean.actualizar()}" styleClass="btn"/>
+                            <h:commandButton value="Cancelar"  styleClass="btn" action="general" />
+                        </div>
+                    </h:panelGroup>
+                </ui:define>
+            </ui:composition>
+        </h:form>
+    </body>
+
+</html>
+
+

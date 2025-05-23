@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+  <h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/menu.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/contenido.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/MGL/css/mgl-style.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/view/css/table-style.css" rel="stylesheet" type="text/css" />
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-1.3.2.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/script.js"></script>
+        <script src="${facesContext.externalContext.requestContextPath}/view/MGL/js/jquery-ui.min.js"></script>
+    <title>Visitas T&eacute;cnicas</title>
+
+  </h:head>
+
+  <h:body>
+    <ui:include src="./../menu/VT/panelMensajes.xhtml" />
+    
+    <div id="header">
+      <ui:include src="./../menu/VT/name.xhtml" />
+    </div>
+    <div >
+      <ul>
+        
+    <div id="cssmenu">
+      <ui:include src="./../menu/VT/menu-cm.xhtml" />
+    </div>
+      </ul>
+    </div>
+    <div id="head-right">
+      <ui:include src="./../menu/VT/version.xhtml" />
+    </div>
+    <div id="content">
+      <div id="subcontent">
+        <section class="tabs">
+          <div id="contenido" align="center">
+            <ui:insert name="content">
+
+            </ui:insert>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div id="footer">
+       <h:panelGroup style="background: black !important" id="login-Footer" >
+                <center>
+                    <h:graphicImage value="/view/MGL/images/LOGO_INSPIRA.png"/>
+                    <h:graphicImage value="/view/MGL/images/Claro-blanco.png"/> 
+                </center>
+            </h:panelGroup>
+    </div>
+
+  </h:body>
+</html>

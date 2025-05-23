@@ -1,0 +1,14 @@
+<pcml version="4.0">                                                                    
+   <!-- RPG program: CMDEAAR0  -->                                                      
+   <!-- created: 2016-01-15-10.32.16 -->                                                
+   <!-- source: TVCSRC/TVRPGLESRC(CMDEAAR0) -->                                         
+   <!-- 42 -->                                                                          
+   <program name="CMDEAAR0" path="/QSYS.LIB/TVCABLEEXE.LIB/CMDEAAR0.PGM">                
+      <data name="ENTRA" type="char" length="10" usage="inputoutput" />                 
+      <data name="BUSNOM" type="char" length="23" usage="inputoutput" />               
+      <data name="PCML" type="char" length="2" usage="inputoutput" />                   
+      <data name="NUM_REG" type="char" length="5" usage="inputoutput" />                
+      <data name="RESULTADO" type="char" length="1" usage="inputoutput" />              
+      <data name="TABLARTA" type="char" length="68" count="1400" usage="inputoutput" /> 
+   </program>                                                                           
+</pcml>                                                                                 

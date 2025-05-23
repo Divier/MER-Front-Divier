@@ -1,0 +1,285 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+  <body>
+
+   <ui:composition template="./../../../template/main.xhtml">
+       
+      <ui:define name="content">
+           <div align = "center">
+        <h:form id="form_estado_solicitud" >
+          <h:panelGrid cellpadding = "10" cellspacing = "10" 
+                       style="text-align:center;" 
+                       rendered="#{busquedaSolicitud.veSolicitud eq false}">
+            <f:facet name="header">
+              <h:outputText value="BÚSQUEDA DE LA SOLICITUD"/>
+            </f:facet>
+
+            <h:outputText value="INGRESE EL NÚMERO DE LA SOLICITUD.
+                          ESTE NÚMERO FUE ASIGNADO Y ENVIADO POR CORREO
+                          ELECTRÓNICO AL MOMENTO DE SER CREADA LA SOLICITUD"/>
+
+            <h:panelGrid cellpadding="10" cellspacing="10" 
+                         style="width:100%; text-align:center;">
+              <h:outputText value="NÚMERO DE SOLICITUD"
+                            styleClass="output"/>
+              <h:inputText id="idsolicitud" 
+                           value="#{busquedaSolicitud.solicitud.idSolicitud}" 
+                           required="true" 
+                           requiredMessage="Ingrese el código de la
+                           solicitud, debe ser numérico" />
+              <h:message  style="color:red;" for="idsolicitud" />
+            </h:panelGrid>
+
+            <f:facet name = "footer">
+              <h:panelGroup style = "display:block; text-align:center;">
+                <h:commandButton styleClass="btn" 
+                                 value = "CONSULTAR" 
+                                 action="#{busquedaSolicitud.loadBusqueda()}"/>
+              </h:panelGroup>
+            </f:facet>
+          </h:panelGrid>
+
+          <h:panelGrid cellpadding = "10" cellspacing = "10" 
+                       rendered="#{busquedaSolicitud.veSolicitud}">
+            <f:facet name="header">
+              <h:outputText value="#{busquedaSolicitud.estadoSolicitud()}"/>
+            </f:facet>
+
+            <h:outputLabel value="N° de la Solicitud: #{busquedaSolicitud.solicitud.idSolicitud}" 
+                           styleClass="output"/>
+
+            <h:panelGrid 
+              columns="6" cellpadding="10" cellspacing="10" style="width:100%;"
+              rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')
+                          and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCASA')}"
+                         >
+              <f:facet name="header">
+                <h:outputText value="DATOS DEL EDIFICIO"/>
+              </f:facet>
+
+              <h:outputLabel value="Cuenta Matriz" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.cuentaMatriz}"/>
+
+              <h:outputText value="Nodo" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.nodo}"/>
+
+              <h:outputText value="Unidades" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.unidades}"/>
+
+              <h:outputText value="Torres" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.torres}"/>
+
+              <h:outputText value="Producto" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.producto}"/>
+
+              <h:outputText value="Teléfono" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.telefono}"/>
+
+              <h:outputText value="Dirección" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.direccion}"/>
+
+              <h:outputText value="Contacto" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.contacto}"/>
+            </h:panelGrid>
+
+            <h:panelGrid columns="6" 
+                         cellpadding="10" 
+                         cellspacing="10" 
+                         style="width:100%;">
+              <f:facet name="header">
+                <h:outputText value="DATOS INGRESADOS"/>
+              </f:facet>
+
+              <h:outputLabel/>
+              <h:outputLabel/>
+              <h:outputLabel/>
+              <h:outputLabel/>
+
+              <h:outputText value="Estado" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.estado}" 
+                            style="font-weight:bold; color:red;"/>
+
+              <h:outputLabel value="Regional" 
+                             rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'VTCONJUNTOS') 
+                                         and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCON')
+                                         and not(busquedaSolicitud.solicitud.tipo eq 'HHPPCMATRIZ')}"
+                             styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.
+                                     findNombreRegional(busquedaSolicitud.
+                                     solicitud.regional)}"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'VTCONJUNTOS') 
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCON')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'HHPPCMATRIZ')}"
+                            />
+              <h:outputLabel value="Ciudad" 
+                             rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'VTCONJUNTOS') 
+                                         and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCON')
+                                         and not(busquedaSolicitud.solicitud.tipo eq 'HHPPCMATRIZ')}"
+                             styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.
+                                     findNombreCiiudad(busquedaSolicitud.
+                                     solicitud.ciudad)}"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'VTCONJUNTOS')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCON')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'HHPPCMATRIZ')}"
+                            />
+              <h:outputLabel value="Dirección Completa"
+                             styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.direccion} 
+                            #{busquedaSolicitud.solicitud.numPuerta} 
+                            #{busquedaSolicitud.solicitud.tipoVivienda}"/>
+
+              <h:outputText value="Dirección Alterna" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.direccion1}"/>
+
+              <h:outputText value="Barrio" styleClass="output" />
+              <h:outputText value="#{busquedaSolicitud.solicitud.barrio}"/>
+
+              <h:outputText value="Teléfono 1" styleClass="output"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')}"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.telefono}"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')}"/>
+
+              <h:outputText value="Teléfono 2" styleClass="output"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')}"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.telefono1}"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')}"/>
+
+              <h:outputText value="Contacto" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.contacto}"/>
+
+              <h:outputText value="Teléfono Contacto" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.telContacto}"/>
+
+              <h:outputText value="Fecha Inicial" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.fechaIngreso}">
+                <f:convertDateTime pattern="yyyy-MM-dd hh:mm:ss a" 
+                                   timeZone="America/Bogota"/>
+              </h:outputText>
+
+              <h:outputText value="Administrador" styleClass="output"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCASA')}"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.contacto1}"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCASA')}"/>
+
+              <h:outputText value="Teléfono Administrador" styleClass="output"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCASA')}"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.telContacto1}"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCASA')}"/>
+
+              <h:outputText value="Supervisor" styleClass="output"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCASA')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'HHPPCMATRIZ')}"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.supervisor}"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCASA')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'HHPPCMATRIZ')}"/>
+
+              <h:outputText value="Móvil" styleClass="output"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCASA')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'HHPPCMATRIZ')}"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.movil}"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'REPLANVTCASA')
+                                        and not(busquedaSolicitud.solicitud.tipo eq 'HHPPCMATRIZ')}"/>
+
+              <h:outputText value="Usuario" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.usuario}"/>
+
+              <h:outputText value="Solicitante" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.solicitante}"/>
+
+              <h:outputText value="Correo Solicitante" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.correo}"/>
+            </h:panelGrid>
+
+            <h:panelGrid columns="1" cellpadding="10" cellspacing="10" 
+                         style="width:100%;">
+              <h:outputText value="Resultado de la gestión"
+                            styleClass="output"/>
+              <h:inputTextarea style="border:1px; background:#DFEDDF; width:100%; height:65px " 
+                               value="#{busquedaSolicitud.solicitud.rptGestion}" 
+                               disabled="true"/>
+              <h:outputText value="Motivo" styleClass="output"
+                            rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')}"/>
+              <h:inputTextarea style="border:1px; background:#DFEDDF; width:100%; height:65px " 
+                               value="#{busquedaSolicitud.solicitud.motivo}" 
+                               rendered="#{not(busquedaSolicitud.solicitud.tipo eq 'CREACIONCM')}"
+                               disabled="true"/>
+
+              <h:outputText value="Observaciones Especiales" 
+                            styleClass="output"/>
+              <h:inputTextarea style="border:1px; background:#DFEDDF; width:100%; height:65px " 
+                               value="#{busquedaSolicitud.solicitud.motivo}"  
+                               disabled="true"/>
+
+              <h:outputText value="Respuesta Actual" styleClass="output"/>
+              <h:inputTextarea style="border:1px; background:#DFEDDF; width:100%; height:65px " 
+                               value="#{busquedaSolicitud.solicitud.respuesta}"  
+
+                               disabled="true"/>
+            </h:panelGrid>
+
+            <h:panelGrid columns="6" cellpadding="10" 
+                         cellspacing="10" 
+                         style="width:100%;">
+              <f:facet name="header">
+                <h:outputText value="DATOS DEL CAMBIO"/>
+              </f:facet>
+
+              <h:outputLabel value="Estrato Antiguo" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.estratoAntiguo}"/>
+
+              <h:outputText value="Estrato Nuevo" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.estratoNuevo}"/>
+
+              <h:outputText value="Distribución de HHPP" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.corregirHHPP}"/>
+
+              <h:outputText value="Nuevo Nodo" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.cambioNodo}"/>
+
+              <h:outputText value="Nuevo Edificio" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.nombreNuevoEdificio}"/>
+
+              <h:outputText value="Producto Nuevo" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.nuevoProducto}"/>
+
+              <h:outputText value="Complemento" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.complemento}"/>
+
+              <h:outputText value="Dirección Nueva" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.direccion} 
+                            #{busquedaSolicitud.solicitud.numPuerta}"/>
+
+              <h:outputText value="Apartamento" styleClass="output"/>
+              <h:outputText value="#{busquedaSolicitud.solicitud.tipoVivienda}"/>
+            </h:panelGrid>
+
+            <f:facet name = "footer">
+              <h:panelGroup style = "display:block; text-align:center;">
+                <h:commandButton styleClass="btn" 
+                                 value = "TERMINAR" 
+                                 action="/index.xhtml"/>
+              </h:panelGroup>
+            </f:facet>
+          </h:panelGrid>
+         
+        </h:form>
+       </div>
+      </ui:define>
+
+    </ui:composition>
+  </body>
+</html>

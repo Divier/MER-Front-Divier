@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+                template="/view/MGL/CM/cm/template/cmTemplate.xhtml">   
+    <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+    <ui:define name="content">
+        <ul id="nav">
+            <li class="active"><h:commandLink action="gestion-administracion" value="Compañías Administración" /></li>
+            <li><h:commandLink action="gestion-constructoras" value="Compañías Constructoras" /></li>
+            <li><h:commandLink action="gestion-ascensores" value="Compañías de Ascensores" /></li>
+        </ul>
+        #{companiasAdministracionBean.logAdministracion()}
+        <h:panelGroup id="formAdmin">
+            <h:panelGroup ><h2>Log</h2></h:panelGroup>
+            <h:panelGrid id="tipo_3" rendered="#{companiasAdministracionBean.tipo == 3 and !companiasAdministracionBean.verHorario}" class="formulario" columns="4">
+
+                <h:outputText value="Compañía Administración" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" value="#{companiasAdministracionBean.companiaAdminAud.nombreCompania}" />
+
+                <h:outputText value="Departamento" />
+                <h:selectOneMenu disabled="#{companiasAdministracionBean.updateAdmin}" id="depto" value="#{companiasAdministracionBean.departamento}"  requiredMessage="Ingrese departamento">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{companiasAdministracionBean.departamentoList}" var="depto"
+                                   itemValue="#{depto.gpoId}"
+                                   itemLabel="#{depto.gpoNombre}"/>    
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{companiasAdministracionBean.consultarCiudades()}" render="muni"/>
+                </h:selectOneMenu>                            
+                <h:outputText value="Código" />
+                <h:inputText  readonly="#{companiasAdministracionBean.updateAdmin}"  id="codigo" value="#{companiasAdministracionBean.companiaAdminAud.codigoRr}" requiredMessage="El código es obligatorio"/>
+                <h:outputText value="Municipio" />
+                <h:selectOneMenu disabled="#{companiasAdministracionBean.updateAdmin}" id="muni" value="#{companiasAdministracionBean.ciudad}"  requiredMessage="Ingrese municipio">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{companiasAdministracionBean.ciudadList}" var="ciudad"
+                                   itemValue="#{ciudad.gpoId}"
+                                   itemLabel="#{ciudad.gpoNombre}"/> 
+                </h:selectOneMenu>
+                <h:outputText value="NIT" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}"  id="nit" value="#{companiasAdministracionBean.companiaAdminAud.nitCompania}" requiredMessage="El NIT es obligatorio"/>
+                <h:outputText value="Centro Poblado" />
+                <h:selectOneMenu disabled="#{companiasAdministracionBean.updateAdmin}" id="centroPobaldo" value="#{companiasAdministracionBean.companiaAdminAud.detalle}" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <!--<f:selectItems value="#-{modificacionHHPPMBean.ciudadesList}" 
+                                   var="ciudad"  itemValue="#-{ciudad.codigo}" itemLabel="#-{ciudad.nombre}"/>-->
+                </h:selectOneMenu>
+                <h:outputText value="Abreviatura" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="abrev" value="#{companiasAdministracionBean.companiaAdminAud.codigoRr}" />
+                <h:outputText value="Barrio" />
+                <h:selectOneMenu disabled="#{companiasAdministracionBean.updateAdmin}" id="barrio" value="#{companiasAdministracionBean.companiaAdminAud.barrio}" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{companiasAdministracionBean.barrioList}" 
+                                   var="barrio"  itemValue="#{barrio}" itemLabel="#{barrio}"/>
+                </h:selectOneMenu>
+                <h:outputText value="Nombre Contacto" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="contacto" value="#{companiasAdministracionBean.companiaAdminAud.nombreContacto}" />
+                <h:outputText value="Dirección" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}"  id="dir" value="#{companiasAdministracionBean.companiaAdminAud.direccionNoStandar}" requiredMessage="Ingrese dirección"/>
+
+                <h:outputText value="Horario de Atención" />
+                <h:commandLink id="cargo" value="ver horario" action="#{companiasAdministracionBean.verHorarioRestriccion()}" />
+                <h:outputText value="Teléfonos" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="tel1" value="#{companiasAdministracionBean.companiaAdminAud.telefonos}" />
+
+                <h:outputText value="E-mail" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="email" value="#{companiasAdministracionBean.companiaAdminAud.email}" />
+                <h:outputText value="Página WEB" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="pagWeb" value="#{companiasAdministracionBean.companiaAdminAud.paginaWeb}" />
+
+                <h:outputText value="Estado" />
+                <h:selectOneRadio disabled="#{companiasAdministracionBean.updateAdmin}" id="estado"  value="#{companiasAdministracionBean.companiaAdminAud.estado}" class="radioB" requiredMessage="Estado obligatorio">
+                    <f:selectItem itemLabel="Activo" itemValue="A"/>
+                    <f:selectItem itemLabel="Inactivo" itemValue="I"/>
+                    <f:selectItem itemLabel="Eliminado" itemValue="E"/>
+                    <!--                            <f:ajax execute="nodoEstado" render="nodoEstado" listener="#,{modificacionHHPPMBean.limpiarNodoEstado()}"/>-->
+                </h:selectOneRadio>
+
+            </h:panelGrid>
+
+            <h:panelGrid rendered="#{companiasAdministracionBean.tipo == 3}" class="formulario" columns="4">
+                <h:outputText value="Fecha Creación" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="fechaAdmonC" value="#{companiasAdministracionBean.companiaAdminAud.fechaCreacion}" />
+                <h:outputText value="Fecha Modificación" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="fechaAdmonM" value="#{companiasAdministracionBean.companiaAdminAud.fechaModificacion}" />
+                <h:outputText value="Usuario" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="userAdmon" value="#{companiasAdministracionBean.companiaAdminAud.usuarioCreacion}" />
+                <h:outputText value="Perfil" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="perfilAdmon" value="#{companiasAdministracionBean.companiaAdminAud.perfilUsuarioCreacion}" />
+                <h:outputText value="Detalle" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="detalleAdmon" value="#{companiasAdministracionBean.companiaAdminAud.detalle}" />
+                <h:outputText  value="Justificación" />
+                <h:inputTextarea readonly="#{companiasAdministracionBean.updateAdmin}" requiredMessage="Tiene que justificar la modificación" id="justi" value="#{companiasAdministracionBean.companiaAdminAud.justificacion}" />
+            </h:panelGrid>
+            <h:panelGroup rendered="#{companiasAdministracionBean.tipo == 3 and !companiasAdministracionBean.verHorario}">
+                <div class="buttonArea">                        
+                    <h:commandButton value="Aceptar" action="gestion-administracion" styleClass="btn"/>
+                </div>
+            </h:panelGroup>                  
+            <!-- Jeisson Gómez  -->
+            <h:panelGroup id="pnlHorariosAdminId" rendered="#{companiasAdministracionBean.tipo == 3 and companiasAdministracionBean.verHorario}">
+                <div class="buttonArea"> 
+                    <h:commandButton value="Almacenar Cambios" rendered="#{companiasAdministracionBean.verHorario}" styleClass="btn"> 
+                        <f:ajax execute="@form" render="@form" event="click" listener="#{companiasAdministracionBean.guardarHorarioRestriccion()}" />     
+                    </h:commandButton>
+                    <h:commandButton value="Volver" rendered="#{companiasAdministracionBean.verHorario}" immediate="true" styleClass="btn" actionListener="#{companiasAdministracionBean.ocultarHorarioRestriccion()}"/>
+                </div>
+                <cc:componente-horario id="Administracionid" horarioRestriccion="#{companiasAdministracionBean.horarioRestriccion}" horarioEditable="E"
+                                       permisoCreacion="true" permisoEliminacion="true"/>
+            </h:panelGroup> 
+            <h:messages for="doc_admin" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>                       
+            <h:messages for="nombre_admin" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+            <h:messages for="estado_admin" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>                    
+            <h:messages for="justi" globalOnly="true" errorClass="errorMessage" infoClass="infoMessage" warnClass="errorMessage" fatalClass="errorMessage"/>
+
+            <h:panelGrid id="tipo_4" rendered="#{companiasAdministracionBean.tipo == 4 and !companiasAdministracionBean.verHorario}" class="formulario" columns="4">
+
+                <h:outputText value="Nombre Administrador" />
+                <h:selectOneMenu disabled="#{companiasAdministracionBean.updateAdmin}" id="nombreAdministrador" value="#{companiasAdministracionBean.companiaAdminAud.companiaId}">
+
+                    <f:selectItems value="#{companiasAdministracionBean.companyListTable}" var="com"
+                                   itemValue="#{com.companiaId}"
+                                   itemLabel="#{com.nombreCompania}"/>    
+                    <f:ajax event="change" listener="#{companiasAdministracionBean.updateCompania()}" execute="@this" render="formAdmin"/>
+                </h:selectOneMenu> 
+                <h:outputText value="Teléfono móvil" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="movil" value="#{companiasAdministracionBean.companiaAdminAud.telefonos}" />     
+
+                <h:outputText value="Tipo de identificación" />
+                <h:selectOneMenu disabled="#{companiasAdministracionBean.updateAdmin}" id="tipoId" value="#{companiasAdministracionBean.tipoDoc}"  >
+                    <f:selectItem itemValue="C.C" itemLabel="C.C."/>
+                    <f:selectItem itemValue="C.E" itemLabel="C.E."/>
+                    <f:selectItem itemValue="RUT" itemLabel="RUT"/>
+                </h:selectOneMenu>
+                <h:outputText value="E-mail" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="email_admin" value="#{companiasAdministracionBean.companiaAdminAud.email}" />
+
+                <h:outputText value="Número de identificación" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}"  id="doc_admin" value="#{companiasAdministracionBean.companiaAdminAud.nitCompania}" requiredMessage="Ingrese identificación"/>
+                <h:outputText value="Horario de Atención" />
+                <h:commandLink id="horario" value="ver horario" action="#{companiasAdministracionBean.verHorarioRestriccion()}" />
+
+                <h:outputText value="Estado" />
+                <h:selectOneRadio disabled="#{companiasAdministracionBean.updateAdmin}" id="estado_admin"  value="#{companiasAdministracionBean.companiaAdminAud.estado}" class="radioB" requiredMessage="Estado obligatorio">
+                    <f:selectItem itemLabel="Activo" itemValue="A"/>
+                    <f:selectItem itemLabel="Inactivo" itemValue="I"/>
+                    <f:selectItem itemLabel="Eliminado" itemValue="E"/>
+                    <!--                            <f:ajax execute="nodoEstado" render="nodoEstado" listener="#,{modificacionHHPPMBean.limpiarNodoEstado()}"/>-->
+                </h:selectOneRadio>
+
+            </h:panelGrid>
+            <h:panelGrid  rendered="#{companiasAdministracionBean.tipo == 4}" class="formulario" columns="4">
+
+                <h:outputText value="Fecha Creación" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="fechaAdminC" value="#{companiasAdministracionBean.companiaAdminAud.fechaCreacion}" />
+                <h:outputText value="Fecha Modificación" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="fechaAdminM" value="#{companiasAdministracionBean.companiaAdminAud.fechaModificacion}" />
+                <h:outputText value="Usuario" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="userAdmin" value="#{companiasAdministracionBean.companiaAdminAud.usuarioCreacion}" />
+                <h:outputText value="Perfil" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="perfilAdmin" value="#{companiasAdministracionBean.companiaAdminAud.perfilUsuarioCreacion}" />
+                <h:outputText value="Detalle" />
+                <h:inputText readonly="#{companiasAdministracionBean.updateAdmin}" required="false" id="detalleAdmin" value="#{companiasAdministracionBean.companiaAdminAud.detalle}" />
+                <h:outputText value="Justificación" />
+                <h:inputTextarea readonly="#{companiasAdministracionBean.updateAdmin}" requiredMessage="Tiene que justificar la modificación" id="justi_admin" value="#{companiasAdministracionBean.companiaAdminAud.justificacion}" />
+            </h:panelGrid>
+
+            <h:panelGroup rendered="#{companiasAdministracionBean.tipo == 4 and !companiasAdministracionBean.verHorario}">
+                <div class="buttonArea">  
+                    <h:commandButton value="Aceptar" action="gestion-administracion" styleClass="btn"/>
+
+                </div>
+            </h:panelGroup>
+            <!-- Jeisson Gómez  -->
+            <h:panelGroup id="pnlHorariosNaturalesId" rendered="#{companiasAdministracionBean.tipo == 4 and companiasAdministracionBean.verHorario}">
+                <div class="buttonArea"> 
+                    <h:commandButton value="Almacenar Cambios" rendered="#{companiasAdministracionBean.verHorario}" styleClass="btn"> 
+                        <f:ajax execute="@form" render="@form" event="click" listener="#{companiasAdministracionBean.guardarHorarioRestriccion()}" />     
+                    </h:commandButton>
+                    <h:commandButton value="Volver" rendered="#{companiasAdministracionBean.verHorario}" immediate="true" styleClass="btn" actionListener="#{companiasAdministracionBean.ocultarHorarioRestriccion()}"/>
+                </div>
+                <div id="yyyy" class="buttonArea" >
+                    <cc:componente-horario id="comhAdministracionNaturalId" horarioRestriccion="#{companiasAdministracionBean.horarioRestriccion}" horarioEditable="E"
+                                           permisoCreacion="true"/>
+                </div>    
+            </h:panelGroup> 
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

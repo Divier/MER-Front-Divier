@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">        
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite/componentes"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"            
+    template="/view/MGL/template/main.xhtml">   
+
+    <ui:define name="title"><span class="TituloSeccion"></span></ui:define>
+    <ui:define name="content">
+        <h2>Compañías de Constructora</h2>
+        <h:panelGroup id="formAdmin">
+            <h:panelGrid id="tipo_3" rendered="#{!constructorasBean.mostrarRestriccionHorarios}" class="formulario" columns="4">
+                <h:outputText  value="Id" />
+                <h:outputText  value="#{constructorasBean.constructora.companiaId}"/>
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}Departamento" />
+                <h:selectOneMenu id="depto" value="#{constructorasBean.constructora.departamento.gpoId}" 
+                                 required="true" requiredMessage="Ingrese departamento">
+                    <f:selectItem itemValue="0" itemLabel="" />
+                    <f:selectItems value="#{constructorasBean.departamentoList}" var="depto"
+                                   itemValue="#{depto.gpoId}"
+                                   itemLabel="#{depto.gpoNombre}"/>    
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{constructorasBean.consultarCiudades}"  render="muni centroPoblado"/>
+                </h:selectOneMenu>
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}NIT" />
+                <h:inputText id="nit" value="#{constructorasBean.constructora.nitCompania}" 
+                             requiredMessage="El NIT es obligatorio" 
+                             validatorMessage="El nit digitado no tiene el formato especificado" maxlength="11">
+                    <f:validateRegex pattern="([0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]){0,1}"/>
+                </h:inputText>
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}Municipio" />
+                <h:selectOneMenu id="muni" value="#{constructorasBean.constructora.municipio.gpoId}" 
+                                 required="true" requiredMessage="Ingrese municipio">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{constructorasBean.ciudadList}" var="ciudad"
+                                   itemValue="#{ciudad.gpoId}"
+                                   itemLabel="#{ciudad.gpoNombre}"/> 
+                    <f:ajax event="change" execute="@this" 
+                            listener="#{constructorasBean.consultarCentrosPoblados}" render="centroPoblado"/>
+                </h:selectOneMenu>
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}Razón Social" />
+                <h:inputText id="nombre" value="#{constructorasBean.constructora.nombreCompania}" 
+                             requiredMessage="Ingrese nombre de compañía" maxlength="30"/>
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}Centro Poblado" />
+                <h:selectOneMenu id="centroPoblado" value="#{constructorasBean.constructora.centroPoblado.gpoId}" 
+                                 required="true" requiredMessage="Ingrese centro poblado">
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{constructorasBean.centroPobladoList}" 
+                                   var="centroPoblado"  itemValue="#{centroPoblado.gpoId}" 
+                                   itemLabel="#{centroPoblado.gpoNombre}"/>
+                    <f:ajax event="change" execute="@this" render="centroPoblado" 
+                            listener="#{constructorasBean.asignarCentroPoblado()}"/>                       
+                </h:selectOneMenu>
+                <h:outputText  escape="false" value="#{constructorasBean.estiloObligatorio}Abreviatura" />
+                <h:inputText  id="abrev" value="#{constructorasBean.constructora.abreviatura}" required="true" 
+                              requiredMessage="La abreviatura es obligatoria" 
+                              disabled="#{(constructorasBean.constructora.companiaId eq null)}"/>
+                <h:outputText value="Barrio" />
+                <h:selectOneMenu id="barrio" value="#{constructorasBean.constructora.barrio}" >
+                    <f:selectItem itemValue="" itemLabel=""/>
+                    <f:selectItems value="#{constructorasBean.barrioList}" 
+                                   var="barrio"  itemValue="#{barrio}" itemLabel="#{barrio}"/>
+                </h:selectOneMenu>
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}Nombre Contacto" />
+                <h:inputText id="contacto" value="#{constructorasBean.constructora.nombreContacto}" 
+                             requiredMessage="El contacto es obligatorio" maxlength="30" />
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}Dirección" />
+                <h:panelGroup>
+                    <h:inputText id="dirConstructora" value="#{constructorasBean.constructora.direccion}" 
+                                 validatorMessage="El campo dirección debe contener más de 8 caracteres"
+                                 requiredMessage="La dirección es requerida" maxlength="60" style="width: 90%;">
+                        <f:ajax event="change" execute="@form btCrearConstructoras" render="@form btCrearConstructoras"
+                                listener="#{constructorasBean.validarDireccion()}"/>
+                    </h:inputText>
+                    <h:graphicImage id="mostrarComponenteButton" style="width: 5%;" 
+                                    title="Validar dirección" value="/view/img/home.gif">
+                        <f:ajax render="@form" execute="@form" 
+                                event="click" listener="#{constructorasBean.irPopUpDireccion()}"/>
+                    </h:graphicImage>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}Teléfono" />
+                <h:inputText id="tel1" value="#{constructorasBean.constructora.telefonos}" 
+                             converterMessage="El teléfono debe ser numérico" maxlength="10"
+                             requiredMessage="el primer teléfono es obligatorio">
+                    <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                </h:inputText>
+                <h:outputText value="Teléfono" />
+                <h:inputText required="false" id="tel2" value="#{constructorasBean.constructora.telefono2}" 
+                             converterMessage="El teléfono debe ser numérico" maxlength="10" >
+                    <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                </h:inputText>
+                <h:outputText value="Teléfono" />
+                <h:inputText required="false" id="tel3" value="#{constructorasBean.constructora.telefono3}" 
+                             converterMessage="El teléfono debe ser numérico" maxlength="10" >
+                    <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                </h:inputText>
+                <h:outputText value="Teléfono" />
+                <h:inputText required="false" id="tel4" value="#{constructorasBean.constructora.telefono4}" 
+                             converterMessage="El teléfono debe ser numérico" maxlength="10" >
+                    <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                </h:inputText>
+
+                <h:outputText value="E-mail" />
+                <h:inputText required="false" id="email" value="#{constructorasBean.constructora.email}" maxlength="30" 
+                             validatorMessage="El valor digitado en E-mail debe tener las características de un E-mail">
+                    <f:validateRegex pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])?"/>
+                </h:inputText>
+                <h:outputText value="Página WEB" />
+                <h:inputText required="false" id="pagWeb" value="#{constructorasBean.constructora.paginaWeb}" maxlength="30" 
+                             validatorMessage="El formato de la página web no es correcto" >
+                    <f:validateRegex pattern="((http(s)?://)?([\w-]+\.)+[\w-]+(/[\w- ./?%&amp;=]*)?)?"/>
+                </h:inputText>
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}Código RR" />
+                <h:inputText required="true" id="codigoRr" value="#{constructorasBean.constructora.codigoRr}" 
+                             requiredMessage="El código es obligatorio" converterMessage="El código RR es numérico"
+                             maxlength="4" disabled="#{!(constructorasBean.constructora.companiaId eq null)}">
+                    <f:convertNumber integerOnly="true" type="number" pattern="#0" />
+                </h:inputText>
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}Estado" />
+                <h:selectOneRadio id="estado" required="true" value="#{constructorasBean.constructora.activado}" class="radioB" requiredMessage="Estado obligatorio" 
+                                  disabled="#{constructorasBean.constructora.companiaId eq null}">
+                    <f:selectItem itemLabel="Activo" itemValue="Y"/>
+                    <f:selectItem itemLabel="Inactivo" itemValue="N"/>
+                </h:selectOneRadio>
+                <h:outputText escape="false" value="#{constructorasBean.estiloObligatorio}Justificación ultimo cambio(200)" id="asc_campo_justificacion1lb"
+                              rendered="#{(!(constructorasBean.constructora.companiaId eq null) and !(constructorasBean.constructora.companiaId eq 0))}"/>
+                <h:inputTextarea id="asc_campo_justificaTxt" value="#{constructorasBean.constructora.justificacion}" rows="3" 
+                                 requiredMessage="El campo justificación es eequerido para cualquier modificación o eliminación del registro"
+                                 rendered="#{(!(constructorasBean.constructora.companiaId eq null) and !(constructorasBean.constructora.companiaId eq 0))}" >
+                    
+                </h:inputTextarea>                          
+
+            </h:panelGrid>
+            <h:panelGroup id="botonesDibujar" rendered="#{!constructorasBean.mostrarRestriccionHorarios}">
+                <div class="buttonArea">
+                    <h:commandButton value="Actualizar" styleClass="btn"
+                                     disabled="#{!(constructorasBean.validado)}"
+                                     actionListener="#{constructorasBean.modificarConstructora()}"
+                                     rendered="#{(constructorasBean.validarEdicionDetalle()) and
+                                                 (constructorasBean.constructora.companiaId eq null ? false:true)}" />
+                    <h:commandButton value="Eliminar" styleClass="btn"
+                                     action="#{constructorasBean.eliminarConstructora()}"
+                                     onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"
+                                     rendered="#{(constructorasBean.validarBorradoDetalle()) and
+                                                 (constructorasBean.constructora.companiaId eq null ? false:true)}" />
+                    <h:commandButton id="btCrearConstructoras" value="Crear" styleClass="btn"
+                                     disabled="#{!(constructorasBean.validado)}"
+                                     actionListener="#{constructorasBean.crearConstructora()}"
+                                     rendered="#{constructorasBean.constructora.companiaId eq null ? true:false}" />
+                    <h:commandButton value="Volver" immediate="true"
+                                     action="constructoras" styleClass="btn"/>
+                    <h:commandButton value="Horario"
+                                     immediate="true" styleClass="btn"
+                                     actionListener="#{constructorasBean.verHorarioRestriccion()}"
+                                     disabled="#{(constructorasBean.constructora.companiaId eq null)}"
+                                     rendered="#{constructorasBean.validarEdicionHorario()}"/>
+                </div>
+            </h:panelGroup>                  
+            <!-- Jeisson Gómez  -->
+            <h:panelGroup id="pnlHorariosAdminId" rendered="#{!(constructorasBean.constructora.companiaId eq null) and constructorasBean.mostrarRestriccionHorarios}">
+                <div class="buttonArea"> 
+                    <h:commandButton value="Almacenar Cambios" rendered="#{!(constructorasBean.constructora.companiaId eq null)}" styleClass="btn"> 
+                        <f:ajax execute="@form" render="@form" event="click" listener="#{constructorasBean.guardarHorarioRestriccion()}" />     
+                    </h:commandButton>
+                    <h:commandButton value="Volver" rendered="#{!(constructorasBean.constructora.companiaId eq null)}" immediate="true" styleClass="btn" actionListener="#{constructorasBean.ocultarHorarioRestriccion()}"/>
+                </div>
+                <cc:componente-horario id="Administracionid" horarioRestriccion="#{constructorasBean.horarioRestriccion}" horarioEditable="E"
+                                       permisoCreacion="true" permisoEliminacion="true"/>
+            </h:panelGroup> 
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles de error ocurrido en capa de servicios en MER</title>
+    <!-- By Gildardo Mora-->
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+<h3><strong>MÓDULO DE EXPANSIÓN DE RED (MER)</strong></h3>
+<P>
+
+    <br>
+</P>
+<h4>ERROR GENERADO EN CAPA DE SERVICIOS</h4>
+
+<table>
+    <caption>Información general del error</caption>
+    <tr>
+        <th scope="row" style="width: 20%">SERVICIO:</th>
+        <td>%nombreServicio</td>
+    </tr>
+    <tr>
+        <th scope="row">HORA ERROR:</th>
+        <td>%horaMinutos</td>
+    </tr>
+    <tr>
+        <th scope="row">FECHA ERROR:</th>
+        <td>%fecha</td>
+    </tr>
+</table>
+<br> <strong>DETALLES DEL ERROR:</strong>
+<br>
+%mensajeError
+</body>
+</html>
