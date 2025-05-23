@@ -8,13 +8,11 @@ import co.com.claro.mgl.facade.cm.CmtBasicaMglFacadeLocal;
 import co.com.claro.mgl.facade.cm.CmtTipoBasicaMglFacadeLocal;
 import co.com.claro.mgl.facade.cm.ICmtSolicitudNodoCuadFrontFacadeLocal;
 import co.com.claro.mgl.facade.cm.ICmtSolicitudNodoCuadranteFacadeLocal;
-import co.com.claro.mgl.facade.ptlus.UsuarioServicesFacadeLocal;
 import co.com.claro.mgl.jpa.entities.GeograficoPoliticoMgl;
 import co.com.claro.mgl.jpa.entities.cm.CmtBasicaMgl;
 import co.com.claro.mgl.jpa.entities.cm.CmtTipoBasicaMgl;
 import co.com.claro.mgl.mbeans.util.ConstantsCM;
 import co.com.claro.mgl.mbeans.util.JSFUtil;
-import co.com.claro.mgl.rest.dtos.UsuariosServicesDTO;
 import co.com.claro.mgl.utils.Constant;
 import co.com.telmex.catastro.util.FacesUtil;
 import co.com.telmex.catastro.utilws.SecurityLogin;
@@ -58,8 +56,6 @@ public class NodoCuadranteGesSolBean implements Serializable {
     @Getter
     @Setter
     private int perfilVt = 0;
-    private UsuariosServicesDTO usuarioLogin = new UsuariosServicesDTO();
-
     @Getter
     @Setter
     private boolean showGestionSolicitudList;
@@ -104,7 +100,6 @@ public class NodoCuadranteGesSolBean implements Serializable {
     @Getter
     @Setter
     private boolean selAllSol = false;
-
     @Getter
     @Setter
     private List<GeograficoPoliticoMgl> ciudadesList;
@@ -143,8 +138,6 @@ public class NodoCuadranteGesSolBean implements Serializable {
     private HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
     @EJB
-    private UsuarioServicesFacadeLocal usuariosFacade;
-    @EJB
     private CmtBasicaMglFacadeLocal cmtBasicaMglFacadeLocal;
     @EJB
     private CmtTipoBasicaMglFacadeLocal cmtTipoBasicaMglFacadeLocal;
@@ -154,7 +147,6 @@ public class NodoCuadranteGesSolBean implements Serializable {
     private ICmtSolicitudNodoCuadFrontFacadeLocal iSolNodoCuadFront;
     @EJB
     private ICmtSolicitudNodoCuadranteFacadeLocal iSolNodoCuadrante;
-    private CmtSolicitudNodoCuadranteDto cmtSolicitudNodoCuadranteDto;
     @EJB
     private GeograficoPoliticoMglFacadeLocal geograficoPoliticoMglFacadeLocal;
 
@@ -182,7 +174,6 @@ public class NodoCuadranteGesSolBean implements Serializable {
     @PostConstruct
     private void init() {
 
-        cmtSolicitudNodoCuadranteDto = new CmtSolicitudNodoCuadranteDto();
         NodoCuadranteSolicitudSessionBean solicitudSessionBean = JSFUtil.getSessionBean(NodoCuadranteSolicitudSessionBean.class);
         //Obtenemos pagina actual de bean de Session.
         int page = solicitudSessionBean.getPaginaActual();
@@ -405,7 +396,7 @@ public class NodoCuadranteGesSolBean implements Serializable {
                     + e.getMessage(), GESTIONAR_SOLICITUD);
         }
     }
-    
+
     /**
      * Obtiene el listado de departamentos de la base de datos
      */
@@ -427,6 +418,7 @@ public class NodoCuadranteGesSolBean implements Serializable {
 
     /**
      * Obtiene el listado de departamentos de la base de datos
+     *
      * @param codDepartamento
      * @param nombDepartamento
      */
@@ -461,7 +453,7 @@ public class NodoCuadranteGesSolBean implements Serializable {
                     + e.getMessage(), GESTIONAR_SOLICITUD);
         }
     }
-    
+
     /**
      * Obtiene el listado de nodos de la base de datos
      */
@@ -493,7 +485,7 @@ public class NodoCuadranteGesSolBean implements Serializable {
             exceptionServBean.notifyError(e, "Error al realizar cargue de solicitudes por id de ciudad " + e.getMessage(), GESTIONAR_SOLICITUD);
         }
     }
-    
+
     public void filtrarCentroPoblado() {
 
         try {
@@ -503,7 +495,7 @@ public class NodoCuadranteGesSolBean implements Serializable {
             exceptionServBean.notifyError(e, "Error al realizar cargue de solicitudes por id de centro poblado " + e.getMessage(), GESTIONAR_SOLICITUD);
         }
     }
-    
+
     public void findSolicitudByCodigoNodo() {
 
         try {
@@ -513,7 +505,7 @@ public class NodoCuadranteGesSolBean implements Serializable {
             exceptionServBean.notifyError(e, "Error al realizar cargue de solicitudes por codigo de nodo " + e.getMessage(), GESTIONAR_SOLICITUD);
         }
     }
-    
+
     public void filtrarPorEstado() {
 
         try {
