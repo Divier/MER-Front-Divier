@@ -89,7 +89,9 @@ public enum ParametrosMerEnum {
     BASE_URI_LOG_IN_MGL("BASE_URI_LOG_IN_MGL"),
     FEATURE_FLAG_LOG_IN_MGL("FEATURE_FLAG_LOG_IN_MGL"),
     APP_NAME("APP_NAME_LOGIN_PU"),
-    MICROSITIO_APP_NAME("MICROSITIO_APP_NAME")
+    MICROSITIO_APP_NAME("MICROSITIO_APP_NAME"),
+    /* -- Órdenes de Trabajo -- */
+    FLAG_USAR_ESTADOS_FLUJO_OT("FLAG_USAR_ESTADOS_FLUJO_OT")
     ;
 
     /* --------------------------------------------- */

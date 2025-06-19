@@ -1,5 +1,8 @@
 package co.com.claro.mgl.dao.impl.cm;
 
+import co.com.claro.mer.utils.enums.ParametrosMerEnum;
+import co.com.claro.mer.utils.funtional.QuerySqlStatement;
+import co.com.claro.mer.utils.constants.OrdenTrabajoConstants;
 import co.com.claro.mgl.businessmanager.cm.CmtBasicaMglManager;
 import co.com.claro.mgl.businessmanager.cm.CmtEstadoIntxExtMglManager;
 import co.com.claro.mgl.dao.impl.GenericDaoImpl;
@@ -9,18 +12,20 @@ import co.com.claro.mgl.dtos.ReporteOtCMDto;
 import co.com.claro.mgl.error.ApplicationException;
 import co.com.claro.mgl.jpa.entities.*;
 import co.com.claro.mgl.jpa.entities.cm.*;
-import co.com.claro.mgl.utils.ClassUtils;
-import co.com.claro.mgl.utils.Constant;
-import co.com.claro.mgl.utils.DateUtils;
-import co.com.claro.mgl.utils.StringUtils;
+import co.com.claro.mgl.utils.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
 /**
  * Dao Orden de Trabajo. Contiene la logica de acceso a datos ordenes de trabajo
@@ -32,8 +37,16 @@ import java.util.*;
 public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl> {
 
     private static final Logger LOGGER = LogManager.getLogger(CmtOrdenTrabajoMglDaoImpl.class);
+    public static final String REFRESH = "REFRESH";
+    public static final String SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO = "Se produjo un error al momento de ejecutar el método '";
+    public static final String JAVAX_PERSISTENCE_CACHE_STORE_MODE = "javax.persistence.cache.storeMode";
     final int MILISEGUNDOS_DIA = 86400000;
     private final int LIMITE_INPUT_CONSULTA = 1000;
+
+
+    private static final Predicate<BigDecimal> esValido = bd -> bd != null && !bd.equals(BigDecimal.ZERO);
+    private static final Predicate<String> noEstaVacio = org.apache.commons.lang3.StringUtils::isNotBlank;
+    private static final Predicate<Collection<?>> tieneElementos = CollectionUtils::isNotEmpty;
 
     /**
      * Busca las Ordenes de Trabajo asociadas a una CM. Permite realizar la
@@ -50,12 +63,12 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
         try {
             Query query = entityManager.createNamedQuery("CmtOrdenTrabajoMgl.findByIdCm");
             query.setParameter("cmObj", cuentaMatrizMgl);
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             List<CmtOrdenTrabajoMgl> result = query.getResultList();
             getEntityManager().clear();
             return result;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -77,150 +90,167 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
     public List<CmtOrdenTrabajoMgl> findByFiltroParaGestionPaginacion(int firstResult,
             int maxResults, List<BigDecimal> estadosxflujoList,
             CmtFiltroConsultaOrdenesDto filtro) throws ApplicationException {
-        List<CmtOrdenTrabajoMgl> result = new ArrayList();
-        List<BigDecimal> estadosxflujoListFull = estadosxflujoList;
-        int numEstados = estadosxflujoListFull.size();
-        int numBloques = (int) Math.ceil(Double.parseDouble("" + numEstados) / (LIMITE_INPUT_CONSULTA));
-        int inicioBloque = 0, finBloque = numEstados < LIMITE_INPUT_CONSULTA ? numEstados : LIMITE_INPUT_CONSULTA;
-        estadosxflujoList = estadosxflujoListFull.subList(inicioBloque, finBloque);
+
         try {
-            String queryStr = "SELECT Distinct o  FROM CmtOrdenTrabajoMgl o,"
-                    + " CmtTipoOtMgl t, CmtEstadoxFlujoMgl ef, CmtCuentaMatrizMgl cm "
-                    + " WHERE t.idTipoOt = o.tipoOtObj.idTipoOt "
-                    + " AND ef.tipoFlujoOtObj.basicaId = t.tipoFlujoOt.basicaId "
-                    + " AND ef.basicaTecnologia.basicaId =o.basicaIdTecnologia.basicaId "
-                    + " AND o.estadoInternoObj.basicaId = ef.estadoInternoObj.basicaId "
-                    + " AND cm.cuentaMatrizId = o.cmObj.cuentaMatrizId "
-                    + " AND o.estadoRegistro = :estadoRegistro "
-                    + " AND ef.estadoRegistro = :estadoxF ";
+            String flagEstadosXflujo = ParametrosMerUtil.findValor(ParametrosMerEnum.FLAG_USAR_ESTADOS_FLUJO_OT);
+            boolean usarEstadosXflujo = org.apache.commons.lang3.StringUtils.isNotBlank(flagEstadosXflujo) && flagEstadosXflujo.trim().equals("1");
 
-            if (filtro.getFechaIngresoSeleccionada() != null) {
-                queryStr += "AND o.fechaCreacion BETWEEN :fechaCreacionInicial AND :fechaCreacionFinal ";
-            }
+            StringBuilder queryStr = new StringBuilder()
+                    .append(OrdenTrabajoConstants.SELECT_DISTINCT_O_FROM_CMT_ORDEN_TRABAJO_MGL_O)
+                    .append(OrdenTrabajoConstants.CMT_ESTADOX_FLUJO_MGL_EF_CMT_CUENTA_MATRIZ_MGL_CM)
+                    .append(OrdenTrabajoConstants.WHERE_T_ID_TIPO_OT_O_TIPO_OT_OBJ_ID_TIPO_OT)
+                    .append(OrdenTrabajoConstants.AND_EF_TIPO_FLUJO_OT_OBJ_BASICA_ID_T_TIPO_FLUJO_OT_BASICA_ID)
+                    .append(OrdenTrabajoConstants.AND_EF_BASICA_TECNOLOGIA_BASICA_ID_O_BASICA_ID_TECNOLOGIA_BASICA_ID)
+                    .append(OrdenTrabajoConstants.AND_O_ESTADO_INTERNO_OBJ_BASICA_ID_EF_ESTADO_INTERNO_OBJ_BASICA_ID)
+                    .append(OrdenTrabajoConstants.MATRIZ_ID_O_CM_OBJ_CUENTA_MATRIZ_ID)
+                    .append(OrdenTrabajoConstants.AND_O_ESTADO_REGISTRO_ESTADO_REGISTRO)
+                    .append(" AND ef.estadoRegistro = :estadoxF ")
+                    .append(crearQuery(estadosxflujoList, filtro, usarEstadosXflujo));
 
-            if (filtro.getIdOtSelecionada() != null
-                    && !filtro.getIdOtSelecionada().equals(BigDecimal.ZERO)) {
-                queryStr += " AND o.idOt = :idOt ";
-            }
-
-            if (filtro.getCcmmRrSelecionada() != null
-                    && !filtro.getCcmmRrSelecionada().equals(BigDecimal.ZERO)) {
-                queryStr += " AND cm.numeroCuenta = :numeroCuenta ";
-            }
-
-            if (filtro.getTipoOtSelecionada() != null && !filtro.getTipoOtSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(o.tipoOtObj.descTipoOt) LIKE :descTipoOt ";
-            }
-
-            if (filtro.getDptoSelecionado() != null && !filtro.getDptoSelecionado().isEmpty()) {
-                queryStr += " AND UPPER(cm.departamento.gpoNombre) LIKE :departamento ";
-            }
-
-            if (filtro.getCiudadSelecionada() != null && !filtro.getCiudadSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(cm.municipio.gpoNombre) LIKE :municipio";
-            }
-
-            if (filtro.getTecnoSelecionada() != null && !filtro.getTecnoSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(o.basicaIdTecnologia.nombreBasica) LIKE :tecnologia";
-            }
-
-            if (filtro.getEstIntSelecionada() != null && !filtro.getEstIntSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(o.estadoInternoObj.nombreBasica) LIKE :estado";
-            }
-
-            if (filtro.getCcmmMglSelecionada() != null
-                    && !filtro.getCcmmMglSelecionada().equals(BigDecimal.ZERO)) {
-                queryStr += " AND cm.cuentaMatrizId = :cuentaMatrizId ";
-            }
-
-            if (filtro.getRegionalSeleccionada() != null && !filtro.getRegionalSeleccionada().isEmpty()) {
-                queryStr += " AND UPPER(o.cmObj.division) LIKE :divicion";
-            }
-
-            if (filtro.getUserBloqueo() != null && !filtro.getUserBloqueo().isEmpty()) {
-                queryStr += " AND UPPER(o.disponibilidadGestion) LIKE :disponibilidadGestion";
-            }
-
-            if (filtro.getSlaSeleccionada() > 0) {
-                queryStr += " AND o.tipoOtObj.ans = :ans ";
-            }
-
-            queryStr += " ORDER BY o.fechaCreacion DESC ";
-
-            Query query = entityManager.createQuery(queryStr);
+            TypedQuery<CmtOrdenTrabajoMgl> query =  entityManager.createQuery(queryStr.toString(), CmtOrdenTrabajoMgl.class);
             query.setFirstResult(firstResult);
             query.setMaxResults(maxResults);
-            query.setParameter("estadoRegistro", 1);
-            query.setParameter("estadoxF", 1);
 
-            if (filtro.getFechaIngresoSeleccionada() != null) {
-                query.setParameter("fechaCreacionInicial", filtro.getFechaIngresoSeleccionada());
+            crearParametros(estadosxflujoList, filtro, query, usarEstadosXflujo);
 
-                long fechaEnMilisegundos = filtro.getFechaIngresoSeleccionada().getTime() + MILISEGUNDOS_DIA - 1;
-                query.setParameter("fechaCreacionFinal", new Date(fechaEnMilisegundos));
-            }
+            query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
 
-            if (filtro.getIdOtSelecionada() != null
-                    && !filtro.getIdOtSelecionada().equals(BigDecimal.ZERO)) {
-                query.setParameter("idOt", filtro.getIdOtSelecionada());
-            }
-
-            if (filtro.getCcmmRrSelecionada() != null
-                    && !filtro.getCcmmRrSelecionada().equals(BigDecimal.ZERO)) {
-                query.setParameter("numeroCuenta", filtro.getCcmmRrSelecionada());
-            }
-
-            if (filtro.getTipoOtSelecionada() != null && !filtro.getTipoOtSelecionada().isEmpty()) {
-                query.setParameter("descTipoOt", "%" + filtro.getTipoOtSelecionada().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getDptoSelecionado() != null && !filtro.getDptoSelecionado().isEmpty()) {
-                query.setParameter("departamento", "%" + filtro.getDptoSelecionado().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getCiudadSelecionada() != null && !filtro.getCiudadSelecionada().isEmpty()) {
-                query.setParameter("municipio", "%" + filtro.getCiudadSelecionada().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getTecnoSelecionada() != null && !filtro.getTecnoSelecionada().isEmpty()) {
-                query.setParameter("tecnologia", "%" + filtro.getTecnoSelecionada().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getEstIntSelecionada() != null && !filtro.getEstIntSelecionada().isEmpty()) {
-                query.setParameter("estado", "%" + filtro.getEstIntSelecionada().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getCcmmMglSelecionada() != null
-                    && !filtro.getCcmmMglSelecionada().equals(BigDecimal.ZERO)) {
-                query.setParameter("cuentaMatrizId", filtro.getCcmmMglSelecionada());
-            }
-
-            if (filtro.getRegionalSeleccionada() != null && !filtro.getRegionalSeleccionada().isEmpty()) {
-                query.setParameter("divicion", "%" + filtro.getRegionalSeleccionada().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getUserBloqueo() != null && !filtro.getUserBloqueo().isEmpty()) {
-                query.setParameter("disponibilidadGestion", "%" + filtro.getUserBloqueo().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getSlaSeleccionada() > 0) {
-                query.setParameter("ans", filtro.getSlaSeleccionada());
-            }
-
-            List lista = query.getResultList();
-            for (int j = 0; j < lista.size(); j++) {
-                result.add((CmtOrdenTrabajoMgl) lista.get(j));
-            }
-            getEntityManager().clear();
+            return query.getResultList();
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
+        }finally {
+            getEntityManager().clear();
+        }
+    }
+
+    private void crearParametros(List<BigDecimal> estadosxflujoList, CmtFiltroConsultaOrdenesDto filtro, Query query, boolean usarEstadosXflujo) {
+        query.setParameter(OrdenTrabajoConstants.ESTADO_REGISTRO_PARAMETER, 1);
+        query.setParameter("estadoxF", 1);
+
+        // Función para establecer parámetros de texto con formato LIKE
+        BiConsumer<String, String> setParamTexto = (nombre, valor) -> {
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(valor)) {
+                query.setParameter(nombre, "%" + valor.trim().toUpperCase() + "%");
+            }
+        };
+
+        Optional.ofNullable(filtro.getFechaIngresoSeleccionada())
+                .ifPresent(fecha -> {
+                    query.setParameter(OrdenTrabajoConstants.FECHA_CREACION_INICIAL_PARAMETER, fecha);
+                    query.setParameter(OrdenTrabajoConstants.FECHA_CREACION_FINAL_PARAMETER,
+                            new Date(fecha.getTime() + MILISEGUNDOS_DIA - 1));
+                });
+
+        Optional.ofNullable(filtro.getIdOtSelecionada())
+                .filter(esValido)
+                .ifPresent(idOt -> query.setParameter("idOt", idOt));
+
+        Optional.ofNullable(filtro.getCcmmRrSelecionada())
+                .filter(esValido)
+                .ifPresent(numeroCuenta -> query.setParameter(OrdenTrabajoConstants.NUMERO_CUENTA_PARAMETER, numeroCuenta));
+
+        setParamTexto.accept(OrdenTrabajoConstants.DESC_TIPO_OT_PARAMETER, filtro.getTipoOtSelecionada());
+        setParamTexto.accept(OrdenTrabajoConstants.DEPARTAMENTO_PARAMETER, filtro.getDptoSelecionado());
+        setParamTexto.accept(OrdenTrabajoConstants.MUNICIPIO_PARAMETER, filtro.getCiudadSelecionada());
+        setParamTexto.accept(OrdenTrabajoConstants.TECNOLOGIA_PARAMETER, filtro.getTecnoSelecionada());
+        setParamTexto.accept(OrdenTrabajoConstants.ESTADO_PARAMETER, filtro.getEstIntSelecionada());
+
+        Optional.ofNullable(filtro.getCcmmMglSelecionada())
+                .filter(esValido)
+                .ifPresent(cuentaMatrizId -> query.setParameter("cuentaMatrizId", cuentaMatrizId));
+
+        setParamTexto.accept("divicion", filtro.getRegionalSeleccionada());
+
+        setParamTexto.accept("disponibilidadGestion", filtro.getUserBloqueo());
+
+        // Parámetro SLA
+        Optional.of(filtro.getSlaSeleccionada())
+                .filter(sla -> sla > 0)
+                .ifPresent(sla -> query.setParameter("ans", sla));
+
+        if (CollectionUtils.isNotEmpty(estadosxflujoList) && usarEstadosXflujo) {
+            // Se asignan los parámetros de los estadosxflujo en bloques
+            // para evitar problemas de longitud de consulta usando la cláusula IN
+            for (int i = 0; i < estadosxflujoList.size(); i += LIMITE_INPUT_CONSULTA) {
+                int finBloque = Math.min(i + LIMITE_INPUT_CONSULTA, estadosxflujoList.size());
+                String paramName =  OrdenTrabajoConstants.ESTADOSXFLUJO_LIST_PARAMETER + (i > 0 ? i / LIMITE_INPUT_CONSULTA : "");
+                query.setParameter(paramName, estadosxflujoList.subList(i, finBloque));
+            }
+        }
+    }
+
+    private StringBuilder crearQuery(List<BigDecimal> estadosxflujoList, CmtFiltroConsultaOrdenesDto filtro, boolean usarEstadosXflujo) {
+        StringBuilder queryStr = new StringBuilder();
+        QuerySqlStatement agregarCondicion = QuerySqlStatement.addStatement();
+
+        agregarCondicion.accept(Objects.nonNull(filtro.getFechaIngresoSeleccionada()),
+                "AND o.fechaCreacion BETWEEN :fechaCreacionInicial AND :fechaCreacionFinal ",
+                queryStr);
+
+        agregarCondicion.accept( esValido.test(filtro.getIdOtSelecionada()), OrdenTrabajoConstants.AND_O_ID_OT_ID_OT,
+                queryStr);
+
+        agregarCondicion.accept(esValido.test(filtro.getCcmmRrSelecionada()),
+                OrdenTrabajoConstants.AND_CM_NUMERO_CUENTA_NUMERO_CUENTA,
+                queryStr);
+
+        agregarCondicion.accept(noEstaVacio.test(filtro.getTipoOtSelecionada()),
+                OrdenTrabajoConstants.AND_UPPER_O_TIPO_OT_OBJ_DESC_TIPO_OT_LIKE_DESC_TIPO_OT,
+                queryStr);
+
+        agregarCondicion.accept(noEstaVacio.test(filtro.getDptoSelecionado()),
+                OrdenTrabajoConstants.AND_UPPER_CM_DEPARTAMENTO_GPO_NOMBRE_LIKE_DEPARTAMENTO,
+                queryStr);
+
+        agregarCondicion.accept(noEstaVacio.test(filtro.getCiudadSelecionada()),
+                OrdenTrabajoConstants.AND_UPPER_CM_MUNICIPIO_GPO_NOMBRE_LIKE_MUNICIPIO,
+                queryStr);
+
+        agregarCondicion.accept(noEstaVacio.test(filtro.getTecnoSelecionada()),
+                OrdenTrabajoConstants.AND_UPPER_O_BASICA_ID_TECNOLOGIA_NOMBRE_BASICA_LIKE_TECNOLOGIA,
+                queryStr);
+
+        agregarCondicion.accept(noEstaVacio.test(filtro.getEstIntSelecionada()),
+                OrdenTrabajoConstants.AND_UPPER_O_ESTADO_INTERNO_OBJ_NOMBRE_BASICA_LIKE_ESTADO,
+                queryStr);
+
+        agregarCondicion.accept(esValido.test(filtro.getCcmmMglSelecionada()),
+                " AND cm.cuentaMatrizId = :cuentaMatrizId ",
+                queryStr);
+
+        agregarCondicion.accept(noEstaVacio.test(filtro.getRegionalSeleccionada()),
+                " AND UPPER(o.cmObj.division) LIKE :divicion",
+                queryStr);
+
+        agregarCondicion.accept(noEstaVacio.test(filtro.getUserBloqueo()),
+                " AND UPPER(o.disponibilidadGestion) LIKE :disponibilidadGestion",
+                queryStr);
+
+        agregarCondicion.accept(filtro.getSlaSeleccionada() > 0,
+                OrdenTrabajoConstants.AND_O_TIPO_OT_OBJ_ANS_ANS,
+                queryStr);
+
+        if (tieneElementos.test(estadosxflujoList) && usarEstadosXflujo) {
+            // Se asignan los parámetros de los estadosxflujo en bloques para evitar problemas de longitud de consulta usando la cláusula IN
+            // Se usa un rango para dividir la lista en bloques y se asignan los parámetros correspondientes a cada bloque
+            // Se usa AND y OR para combinar los bloques
+            queryStr.append(" AND (");
+            IntStream.range(0, (int) Math.ceil((double) estadosxflujoList.size() / LIMITE_INPUT_CONSULTA))
+                    .forEach(idx -> {
+                        if (idx > 0) {
+                            queryStr.append(" OR ");
+                        }
+                        queryStr.append("ef.estadoxFlujoId IN :estadosxflujoList").append(idx == 0 ? "" : idx);
+                    });
+
+            queryStr.append(") ");
         }
 
-        inicioBloque += LIMITE_INPUT_CONSULTA;
-        finBloque = numEstados < (finBloque + LIMITE_INPUT_CONSULTA) ? numEstados : finBloque + LIMITE_INPUT_CONSULTA;
-        return result;
+        queryStr.append(" ORDER BY o.fechaCreacion DESC ");
+
+        return queryStr;
     }
 
     /**
@@ -236,142 +266,37 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
      */
     public int getCountByFiltroParaGestion(List<BigDecimal> estadosxflujoList,
             CmtFiltroConsultaOrdenesDto filtro) throws ApplicationException {
-        List<BigDecimal> estadosxflujoListFull = estadosxflujoList;
-        int numEstados = estadosxflujoListFull.size();
-        int numBloques = (int) Math.ceil(Double.parseDouble("" + numEstados) / (LIMITE_INPUT_CONSULTA));
-        int result = 0, inicioBloque = 0, finBloque = numEstados < LIMITE_INPUT_CONSULTA ? numEstados : LIMITE_INPUT_CONSULTA;
-        estadosxflujoList = estadosxflujoListFull.subList(inicioBloque, finBloque);
+
         try {
-            String queryStr = "SELECT COUNT(Distinct o.idOt) FROM CmtOrdenTrabajoMgl o,"
-                    + " CmtTipoOtMgl t, CmtEstadoxFlujoMgl ef, CmtCuentaMatrizMgl cm"
-                    + " WHERE t.idTipoOt = o.tipoOtObj.idTipoOt "
-                    + " AND ef.tipoFlujoOtObj.basicaId = t.tipoFlujoOt.basicaId "
-                    + " AND ef.basicaTecnologia.basicaId =o.basicaIdTecnologia.basicaId "
-                    + " AND o.estadoInternoObj.basicaId = ef.estadoInternoObj.basicaId "
-                    + " AND cm.cuentaMatrizId = o.cmObj.cuentaMatrizId "
-                    + " AND o.estadoRegistro = :estadoRegistro "
-                    + " AND ef.estadoRegistro = :estadoxF ";
+            String flagEstadosXflujo = ParametrosMerUtil.findValor(ParametrosMerEnum.FLAG_USAR_ESTADOS_FLUJO_OT);
+            boolean usarEstadosXflujo = noEstaVacio.test(flagEstadosXflujo) && flagEstadosXflujo.trim().equals("1");
 
-            if (filtro.getFechaIngresoSeleccionada() != null) {
-                queryStr += "AND o.fechaCreacion BETWEEN :fechaCreacionInicial AND :fechaCreacionFinal ";
-            }
+            StringBuilder queryStr = new StringBuilder()
+                    .append("SELECT COUNT(Distinct o.idOt) FROM CmtOrdenTrabajoMgl o,")
+                    .append(" CmtTipoOtMgl t, CmtEstadoxFlujoMgl ef, CmtCuentaMatrizMgl cm")
+                    .append(OrdenTrabajoConstants.WHERE_T_ID_TIPO_OT_O_TIPO_OT_OBJ_ID_TIPO_OT)
+                    .append(OrdenTrabajoConstants.AND_EF_TIPO_FLUJO_OT_OBJ_BASICA_ID_T_TIPO_FLUJO_OT_BASICA_ID)
+                    .append(OrdenTrabajoConstants.AND_EF_BASICA_TECNOLOGIA_BASICA_ID_O_BASICA_ID_TECNOLOGIA_BASICA_ID)
+                    .append(OrdenTrabajoConstants.AND_O_ESTADO_INTERNO_OBJ_BASICA_ID_EF_ESTADO_INTERNO_OBJ_BASICA_ID)
+                    .append(OrdenTrabajoConstants.MATRIZ_ID_O_CM_OBJ_CUENTA_MATRIZ_ID)
+                    .append(OrdenTrabajoConstants.AND_O_ESTADO_REGISTRO_ESTADO_REGISTRO)
+                    .append( " AND ef.estadoRegistro = :estadoxF ")
+                    .append(crearQuery(estadosxflujoList, filtro, usarEstadosXflujo));
 
-            if (filtro.getIdOtSelecionada() != null
-                    && !filtro.getIdOtSelecionada().equals(BigDecimal.ZERO)) {
-                queryStr += " AND o.idOt = :idOt ";
-            }
+            TypedQuery<Long> query = entityManager.createQuery(queryStr.toString(), Long.class);
 
-            if (filtro.getCcmmRrSelecionada() != null
-                    && !filtro.getCcmmRrSelecionada().equals(BigDecimal.ZERO)) {
-                queryStr += " AND cm.numeroCuenta = :numeroCuenta ";
-            }
+            crearParametros(estadosxflujoList, filtro, query, usarEstadosXflujo);
 
-            if (filtro.getTipoOtSelecionada() != null && !filtro.getTipoOtSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(o.tipoOtObj.descTipoOt) LIKE :descTipoOt ";
-            }
-
-            if (filtro.getDptoSelecionado() != null && !filtro.getDptoSelecionado().isEmpty()) {
-                queryStr += " AND UPPER(cm.departamento.gpoNombre) LIKE :departamento ";
-            }
-
-            if (filtro.getCiudadSelecionada() != null && !filtro.getCiudadSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(cm.municipio.gpoNombre) LIKE :municipio";
-            }
-
-            if (filtro.getTecnoSelecionada() != null && !filtro.getTecnoSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(o.basicaIdTecnologia.nombreBasica) LIKE :tecnologia";
-            }
-
-            if (filtro.getEstIntSelecionada() != null && !filtro.getEstIntSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(o.estadoInternoObj.nombreBasica) LIKE :estado";
-            }
-
-            if (filtro.getCcmmMglSelecionada() != null
-                    && !filtro.getCcmmMglSelecionada().equals(BigDecimal.ZERO)) {
-                queryStr += " AND cm.cuentaMatrizId = :cuentaMatrizId ";
-            }
-
-            if (filtro.getRegionalSeleccionada() != null && !filtro.getRegionalSeleccionada().isEmpty()) {
-                queryStr += " AND UPPER(o.cmObj.division) LIKE :divicion";
-            }
-
-            if (filtro.getUserBloqueo() != null && !filtro.getUserBloqueo().isEmpty()) {
-                queryStr += " AND UPPER(o.disponibilidadGestion) LIKE :disponibilidadGestion";
-            }
-
-            if (filtro.getSlaSeleccionada() > 0) {
-                queryStr += " AND o.tipoOtObj.ans = :ans ";
-            }
-
-            Query query = entityManager.createQuery(queryStr);
-
-            query.setParameter("estadoRegistro", 1);
-            query.setParameter("estadoxF", 1);
-
-            if (filtro.getFechaIngresoSeleccionada() != null) {
-                query.setParameter("fechaCreacionInicial", filtro.getFechaIngresoSeleccionada());
-
-                long fechaEnMilisegundos = filtro.getFechaIngresoSeleccionada().getTime() + MILISEGUNDOS_DIA - 1;
-                query.setParameter("fechaCreacionFinal", new Date(fechaEnMilisegundos));
-            }
-
-            if (filtro.getIdOtSelecionada() != null
-                    && !filtro.getIdOtSelecionada().equals(BigDecimal.ZERO)) {
-                query.setParameter("idOt", filtro.getIdOtSelecionada());
-            }
-
-            if (filtro.getCcmmRrSelecionada() != null
-                    && !filtro.getCcmmRrSelecionada().equals(BigDecimal.ZERO)) {
-                query.setParameter("numeroCuenta", filtro.getCcmmRrSelecionada());
-            }
-
-            if (filtro.getTipoOtSelecionada() != null && !filtro.getTipoOtSelecionada().isEmpty()) {
-                query.setParameter("descTipoOt", "%" + filtro.getTipoOtSelecionada().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getDptoSelecionado() != null && !filtro.getDptoSelecionado().isEmpty()) {
-                query.setParameter("departamento", "%" + filtro.getDptoSelecionado().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getCiudadSelecionada() != null && !filtro.getCiudadSelecionada().isEmpty()) {
-                query.setParameter("municipio", "%" + filtro.getCiudadSelecionada().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getTecnoSelecionada() != null && !filtro.getTecnoSelecionada().isEmpty()) {
-                query.setParameter("tecnologia", "%" + filtro.getTecnoSelecionada().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getEstIntSelecionada() != null && !filtro.getEstIntSelecionada().isEmpty()) {
-                query.setParameter("estado", "%" + filtro.getEstIntSelecionada().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getCcmmMglSelecionada() != null
-                    && !filtro.getCcmmMglSelecionada().equals(BigDecimal.ZERO)) {
-                query.setParameter("cuentaMatrizId", filtro.getCcmmMglSelecionada());
-            }
-
-            if (filtro.getRegionalSeleccionada() != null && !filtro.getRegionalSeleccionada().isEmpty()) {
-                query.setParameter("divicion", "%" + filtro.getRegionalSeleccionada().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getUserBloqueo() != null && !filtro.getUserBloqueo().isEmpty()) {
-                query.setParameter("disponibilidadGestion", "%" + filtro.getUserBloqueo().trim().toUpperCase() + "%");
-            }
-
-            if (filtro.getSlaSeleccionada() > 0) {
-                query.setParameter("ans", filtro.getSlaSeleccionada());
-            }
-
-            result += query.getSingleResult() == null ? 0 : ((Long) query.getSingleResult()).intValue();
+            Long result = query.getSingleResult();
+            return result != null ? result.intValue() : 0;
 
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
+        } finally {
+            getEntityManager().clear();
         }
-        inicioBloque += LIMITE_INPUT_CONSULTA;
-        finBloque = numEstados < (finBloque + LIMITE_INPUT_CONSULTA) ? numEstados : finBloque + LIMITE_INPUT_CONSULTA;
-        return result;
     }
 
     /**
@@ -388,12 +313,12 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
         try {
             Query query = entityManager.createNamedQuery("CmtOrdenTrabajoMgl.findByTipoOt");
             query.setParameter("tipoOtObj", tipoOtMgl);
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             List<CmtOrdenTrabajoMgl> result = query.getResultList();
             getEntityManager().clear();
             return result;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -404,12 +329,12 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             Query q = entityManager.createQuery("SELECT o FROM CmtOrdenTrabajoMgl o "
                     + " WHERE  o.cmObj = :cmObj ORDER BY o.idOt DESC ");
             q.setParameter("cmObj", cmtCuentaMatrizMgl);
-            q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            q.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             List<CmtOrdenTrabajoMgl> result = q.getResultList();
             getEntityManager().clear();
             return result;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -431,12 +356,12 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                     + " where e.subEdificioObj.subEdificioId = :subEdificioObj ))";
             Query q = entityManager.createQuery(query);
             q.setParameter("subEdificioObj", cmtSubEdificioMgl.getSubEdificioId());
-            q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            q.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             List<CmtOrdenTrabajoMgl> result = q.getResultList();
             getEntityManager().clear();
             return result;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -448,10 +373,10 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             Query q = entityManager.createQuery("SELECT COUNT(1) FROM CmtOrdenTrabajoMgl o "
                     + "WHERE  o.cmObj = :cmObj ");
             q.setParameter("cmObj", cmtCuentaMatrizMgl);
-            q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            q.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             return (Long) q.getSingleResult();
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -475,10 +400,10 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                     + " where e.subEdificioObj.subEdificioId = :subEdificioObj ))";
             Query q = entityManager.createQuery(query);
             q.setParameter("subEdificioObj", cmtSubEdificioMgl.getSubEdificioId());
-            q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            q.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             return (Long) q.getSingleResult();
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -500,12 +425,12 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             Query q = entityManager.createQuery("SELECT c FROM CmtOrdenTrabajoMgl c WHERE c.cmObj = :cuentaMatriz and c.basicaIdTecnologia = :basicaTecnologia");
             q.setParameter("cuentaMatriz", CuentaMatriz);
             q.setParameter("basicaTecnologia", basicaTecnologia);
-            q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            q.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             List<CmtOrdenTrabajoMgl> result = q.getResultList();
             getEntityManager().clear();
             return result;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -534,8 +459,8 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 + "WHERE c.cmObj = :cuentaMatriz  AND  c.estadoRegistro = :estado");
 
         q.setParameter("cuentaMatriz", cuentaMatriz);
-        q.setParameter("estado", 1);
-        q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+        q.setParameter(OrdenTrabajoConstants.ESTADO_PARAMETER, 1);
+        q.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
         ordenesCcmm = q.getResultList();
 
         if (ordenesCcmm != null && ordenesCcmm.size() > 0) {
@@ -587,11 +512,11 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 .append(" AND ot.estadoInternoObj.basicaId = :basicaId");
 
         return entityManager.createQuery(consulta.toString())
-                .setParameter("estado", 1)
+                .setParameter(OrdenTrabajoConstants.ESTADO_PARAMETER, 1)
                 .setParameter("idCuentaMatriz", cuentaMatriz.getCuentaMatrizId())
                 .setParameter("idTipoOt", tipoOtMgl.getIdTipoOt())
                 .setParameter("basicaId", estadoInternoOt.getBasicaId())
-                .setHint("javax.persistence.cache.storeMode", "REFRESH")
+                .setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH)
                 .getResultList();
     }
 
@@ -608,12 +533,12 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
         try {
             Query query = entityManager.createNamedQuery("CmtOrdenTrabajoMgl.findByTipoTrabajo");
             query.setParameter("tipoOtObj", tipoOtMgl);
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             List<CmtOrdenTrabajoMgl> result = query.getResultList();
             getEntityManager().clear();
             return result;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -631,40 +556,41 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
     public CmtOrdenTrabajoMgl findByIdOtAndEstXFlu(BigDecimal idOt, List<BigDecimal> estadosxflujoList)
             throws ApplicationException {
         try {
-            String queryStr = "SELECT Distinct o  FROM CmtOrdenTrabajoMgl o,"
-                    + " CmtTipoOtMgl t, CmtEstadoxFlujoMgl ef, CmtCuentaMatrizMgl cm "
+            StringBuilder queryStr = new StringBuilder()
+                    .append(OrdenTrabajoConstants.SELECT_DISTINCT_O_FROM_CMT_ORDEN_TRABAJO_MGL_O
+                    + OrdenTrabajoConstants.CMT_ESTADOX_FLUJO_MGL_EF_CMT_CUENTA_MATRIZ_MGL_CM
                     + " WHERE t.idTipoOt = o.tipoOtObj.idTipoOt  "
                     + " AND ef.tipoFlujoOtObj.basicaId = t.tipoFlujoOt.basicaId  "
                     + " AND ef.basicaTecnologia.basicaId =o.basicaIdTecnologia.basicaId  "
                     + " AND o.estadoInternoObj.basicaId = ef.estadoInternoObj.basicaId  "
                     + " AND cm.cuentaMatrizId = o.cmObj.cuentaMatrizId  "
-                    + " AND o.estadoRegistro = :estadoRegistro ";
+                    + OrdenTrabajoConstants.AND_O_ESTADO_REGISTRO_ESTADO_REGISTRO);
 
             if (idOt != null && !idOt.equals(BigDecimal.ZERO)) {
-                queryStr += " AND o.idOt = :idOt ";
+                queryStr.append(OrdenTrabajoConstants.AND_O_ID_OT_ID_OT);
             }
             if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                queryStr += " AND ef.estadoxFlujoId IN :estadosxflujoList ";
+                queryStr.append(OrdenTrabajoConstants.AND_EF_ESTADOX_FLUJO_ID_IN_ESTADOSXFLUJO_LIST);
             }
 
-            Query query = entityManager.createQuery(queryStr);
-            query.setParameter("estadoRegistro", 1);
+            Query query = entityManager.createQuery(queryStr.toString());
+            query.setParameter(OrdenTrabajoConstants.ESTADO_REGISTRO_PARAMETER, 1);
 
             if (idOt != null && !idOt.equals(BigDecimal.ZERO)) {
                 query.setParameter("idOt", idOt);
             }
             if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                query.setParameter("estadosxflujoList", estadosxflujoList);
+                query.setParameter(OrdenTrabajoConstants.ESTADOSXFLUJO_LIST_PARAMETER, estadosxflujoList);
             }
 
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             return (CmtOrdenTrabajoMgl) query.getSingleResult();
         } catch (NoResultException e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             return null;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -685,14 +611,14 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
     public List<CmtOrdenTrabajoMgl> findByFiltroParaGestionExportarOt(
             List<BigDecimal> estadosxflujoList, CmtFiltroConsultaOrdenesDto filtro) throws ApplicationException {
         try {
-            String queryStr = "SELECT Distinct o  FROM CmtOrdenTrabajoMgl o,"
-                    + " CmtTipoOtMgl t, CmtEstadoxFlujoMgl ef, CmtCuentaMatrizMgl cm "
-                    + " WHERE t.idTipoOt = o.tipoOtObj.idTipoOt "
-                    + " AND ef.tipoFlujoOtObj.basicaId = t.tipoFlujoOt.basicaId "
-                    + " AND ef.basicaTecnologia.basicaId =o.basicaIdTecnologia.basicaId "
-                    + " AND o.estadoInternoObj.basicaId = ef.estadoInternoObj.basicaId "
-                    + " AND cm.cuentaMatrizId = o.cmObj.cuentaMatrizId "
-                    + " AND o.estadoRegistro = :estadoRegistro ";
+            String queryStr = OrdenTrabajoConstants.SELECT_DISTINCT_O_FROM_CMT_ORDEN_TRABAJO_MGL_O
+                    + OrdenTrabajoConstants.CMT_ESTADOX_FLUJO_MGL_EF_CMT_CUENTA_MATRIZ_MGL_CM
+                    + OrdenTrabajoConstants.WHERE_T_ID_TIPO_OT_O_TIPO_OT_OBJ_ID_TIPO_OT
+                    + OrdenTrabajoConstants.AND_EF_TIPO_FLUJO_OT_OBJ_BASICA_ID_T_TIPO_FLUJO_OT_BASICA_ID
+                    + OrdenTrabajoConstants.AND_EF_BASICA_TECNOLOGIA_BASICA_ID_O_BASICA_ID_TECNOLOGIA_BASICA_ID
+                    + OrdenTrabajoConstants.AND_O_ESTADO_INTERNO_OBJ_BASICA_ID_EF_ESTADO_INTERNO_OBJ_BASICA_ID
+                    + OrdenTrabajoConstants.MATRIZ_ID_O_CM_OBJ_CUENTA_MATRIZ_ID
+                    + OrdenTrabajoConstants.AND_O_ESTADO_REGISTRO_ESTADO_REGISTRO;
 
             if (filtro.getFechaIngresoSeleccionada() != null) {
                 queryStr += "AND o.fechaCreacion BETWEEN :fechaCreacionInicial AND :fechaCreacionFinal ";
@@ -700,32 +626,32 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
             if (filtro.getIdOtSelecionada() != null
                     && !filtro.getIdOtSelecionada().equals(BigDecimal.ZERO)) {
-                queryStr += " AND o.idOt = :idOt ";
+                queryStr += OrdenTrabajoConstants.AND_O_ID_OT_ID_OT;
             }
 
             if (filtro.getCcmmRrSelecionada() != null
                     && !filtro.getCcmmRrSelecionada().equals(BigDecimal.ZERO)) {
-                queryStr += " AND cm.numeroCuenta = :numeroCuenta ";
+                queryStr += OrdenTrabajoConstants.AND_CM_NUMERO_CUENTA_NUMERO_CUENTA;
             }
 
             if (filtro.getTipoOtSelecionada() != null && !filtro.getTipoOtSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(o.tipoOtObj.descTipoOt) LIKE :descTipoOt ";
+                queryStr += OrdenTrabajoConstants.AND_UPPER_O_TIPO_OT_OBJ_DESC_TIPO_OT_LIKE_DESC_TIPO_OT;
             }
 
             if (filtro.getDptoSelecionado() != null && !filtro.getDptoSelecionado().isEmpty()) {
-                queryStr += " AND UPPER(cm.departamento.gpoNombre) LIKE :departamento ";
+                queryStr += OrdenTrabajoConstants.AND_UPPER_CM_DEPARTAMENTO_GPO_NOMBRE_LIKE_DEPARTAMENTO;
             }
 
             if (filtro.getCiudadSelecionada() != null && !filtro.getCiudadSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(cm.municipio.gpoNombre) LIKE :municipio";
+                queryStr += OrdenTrabajoConstants.AND_UPPER_CM_MUNICIPIO_GPO_NOMBRE_LIKE_MUNICIPIO;
             }
 
             if (filtro.getTecnoSelecionada() != null && !filtro.getTecnoSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(o.basicaIdTecnologia.nombreBasica) LIKE :tecnologia";
+                queryStr += OrdenTrabajoConstants.AND_UPPER_O_BASICA_ID_TECNOLOGIA_NOMBRE_BASICA_LIKE_TECNOLOGIA;
             }
 
             if (filtro.getEstIntSelecionada() != null && !filtro.getEstIntSelecionada().isEmpty()) {
-                queryStr += " AND UPPER(o.estadoInternoObj.nombreBasica) LIKE :estado";
+                queryStr += OrdenTrabajoConstants.AND_UPPER_O_ESTADO_INTERNO_OBJ_NOMBRE_BASICA_LIKE_ESTADO;
             }
 
             if (filtro.getCcmmMglSelecionada() != null
@@ -742,18 +668,18 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             }
 
             if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                queryStr += " AND ef.estadoxFlujoId IN :estadosxflujoList ";
+                queryStr += OrdenTrabajoConstants.AND_EF_ESTADOX_FLUJO_ID_IN_ESTADOSXFLUJO_LIST;
             }
-            queryStr += " ORDER BY o.fechaCreacion ASC ";
+            queryStr += OrdenTrabajoConstants.ORDER_BY_O_FECHA_CREACION_ASC;
 
             Query query = entityManager.createQuery(queryStr);
-            query.setParameter("estadoRegistro", 1);
+            query.setParameter(OrdenTrabajoConstants.ESTADO_REGISTRO_PARAMETER, 1);
 
             if (filtro.getFechaIngresoSeleccionada() != null) {
-                query.setParameter("fechaCreacionInicial", filtro.getFechaIngresoSeleccionada());
+                query.setParameter(OrdenTrabajoConstants.FECHA_CREACION_INICIAL_PARAMETER, filtro.getFechaIngresoSeleccionada());
 
                 long fechaEnMilisegundos = filtro.getFechaIngresoSeleccionada().getTime() + MILISEGUNDOS_DIA - 1;
-                query.setParameter("fechaCreacionFinal", new Date(fechaEnMilisegundos));
+                query.setParameter(OrdenTrabajoConstants.FECHA_CREACION_FINAL_PARAMETER, new Date(fechaEnMilisegundos));
             }
 
             if (filtro.getIdOtSelecionada() != null
@@ -763,27 +689,27 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
             if (filtro.getCcmmRrSelecionada() != null
                     && !filtro.getCcmmRrSelecionada().equals(BigDecimal.ZERO)) {
-                query.setParameter("numeroCuenta", filtro.getCcmmRrSelecionada());
+                query.setParameter(OrdenTrabajoConstants.NUMERO_CUENTA_PARAMETER, filtro.getCcmmRrSelecionada());
             }
 
             if (filtro.getTipoOtSelecionada() != null && !filtro.getTipoOtSelecionada().isEmpty()) {
-                query.setParameter("descTipoOt", "%" + filtro.getTipoOtSelecionada().trim().toUpperCase() + "%");
+                query.setParameter(OrdenTrabajoConstants.DESC_TIPO_OT_PARAMETER, "%" + filtro.getTipoOtSelecionada().trim().toUpperCase() + "%");
             }
 
             if (filtro.getDptoSelecionado() != null && !filtro.getDptoSelecionado().isEmpty()) {
-                query.setParameter("departamento", "%" + filtro.getDptoSelecionado().trim().toUpperCase() + "%");
+                query.setParameter(OrdenTrabajoConstants.DEPARTAMENTO_PARAMETER, "%" + filtro.getDptoSelecionado().trim().toUpperCase() + "%");
             }
 
             if (filtro.getCiudadSelecionada() != null && !filtro.getCiudadSelecionada().isEmpty()) {
-                query.setParameter("municipio", "%" + filtro.getCiudadSelecionada().trim().toUpperCase() + "%");
+                query.setParameter(OrdenTrabajoConstants.MUNICIPIO_PARAMETER, "%" + filtro.getCiudadSelecionada().trim().toUpperCase() + "%");
             }
 
             if (filtro.getTecnoSelecionada() != null && !filtro.getTecnoSelecionada().isEmpty()) {
-                query.setParameter("tecnologia", "%" + filtro.getTecnoSelecionada().trim().toUpperCase() + "%");
+                query.setParameter(OrdenTrabajoConstants.TECNOLOGIA_PARAMETER, "%" + filtro.getTecnoSelecionada().trim().toUpperCase() + "%");
             }
 
             if (filtro.getEstIntSelecionada() != null && !filtro.getEstIntSelecionada().isEmpty()) {
-                query.setParameter("estado", "%" + filtro.getEstIntSelecionada().trim().toUpperCase() + "%");
+                query.setParameter(OrdenTrabajoConstants.ESTADO_PARAMETER, "%" + filtro.getEstIntSelecionada().trim().toUpperCase() + "%");
             }
 
             if (filtro.getCcmmMglSelecionada() != null
@@ -799,14 +725,14 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 query.setParameter("disponibilidadGestion", "%" + filtro.getUserBloqueo().trim().toUpperCase() + "%");
             }
             if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                query.setParameter("estadosxflujoList", estadosxflujoList);
+                query.setParameter(OrdenTrabajoConstants.ESTADOSXFLUJO_LIST_PARAMETER, estadosxflujoList);
             }
 
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             getEntityManager().clear();
             return query.getResultList();
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -818,13 +744,13 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             BigDecimal tecnologia, String codigoReg) throws ApplicationException {
         try {
             String queryStr = "SELECT Count (1) FROM CmtOrdenTrabajoMgl o,"
-                    + " CmtTipoOtMgl t, CmtEstadoxFlujoMgl ef, CmtCuentaMatrizMgl cm "
-                    + " WHERE t.idTipoOt = o.tipoOtObj.idTipoOt "
-                    + " AND ef.tipoFlujoOtObj.basicaId = t.tipoFlujoOt.basicaId "
-                    + " AND ef.basicaTecnologia.basicaId =o.basicaIdTecnologia.basicaId "
-                    + " AND o.estadoInternoObj.basicaId = ef.estadoInternoObj.basicaId "
-                    + " AND cm.cuentaMatrizId = o.cmObj.cuentaMatrizId "
-                    + " AND o.estadoRegistro = :estadoRegistro ";
+                    + OrdenTrabajoConstants.CMT_ESTADOX_FLUJO_MGL_EF_CMT_CUENTA_MATRIZ_MGL_CM
+                    + OrdenTrabajoConstants.WHERE_T_ID_TIPO_OT_O_TIPO_OT_OBJ_ID_TIPO_OT
+                    + OrdenTrabajoConstants.AND_EF_TIPO_FLUJO_OT_OBJ_BASICA_ID_T_TIPO_FLUJO_OT_BASICA_ID
+                    + OrdenTrabajoConstants.AND_EF_BASICA_TECNOLOGIA_BASICA_ID_O_BASICA_ID_TECNOLOGIA_BASICA_ID
+                    + OrdenTrabajoConstants.AND_O_ESTADO_INTERNO_OBJ_BASICA_ID_EF_ESTADO_INTERNO_OBJ_BASICA_ID
+                    + OrdenTrabajoConstants.MATRIZ_ID_O_CM_OBJ_CUENTA_MATRIZ_ID
+                    + OrdenTrabajoConstants.AND_O_ESTADO_REGISTRO_ESTADO_REGISTRO;
 
             if (codigoReg != null && !codigoReg.isEmpty()) {
                 queryStr += " AND o.cmObj.division = :codigoReg ";
@@ -845,12 +771,12 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 queryStr += " AND o.basicaIdTecnologia.basicaId = :basicaIdTecnologia ";
             }
             if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                queryStr += " AND ef.estadoxFlujoId IN :estadosxflujoList ";
+                queryStr += OrdenTrabajoConstants.AND_EF_ESTADOX_FLUJO_ID_IN_ESTADOSXFLUJO_LIST;
             }
-            queryStr += " ORDER BY o.fechaCreacion ASC ";
+            queryStr += OrdenTrabajoConstants.ORDER_BY_O_FECHA_CREACION_ASC;
 
             Query query = entityManager.createQuery(queryStr);
-            query.setParameter("estadoRegistro", 1);
+            query.setParameter(OrdenTrabajoConstants.ESTADO_REGISTRO_PARAMETER, 1);
             if (codigoReg != null && !codigoReg.isEmpty()) {
                 query.setParameter("codigoReg", codigoReg);
             }
@@ -864,7 +790,7 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 query.setParameter("tipoOt", idTipoOt);
             }
             if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                query.setParameter("estadosxflujoList", estadosxflujoList);
+                query.setParameter(OrdenTrabajoConstants.ESTADOSXFLUJO_LIST_PARAMETER, estadosxflujoList);
             }
             if (tecnologia != null && !tecnologia.equals(BigDecimal.ZERO)) {
                 query.setParameter("basicaIdTecnologia", tecnologia);
@@ -872,7 +798,7 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             if (estadoInternoBasicaId != null && !estadoInternoBasicaId.equals(BigDecimal.ZERO)) {
                 query.setParameter("estadoInterno", estadoInternoBasicaId);
             }
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
 
             Long result;
             result = (Long) query.getSingleResult();
@@ -883,7 +809,7 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 return 0;
             }
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -919,19 +845,19 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
             try {
 
-                String queryStr = "SELECT Distinct o  FROM CmtOrdenTrabajoMgl o,"
-                        + " CmtTipoOtMgl t, CmtEstadoxFlujoMgl ef, CmtCuentaMatrizMgl cm, "
-                        + " CmtVisitaTecnicaMgl vt, CmtSubEdificiosVt subVt "
-                        + " WHERE t.idTipoOt = o.tipoOtObj.idTipoOt "
-                        + " AND ef.tipoFlujoOtObj.basicaId = t.tipoFlujoOt.basicaId "
-                        + " AND o.estadoInternoObj.basicaId = ef.estadoInternoObj.basicaId "
-                        + " AND vt.otObj.idOt = o.idOt "
-                        + " AND subVt.vtObj.idVt = vt.idVt "
-                        + " AND cm.cuentaMatrizId = o.cmObj.cuentaMatrizId "
-                        + " AND o.estadoRegistro = :estadoRegistro "
-                        + " AND vt.estadoVisitaTecnica = 1 "
-                        + " AND subVt.otAcometidaId  IS NULL "
-                        + " AND subVt.estadoRegistro = 1";
+                String queryStr = OrdenTrabajoConstants.SELECT_DISTINCT_O_FROM_CMT_ORDEN_TRABAJO_MGL_O
+                        + OrdenTrabajoConstants.CMT_TIPO_OT_MGL_T_CMT_ESTADOX_FLUJO_MGL_EF_CMT_CUENTA_MATRIZ_MGL_CM
+                        + OrdenTrabajoConstants.CMT_VISITA_TECNICA_MGL_VT_CMT_SUB_EDIFICIOS_VT_SUB_VT
+                        + OrdenTrabajoConstants.WHERE_T_ID_TIPO_OT_O_TIPO_OT_OBJ_ID_TIPO_OT
+                        + OrdenTrabajoConstants.AND_EF_TIPO_FLUJO_OT_OBJ_BASICA_ID_T_TIPO_FLUJO_OT_BASICA_ID
+                        + OrdenTrabajoConstants.AND_O_ESTADO_INTERNO_OBJ_BASICA_ID_EF_ESTADO_INTERNO_OBJ_BASICA_ID
+                        + OrdenTrabajoConstants.AND_VT_OT_OBJ_ID_OT_O_ID_OT
+                        + OrdenTrabajoConstants.AND_SUB_VT_VT_OBJ_ID_VT_VT_ID_VT
+                        + OrdenTrabajoConstants.MATRIZ_ID_O_CM_OBJ_CUENTA_MATRIZ_ID
+                        + OrdenTrabajoConstants.AND_O_ESTADO_REGISTRO_ESTADO_REGISTRO
+                        + OrdenTrabajoConstants.AND_VT_ESTADO_VISITA_TECNICA_1
+                        + OrdenTrabajoConstants.AND_SUB_VT_OT_ACOMETIDA_ID_IS_NULL
+                        + OrdenTrabajoConstants.AND_SUB_VT_ESTADO_REGISTRO_1;
 
                 if (filtro.getFechaIngresoSeleccionada() != null) {
                     queryStr += " AND o.fechaCreacion BETWEEN :fechaCreacionInicial AND :fechaCreacionFinal ";
@@ -939,16 +865,16 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
                 if (filtro.getIdOtSelecionada() != null
                         && !filtro.getIdOtSelecionada().equals(BigDecimal.ZERO)) {
-                    queryStr += " AND o.idOt = :idOt ";
+                    queryStr += OrdenTrabajoConstants.AND_O_ID_OT_ID_OT;
                 }
 
                 if (filtro.getCcmmRrSelecionada() != null
                         && !filtro.getCcmmRrSelecionada().equals(BigDecimal.ZERO)) {
-                    queryStr += " AND cm.numeroCuenta = :numeroCuenta ";
+                    queryStr += OrdenTrabajoConstants.AND_CM_NUMERO_CUENTA_NUMERO_CUENTA;
                 }
 
                 if (filtro.getTipoOtSelecionada() != null && !filtro.getTipoOtSelecionada().isEmpty()) {
-                    queryStr += " AND UPPER(o.tipoOtObj.descTipoOt) LIKE :descTipoOt ";
+                    queryStr += OrdenTrabajoConstants.AND_UPPER_O_TIPO_OT_OBJ_DESC_TIPO_OT_LIKE_DESC_TIPO_OT;
                 } else {
                     if (tiposOtgeneranAco != null && !tiposOtgeneranAco.isEmpty()) {
                         queryStr += " AND o.tipoOtObj.idTipoOt IN :tipoOtGenAcoList ";
@@ -956,19 +882,19 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 }
 
                 if (filtro.getDptoSelecionado() != null && !filtro.getDptoSelecionado().isEmpty()) {
-                    queryStr += " AND UPPER(cm.departamento.gpoNombre) LIKE :departamento ";
+                    queryStr += OrdenTrabajoConstants.AND_UPPER_CM_DEPARTAMENTO_GPO_NOMBRE_LIKE_DEPARTAMENTO;
                 }
 
                 if (filtro.getCiudadSelecionada() != null && !filtro.getCiudadSelecionada().isEmpty()) {
-                    queryStr += " AND UPPER(cm.municipio.gpoNombre) LIKE :municipio";
+                    queryStr += OrdenTrabajoConstants.AND_UPPER_CM_MUNICIPIO_GPO_NOMBRE_LIKE_MUNICIPIO;
                 }
 
                 if (filtro.getTecnoSelecionada() != null && !filtro.getTecnoSelecionada().isEmpty()) {
-                    queryStr += " AND UPPER(o.basicaIdTecnologia.nombreBasica) LIKE :tecnologia";
+                    queryStr += OrdenTrabajoConstants.AND_UPPER_O_BASICA_ID_TECNOLOGIA_NOMBRE_BASICA_LIKE_TECNOLOGIA;
                 }
 
                 if (filtro.getEstIntSelecionada() != null && !filtro.getEstIntSelecionada().isEmpty()) {
-                    queryStr += " AND UPPER(o.estadoInternoObj.nombreBasica) LIKE :estado";
+                    queryStr += OrdenTrabajoConstants.AND_UPPER_O_ESTADO_INTERNO_OBJ_NOMBRE_BASICA_LIKE_ESTADO;
                 } else {
                     if (estIntCierreCom != null && !estIntCierreCom.isEmpty()) {
                         queryStr += " AND o.estadoInternoObj.basicaId IN :estadosInternoCierreCom ";
@@ -976,25 +902,25 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 }
 
                 if (filtro.getSlaSeleccionada() > 0) {
-                    queryStr += " AND o.tipoOtObj.ans = :ans ";
+                    queryStr += OrdenTrabajoConstants.AND_O_TIPO_OT_OBJ_ANS_ANS;
                 }
 
                 if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                    queryStr += " AND ef.estadoxFlujoId IN :estadosxflujoList ";
+                    queryStr += OrdenTrabajoConstants.AND_EF_ESTADOX_FLUJO_ID_IN_ESTADOSXFLUJO_LIST;
                 }
 
-                queryStr += " ORDER BY o.fechaCreacion ASC ";
+                queryStr += OrdenTrabajoConstants.ORDER_BY_O_FECHA_CREACION_ASC;
 
                 Query query = entityManager.createQuery(queryStr);
                 query.setFirstResult(firstResult);
                 query.setMaxResults(maxResults);
-                query.setParameter("estadoRegistro", 1);
+                query.setParameter(OrdenTrabajoConstants.ESTADO_REGISTRO_PARAMETER, 1);
 
                 if (filtro.getFechaIngresoSeleccionada() != null) {
-                    query.setParameter("fechaCreacionInicial", filtro.getFechaIngresoSeleccionada());
+                    query.setParameter(OrdenTrabajoConstants.FECHA_CREACION_INICIAL_PARAMETER, filtro.getFechaIngresoSeleccionada());
 
                     long fechaEnMilisegundos = filtro.getFechaIngresoSeleccionada().getTime() + MILISEGUNDOS_DIA - 1;
-                    query.setParameter("fechaCreacionFinal", new Date(fechaEnMilisegundos));
+                    query.setParameter(OrdenTrabajoConstants.FECHA_CREACION_FINAL_PARAMETER, new Date(fechaEnMilisegundos));
                 }
 
                 if (filtro.getIdOtSelecionada() != null
@@ -1004,11 +930,11 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
                 if (filtro.getCcmmRrSelecionada() != null
                         && !filtro.getCcmmRrSelecionada().equals(BigDecimal.ZERO)) {
-                    query.setParameter("numeroCuenta", filtro.getCcmmRrSelecionada());
+                    query.setParameter(OrdenTrabajoConstants.NUMERO_CUENTA_PARAMETER, filtro.getCcmmRrSelecionada());
                 }
 
                 if (filtro.getTipoOtSelecionada() != null && !filtro.getTipoOtSelecionada().isEmpty()) {
-                    query.setParameter("descTipoOt", "%" + filtro.getTipoOtSelecionada().trim().toUpperCase() + "%");
+                    query.setParameter(OrdenTrabajoConstants.DESC_TIPO_OT_PARAMETER, "%" + filtro.getTipoOtSelecionada().trim().toUpperCase() + "%");
                 } else {
                     if (tiposOtgeneranAco != null && !tiposOtgeneranAco.isEmpty()) {
                         query.setParameter("tipoOtGenAcoList", tiposOtgeneranAco);
@@ -1016,19 +942,19 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 }
 
                 if (filtro.getDptoSelecionado() != null && !filtro.getDptoSelecionado().isEmpty()) {
-                    query.setParameter("departamento", "%" + filtro.getDptoSelecionado().trim().toUpperCase() + "%");
+                    query.setParameter(OrdenTrabajoConstants.DEPARTAMENTO_PARAMETER, "%" + filtro.getDptoSelecionado().trim().toUpperCase() + "%");
                 }
 
                 if (filtro.getCiudadSelecionada() != null && !filtro.getCiudadSelecionada().isEmpty()) {
-                    query.setParameter("municipio", "%" + filtro.getCiudadSelecionada().trim().toUpperCase() + "%");
+                    query.setParameter(OrdenTrabajoConstants.MUNICIPIO_PARAMETER, "%" + filtro.getCiudadSelecionada().trim().toUpperCase() + "%");
                 }
 
                 if (filtro.getTecnoSelecionada() != null && !filtro.getTecnoSelecionada().isEmpty()) {
-                    query.setParameter("tecnologia", "%" + filtro.getTecnoSelecionada().trim().toUpperCase() + "%");
+                    query.setParameter(OrdenTrabajoConstants.TECNOLOGIA_PARAMETER, "%" + filtro.getTecnoSelecionada().trim().toUpperCase() + "%");
                 }
 
                 if (filtro.getEstIntSelecionada() != null && !filtro.getEstIntSelecionada().isEmpty()) {
-                    query.setParameter("estado", "%" + filtro.getEstIntSelecionada().trim().toUpperCase() + "%");
+                    query.setParameter(OrdenTrabajoConstants.ESTADO_PARAMETER, "%" + filtro.getEstIntSelecionada().trim().toUpperCase() + "%");
                 } else {
                     if (estIntCierreCom != null && !estIntCierreCom.isEmpty()) {
                         query.setParameter("estadosInternoCierreCom", estIntCierreCom);
@@ -1040,10 +966,10 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 }
 
                 if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                    query.setParameter("estadosxflujoList", estadosxflujoList);
+                    query.setParameter(OrdenTrabajoConstants.ESTADOSXFLUJO_LIST_PARAMETER, estadosxflujoList);
                 }
 
-                query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+                query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
                 for (int j = 0; j < query.getResultList().size(); j++) {
                     if (result.isEmpty()) {
                         result.add((CmtOrdenTrabajoMgl) query.getResultList().get(j));
@@ -1056,7 +982,7 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 }
                 getEntityManager().clear();
             } catch (Exception e) {
-                String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+                String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
                 LOGGER.error(msg);
                 throw new ApplicationException(e.getMessage(), e);
             }
@@ -1080,7 +1006,7 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 iterador++;
             }
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
         }
         return isRegistrada;
@@ -1115,18 +1041,18 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
             try {
                 String queryStr = "SELECT COUNT(DISTINCT o)  FROM CmtOrdenTrabajoMgl o,"
-                        + " CmtTipoOtMgl t, CmtEstadoxFlujoMgl ef, CmtCuentaMatrizMgl cm, "
-                        + " CmtVisitaTecnicaMgl vt, CmtSubEdificiosVt subVt "
-                        + " WHERE t.idTipoOt = o.tipoOtObj.idTipoOt "
-                        + " AND ef.tipoFlujoOtObj.basicaId = t.tipoFlujoOt.basicaId "
-                        + " AND o.estadoInternoObj.basicaId = ef.estadoInternoObj.basicaId "
-                        + " AND vt.otObj.idOt = o.idOt "
-                        + " AND subVt.vtObj.idVt = vt.idVt "
-                        + " AND cm.cuentaMatrizId = o.cmObj.cuentaMatrizId "
-                        + " AND o.estadoRegistro = :estadoRegistro "
-                        + " AND vt.estadoVisitaTecnica = 1 "
-                        + " AND subVt.otAcometidaId  IS NULL "
-                        + " AND subVt.estadoRegistro = 1";
+                        + OrdenTrabajoConstants.CMT_TIPO_OT_MGL_T_CMT_ESTADOX_FLUJO_MGL_EF_CMT_CUENTA_MATRIZ_MGL_CM
+                        + OrdenTrabajoConstants.CMT_VISITA_TECNICA_MGL_VT_CMT_SUB_EDIFICIOS_VT_SUB_VT
+                        + OrdenTrabajoConstants.WHERE_T_ID_TIPO_OT_O_TIPO_OT_OBJ_ID_TIPO_OT
+                        + OrdenTrabajoConstants.AND_EF_TIPO_FLUJO_OT_OBJ_BASICA_ID_T_TIPO_FLUJO_OT_BASICA_ID
+                        + OrdenTrabajoConstants.AND_O_ESTADO_INTERNO_OBJ_BASICA_ID_EF_ESTADO_INTERNO_OBJ_BASICA_ID
+                        + OrdenTrabajoConstants.AND_VT_OT_OBJ_ID_OT_O_ID_OT
+                        + OrdenTrabajoConstants.AND_SUB_VT_VT_OBJ_ID_VT_VT_ID_VT
+                        + OrdenTrabajoConstants.MATRIZ_ID_O_CM_OBJ_CUENTA_MATRIZ_ID
+                        + OrdenTrabajoConstants.AND_O_ESTADO_REGISTRO_ESTADO_REGISTRO
+                        + OrdenTrabajoConstants.AND_VT_ESTADO_VISITA_TECNICA_1
+                        + OrdenTrabajoConstants.AND_SUB_VT_OT_ACOMETIDA_ID_IS_NULL
+                        + OrdenTrabajoConstants.AND_SUB_VT_ESTADO_REGISTRO_1;
 
                 if (filtro.getFechaIngresoSeleccionada() != null) {
                     queryStr += " AND o.fechaCreacion BETWEEN :fechaCreacionInicial AND :fechaCreacionFinal ";
@@ -1134,16 +1060,16 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
                 if (filtro.getIdOtSelecionada() != null
                         && !filtro.getIdOtSelecionada().equals(BigDecimal.ZERO)) {
-                    queryStr += " AND o.idOt = :idOt ";
+                    queryStr += OrdenTrabajoConstants.AND_O_ID_OT_ID_OT;
                 }
 
                 if (filtro.getCcmmRrSelecionada() != null
                         && !filtro.getCcmmRrSelecionada().equals(BigDecimal.ZERO)) {
-                    queryStr += " AND cm.numeroCuenta = :numeroCuenta ";
+                    queryStr += OrdenTrabajoConstants.AND_CM_NUMERO_CUENTA_NUMERO_CUENTA;
                 }
 
                 if (filtro.getTipoOtSelecionada() != null && !filtro.getTipoOtSelecionada().isEmpty()) {
-                    queryStr += " AND UPPER(o.tipoOtObj.descTipoOt) LIKE :descTipoOt ";
+                    queryStr += OrdenTrabajoConstants.AND_UPPER_O_TIPO_OT_OBJ_DESC_TIPO_OT_LIKE_DESC_TIPO_OT;
                 } else {
                     if (tiposOtgeneranAco != null && !tiposOtgeneranAco.isEmpty()) {
                         queryStr += " AND o.tipoOtObj.idTipoOt IN :tipoOtGenAcoList ";
@@ -1151,19 +1077,19 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 }
 
                 if (filtro.getDptoSelecionado() != null && !filtro.getDptoSelecionado().isEmpty()) {
-                    queryStr += " AND UPPER(cm.departamento.gpoNombre) LIKE :departamento ";
+                    queryStr += OrdenTrabajoConstants.AND_UPPER_CM_DEPARTAMENTO_GPO_NOMBRE_LIKE_DEPARTAMENTO;
                 }
 
                 if (filtro.getCiudadSelecionada() != null && !filtro.getCiudadSelecionada().isEmpty()) {
-                    queryStr += " AND UPPER(cm.municipio.gpoNombre) LIKE :municipio";
+                    queryStr += OrdenTrabajoConstants.AND_UPPER_CM_MUNICIPIO_GPO_NOMBRE_LIKE_MUNICIPIO;
                 }
 
                 if (filtro.getTecnoSelecionada() != null && !filtro.getTecnoSelecionada().isEmpty()) {
-                    queryStr += " AND UPPER(o.basicaIdTecnologia.nombreBasica) LIKE :tecnologia";
+                    queryStr += OrdenTrabajoConstants.AND_UPPER_O_BASICA_ID_TECNOLOGIA_NOMBRE_BASICA_LIKE_TECNOLOGIA;
                 }
 
                 if (filtro.getEstIntSelecionada() != null && !filtro.getEstIntSelecionada().isEmpty()) {
-                    queryStr += " AND UPPER(o.estadoInternoObj.nombreBasica) LIKE :estado";
+                    queryStr += OrdenTrabajoConstants.AND_UPPER_O_ESTADO_INTERNO_OBJ_NOMBRE_BASICA_LIKE_ESTADO;
                 } else {
                     if (estIntCierreCom != null && !estIntCierreCom.isEmpty()) {
                         queryStr += " AND o.estadoInternoObj.basicaId IN :estadosInternoCierreCom ";
@@ -1171,23 +1097,23 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 }
 
                 if (filtro.getSlaSeleccionada() > 0) {
-                    queryStr += " AND o.tipoOtObj.ans = :ans ";
+                    queryStr += OrdenTrabajoConstants.AND_O_TIPO_OT_OBJ_ANS_ANS;
                 }
 
                 if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                    queryStr += " AND ef.estadoxFlujoId IN :estadosxflujoList ";
+                    queryStr += OrdenTrabajoConstants.AND_EF_ESTADOX_FLUJO_ID_IN_ESTADOSXFLUJO_LIST;
                 }
 
-                queryStr += " ORDER BY o.fechaCreacion ASC ";
+                queryStr += OrdenTrabajoConstants.ORDER_BY_O_FECHA_CREACION_ASC;
 
                 Query query = entityManager.createQuery(queryStr);
-                query.setParameter("estadoRegistro", 1);
+                query.setParameter(OrdenTrabajoConstants.ESTADO_REGISTRO_PARAMETER, 1);
 
                 if (filtro.getFechaIngresoSeleccionada() != null) {
-                    query.setParameter("fechaCreacionInicial", filtro.getFechaIngresoSeleccionada());
+                    query.setParameter(OrdenTrabajoConstants.FECHA_CREACION_INICIAL_PARAMETER, filtro.getFechaIngresoSeleccionada());
 
                     long fechaEnMilisegundos = filtro.getFechaIngresoSeleccionada().getTime() + MILISEGUNDOS_DIA - 1;
-                    query.setParameter("fechaCreacionFinal", new Date(fechaEnMilisegundos));
+                    query.setParameter(OrdenTrabajoConstants.FECHA_CREACION_FINAL_PARAMETER, new Date(fechaEnMilisegundos));
                 }
 
                 if (filtro.getIdOtSelecionada() != null
@@ -1197,11 +1123,11 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
                 if (filtro.getCcmmRrSelecionada() != null
                         && !filtro.getCcmmRrSelecionada().equals(BigDecimal.ZERO)) {
-                    query.setParameter("numeroCuenta", filtro.getCcmmRrSelecionada());
+                    query.setParameter(OrdenTrabajoConstants.NUMERO_CUENTA_PARAMETER, filtro.getCcmmRrSelecionada());
                 }
 
                 if (filtro.getTipoOtSelecionada() != null && !filtro.getTipoOtSelecionada().isEmpty()) {
-                    query.setParameter("descTipoOt", "%" + filtro.getTipoOtSelecionada().trim().toUpperCase() + "%");
+                    query.setParameter(OrdenTrabajoConstants.DESC_TIPO_OT_PARAMETER, "%" + filtro.getTipoOtSelecionada().trim().toUpperCase() + "%");
                 } else {
                     if (tiposOtgeneranAco != null && !tiposOtgeneranAco.isEmpty()) {
                         query.setParameter("tipoOtGenAcoList", tiposOtgeneranAco);
@@ -1209,19 +1135,19 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 }
 
                 if (filtro.getDptoSelecionado() != null && !filtro.getDptoSelecionado().isEmpty()) {
-                    query.setParameter("departamento", "%" + filtro.getDptoSelecionado().trim().toUpperCase() + "%");
+                    query.setParameter(OrdenTrabajoConstants.DEPARTAMENTO_PARAMETER, "%" + filtro.getDptoSelecionado().trim().toUpperCase() + "%");
                 }
 
                 if (filtro.getCiudadSelecionada() != null && !filtro.getCiudadSelecionada().isEmpty()) {
-                    query.setParameter("municipio", "%" + filtro.getCiudadSelecionada().trim().toUpperCase() + "%");
+                    query.setParameter(OrdenTrabajoConstants.MUNICIPIO_PARAMETER, "%" + filtro.getCiudadSelecionada().trim().toUpperCase() + "%");
                 }
 
                 if (filtro.getTecnoSelecionada() != null && !filtro.getTecnoSelecionada().isEmpty()) {
-                    query.setParameter("tecnologia", "%" + filtro.getTecnoSelecionada().trim().toUpperCase() + "%");
+                    query.setParameter(OrdenTrabajoConstants.TECNOLOGIA_PARAMETER, "%" + filtro.getTecnoSelecionada().trim().toUpperCase() + "%");
                 }
 
                 if (filtro.getEstIntSelecionada() != null && !filtro.getEstIntSelecionada().isEmpty()) {
-                    query.setParameter("estado", "%" + filtro.getEstIntSelecionada().trim().toUpperCase() + "%");
+                    query.setParameter(OrdenTrabajoConstants.ESTADO_PARAMETER, "%" + filtro.getEstIntSelecionada().trim().toUpperCase() + "%");
                 } else {
                     if (estIntCierreCom != null && !estIntCierreCom.isEmpty()) {
                         query.setParameter("estadosInternoCierreCom", estIntCierreCom);
@@ -1233,14 +1159,14 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 }
 
                 if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                    query.setParameter("estadosxflujoList", estadosxflujoList);
+                    query.setParameter(OrdenTrabajoConstants.ESTADOSXFLUJO_LIST_PARAMETER, estadosxflujoList);
                 }
 
-                query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+                query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
                 result += query.getSingleResult() == null ? 0 : ((Long) query.getSingleResult()).intValue();
 
             } catch (Exception e) {
-                String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+                String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
                 LOGGER.error(msg);
                 throw new ApplicationException(e.getMessage(), e);
             }
@@ -1266,22 +1192,22 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             throws ApplicationException {
         try {
 
-            String queryStr = "SELECT Distinct o  FROM CmtOrdenTrabajoMgl o,"
-                    + " CmtTipoOtMgl t, CmtEstadoxFlujoMgl ef, CmtCuentaMatrizMgl cm, "
-                    + " CmtVisitaTecnicaMgl vt, CmtSubEdificiosVt subVt "
-                    + " WHERE t.idTipoOt = o.tipoOtObj.idTipoOt "
-                    + " AND ef.tipoFlujoOtObj.basicaId = t.tipoFlujoOt.basicaId "
-                    + " AND o.estadoInternoObj.basicaId = ef.estadoInternoObj.basicaId "
-                    + " AND vt.otObj.idOt = o.idOt "
-                    + " AND subVt.vtObj.idVt = vt.idVt "
-                    + " AND cm.cuentaMatrizId = o.cmObj.cuentaMatrizId "
-                    + " AND o.estadoRegistro = :estadoRegistro "
-                    + " AND vt.estadoVisitaTecnica = 1 "
-                    + " AND subVt.otAcometidaId  IS NULL "
-                    + " AND subVt.estadoRegistro = 1";
+            String queryStr = OrdenTrabajoConstants.SELECT_DISTINCT_O_FROM_CMT_ORDEN_TRABAJO_MGL_O
+                    + OrdenTrabajoConstants.CMT_TIPO_OT_MGL_T_CMT_ESTADOX_FLUJO_MGL_EF_CMT_CUENTA_MATRIZ_MGL_CM
+                    + OrdenTrabajoConstants.CMT_VISITA_TECNICA_MGL_VT_CMT_SUB_EDIFICIOS_VT_SUB_VT
+                    + OrdenTrabajoConstants.WHERE_T_ID_TIPO_OT_O_TIPO_OT_OBJ_ID_TIPO_OT
+                    + OrdenTrabajoConstants.AND_EF_TIPO_FLUJO_OT_OBJ_BASICA_ID_T_TIPO_FLUJO_OT_BASICA_ID
+                    + OrdenTrabajoConstants.AND_O_ESTADO_INTERNO_OBJ_BASICA_ID_EF_ESTADO_INTERNO_OBJ_BASICA_ID
+                    + OrdenTrabajoConstants.AND_VT_OT_OBJ_ID_OT_O_ID_OT
+                    + OrdenTrabajoConstants.AND_SUB_VT_VT_OBJ_ID_VT_VT_ID_VT
+                    + OrdenTrabajoConstants.MATRIZ_ID_O_CM_OBJ_CUENTA_MATRIZ_ID
+                    + OrdenTrabajoConstants.AND_O_ESTADO_REGISTRO_ESTADO_REGISTRO
+                    + OrdenTrabajoConstants.AND_VT_ESTADO_VISITA_TECNICA_1
+                    + OrdenTrabajoConstants.AND_SUB_VT_OT_ACOMETIDA_ID_IS_NULL
+                    + OrdenTrabajoConstants.AND_SUB_VT_ESTADO_REGISTRO_1;
 
             if (idOt != null) {
-                queryStr += " AND o.idOt = :idOt ";
+                queryStr += OrdenTrabajoConstants.AND_O_ID_OT_ID_OT;
             }
             if (tiposOtgeneranAco != null && !tiposOtgeneranAco.isEmpty()) {
                 queryStr += " AND o.tipoOtObj.idTipoOt IN :tipoOtGenAcoList ";
@@ -1291,15 +1217,15 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             }
             if (conPermisos) {
                 if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                    queryStr += " AND ef.estadoxFlujoId IN :estadosxflujoList ";
+                    queryStr += OrdenTrabajoConstants.AND_EF_ESTADOX_FLUJO_ID_IN_ESTADOSXFLUJO_LIST;
                 }
             }
 
-            queryStr += " ORDER BY o.fechaCreacion ASC ";
+            queryStr += OrdenTrabajoConstants.ORDER_BY_O_FECHA_CREACION_ASC;
 
             Query query = entityManager.createQuery(queryStr);
 
-            query.setParameter("estadoRegistro", 1);
+            query.setParameter(OrdenTrabajoConstants.ESTADO_REGISTRO_PARAMETER, 1);
 
             if (idOt != null) {
                 query.setParameter("idOt", idOt);
@@ -1311,7 +1237,7 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
             if (conPermisos) {
                 if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                    query.setParameter("estadosxflujoList", estadosxflujoList);
+                    query.setParameter(OrdenTrabajoConstants.ESTADOSXFLUJO_LIST_PARAMETER, estadosxflujoList);
                 }
             }
 
@@ -1319,15 +1245,15 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                 query.setParameter("estadosInternoCierreCom", estIntCierreCom);
             }
 
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
 
             return (CmtOrdenTrabajoMgl) query.getSingleResult();
         } catch (NoResultException e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             return null;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -1400,7 +1326,7 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             throw new ApplicationException("No se encontraron resultados para "
                     + "la consulta.");
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -1466,7 +1392,7 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             throw new ApplicationException("No se encontraron resultados para "
                     + "la consulta.");
         } catch (ApplicationException e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -3348,11 +3274,11 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
             q.setParameter("otIdObj", ot);
             q.setParameter("basicaId", estadoIntActual);
-            q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            q.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
 
             return (CmtOrdenTrabajoAuditoriaMgl) q.getSingleResult();
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             return null;
         }
@@ -3371,7 +3297,7 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
         }
     }
@@ -3424,14 +3350,14 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
 
             q.setParameter("enlaceId", idEnlace);
             q.setParameter("tecnologias", tecnologias);
-            q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            q.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             return q.getResultList();
         } catch (NoResultException e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             return null;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             return null;
         }
@@ -3897,35 +3823,35 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
             BigDecimal idOt) throws ApplicationException {
         try {
             String queryStr = "SELECT  o  FROM CmtOrdenTrabajoMgl o,"
-                    + " CmtTipoOtMgl t, CmtEstadoxFlujoMgl ef, CmtCuentaMatrizMgl cm "
-                    + " WHERE t.idTipoOt = o.tipoOtObj.idTipoOt "
-                    + " AND ef.tipoFlujoOtObj.basicaId = t.tipoFlujoOt.basicaId "
-                    + " AND ef.basicaTecnologia.basicaId =o.basicaIdTecnologia.basicaId "
-                    + " AND o.estadoInternoObj.basicaId = ef.estadoInternoObj.basicaId "
-                    + " AND cm.cuentaMatrizId = o.cmObj.cuentaMatrizId "
-                    + " AND o.estadoRegistro = :estadoRegistro "
-                    + " AND o.idOt = :idOt ";
+                    + OrdenTrabajoConstants.CMT_ESTADOX_FLUJO_MGL_EF_CMT_CUENTA_MATRIZ_MGL_CM
+                    + OrdenTrabajoConstants.WHERE_T_ID_TIPO_OT_O_TIPO_OT_OBJ_ID_TIPO_OT
+                    + OrdenTrabajoConstants.AND_EF_TIPO_FLUJO_OT_OBJ_BASICA_ID_T_TIPO_FLUJO_OT_BASICA_ID
+                    + OrdenTrabajoConstants.AND_EF_BASICA_TECNOLOGIA_BASICA_ID_O_BASICA_ID_TECNOLOGIA_BASICA_ID
+                    + OrdenTrabajoConstants.AND_O_ESTADO_INTERNO_OBJ_BASICA_ID_EF_ESTADO_INTERNO_OBJ_BASICA_ID
+                    + OrdenTrabajoConstants.MATRIZ_ID_O_CM_OBJ_CUENTA_MATRIZ_ID
+                    + OrdenTrabajoConstants.AND_O_ESTADO_REGISTRO_ESTADO_REGISTRO
+                    + OrdenTrabajoConstants.AND_O_ID_OT_ID_OT;
 
             if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                queryStr += " AND ef.estadoxFlujoId IN :estadosxflujoList ";
+                queryStr += OrdenTrabajoConstants.AND_EF_ESTADOX_FLUJO_ID_IN_ESTADOSXFLUJO_LIST;
             }
 
             Query query = entityManager.createQuery(queryStr);
             query.setParameter("idOt", idOt);
-            query.setParameter("estadoRegistro", 1);
+            query.setParameter(OrdenTrabajoConstants.ESTADO_REGISTRO_PARAMETER, 1);
 
             if (estadosxflujoList != null && !estadosxflujoList.isEmpty()) {
-                query.setParameter("estadosxflujoList", estadosxflujoList);
+                query.setParameter(OrdenTrabajoConstants.ESTADOSXFLUJO_LIST_PARAMETER, estadosxflujoList);
             }
 
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             return (CmtOrdenTrabajoMgl) query.getSingleResult();
         } catch (NoResultException e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             return null;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }
@@ -3938,12 +3864,12 @@ public class CmtOrdenTrabajoMglDaoImpl extends GenericDaoImpl<CmtOrdenTrabajoMgl
                     + "e.subEdificioObj.subEdificioId =:subEdificioId AND o.estadoRegistro = 1 AND e.estadoRegistro = 1 ";
             Query q = entityManager.createQuery(query);
             q.setParameter("subEdificioId", cmtSubEdificioMgl.getSubEdificioId());
-            q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            q.setHint(JAVAX_PERSISTENCE_CACHE_STORE_MODE, REFRESH);
             List<CmtOrdenTrabajoMgl> result = q.getResultList();
             getEntityManager().clear();
             return result;
         } catch (Exception e) {
-            String msg = "Se produjo un error al momento de ejecutar el método '" + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
+            String msg = SE_PRODUJO_UN_ERROR_AL_MOMENTO_DE_EJECUTAR_EL_METODO + ClassUtils.getCurrentMethodName(this.getClass()) + "': " + e.getMessage();
             LOGGER.error(msg);
             throw new ApplicationException(e.getMessage(), e);
         }

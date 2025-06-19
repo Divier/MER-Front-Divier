@@ -20,6 +20,21 @@
 
         <fieldset class="clearfix form">
             <legend/>
+
+            <!--                 1. Campo FAKE (totalmente oculto, fuera de pantalla)-->
+            <h:inputSecret id="fakePassword"
+                           style="position: absolute !important;
+                                left: -9999px !important;
+                                top: -9999px !important;
+                                width: 1px !important;
+                                height: 1px !important;
+                                overflow: hidden !important;
+                                opacity: 0 !important;
+                                pointer-events: none !important;"
+                                autocomplete="new-password"/>
+
+
+
             <div class="input-group" style="max-height: 25px">
                 <div class="input-group-addon" style="line-height: 0.25;">
                     <i class="fa fa-user" style="margin-top: -4px;font-size: 10px;"> </i>

@@ -1,7 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
   <link href="view/css/contenido.css" rel="stylesheet" type="text/css"/>
- <script type="text/javascript" src="view/img/jquery-1.3.2.js"></script>
+ <script type="text/javascript" src="view/img/jquery-3.7.1.min.js"></script>
   <script type="text/javascript" src="view/img/vanadium_es.js"></script>
   
 <html>

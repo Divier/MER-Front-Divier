@@ -227,7 +227,7 @@
                                      class="botonTPagInicioCm botonBaselista"/>
                     <h:commandButton value="" action="#{ordenTrabajoGestionarBean.pagePrevious}"
                                      class="botonTPagAnteriorCm botonBaselista"/>
-                    <h:commandButton value="#{ordenTrabajoGestionarBean.pageActual}" styleClass="botonTPagInicio"    />
+                    <h:outputText value="#{ordenTrabajoGestionarBean.pageActualInfo}" style="margin: 0 5px 0 5px; color:#000000"/>
                     <h:selectOneMenu id="listTabla" value="#{ordenTrabajoGestionarBean.numPagina}" 
                                      styleClass="ListaConsulta" style="width: 40px; height:19px;">
                         <f:selectItems value="#{ordenTrabajoGestionarBean.paginaList}" var="pag"

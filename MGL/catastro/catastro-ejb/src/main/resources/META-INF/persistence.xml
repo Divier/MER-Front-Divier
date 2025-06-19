@@ -3,7 +3,7 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="">
   <persistence-unit name="catastro-ejbPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <non-jta-data-source>jdbc/Dir</non-jta-data-source>
+    <non-jta-data-source>jdbc/DirQA</non-jta-data-source>
     <class>co.com.claro.mgl.jpa.entities.TecEstadosFlujosTecHab</class>
     <class>co.com.claro.mgl.jpa.entities.AreaDir</class>
     <class>co.com.claro.mgl.jpa.entities.DistritoMgl</class>
@@ -232,7 +232,7 @@
   </persistence-unit>
     <!-- Para manejo de transacciones con JTA y que el contenedor administre las conexiones -->
   <persistence-unit name="MER_PU" transaction-type="JTA">
-      <jta-data-source>jdbc/Dir</jta-data-source>
+      <jta-data-source>jdbc/DirQA</jta-data-source>
       <exclude-unlisted-classes>true</exclude-unlisted-classes>
       <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
   </persistence-unit>

@@ -1,24 +1,19 @@
 package co.com.claro.mgl.mbeans.cm;
 
 import co.com.claro.mer.blockreport.BlockReportServBean;
+import co.com.claro.mer.estadoxflujo.facade.EstadoFlujoFacadeLocal;
 import co.com.claro.mgl.dtos.CmtFiltroConsultaOrdenesDto;
 import co.com.claro.mgl.error.ApplicationException;
-import co.com.claro.mgl.facade.GeograficoPoliticoMglFacadeLocal;
 import co.com.claro.mgl.facade.ParametrosMglFacadeLocal;
 import co.com.claro.mgl.facade.cm.CmtBasicaMglFacadeLocal;
-import co.com.claro.mgl.facade.cm.CmtComunidadRrFacadeLocal;
-import co.com.claro.mgl.facade.cm.CmtEstadoIntxExtMglFacaceLocal;
-import co.com.claro.mgl.facade.cm.CmtEstadoxFlujoMglFacadeLocal;
 import co.com.claro.mgl.facade.cm.CmtOpcionesRolMglFacadeLocal;
 import co.com.claro.mgl.facade.cm.CmtOrdenTrabajoMglFacadeLocal;
 import co.com.claro.mgl.facade.cm.CmtRegionalRRFacadeLocal;
 import co.com.claro.mgl.facade.cm.CmtTipoBasicaMglFacadeLocal;
-import co.com.claro.mgl.facade.cm.CmtTipoOtMglFacadeLocal;
 import co.com.claro.mgl.facade.ptlus.UsuarioServicesFacadeLocal;
 import co.com.claro.mgl.jpa.entities.ParametrosMgl;
 import co.com.claro.mgl.jpa.entities.cm.CmtBasicaMgl;
 import co.com.claro.mgl.jpa.entities.cm.CmtCuentaMatrizMgl;
-import co.com.claro.mgl.jpa.entities.cm.CmtEstadoxFlujoMgl;
 import co.com.claro.mgl.jpa.entities.cm.CmtOrdenTrabajoMgl;
 import co.com.claro.mgl.jpa.entities.cm.CmtRegionalRr;
 import co.com.claro.mgl.jpa.entities.cm.CmtTipoBasicaMgl;
@@ -45,7 +40,9 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -62,25 +59,17 @@ public class OrdenTrabajoGestionarBean {
     @EJB
     private CmtOpcionesRolMglFacadeLocal cmtOpcionesRolMglFacadeLocal;
     @EJB
-    private GeograficoPoliticoMglFacadeLocal geograficoPoliticoMglFacadeLocal;
-    @EJB
-    private CmtTipoOtMglFacadeLocal cmtTipoOtMglFacadeLocal;
-    @EJB
     private CmtTipoBasicaMglFacadeLocal cmtTipoBasicaMglFacadeLocal;
     @EJB
     private CmtBasicaMglFacadeLocal cmtBasicaMglFacadeLocal;
     @EJB
-    private CmtEstadoxFlujoMglFacadeLocal cmtEstadoxFlujoMglFacadeLocal;
-    @EJB
     private ParametrosMglFacadeLocal parametrosFacade;
-    @EJB
-    private CmtEstadoIntxExtMglFacaceLocal estadoIntxExtMglFacaceLocal;
     @EJB
     private CmtRegionalRRFacadeLocal regionalRRFacadeLocal;
     @EJB
-    private CmtComunidadRrFacadeLocal comunidadRrFacadeLocal;
-    @EJB
     private UsuarioServicesFacadeLocal usuariosFacade;
+    @EJB
+    private EstadoFlujoFacadeLocal estadoFlujoFacadeLocal;
     @Inject
     private BlockReportServBean blockReportServBean;
 
@@ -93,7 +82,8 @@ public class OrdenTrabajoGestionarBean {
     private final String ROLOPCEXPGEST = "ROLOPCEXPGEST";
     private final String ROLOPCIDGEST = "ROLOPCIDGEST";
 
-    private String pageActual;
+    @Getter
+    private String pageActualInfo;
     private String numPagina = "1";
     private List<Integer> paginaList;
     private int actual;
@@ -106,7 +96,6 @@ public class OrdenTrabajoGestionarBean {
     private CmtBasicaMgl estadoOtSelected;
     private String idOtToFind;
     private SecurityLogin securityLogin;
-    private List<CmtEstadoxFlujoMgl> lstCmtEstadoxFlujoMgls;
     private List<CmtBasicaMgl> tecnologiaList;
     private CmtTipoBasicaMgl tipoBasicaTipoProyecto;
     private boolean habilitaObj;
@@ -121,7 +110,7 @@ public class OrdenTrabajoGestionarBean {
                 "Fecha Creación", "Fecha Sugerida OT", "SLA", "Solicitante", "ANS", "Clase de OT"};
     private CmtFiltroConsultaOrdenesDto filtroConsultaOrdenesDto = new CmtFiltroConsultaOrdenesDto();
     private boolean flag;
-    
+
     public OrdenTrabajoGestionarBean() {
         try {
             securityLogin = new SecurityLogin(facesContext);
@@ -142,7 +131,12 @@ public class OrdenTrabajoGestionarBean {
     @PostConstruct
     public void init() {
         try {
-            estadosFLujoUsuario = ordenTrabajoMglFacadeLocal.getEstadosFLujoUsuario(facesContext);
+            estadosFLujoUsuario = estadoFlujoFacadeLocal.findEstadoFlujoUsuario();
+
+            if (CollectionUtils.isEmpty(estadosFLujoUsuario)) {
+                estadosFLujoUsuario = ordenTrabajoMglFacadeLocal.getEstadosFLujoUsuario(facesContext);
+            }
+
             obtenerTipoBasicaEstadoInternoOt();
             obtenerRegionalesList();
             filtrarInfoTec();
@@ -260,7 +254,6 @@ public class OrdenTrabajoGestionarBean {
             FacesUtil.mostrarMensajeError("Error en OrdenTrabajoGestionarBean:filtrarInfoTec(). " + e.getMessage(), e, LOGGER);
         }
 
-        listInfoByPage(1);
         return null;
     }
     
@@ -421,8 +414,8 @@ public class OrdenTrabajoGestionarBean {
             for (int i = 1; i <= totalPaginas; i++) {
                 paginaList.add(i);
             }
-            pageActual = String.valueOf(actual) + " de "
-                    + String.valueOf(totalPaginas);
+
+            pageActualInfo = actual + " de " + totalPaginas;
 
             if (numPagina == null) {
                 numPagina = "1";
@@ -431,7 +424,8 @@ public class OrdenTrabajoGestionarBean {
         } catch (Exception e) {
             FacesUtil.mostrarMensajeError("Error al OrdenTrabajoGestionarBean:getTotalPaginas(). " + e.getMessage(), e, LOGGER);
         }
-        return pageActual;
+
+        return pageActualInfo;
     }
 
     public boolean validarEdicionOt() {

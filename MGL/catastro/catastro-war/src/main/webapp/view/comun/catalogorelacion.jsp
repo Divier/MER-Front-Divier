@@ -35,7 +35,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
    
   <link href="view/css/contenido.css" rel="stylesheet" type="text/css"/>
-  <script type="text/javascript" src="view/img/jquery-1.3.2.js"></script>
+  <script type="text/javascript" src="view/img/jquery-3.7.1.js"></script>
   <script type="text/javascript" src="view/img/vanadium_es.js"></script>
 
 <head>
@@ -131,7 +131,7 @@
                         <input type="hidden" name="elimina" value="<%=elimina%>"/>
                         <%}%>
                         <% if(crea.equals("1") && idcol.equals("0")==true) { %>
-                        <input type="submit"  class="buttonl" value="Guardar" name="accion"  action="2" onclick="return confirm('¿Está seguro que desea crear el registro?');" />
+                        <input type="submit"  class="buttonl" value="Guardar" name="accion"  action="2" onclick="return confirm('ï¿½Estï¿½ seguro que desea crear el registro?');" />
                         <%}%>
                        </td>
                 </tr>

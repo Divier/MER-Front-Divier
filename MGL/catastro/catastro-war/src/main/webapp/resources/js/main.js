@@ -1657,16 +1657,6 @@
 (function ($) {
     // USE STRICT
     "use strict";
-
-    try {
-
-        $('[data-toggle="tooltip"]').tooltip();
-
-    } catch (error) {
-        console.log(error);
-    }
-
-    // Chatbox
     try {
         var inbox_wrap = $('.js-inbox');
         var message = $('.au-message__item');
@@ -1674,13 +1664,12 @@
             var that = $(this);
 
             that.on('click', function () {
+                // Este código sigue usando jQuery ($)
                 $(this).parent().parent().parent().toggleClass('show-chat-box');
             });
         });
-
-
     } catch (error) {
-        console.log(error);
+        console.log("Error en la lógica del Chatbox:", error);
     }
 
 })(jQuery);

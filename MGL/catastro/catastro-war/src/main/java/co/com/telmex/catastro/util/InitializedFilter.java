@@ -61,7 +61,7 @@ public class InitializedFilter implements Filter {
     public void initial() {
         //inicializar Data sources / properties
         ResponseInit response = null;
-        InitializeResource initialize = new InitializeResource("jdbc/Dir");
+        InitializeResource initialize = new InitializeResource("jdbc/DirQA");
         try {
             response = initialize.running(TaskInit.LOAD_DATASOURCE);
             if (response != null) {

@@ -41,7 +41,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <link href="view/css/contenido.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="view/img/jquery-1.3.2.js"></script>
+<script type="text/javascript" src="view/img/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="view/img/vanadium_es.js"></script>
 
 <head>
@@ -168,14 +168,14 @@
                                                                     <input type="hidden" name="elimina" value="<%=elimina%>"/>
                                                                     <input type="hidden" name="oper" id="oper" value="UPDATE" />                                                                        
                                                                     <input type="submit" class="buttonl" value="Modificar" action="1" name="accion" 
-                                                                           onclick="return confirm('¿Está seguro que desea Modificar el registro?');"/> 
+                                                                           onclick="return confirm('ï¿½Estï¿½ seguro que desea Modificar el registro?');"/> 
                                                                     <%}%> <% if (crea.equals("1") && idcol.equals("0") == true) {%>
                                                                     <input type="submit" class="buttonl" value="Guardar" action="2" name="accion" 
-                                                                           onclick="return confirm('¿Está seguro que desea crear el registro?');" />
+                                                                           onclick="return confirm('ï¿½Estï¿½ seguro que desea crear el registro?');" />
                                                                     <%}%><% if (elimina.equals("1") && idcol.equals("0") == false) {%>
                                                                     <input type="hidden" name="id" id="id" value="<%=id%>"/>
                                                                     <input type="submit" class="buttonl" value="Eliminar" name="accion"  
-                                                                           onclick="return confirm('¿Está seguro que desea Eliminar el registro?');"/>
+                                                                           onclick="return confirm('ï¿½Estï¿½ seguro que desea Eliminar el registro?');"/>
                                                                         </form>      
                                                                         <%}
                                                                     if (request.getAttribute("resdata").equals("0") && idcol.equals("0") == false) {%>
@@ -206,7 +206,7 @@
                                                                                     <% }%>
 
                                                                                     <% List<DataRow> resultfilter = null;%>
-                                                                                    <th class="TablaTitulo TablaTituloCatalogo">ACCIÓN</th>
+                                                                                    <th class="TablaTitulo TablaTituloCatalogo">ACCIï¿½N</th>
                                                                                 </tr> 
                                                                                 <%
                                                                                     resultfilter = (ArrayList) resultrel.getListDataRow();
