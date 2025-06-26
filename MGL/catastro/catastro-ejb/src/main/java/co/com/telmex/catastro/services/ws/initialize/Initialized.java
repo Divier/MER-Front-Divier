@@ -37,7 +37,7 @@ public class Initialized {
     private void initial() {
         //inicializar Data sources / properties
         ResponseInit response = null;
-        InitializeResource initialize = InitializeResource.getInstance("jdbc/DirQA");
+        InitializeResource initialize = InitializeResource.getInstance("jdbc/Dir");
         try {
             response = initialize.running(TaskInit.LOAD_DATASOURCE);
             if (response.getDatasource() == null) {

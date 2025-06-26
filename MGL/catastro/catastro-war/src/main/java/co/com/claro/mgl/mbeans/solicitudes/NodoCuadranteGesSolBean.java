@@ -228,6 +228,7 @@ public class NodoCuadranteGesSolBean implements Serializable {
             mFilters.put("solicitudId", null);
             mFilters.put("cuadranteId", null);
             mFilters.put("codDivisional", codDivisional);
+            mFilters.put("codDepto", null);            
             mFilters.put("codCiudad", codCiudad);
             mFilters.put("codCentroPoblado", codCentroPoblado);
             mFilters.put("codigoNodo", codigoNodo);

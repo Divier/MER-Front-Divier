@@ -6,6 +6,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	   xmlns:p="http://primefaces.org/ui">
 
+
     <body>
         <ui:composition template="/view/MGL/template/notasTemplate.xhtml">
             <ui:define name="content">
@@ -236,25 +237,39 @@
                                         </div>                                  
                                     </h:column>
 
-                                <h:column rendered="#{penetracionMglBean.renderColumnaEditar()}"> 
-                                    <f:facet name="header">
-                                        <h:outputText value="Editar" /><BR/>
-                                    </f:facet>
-                                    <div align="left" style="width: 150%;" >
-                                    <p:commandButton  value="" styleClass="btn4" icon="fa fa-fw fa-edit"
-                                       rendered="#{!penetracionMglBean.verificarRenderAceCan(penetracion)}" 
-                                     action="#{penetracionMglBean.editarTecnologia(penetracion)}">
-                                    </p:commandButton>    								
-				    <p:commandButton  value="" styleClass="btn4" icon="fa fa-fw fa-save"
-                                         rendered="#{penetracionMglBean.verificarRenderAceCan(penetracion)}"
-                                         action="#{penetracionMglBean.editarOKTecnologia(penetracion)}" >
-                                    </p:commandButton> 
-                                    <p:commandButton value="" styleClass="btn4" icon="fa fa-fw fa-close"
-                                         rendered="#{penetracionMglBean.verificarRenderAceCan(penetracion)}"
-                                         action="#{penetracionMglBean.editarCancelTecnologia(penetracion)}">
-                                    </p:commandButton> 
-                                    </div>                                  
-                                </h:column>
+
+                                    <h:column rendered="#{penetracionMglBean.renderColumnaEditar()}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Editar" /><BR/>
+                                        </f:facet>
+                                        <div align="left" style="width: 150%;" >
+                                            <h:commandButton  styleClass="btn4" style="background-color: #d32f2f; border-radius: 5px; padding: 3px 16px;
+                                                      height: 18px; box-shadow: 0 4px 6px rgba(0, 0, 0, 100); width: 20px; transition: all 1s ease;"
+                                                              onmouseover="this.style.backgroundColor='#881007'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.15)';"
+                                                              onmouseout="this.style.backgroundColor='#d32f2f'; this.style.transform=''; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)';"
+                                                              rendered="#{!penetracionMglBean.verificarRenderAceCan(penetracion)}"
+                                                              action="#{penetracionMglBean.editarTecnologia(penetracion)}"
+                                                              image="#{resource['icons/pen-edit.svg']}">
+                                            </h:commandButton>
+                                            <h:commandButton  styleClass="btn4" style="background-color: #d32f2f; border-radius: 5px; padding: 3px 16px; height: 16px; box-shadow: 0 4px 6px rgba(0, 0, 0, 100); width: 20px; transition: all 1s ease; margin-bottom: 2px"
+                                                              onmouseover="this.style.backgroundColor='#881007'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.15)';"
+                                                              onmouseout="this.style.backgroundColor='#d32f2f'; this.style.transform=''; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)';"
+                                                              rendered="#{penetracionMglBean.verificarRenderAceCan(penetracion)}"
+                                                              action="#{penetracionMglBean.editarOKTecnologia(penetracion)}"
+                                                              image="#{resource['icons/save-white.svg']}"  >
+                                            </h:commandButton>
+                                            <h:commandButton styleClass="btn4" style="background-color: #d32f2f; border-radius: 5px; padding: 3px 16px; height: 16px; box-shadow: 0 4px 6px rgba(0, 0, 0, 100); width: 20px; transition: all 1s ease;"
+                                                             onmouseover="this.style.backgroundColor='#881007'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.15)';"
+                                                             onmouseout="this.style.backgroundColor='#d32f2f'; this.style.transform=''; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)';"
+                                                             rendered="#{penetracionMglBean.verificarRenderAceCan(penetracion)}"
+                                                             action="#{penetracionMglBean.editarCancelTecnologia(penetracion)}"
+                                                             image="#{resource['icons/xmark-white.svg']}">
+                                            </h:commandButton>
+                                        </div>
+                                    </h:column>
+
+
+
 
 
                                     <f:facet name="footer" >

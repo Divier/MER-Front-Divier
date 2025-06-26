@@ -29,6 +29,9 @@ public class CmtSolicitudNodoCuadFrontRequestDto {
     @StoredProcedureData(parameterName = "PI_COD_DIVISIONAL", parameterType = BigDecimal.class)
     private BigDecimal codDivisional;
     
+    @StoredProcedureData(parameterName = "PI_COD_DEPTO", parameterType = BigDecimal.class)
+    private BigDecimal codDepto;
+    
     @StoredProcedureData(parameterName = "PI_COD_CIUDAD", parameterType = BigDecimal.class)
     private BigDecimal codCiudad;
 

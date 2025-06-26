@@ -90,6 +90,7 @@ public class CmtSolicitudNodoCuadFrontMglDaoImpl extends GenericDaoImpl<CmtSolic
         BigDecimal solicitudId = mFilters.get("solicitudId") != null ? (BigDecimal) mFilters.get("solicitudId") : null;
         String cuadranteId = mFilters.get("cuadranteId") != null ? mFilters.get("cuadranteId").toString() : null;
         BigDecimal codDivisional = mFilters.get("codDivisional") != null ? (BigDecimal) mFilters.get("codDivisional") : null;
+        BigDecimal codDepto = mFilters.get("codDepto") != null ? (BigDecimal) mFilters.get("codDepto") : null;
         BigDecimal codCiudad = mFilters.get("codCiudad") != null ? (BigDecimal) mFilters.get("codCiudad") : null;
         BigDecimal codCentroPoblado = mFilters.get("codCentroPoblado") != null ? (BigDecimal) mFilters.get("codCentroPoblado") : null;
         String codigoNodo = mFilters.get("codigoNodo") != null ? (String) mFilters.get("codigoNodo") : null;
@@ -97,7 +98,7 @@ public class CmtSolicitudNodoCuadFrontMglDaoImpl extends GenericDaoImpl<CmtSolic
         String legado = mFilters.get("legado") != null ? mFilters.get("legado").toString() : null;
         String resultadoAsociacion = mFilters.get("resultadoAsociacion") != null ? mFilters.get("resultadoAsociacion").toString() : null;
         
-        return new CmtSolicitudNodoCuadFrontRequestDto(solicitudId, cuadranteId, codDivisional, codCiudad, codCentroPoblado, codigoNodo, codEstado, legado, resultadoAsociacion);
+        return new CmtSolicitudNodoCuadFrontRequestDto(solicitudId, cuadranteId, codDivisional, codDepto, codCiudad, codCentroPoblado, codigoNodo, codEstado, legado, resultadoAsociacion);
     }
 }
 

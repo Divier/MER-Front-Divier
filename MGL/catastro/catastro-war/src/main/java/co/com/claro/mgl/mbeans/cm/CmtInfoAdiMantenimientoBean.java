@@ -1639,7 +1639,8 @@ public class CmtInfoAdiMantenimientoBean implements Serializable {
                                                     extendidaTipoTrabajoMgl.setTipoTrabajoObj(tipoTrabajoBas);
                                                     extendidaTipoTrabajoMgl.setComunidadRrObj(comunidadRr);
                                                     extendidaTipoTrabajoMgl.setLocationCodigo(codigoLo);
-                                                    extendidaTipoTrabajoMgl.setTecnicoAnticipado("0");
+                                                    extendidaTipoTrabajoMgl.setTecnicoAnticipado("1");
+                                                    extendidaTipoTrabajoMgl.setAgendaInmediata("1");
 
                                                     extendidaTipoTrabajoMgl = cmtExtendidaTipoTrabajoMglFacadeLocal.
                                                             create(extendidaTipoTrabajoMgl, usuarioVT, perfilVT);
