@@ -96,4 +96,13 @@ public class Constants {
     public static final String HEADER_NODE_DISTANCE_IDAPPLICATION = "ipApplication";
     public static final String HEADER_NODE_DISTANCE_PASSWORD = "password";
     
+    
+    public static final String GEO_COVERAGE_OWNER_USER = "GEO_COVERAGE_OWNER_USER";
+    public static final String GEO_COVERAGE_OWNER_SYSTEM = "GEO_COVERAGE_OWNER_SYSTEM";
+    public static final String GEO_COVERAGE_OWNER_IP_APPLICATION = "GEO_COVERAGE_OWNER_IP_APPLICATION";
+    public static final String GEO_COVERAGE_OWNER_PASSWORD = "GEO_COVERAGE_OWNER_PASSWORD";
+    public static final String URL_RS_RES_USAG_GEO_COVERAGE = "URL_RS_RES_USAG_GEO_COVERAGE";
+    public static final String GEO_COVERAGE_TEC_INVALIDAS = "GEO_COVERAGE_TEC_INVALIDAS";
+    public static final String FACTIBILIDAD_POSITIVA = "POSITIVA";
+    
 }

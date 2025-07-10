@@ -8,6 +8,10 @@ package co.com.claro.mgl.mbeans.coberturas;
 import co.com.claro.app.dtos.ColumnDto;
 import co.com.claro.mer.auth.micrositio.facade.LoginMicroSitioFacadeLocal;
 import co.com.claro.mer.exception.ExceptionServBean;
+import co.com.claro.mer.integration.ws.usaggeocoverage.UsagGeoCoverageRestClientPool;
+import co.com.claro.mer.integration.ws.usaggecoverage.dto.CoordsOrder;
+import co.com.claro.mer.integration.ws.usaggecoverage.dto.UsagGeoCoverageRestRequest;
+import co.com.claro.mer.integration.ws.usaggecoverage.dto.UsagGeoCoverageRestResponse;
 import co.com.claro.mer.parametro.facade.ParametroFacadeLocal;
 import co.com.claro.mer.utils.SesionUtil;
 import co.com.claro.mgl.businessmanager.address.DrDireccionManager;
@@ -48,9 +52,11 @@ import co.com.telmex.catastro.utilws.SecurityLogin;
 import com.amx.schema.fulfilloper.exp.customerorder.v1.CustomerOrderRequest;
 import com.amx.schema.fulfilloper.exp.customerorder.v1.CustomerOrderResponse;
 import com.amx.schema.fulfilloper.exp.customerorder.v1.RowSet;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.jlcg.db.exept.ExceptionDB;
+import com.sun.org.apache.xerces.internal.dom.ElementNSImpl;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -97,6 +103,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Managed Bean utilizado para realizar <b>Consultas de Coberturas</b>
@@ -5176,59 +5184,86 @@ public class ConsultarCoberturasV1Bean implements Serializable, Observer {
                     model.getPolygons().remove(detalleFactibilidadMglSelected.getPoligono());
                     detalleFactibilidadMglSelected.setIsChecked(false);
                 } else {
-                    String codigoNodo = this.detalleFactibilidadMglSelected.getCodigoNodo();
-                    if (!Strings.isEmpty(codigoNodo)) {
-                        // Realizar la busqueda del Nodo a partir de su codigo:
-                        NodoMgl nodoMgl = mapNodos.get(codigoNodo);
-                        if (nodoMgl == null) {
-                            // Realizar la busqueda en base de datos:
-                            nodoMgl = nodoMglFacadeLocal.findByCodigo(codigoNodo);
-                        } else {
-                            mapNodos.put(codigoNodo, nodoMgl);
-                        }
+                    String codigoNodo = this.detalleFactibilidadMglSelected.getNodoSitiData();
+                    if (detalleFactibilidadMglSelected.getClaseFactibilidad().equals(Constants.FACTIBILIDAD_POSITIVA)) {
+                        if (!Strings.isEmpty(codigoNodo)) {
+                            // Realizar la busqueda del Nodo a partir de su codigo:
+                            NodoMgl nodoMgl = mapNodos.get(codigoNodo);
+                            if (nodoMgl != null) {
+                                mapNodos.put(codigoNodo, nodoMgl);
+                            }
+                            // Realizar la consulta del Poligono a partir del Servicio GEO_COVERAGE:
 
-                        if (nodoMgl != null && nodoMgl.getNodId() != null) {
-                            BigDecimal idNodoVertice = nodoMgl.getNodId();
-
-                            // Realizar la consulta del Poligono a partir del vertice:
-                            List<NodoPoligono> poligonoList
-                                    = nodoPoligonoFacadeLocal.findByNodoVertice(idNodoVertice);
-
-                            if (poligonoList != null && !poligonoList.isEmpty()) {
-                                // Construir el Poligono:
-                                Polygon polygon = new Polygon();
-                                polygon.setStrokeColor(detalleFactibilidadMglSelected.getColorTecno());
-                                polygon.setFillColor(detalleFactibilidadMglSelected.getColorTecno());
-                                polygon.setStrokeOpacity(0.7);
-                                polygon.setFillOpacity(0.7);
-
-                                // Mapear los nodos en el poligono:
-                                for (NodoPoligono nodoPoligono : poligonoList) {
-                                    if (nodoPoligono.getX() != null && nodoPoligono.getY() != null) {
-                                        double longitudNodo = nodoPoligono.getX().doubleValue();
-                                        double latitudNodo = nodoPoligono.getY().doubleValue();
-
-                                        latLng = new LatLng(latitudNodo, longitudNodo);
-                                        polygon.getPaths().add(latLng);
-                                    }
+                            String[] lisTechInvalid = this.consultarParametro(Constants.GEO_COVERAGE_TEC_INVALIDAS).split(";");
+                            boolean flagTechInvalid = false;
+                            for (String tech : lisTechInvalid) {
+                                if (tech.equals(detalleFactibilidadMglSelected.getNombreTecnologia())) {
+                                    flagTechInvalid = true;
                                 }
+                            }
 
-                                model.addOverlay(polygon);
-                                detalleFactibilidadMglSelected.setIsChecked(true);
-                                detalleFactibilidadMglSelected.setPoligono(polygon);
-
-                            } else {
-                                msnError = "No se encontró información del Polígono para la tecnología '"
+                            if (flagTechInvalid) {
+                                msnError = "No cuenta con poligonos asignados en la technologia  '"
                                         + this.detalleFactibilidadMglSelected.getNombreTecnologia() + "'.";
                                 alerts();
+                            } else {
+                                UsagGeoCoverageRestResponse responseCall
+                                        = callRsResUsagGeoCoverage(centroPobladoSelected.getGeoCodigoDane(), detalleFactibilidadMglSelected.getNodoSitiData(), detalleFactibilidadMglSelected.getNombreTecnologia(), "01");
+                                if (responseCall != null && responseCall.getCode().equals(Constant.RES_USAG_GEO_COVERAGE_EXITOSO)) {
+                                    ElementNSImpl list = (ElementNSImpl) responseCall.getCoords().getCoordinates();
+                                    List<CoordsOrder> listXY = new ArrayList<>();
+                                    NodeList nodeList = list.getChildNodes();
+                                    for (int i = 0; i < nodeList.getLength(); i++) {
+                                        Node x1 = nodeList.item(i);
+                                        Node y1 = nodeList.item(i + 1);
+                                        CoordsOrder coordsOrder = new CoordsOrder();
+                                        coordsOrder.setX((String) x1.getFirstChild().getNodeValue());
+                                        coordsOrder.setY((String) y1.getFirstChild().getNodeValue());
+                                        listXY.add(coordsOrder);
+                                        i++;
+                                    }
+
+                                    if (!listXY.isEmpty()) {
+                                        // Construir el Poligono:
+                                        Polygon polygon = new Polygon();
+                                        polygon.setStrokeColor(detalleFactibilidadMglSelected.getColorTecno());
+                                        polygon.setFillColor(detalleFactibilidadMglSelected.getColorTecno());
+                                        polygon.setStrokeOpacity(0.7);
+                                        polygon.setFillOpacity(0.7);
+
+                                        // Mapear los nodos en el poligono:
+                                        for (CoordsOrder nodoPoligono : listXY) {
+                                            if (nodoPoligono.getX() != null && nodoPoligono.getY() != null) {
+                                                double longitudNodo = Double.parseDouble(nodoPoligono.getX());
+                                                double latitudNodo = Double.parseDouble(nodoPoligono.getY());
+
+                                                latLng = new LatLng(latitudNodo, longitudNodo);
+                                                polygon.getPaths().add(latLng);
+                                            }
+                                        }
+
+                                        model.addOverlay(polygon);
+                                        detalleFactibilidadMglSelected.setIsChecked(true);
+                                        detalleFactibilidadMglSelected.setPoligono(polygon);
+
+                                    } else {
+                                        msnError = "No se encontró información del Polígono para la tecnología '"
+                                                + this.detalleFactibilidadMglSelected.getNombreTecnologia() + "'.";
+                                        alerts();
+                                    }
+                                } else {
+                                    msnError = "No se encontró información del Polígono para la tecnología '"
+                                            + this.detalleFactibilidadMglSelected.getNombreTecnologia() + "'.";
+                                    alerts();
+                                }
                             }
                         } else {
-                            msnError = "No se encontró información del Nodo para la tecnología '"
-                                    + this.detalleFactibilidadMglSelected.getNombreTecnologia() + "' en base de datos.";
+                            msnError = "No se encontró la información del nodo para la tecnología '"
+                                    + this.detalleFactibilidadMglSelected.getNombreTecnologia() + "'.";
                             alerts();
                         }
                     } else {
-                        msnError = "No se encontró la información del nodo vértice para la tecnología '"
+                        msnError = "No se tiene una factibilidad POSITIVA para la tecnologia '"
                                 + this.detalleFactibilidadMglSelected.getNombreTecnologia() + "'.";
                         alerts();
                     }
@@ -10293,5 +10328,47 @@ public class ConsultarCoberturasV1Bean implements Serializable, Observer {
             LOGGER.info("Se genero error en la obtencion de parametros WS CalculateNodeDistance ConsultarCoberturasV1Bean class ...");
             return null;
         }
+    }
+    
+        /**
+     * Metodo para realizar consumo de operacion UsagGeoCoverage
+     * @author 45111073
+     * 
+     * @throws ApplicationException 
+     */
+    private UsagGeoCoverageRestResponse callRsResUsagGeoCoverage(
+            String daneCode, String nodeCode, String technologyType, String owner)
+            throws ApplicationException {
+            UsagGeoCoverageRestResponse responseUsagGeoCoverage;
+        try {
+            Map<String,Object> header = new HashMap<>();
+            String endPoint = (String) this.consultarParametro(Constants.URL_RS_RES_USAG_GEO_COVERAGE);
+            header.put(Constants.HEADER_NODE_DISTANCE_USER, 
+                    this.consultarParametro(Constants.GEO_COVERAGE_OWNER_USER));
+            header.put(Constants.HEADER_NODE_DISTANCE_SYSTEM, 
+                    this.consultarParametro(Constants.GEO_COVERAGE_OWNER_SYSTEM));
+            header.put(Constants.HEADER_NODE_DISTANCE_IDAPPLICATION, 
+                    this.consultarParametro(Constants.GEO_COVERAGE_OWNER_IP_APPLICATION));
+            header.put(Constants.HEADER_NODE_DISTANCE_PASSWORD, 
+                    this.consultarParametro(Constants.GEO_COVERAGE_OWNER_PASSWORD));
+            
+            UsagGeoCoverageRestRequest usagGeoCoverageRestRequest 
+                    = new UsagGeoCoverageRestRequest(daneCode, nodeCode, technologyType, owner);
+            
+            UsagGeoCoverageRestClientPool usagGeoCoverageRestClientPool =
+                    UsagGeoCoverageRestClientPool.getInstance(endPoint);
+            
+            
+            String headerStr = header.keySet().stream().map(key -> key + "=" + header.get(key)).collect(Collectors.joining(", ", "{", "}"));
+            
+            LOGGER.info("Send object [" + endPoint + "] Header: [" + headerStr + "] Request: " + new ObjectMapper().writeValueAsString(usagGeoCoverageRestRequest));
+            responseUsagGeoCoverage = usagGeoCoverageRestClientPool.coordsByNode(usagGeoCoverageRestRequest, header);
+            LOGGER.info("Response: " + new ObjectMapper().writeValueAsString(responseUsagGeoCoverage));
+            
+            return responseUsagGeoCoverage;
+        } catch (Exception ex) {
+            LOGGER.error("Error en callCalculateNodeDistance", ex);
+        }
+        return null;
     }
 }

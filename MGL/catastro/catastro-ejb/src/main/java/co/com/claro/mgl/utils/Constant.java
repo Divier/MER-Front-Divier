@@ -1026,4 +1026,6 @@ public class Constant {
     public static final String DESACTIVAR_OPCION_OFSC = "DESACTIVAR_OPCION_OFSC";
     public static final String DESACTIVAR_OPCION_MG = "DESACTIVAR_OPCION_MG";
     public static final String DESACTIVAR_OPCION_SGO = "DESACTIVAR_OPCION_SGO";
+    
+    public static final String RES_USAG_GEO_COVERAGE_EXITOSO = "OK0001";
 }
